@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, Search, PlusCircle, HelpCircle, FileText } from "lucide-react";
+import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, Search, PlusCircle, HelpCircle, FileText, CalendarCheck } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -174,12 +174,20 @@ const Navbar = () => {
                         </DropdownMenuItem>
                       )}
                       {(profile?.user_type === 'proprietaire' || profile?.user_type === 'agence') && (
-                        <DropdownMenuItem asChild>
-                          <Link to="/my-mandates" className="cursor-pointer flex items-center">
-                            <FileText className="mr-3 h-4 w-4 text-primary" />
-                            <span>Mes Mandats</span>
-                          </Link>
-                        </DropdownMenuItem>
+                        <>
+                          <DropdownMenuItem asChild>
+                            <Link to="/my-mandates" className="cursor-pointer flex items-center">
+                              <FileText className="mr-3 h-4 w-4 text-primary" />
+                              <span>Mes Mandats</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to="/crm-visites" className="cursor-pointer flex items-center">
+                              <CalendarCheck className="mr-3 h-4 w-4 text-primary" />
+                              <span>CRM Visites</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        </>
                       )}
                       <DropdownMenuItem asChild>
                         <Link to="/profil" className="cursor-pointer flex items-center">

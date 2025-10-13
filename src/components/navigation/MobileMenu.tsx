@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSign, Search, PlusCircle } from 'lucide-react';
+import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSign, Search, PlusCircle, CalendarCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -95,6 +95,17 @@ export const MobileMenu = () => {
                   <LayoutDashboard className="h-5 w-5 text-primary" />
                   <span>Tableau de bord</span>
                 </Link>
+
+                {(profile?.user_type === 'proprietaire' || profile?.user_type === 'agence') && (
+                  <Link
+                    to="/crm-visites"
+                    onClick={handleNavClick}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+                  >
+                    <CalendarCheck className="h-5 w-5 text-primary" />
+                    <span>CRM Visites</span>
+                  </Link>
+                )}
 
                 <Link
                   to="/profil"
