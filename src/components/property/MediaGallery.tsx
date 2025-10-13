@@ -9,11 +9,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { VideoPlayer } from "./VideoPlayer";
 import { PanoramaViewer } from "./PanoramaViewer";
+import { PanoramaNavigation } from "./PanoramaNavigation";
 import { FloorPlanViewer } from "./FloorPlanViewer";
 import { OptimizedImage } from "./OptimizedImage";
 import { SwipeGallery } from "./SwipeGallery";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePropertyImageAccess } from "@/hooks/usePropertyImageAccess";
+import { usePanoramaPrefetch } from "@/hooks/usePanoramaPrefetch";
 import { Image, Video, Globe, Layout, Lock, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -37,16 +39,24 @@ export const MediaGallery = ({
 }: MediaGalleryProps) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [currentPanoramaIndex, setCurrentPanoramaIndex] = useState(0);
   const isMobile = useIsMobile();
 
   // Hook pour accès images
-  const { 
-    maxImages, 
-    showBlur, 
-    showHDPhotos, 
-    show3DTour, 
-    showFloorPlans 
+  const {
+    maxImages,
+    showBlur,
+    showHDPhotos,
+    show3DTour,
+    showFloorPlans
   } = usePropertyImageAccess(propertyId);
+
+  // Prefetch panoramic images when 360 tab is available
+  const panoramaUrls = panoramicImages.map(p => p.url);
+  const { prefetchOnHover } = usePanoramaPrefetch(panoramaUrls, {
+    enabled: show3DTour && panoramaUrls.length > 0,
+    priority: 'low'
+  });
 
   // Limiter les images affichées
   const displayImages = images.slice(0, maxImages);
@@ -79,7 +89,13 @@ export const MediaGallery = ({
             </TabsTrigger>
           )}
           {has360 && show3DTour && (
-            <TabsTrigger value="360" className="gap-2">
+            <TabsTrigger
+              value="360"
+              className="gap-2"
+              onMouseEnter={() => {
+                panoramaUrls.forEach(url => prefetchOnHover(url));
+              }}
+            >
               <Globe className="h-4 w-4" />
               Vue 360°
               <Badge variant="secondary" className="ml-1">
@@ -216,16 +232,28 @@ export const MediaGallery = ({
         {has360 && (
           <TabsContent value="360">
             <div className="space-y-4">
-              {panoramicImages.map((panorama, index) => (
-                <div key={index}>
-                  {panorama.title && (
-                    <h3 className="text-lg font-semibold mb-2">
-                      {panorama.title}
-                    </h3>
-                  )}
-                  <PanoramaViewer imageUrl={panorama.url} title={panorama.title} />
+              <PanoramaViewer
+                imageUrl={panoramicImages[currentPanoramaIndex]?.url}
+                title={panoramicImages[currentPanoramaIndex]?.title}
+                autoRotate={false}
+              />
+
+              {panoramicImages.length > 1 && (
+                <PanoramaNavigation
+                  panoramas={panoramicImages}
+                  currentIndex={currentPanoramaIndex}
+                  onNavigate={setCurrentPanoramaIndex}
+                  className="mt-4"
+                />
+              )}
+
+              {panoramicImages[currentPanoramaIndex]?.title && (
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">
+                    {currentPanoramaIndex + 1} / {panoramicImages.length} - {panoramicImages[currentPanoramaIndex].title}
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
           </TabsContent>
         )}
