@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from './ui/button';
@@ -24,6 +26,10 @@ interface PropertyMapProps {
 }
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZS1kZXYiLCJhIjoiY200N2lwbDJhMDBseTJycHlnOTluZnN1biJ9.JLechweMLsxP7qlR6cT-Og';
+
+// Fix for Mapbox GL worker in Vite - prevents blank/grey map
+// @ts-ignore
+mapboxgl.workerClass = mapboxgl.workerClass || (await import('mapbox-gl/dist/mapbox-gl-csp-worker')).default;
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
 
