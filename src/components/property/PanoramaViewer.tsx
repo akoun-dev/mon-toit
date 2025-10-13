@@ -86,16 +86,7 @@ export const PanoramaViewer = ({
         maxFov: 120,
         mousewheel: true,
         mousemove: true,
-        keyboard: {
-          'ArrowUp': 'ROTATE_UP',
-          'ArrowDown': 'ROTATE_DOWN',
-          'ArrowRight': 'ROTATE_RIGHT',
-          'ArrowLeft': 'ROTATE_LEFT',
-          'PageUp': 'ZOOM_IN',
-          'PageDown': 'ZOOM_OUT',
-          '+': 'ZOOM_IN',
-          '-': 'ZOOM_OUT',
-        },
+        keyboard: 'fullscreen',
         plugins,
       });
 
@@ -103,7 +94,7 @@ export const PanoramaViewer = ({
 
       // Auto rotate if enabled
       if (autoRotate) {
-        viewer.startAutorotate();
+        viewer.dynamics.position.roll({ yaw: true }, 2);
       }
 
       // Handle loading complete
@@ -111,15 +102,8 @@ export const PanoramaViewer = ({
         setIsLoading(false);
       });
 
-      // Handle errors
-      viewer.addEventListener('error', (err) => {
-        setError("Impossible de charger l'image panoramique");
-        setIsLoading(false);
-        console.error('Panorama viewer error:', err);
-      });
-
       // Handle fullscreen changes
-      viewer.addEventListener('fullscreen-updated', (e: any) => {
+      viewer.addEventListener('fullscreen', (e: any) => {
         setIsFullscreen(e.fullscreenEnabled);
       });
 
@@ -164,11 +148,7 @@ export const PanoramaViewer = ({
 
   const toggleAutoRotate = () => {
     if (viewerRef.current) {
-      if (viewerRef.current.isAutorotateEnabled()) {
-        viewerRef.current.stopAutorotate();
-      } else {
-        viewerRef.current.startAutorotate();
-      }
+      viewerRef.current.dynamics.position.roll({ yaw: true }, 2);
     }
   };
 
