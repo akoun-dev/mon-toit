@@ -4,14 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const ProfileDiagnostic = () => {
   const { user, profile } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 pt-24 pb-12">
+      <div className="flex-1 container mx-auto px-4 pt-24 pb-12">
         <Card>
           <CardHeader>
             <CardTitle>Diagnostic du Profil Utilisateur</CardTitle>
@@ -144,6 +145,7 @@ const ProfileDiagnostic = () => {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };
