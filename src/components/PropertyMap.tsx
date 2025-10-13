@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from './ui/button';
 import { Locate, Map, Satellite, Layers } from 'lucide-react';
 import { Card } from './ui/card';
+import { Input } from './ui/input';
 import { logger } from '@/services/logger';
 
 interface Property {
@@ -23,7 +24,8 @@ interface PropertyMapProps {
   showLocationButton?: boolean;
 }
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZS1kZXYiLCJhIjoiY200N2lwbDJhMDBseTJycHlnOTluZnN1biJ9.JLechweMLsxP7qlR6cT-Og';
+const getStoredMapboxToken = () => localStorage.getItem('mapbox_token') || '';
+const MAPBOX_TOKEN = getStoredMapboxToken();
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
 
@@ -47,18 +49,28 @@ const PropertyMap = ({
   const [mapStyle, setMapStyle] = useState<MapStyle>(() => {
     return (localStorage.getItem('preferredMapStyle') as MapStyle) || 'streets';
   });
+  const [mapboxToken, setMapboxToken] = useState(getStoredMapboxToken());
+  const [tokenInput, setTokenInput] = useState('');
+
+  const handleSaveToken = () => {
+    if (tokenInput.trim()) {
+      localStorage.setItem('mapbox_token', tokenInput.trim());
+      setMapboxToken(tokenInput.trim());
+      window.location.reload();
+    }
+  };
 
   // Initialize map
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
     try {
-      if (!MAPBOX_TOKEN) {
+      if (!mapboxToken) {
         logger.warn('Mapbox token not configured');
         return;
       }
 
-      mapboxgl.accessToken = MAPBOX_TOKEN;
+      mapboxgl.accessToken = mapboxToken;
 
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -81,7 +93,7 @@ const PropertyMap = ({
       map.current?.remove();
       map.current = null;
     };
-  }, [mapStyle]);
+  }, [mapStyle, mapboxToken]);
 
   // Function to add markers to the map
   const addMarkersToMap = () => {
@@ -225,9 +237,34 @@ const PropertyMap = ({
 
   return (
     <div className="relative w-full h-[600px]">
-      <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
+      {!mapboxToken ? (
+        <Card className="p-6 flex flex-col items-center justify-center h-full">
+          <h3 className="text-lg font-semibold mb-4">Configuration Mapbox requise</h3>
+          <p className="text-sm text-muted-foreground mb-4 text-center max-w-md">
+            Veuillez entrer votre token PUBLIC Mapbox (pk.xxx) pour afficher la carte.
+            <br />
+            <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+              Obtenez votre token ici
+            </a>
+          </p>
+          <div className="flex gap-2 w-full max-w-md">
+            <Input
+              type="text"
+              placeholder="pk.xxxxxxxxxxxxx"
+              value={tokenInput}
+              onChange={(e) => setTokenInput(e.target.value)}
+              className="flex-1"
+            />
+            <Button onClick={handleSaveToken} disabled={!tokenInput.trim()}>
+              Enregistrer
+            </Button>
+          </div>
+        </Card>
+      ) : (
+        <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
+      )}
       
-      {showLocationButton && (
+      {mapboxToken && showLocationButton && (
         <div className="absolute top-4 left-4 z-10">
           <Button
             onClick={handleLocateMe}
@@ -241,7 +278,8 @@ const PropertyMap = ({
         </div>
       )}
 
-      <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
+      {mapboxToken && (
+        <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
         <Button
           onClick={() => handleStyleChange('streets')}
           size="sm"
@@ -269,9 +307,10 @@ const PropertyMap = ({
           <Layers className="h-4 w-4 md:mr-2" />
           <span className="hidden md:inline">Hybride</span>
         </Button>
-      </div>
+        </div>
+      )}
 
-      {properties.filter(p => p.latitude === null || p.longitude === null).length > 0 && (
+      {mapboxToken && properties.filter(p => p.latitude === null || p.longitude === null).length > 0 && (
         <Card className="absolute bottom-4 left-4 right-4 p-3 z-10 bg-background/95 backdrop-blur">
           <p className="text-sm text-muted-foreground">
             {properties.filter(p => p.latitude === null || p.longitude === null).length} bien(s) sans géolocalisation
