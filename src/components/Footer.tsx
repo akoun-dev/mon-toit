@@ -109,7 +109,6 @@ const Footer = () => {
                 <Link to="/illustrations" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors duration-200">
                   <ImageIcon className="h-4 w-4" />
                   Nos Illustrations
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">Nouveau</Badge>
                 </Link>
               </li>
             </ul>
