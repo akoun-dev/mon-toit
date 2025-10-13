@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { logger } from '@/services/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { celebrateCertification } from '@/utils/confetti';
 import { Camera, Upload, CheckCircle, XCircle, AlertCircle, Shield, RefreshCw } from 'lucide-react';
 

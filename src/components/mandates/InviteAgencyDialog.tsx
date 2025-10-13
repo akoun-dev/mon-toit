@@ -21,7 +21,7 @@ import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ContextualTooltip } from '@/components/help/ContextualTooltip';
 import { Link } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
 

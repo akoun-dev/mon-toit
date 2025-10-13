@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';

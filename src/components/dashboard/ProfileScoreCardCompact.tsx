@@ -6,7 +6,7 @@ import { Shield, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { TenantScoreMeter } from './TenantScoreMeter';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export const ProfileScoreCardCompact = () => {
   const { profile, user } = useAuth();

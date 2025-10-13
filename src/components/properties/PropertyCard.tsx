@@ -9,7 +9,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Heart, MapPin, Bed, Bath, Maximize, Clock, Lock, Wrench, ExternalLink, ShieldCheck, Building2 } from 'lucide-react';
 import { Property } from '@/types';
 import { getPropertyStatusLabel, formatPrice } from '@/constants';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
 import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { toast } from '@/hooks/use-toast';
