@@ -272,3 +272,151 @@ export interface GeoLocation {
   longitude: number;
 }
 
+export type VisitRequestType = 'flexible' | 'specific';
+export type VisitRequestStatus = 'pending' | 'accepted' | 'declined' | 'expired' | 'converted';
+export type InterestLevel = 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+export type SeriousnessLevel = 'very_serious' | 'serious' | 'somewhat_serious' | 'not_serious';
+export type DecisionStatus = 'awaiting' | 'wants_to_apply' | 'needs_time' | 'declined' | 'applied' | 'signed';
+export type ContactMethod = 'phone' | 'email' | 'whatsapp' | 'sms';
+export type FollowUpTaskType = 'urgent_follow_up' | 'standard_follow_up' | 'long_term_follow_up' | 'document_request';
+export type FollowUpStatus = 'pending' | 'scheduled' | 'completed' | 'cancelled' | 'overdue';
+export type LeadTemperature = 'hot' | 'warm' | 'cold';
+export type MovementType = 'automatic' | 'manual';
+
+export interface VisitRequest {
+  id: string;
+  property_id: string;
+  requester_id: string;
+  request_type: VisitRequestType;
+  preferred_dates?: any;
+  specific_slot_id?: string | null;
+  availability_notes?: string | null;
+  visitor_count: number;
+  motivation?: string | null;
+  status: VisitRequestStatus;
+  priority_score: number;
+  score_breakdown?: any;
+  agent_response?: string | null;
+  agent_response_at?: string | null;
+  proposed_slots?: any;
+  selected_slot_id?: string | null;
+  expires_at: string;
+  converted_to_booking_id?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VisitRequestWithDetails extends VisitRequest {
+  properties: {
+    title: string;
+    monthly_rent: number;
+    city: string;
+    main_image: string | null;
+  };
+  profiles: {
+    full_name: string;
+    phone: string | null;
+    avatar_url: string | null;
+    is_verified: boolean;
+    oneci_verified: boolean;
+    cnam_verified: boolean;
+  };
+}
+
+export interface AgentAnnotation {
+  id: string;
+  booking_id: string;
+  agent_id: string;
+  property_id: string;
+  visitor_id: string;
+  interest_level?: InterestLevel | null;
+  seriousness_level?: SeriousnessLevel | null;
+  conversion_probability?: number | null;
+  is_hot_lead: boolean;
+  visit_behavior?: string | null;
+  questions_asked?: string[] | null;
+  concerns_expressed?: string[] | null;
+  property_feedback?: string | null;
+  desired_move_in_date?: string | null;
+  confirmed_budget?: number | null;
+  family_composition?: string | null;
+  relocation_reason?: string | null;
+  current_situation?: string | null;
+  objections?: any;
+  action_items?: string[] | null;
+  follow_up_date?: string | null;
+  follow_up_method?: ContactMethod | null;
+  documents_to_request?: string[] | null;
+  decision_status: DecisionStatus;
+  decision_notes?: string | null;
+  private_notes?: string | null;
+  custom_tags?: string[] | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FollowUpTask {
+  id: string;
+  annotation_id?: string | null;
+  agent_id: string;
+  visitor_id: string;
+  property_id: string;
+  scheduled_date: string;
+  contact_method: ContactMethod;
+  task_type: FollowUpTaskType;
+  task_subject: string;
+  task_notes?: string | null;
+  status: FollowUpStatus;
+  completed_at?: string | null;
+  completed_notes?: string | null;
+  reminder_sent: boolean;
+  reminder_sent_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PipelineStage {
+  id: string;
+  stage_name: string;
+  stage_key: string;
+  stage_order: number;
+  stage_color: string;
+  stage_description?: string | null;
+  is_active: boolean;
+  auto_progress_to?: string | null;
+  auto_progress_condition?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PipelineMovement {
+  id: string;
+  visitor_id: string;
+  property_id: string;
+  request_id?: string | null;
+  booking_id?: string | null;
+  current_stage_id: string;
+  previous_stage_id?: string | null;
+  moved_by?: string | null;
+  movement_type: MovementType;
+  movement_reason?: string | null;
+  lead_temperature?: LeadTemperature | null;
+  conversion_probability?: number | null;
+  total_interactions: number;
+  last_interaction_at?: string | null;
+  created_at: string;
+}
+
+export interface PipelineProspect extends PipelineMovement {
+  visitor: {
+    full_name: string;
+    avatar_url: string | null;
+    phone: string | null;
+  };
+  property: {
+    title: string;
+    monthly_rent: number;
+  };
+  stage: PipelineStage;
+}
+

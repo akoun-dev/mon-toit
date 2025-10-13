@@ -63,6 +63,7 @@ import Explorer from "./pages/Explorer";
 import CommentCaMarche from "./pages/CommentCaMarche";
 import Illustrations from "./pages/Illustrations";
 import MandatesHelp from "./pages/MandatesHelp";
+import VisitsCRM from "./pages/VisitsCRM";
 
 const queryClient = new QueryClient();
 
@@ -270,13 +271,21 @@ const AppContent = () => {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/biens/:id/candidatures" 
+            <Route
+              path="/biens/:id/candidatures"
               element={
                 <ProtectedRoute allowedUserTypes={['proprietaire', 'agence']}>
                   <PropertyApplications />
                 </ProtectedRoute>
-              } 
+              }
+            />
+            <Route
+              path="/crm-visites"
+              element={
+                <ProtectedRoute allowedUserTypes={['proprietaire', 'agence']}>
+                  <VisitsCRM />
+                </ProtectedRoute>
+              }
             />
             <Route 
               path="/maintenance/:propertyId" 
