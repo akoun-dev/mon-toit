@@ -23,7 +23,7 @@ interface PropertyMapProps {
   showLocationButton?: boolean;
 }
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN || '';
+const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZS1kZXYiLCJhIjoiY200N2lwbDJhMDBseTJycHlnOTluZnN1biJ9.JLechweMLsxP7qlR6cT-Og';
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
 
