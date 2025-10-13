@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { illustrationPaths, type IllustrationKey } from "@/assets/illustrations/ivorian/illustrationPaths";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Download, Image as ImageIcon, Home, Users, Building2, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Download, Image as ImageIcon, Home, Users, Building2, Sparkles, Search, Loader2, X, Eye } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 type CategoryFilter = "all" | "interior" | "exterior" | "people";
 
@@ -87,10 +92,124 @@ const illustrations = [
 const Illustrations = () => {
   const [filter, setFilter] = useState<CategoryFilter>("all");
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [downloading, setDownloading] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
 
-  const filteredIllustrations = illustrations.filter(ill => 
-    filter === "all" || ill.category === filter
-  );
+  useEffect(() => {
+    const fetchViewCounts = async () => {
+      const { data } = await supabase
+        .from('illustration_analytics')
+        .select('illustration_key, view_count');
+
+      if (data) {
+        const counts = data.reduce((acc, item) => {
+          acc[item.illustration_key] = item.view_count || 0;
+          return acc;
+        }, {} as Record<string, number>);
+        setViewCounts(counts);
+      }
+    };
+
+    fetchViewCounts();
+  }, []);
+
+  const allTags = Array.from(new Set(illustrations.flatMap(ill => ill.tags)));
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const clearFilters = () => {
+    setFilter("all");
+    setSelectedTags([]);
+    setSearchQuery("");
+  };
+
+  const trackView = async (illustrationKey: string) => {
+    await supabase.rpc('track_illustration_view', {
+      p_illustration_key: illustrationKey
+    });
+  };
+
+  const trackDownload = async (illustrationKey: string) => {
+    await supabase.rpc('track_illustration_download', {
+      p_illustration_key: illustrationKey
+    });
+  };
+
+  const downloadImage = async (key: IllustrationKey, title: string) => {
+    try {
+      const path = illustrationPaths[key];
+      if (!path) return;
+
+      const response = await fetch(path);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${key}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      await trackDownload(key);
+      toast.success(`${title} téléchargée avec succès`);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Erreur lors du téléchargement');
+    }
+  };
+
+  const downloadAllImages = async () => {
+    setDownloading(true);
+    toast.info('Téléchargement de toutes les illustrations...');
+
+    try {
+      for (const illustration of filteredIllustrations) {
+        await downloadImage(illustration.key, illustration.title);
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      toast.success('Toutes les illustrations ont été téléchargées');
+    } catch (error) {
+      console.error('Bulk download error:', error);
+      toast.error('Erreur lors du téléchargement groupé');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+    const illustration = filteredIllustrations[index];
+    trackView(illustration.key);
+  };
+
+  const filteredIllustrations = illustrations.filter(ill => {
+    const matchesCategory = filter === "all" || ill.category === filter;
+    const matchesSearch = searchQuery === "" ||
+      ill.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ill.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTags = selectedTags.length === 0 ||
+      selectedTags.some(tag => ill.tags.includes(tag));
+
+    return matchesCategory && matchesSearch && matchesTags;
+  });
+
+  const lightboxSlides = filteredIllustrations.map(ill => ({
+    src: illustrationPaths[ill.key] || '',
+    title: ill.title,
+    description: ill.description
+  }));
+
+  const activeFiltersCount = (filter !== "all" ? 1 : 0) + selectedTags.length + (searchQuery ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,7 +266,45 @@ const Illustrations = () => {
 
       {/* Filter Bar */}
       <section className="border-b border-border bg-muted/20 sticky top-16 z-30 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 space-y-4">
+          {/* Search and Download */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative flex-1 min-w-[200px] max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Rechercher par titre ou description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-9"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={downloadAllImages}
+              disabled={downloading || filteredIllustrations.length === 0}
+            >
+              {downloading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              Télécharger tout ({filteredIllustrations.length})
+            </Button>
+          </div>
+
+          {/* Category Filters */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Button
@@ -187,12 +344,36 @@ const Illustrations = () => {
                 Personnes ({illustrations.filter(i => i.category === "people").length})
               </Button>
             </div>
-            
-            <Button variant="outline" size="sm" className="gap-2">
-              <Download className="h-4 w-4" />
-              Télécharger tout
-            </Button>
+
+            {activeFiltersCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilters}
+                className="gap-2 text-muted-foreground"
+              >
+                <X className="h-3 w-3" />
+                Effacer les filtres ({activeFiltersCount})
+              </Button>
+            )}
           </div>
+
+          {/* Tag Filters */}
+          {allTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              <span className="text-sm text-muted-foreground self-center mr-2">Tags:</span>
+              {allTags.map(tag => (
+                <Badge
+                  key={tag}
+                  variant={selectedTags.includes(tag) ? "default" : "outline"}
+                  className="cursor-pointer transition-all hover:scale-105"
+                  onClick={() => toggleTag(tag)}
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -205,7 +386,7 @@ const Illustrations = () => {
                 key={illustration.key}
                 className={cn(
                   "illustration-card group overflow-hidden border-2 transition-all duration-500 hover:shadow-elegant hover:border-primary/50",
-                  "animate-fade-in"
+                  "animate-fade-in cursor-pointer"
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onMouseEnter={() => setHoveredCard(illustration.key)}
@@ -213,7 +394,10 @@ const Illustrations = () => {
               >
                 <CardContent className="p-0">
                   {/* Image */}
-                  <div className="relative h-64 overflow-hidden">
+                  <div
+                    className="relative h-64 overflow-hidden"
+                    onClick={() => openLightbox(index)}
+                  >
                     <LazyIllustration
                       src={illustrationPaths[illustration.key]}
                       alt={illustration.title}
@@ -221,6 +405,17 @@ const Illustrations = () => {
                       animate={true}
                     />
                     <div className="illustration-overlay" />
+
+                    {/* View Count Badge */}
+                    {viewCounts[illustration.key] > 0 && (
+                      <Badge
+                        variant="secondary"
+                        className="absolute top-3 right-3 bg-black/60 text-white backdrop-blur-sm"
+                      >
+                        <Eye className="h-3 w-3 mr-1" />
+                        {viewCounts[illustration.key]}
+                      </Badge>
+                    )}
                     
                     {/* Overlay Info */}
                     <div className={cn(
@@ -246,7 +441,15 @@ const Illustrations = () => {
                       {illustration.description}
                     </p>
                     
-                    <Button variant="outline" size="sm" className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadImage(illustration.key, illustration.title);
+                      }}
+                    >
                       <Download className="h-3 w-3" />
                       Télécharger
                     </Button>
@@ -255,8 +458,37 @@ const Illustrations = () => {
               </Card>
             ))}
           </div>
+
+          {filteredIllustrations.length === 0 && (
+            <div className="text-center py-16">
+              <ImageIcon className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-20" />
+              <h3 className="text-lg font-semibold mb-2">Aucune illustration trouvée</h3>
+              <p className="text-muted-foreground mb-4">
+                Essayez de modifier vos critères de recherche ou de filtrage
+              </p>
+              <Button variant="outline" onClick={clearFilters}>
+                Réinitialiser les filtres
+              </Button>
+            </div>
+          )}
         </div>
       </section>
+
+      {/* Lightbox */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={lightboxSlides}
+        index={lightboxIndex}
+        on={{
+          view: ({ index }) => {
+            const illustration = filteredIllustrations[index];
+            if (illustration) {
+              trackView(illustration.key);
+            }
+          }
+        }}
+      />
 
       {/* Playground Section */}
       <section className="py-16 bg-muted/30">
@@ -312,9 +544,18 @@ const Illustrations = () => {
             <p className="text-muted-foreground mb-6">
               Obtenez l'ensemble complet des 10 illustrations optimisées en WebP et PNG dans une archive ZIP.
             </p>
-            <Button size="lg" className="gap-2 shadow-lg hover:shadow-xl">
-              <Download className="h-5 w-5" />
-              Télécharger l'Archive Complète (2.5 MB)
+            <Button
+              size="lg"
+              className="gap-2 shadow-lg hover:shadow-xl"
+              onClick={downloadAllImages}
+              disabled={downloading}
+            >
+              {downloading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Download className="h-5 w-5" />
+              )}
+              {downloading ? 'Téléchargement...' : `Télécharger l'Archive Complète (${illustrations.length} images)`}
             </Button>
             <p className="text-xs text-muted-foreground mt-4">
               Formats inclus : WebP (optimisé) + PNG (fallback) • Licence : Usage interne Mon Toit
