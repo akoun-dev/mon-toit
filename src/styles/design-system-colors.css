@@ -1,0 +1,115 @@
+/* Mon Toit - Harmonious 5-Color Design System
+ * This file consolidates all color definitions following the visual harmony plan
+ *
+ * Color Palette:
+ * 1. PRIMARY (Blue #2C5F7F) - Trust, professionalism, main brand color
+ * 2. SECONDARY (Orange #E67E22) - Energy, action, primary CTAs
+ * 3. SUCCESS (Green #10B981) - Success states, availability
+ * 4. WARNING (Orange #F59E0B) - Warnings, negotiation
+ * 5. DESTRUCTIVE (Red #EF4444) - Errors, destructive actions
+ *
+ * Usage Guidelines:
+ * - Primary CTAs: Use SECONDARY (orange) for highest prominence
+ * - Secondary actions: Use PRIMARY (blue) with outline
+ * - Available properties: SUCCESS (green)
+ * - Negotiation/New badges: WARNING/SECONDARY (orange)
+ * - Rented/Inactive: NEUTRAL (gray)
+ * - Errors/Delete: DESTRUCTIVE (red)
+ */
+
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 215 25% 17%; /* #1F2937 Dark gray */
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 17%;
+
+    /* PRIMARY - Mon Toit Blue (#2C5F7F) */
+    --primary-50: 203 45% 96%;
+    --primary-100: 203 45% 90%;
+    --primary: 203 48% 34%; /* #2C5F7F */
+    --primary-500: 203 48% 34%;
+    --primary-700: 203 48% 28%;
+    --primary-900: 203 48% 22%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 203 48% 42%;
+
+    /* SECONDARY - Abidjan Orange (#E67E22) */
+    --secondary-50: 27 90% 96%;
+    --secondary-100: 27 90% 88%;
+    --secondary: 27 88% 52%; /* #E67E22 */
+    --secondary-500: 27 88% 52%;
+    --secondary-700: 27 88% 45%;
+    --secondary-900: 27 88% 38%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* SUCCESS - Success Green (#10B981) */
+    --success: 160 84% 39%; /* #10B981 */
+    --success-foreground: 0 0% 100%;
+
+    /* WARNING - Warning Orange (#F59E0B) */
+    --warning: 38 92% 50%; /* #F59E0B */
+    --warning-foreground: 0 0% 100%;
+
+    /* DESTRUCTIVE - Alert Red (#EF4444) */
+    --destructive: 0 72% 51%; /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Neutral colors */
+    --muted: 220 14% 96%; /* #F9FAFB Light gray background */
+    --muted-foreground: 215 16% 47%; /* #6B7280 Medium gray text */
+
+    --accent: 203 48% 34%; /* Use primary for consistency */
+    --accent-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%; /* #E5E7EB */
+    --input: 220 13% 91%;
+    --ring: 203 48% 34%; /* Primary blue for focus */
+
+    --radius: 0.75rem;
+
+    /* Semantic status colors */
+    --status-success: 160 84% 39%;
+    --status-success-foreground: 0 0% 100%;
+    --status-warning: 27 88% 52%;
+    --status-warning-foreground: 0 0% 100%;
+    --status-danger: 0 72% 51%;
+    --status-danger-foreground: 0 0% 100%;
+    --status-info: 203 48% 34%;
+    --status-info-foreground: 0 0% 100%;
+    --status-neutral: 215 16% 47%;
+    --status-neutral-foreground: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(203 48% 34%), hsl(203 48% 42%));
+    --gradient-secondary: linear-gradient(135deg, hsl(27 88% 52%), hsl(27 88% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(203 48% 34% / 0.95), hsl(27 88% 52% / 0.85));
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(203 48% 34% / 0.02) 100%);
+
+    /* Shadows */
+    --shadow-primary: 0 10px 40px -10px hsl(203 48% 34% / 0.25);
+    --shadow-card: 0 4px 20px -2px hsl(215 20% 20% / 0.08);
+    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-soft: 0 2px 20px -2px hsl(203 48% 34% / 0.1);
+    --shadow-glass: 0 8px 32px 0 hsl(203 48% 34% / 0.12);
+    --shadow-elevated: 0 10px 40px -10px hsl(203 48% 34% / 0.25);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Sidebar (using harmonious colors) */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 17%;
+    --sidebar-primary: 27 88% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 215 25% 17%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 27 88% 52%;
+  }
+}
