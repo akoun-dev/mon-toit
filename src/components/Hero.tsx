@@ -65,7 +65,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="hero-section relative min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pattern-bogolan">
+    <section className="hero-section relative min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       {/* Slideshow Background Images - Right Side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
         {heroImages.map((image, index) => (
@@ -105,17 +105,6 @@ const Hero = () => {
       {/* Content */}
       <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-20 md:py-28 max-w-7xl z-10 animate-fade-in">
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
-          {/* Badge Gratuit */}
-          <div className="inline-flex items-center gap-2 bg-secondary/10 border-2 border-secondary px-4 py-2 rounded-full mb-6">
-            <CheckCircle2 className="h-5 w-5 text-secondary" />
-            <span className="text-sm font-bold text-secondary uppercase tracking-wide">
-              100% Gratuit pour locataires
-            </span>
-          </div>
-
-          {/* Small decorative line */}
-          <div className="mb-6 w-20 h-1 bg-gradient-to-r from-primary to-secondary rounded-full" />
-          
           {/* Main Title - Bold and Large */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-foreground leading-tight tracking-tight">
             Votre logement{" "}
@@ -124,11 +113,11 @@ const Hero = () => {
             </span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-10 max-w-xl font-medium">
-            <span className="text-foreground font-semibold">Trouvez, louez ou publiez votre logement</span> en toute confiance avec la première plateforme certifiée ANSUT en Côte d'Ivoire.
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-xl font-medium">
+            Trouvez, louez ou publiez votre logement en toute confiance avec la première plateforme certifiée ANSUT.
           </p>
 
-          {/* Search bar rapide */}
+          {/* Search bar with integrated voice */}
           <div className="relative max-w-2xl mb-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -136,14 +125,14 @@ const Hero = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="pl-12 pr-14 h-14 text-lg border-2 border-primary/20 focus:border-primary rounded-full"
+              className="pl-12 pr-14 h-14 text-lg border-2 border-primary/20 focus:border-primary rounded-full shadow-lg"
             />
             {isSupported && (
               <button
                 onClick={toggleVoiceSearch}
                 className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all ${
                   isListening 
-                    ? 'bg-red-500 text-white animate-pulse' 
+                    ? 'bg-destructive text-white animate-pulse' 
                     : 'bg-primary/10 text-primary hover:bg-primary/20'
                 }`}
                 aria-label={isListening ? "Arrêter la recherche vocale" : "Recherche vocale"}
@@ -153,38 +142,36 @@ const Hero = () => {
             )}
           </div>
 
-          {/* Primary CTA + Secondary Link */}
+          {/* Primary CTA */}
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
             <Button 
-              size="lg" 
-              className="h-14 px-10 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 bg-secondary hover:bg-secondary/90 text-white rounded-full inline-flex items-center gap-2"
+              size="xl" 
+              variant="primary-gradient"
               onClick={handleSearch}
             >
               <Search className="h-5 w-5" />
-              Je cherche un logement
+              Rechercher un logement
             </Button>
             
             <Link 
               to="/auth?type=proprietaire" 
-              className="text-primary hover:text-primary/80 font-semibold underline underline-offset-4 transition-colors"
+              className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 transition-colors text-sm"
             >
               Je suis propriétaire
             </Link>
           </div>
 
-          {/* Recherches rapides */}
+          {/* Quick search chips - discreet */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Populaire :</span>
-            {['Cocody', 'Yopougon', 'Marcory', 'Plateau'].map((location) => (
-              <Button
+            <span className="text-xs font-medium text-muted-foreground">Populaire :</span>
+            {['Cocody', 'Yopougon', 'Marcory'].map((location) => (
+              <button
                 key={location}
                 onClick={() => handleQuickSearch(location)}
-                variant="outline"
-                size="sm"
-                className="rounded-full border-primary/30 hover:bg-primary hover:text-white transition-all font-medium"
+                className="text-xs px-3 py-1 rounded-full bg-muted hover:bg-primary/10 text-foreground hover:text-primary transition-colors"
               >
                 {location}
-              </Button>
+              </button>
             ))}
           </div>
         </div>

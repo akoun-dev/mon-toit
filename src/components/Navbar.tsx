@@ -56,61 +56,30 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Simplified to 6 core items */}
           <div className="hidden md:flex items-center gap-6">
-            <button
-              onClick={() => {
-                const heroSection = document.querySelector('.hero-section');
-                if (heroSection) {
-                  heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  // Focus on search input after scroll
-                  setTimeout(() => {
-                    const searchInput = document.querySelector('input[placeholder*="Cocody"]') as HTMLInputElement;
-                    searchInput?.focus();
-                  }, 500);
-                }
-              }}
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+            <Link 
+              to="/explorer" 
+              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
             >
-              <Search className="h-4 w-4" />
-              <span>Rechercher</span>
-            </button>
+              Explorer
+            </Link>
             <Link 
               to="/publier" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Publier</span>
             </Link>
             <Link 
-              to="/explorer" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-            >
-              Explorer
-            </Link>
-            <Link 
               to="/comment-ca-marche" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
             >
               Comment ça marche
             </Link>
             <Link 
-              to="/verification" 
-              className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-            >
-              <ShieldCheck className="h-4 w-4" />
-              <span>Certification</span>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">Gratuit</Badge>
-            </Link>
-            <Link 
-              to="/tarifs" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
-            >
-              Tarifs
-            </Link>
-            <Link 
               to="/guide" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
             >
               <HelpCircle className="h-4 w-4" />
               <span>Aide</span>
