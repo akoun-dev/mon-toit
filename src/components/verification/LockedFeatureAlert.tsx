@@ -26,7 +26,7 @@ const VERIFICATION_CONFIG = {
     title: 'Vérification CNAM requise',
     description: 'Vous devez vérifier votre employeur pour accéder à cette fonctionnalité.',
     icon: ShieldCheck,
-    color: 'border-purple-600'
+    color: 'border-warning'
   },
   complete: {
     title: 'Profil complet requis',

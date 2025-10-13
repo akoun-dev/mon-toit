@@ -43,12 +43,12 @@ export const TenantScoreBreakdown = ({ score, breakdown, recommendation }: Tenan
       max: 30,
       color: 'text-green-600'
     },
-    { 
-      icon: FileText, 
-      label: 'Documents fournis', 
-      score: breakdown.documents, 
+    {
+      icon: FileText,
+      label: 'Documents fournis',
+      score: breakdown.documents,
       max: 20,
-      color: 'text-purple-600'
+      color: 'text-warning'
     },
     { 
       icon: CreditCard, 

@@ -65,7 +65,7 @@ export const ActivityTimeline = ({ className }: ActivityTimelineProps) => {
             description: `Candidature envoyée pour ${(app as any).properties?.title || 'un bien'}`,
             timestamp: app.created_at,
             icon: FileText,
-            color: 'text-purple-600',
+            color: 'text-warning',
           });
         });
 

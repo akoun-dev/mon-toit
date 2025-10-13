@@ -96,12 +96,12 @@ export const SensitiveDataAccessMonitor = () => {
 
   const getRelationshipBadge = (relationship: string) => {
     const colors: Record<string, string> = {
-      'self': 'bg-blue-600',
-      'admin': 'bg-purple-600',
-      'landlord_to_applicant': 'bg-green-600',
-      'applicant_to_landlord': 'bg-green-600',
-      'lease_party': 'bg-orange-600',
-      'unauthorized': 'bg-red-600',
+      'self': 'bg-primary',
+      'admin': 'bg-destructive',
+      'landlord_to_applicant': 'bg-success',
+      'applicant_to_landlord': 'bg-success',
+      'lease_party': 'bg-warning',
+      'unauthorized': 'bg-destructive',
     };
 
     return (

@@ -142,7 +142,7 @@ export const SarahChatbot = () => {
       {/* Floating Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform z-50 bg-gradient-to-br from-primary to-purple-600"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform z-50 bg-gradient-to-br from-primary to-secondary"
         size="icon"
       >
         {isOpen ? <X className="h-6 w-6" /> : <span className="text-2xl">✨</span>}
@@ -153,7 +153,7 @@ export const SarahChatbot = () => {
         <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-background border rounded-lg shadow-2xl flex flex-col z-50 animate-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
-            <Avatar className="h-10 w-10 bg-gradient-to-br from-primary to-purple-600">
+            <Avatar className="h-10 w-10 bg-gradient-to-br from-primary to-secondary">
               <AvatarFallback className="bg-transparent text-primary-foreground">
                 <span className="text-2xl">✨</span>
               </AvatarFallback>
@@ -175,7 +175,7 @@ export const SarahChatbot = () => {
                   }`}
                 >
                   {message.role === 'assistant' && (
-                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-primary to-purple-600">
+                    <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-primary to-secondary">
                       <AvatarFallback className="bg-transparent text-primary-foreground">
                         <span className="text-xl">✨</span>
                       </AvatarFallback>
@@ -194,7 +194,7 @@ export const SarahChatbot = () => {
               ))}
               {isLoading && (
                 <div className="flex gap-2 justify-start">
-                  <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-primary to-purple-600">
+                  <Avatar className="h-8 w-8 mt-1 bg-gradient-to-br from-primary to-secondary">
                     <AvatarFallback className="bg-transparent text-primary-foreground">
                       <span className="text-xl">✨</span>
                     </AvatarFallback>

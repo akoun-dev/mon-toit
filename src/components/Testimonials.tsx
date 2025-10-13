@@ -41,7 +41,7 @@ const testimonials = [
     content: "Le tableau de bord agence nous permet de gérer 50+ propriétés efficacement. Les contrats digitaux et le suivi des paiements nous font gagner des heures chaque semaine. Un outil professionnel indispensable.",
     rating: 5,
     avatar: "IP",
-    avatarGradient: "bg-gradient-to-br from-purple-600 to-purple-700",
+    avatarGradient: "bg-gradient-to-br from-primary to-primary",
     isCertified: false
   }
 ];

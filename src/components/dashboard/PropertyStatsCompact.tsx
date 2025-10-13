@@ -20,11 +20,11 @@ export const PropertyStatsCompact = ({ stats }: PropertyStatsCompactProps) => {
       icon: Home,
       color: 'text-blue-600'
     },
-    { 
-      title: 'Vues', 
-      value: stats.totalViews.toLocaleString(), 
+    {
+      title: 'Vues',
+      value: stats.totalViews.toLocaleString(),
       icon: Eye,
-      color: 'text-purple-600'
+      color: 'text-primary'
     },
     { 
       title: 'Favoris', 
@@ -44,11 +44,11 @@ export const PropertyStatsCompact = ({ stats }: PropertyStatsCompactProps) => {
       icon: DollarSign,
       color: 'text-green-600'
     },
-    { 
-      title: 'Occupation', 
-      value: `${stats.occupancyRate}%`, 
+    {
+      title: 'Occupation',
+      value: `${stats.occupancyRate}%`,
       icon: TrendingUp,
-      color: 'text-indigo-600'
+      color: 'text-success'
     },
   ];
 

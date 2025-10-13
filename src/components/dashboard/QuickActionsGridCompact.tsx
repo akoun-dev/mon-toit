@@ -22,8 +22,8 @@ const quickActions = [
     title: 'Candidatures',
     icon: FileText,
     link: '/candidatures',
-    color: 'from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40',
-    iconColor: 'text-purple-600',
+    color: 'from-warning/10 to-warning/20 border-warning/20 hover:border-warning/40',
+    iconColor: 'text-warning',
   },
   {
     title: 'Profil',

@@ -36,11 +36,11 @@ const KeyStats = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
-            const iconBgColor = 
-              index === 0 ? "bg-blue-600" : 
-              index === 1 ? "bg-orange-500" : 
-              index === 2 ? "bg-green-500" :
-              "bg-purple-500";
+            const iconBgColor =
+              index === 0 ? "bg-primary" :
+              index === 1 ? "bg-secondary" :
+              index === 2 ? "bg-success" :
+              "bg-warning";
             
             return (
               <div 
