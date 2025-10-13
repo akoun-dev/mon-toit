@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import type { AgencyMandate } from '@/types/admin';
 import { useQuery } from '@tanstack/react-query';
 import { generatePropertyStructuredData, generateBreadcrumbStructuredData } from '@/lib/structuredData.tsx';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -329,33 +329,20 @@ const PropertyDetail = () => {
     { name: property.title, url: `https://mon-toit.lovable.app/properties/${property.id}` }
   ]);
 
+  // Set document head with meta tags and structured data
+  useDocumentHead({
+    title: `${property.title} - ${property.city} | Mon Toit`,
+    description: property.description?.substring(0, 155) || `${property.property_type} à ${property.city} - ${property.monthly_rent?.toLocaleString()} FCFA/mois`,
+    ogTitle: `${property.title} - ${property.city}`,
+    ogDescription: property.description?.substring(0, 200),
+    ogImage: property.main_image || property.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg',
+    ogUrl: `https://mon-toit.lovable.app/properties/${property.id}`,
+    twitterCard: 'summary_large_image',
+    structuredData: [propertyStructuredData, breadcrumbData]
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>{property.title} - {property.city} | Mon Toit</title>
-        <meta name="description" content={property.description?.substring(0, 155) || `${property.property_type} à ${property.city} - ${property.monthly_rent?.toLocaleString()} FCFA/mois`} />
-
-        {/* Open Graph tags */}
-        <meta property="og:title" content={`${property.title} - ${property.city}`} />
-        <meta property="og:description" content={property.description?.substring(0, 200)} />
-        <meta property="og:image" content={property.main_image || property.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg'} />
-        <meta property="og:url" content={`https://mon-toit.lovable.app/properties/${property.id}`} />
-        <meta property="og:type" content="product" />
-
-        {/* Twitter Card tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${property.title} - ${property.city}`} />
-        <meta name="twitter:description" content={property.description?.substring(0, 200)} />
-        <meta name="twitter:image" content={property.main_image || property.images?.[0]} />
-
-        {/* Structured Data */}
-        <script type="application/ld+json">
-          {JSON.stringify(propertyStructuredData)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbData)}
-        </script>
-      </Helmet>
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8 pt-24">
         <div className="max-w-7xl mx-auto">
