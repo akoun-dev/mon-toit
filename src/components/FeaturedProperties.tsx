@@ -29,17 +29,43 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
     try {
       setLoading(true);
       setError(null);
+
+      console.log('[FeaturedProperties] Fetching properties...');
       const data = await propertyService.fetchAll();
-      
+      console.log('[FeaturedProperties] Received data:', data?.length || 0, 'properties');
+
+      if (!data || data.length === 0) {
+        console.warn('[FeaturedProperties] No properties returned from API');
+        setProperties([]);
+        setLoading(false);
+        setIsRetrying(false);
+        return;
+      }
+
       // Filter out rented properties - propertyService.fetchAll() already does this
       const featured = data
         .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
         .slice(0, limit);
-      
+
+      console.log('[FeaturedProperties] Featured properties:', featured.length);
       setProperties(featured);
     } catch (err) {
+      console.error('[FeaturedProperties] Error fetching properties:', err);
       logger.logError(err, { context: 'fetchFeaturedProperties' });
-      const errorMessage = 'Impossible de charger les biens en vedette. Veuillez réessayer.';
+
+      let errorMessage = 'Impossible de charger les biens en vedette. Veuillez réessayer.';
+
+      // Provide more specific error messages
+      if (err instanceof Error) {
+        if (err.message.includes('Failed to fetch') || err.message.includes('network')) {
+          errorMessage = 'Problème de connexion. Vérifiez votre connexion internet.';
+        } else if (err.message.includes('JWT') || err.message.includes('auth')) {
+          errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+        } else if (err.message.includes('not found') || err.message.includes('404')) {
+          errorMessage = 'Service temporairement indisponible. Réessayez dans quelques instants.';
+        }
+      }
+
       setError(errorMessage);
       handleError(err, errorMessage);
     } finally {

@@ -117,7 +117,15 @@ export const propertyService = {
     if (error) {
       logger.logError(error, { context: 'propertyService', action: 'fetchAllProperties' });
       console.error('❌ [PropertyService] Erreur API:', error);
-      throw error;
+
+      // Provide more context in error message
+      const enhancedError = new Error(
+        `Failed to fetch properties: ${error.message || 'Unknown error'}. ${
+          error.code ? `Error code: ${error.code}` : ''
+        }`
+      );
+      (enhancedError as any).originalError = error;
+      throw enhancedError;
     }
 
     console.log(`📊 [PropertyService] ${data?.length || 0} propriétés reçues de l'API`);
