@@ -68,7 +68,7 @@ const RightNowSection = () => {
     : Sun;
 
   return (
-    <section className="py-12 pattern-kita bg-muted/30">
+    <section className="py-12 bg-muted/30">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-8">
           <h2 className="text-h3 mb-2">

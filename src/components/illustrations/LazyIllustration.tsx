@@ -56,7 +56,7 @@ export const LazyIllustration = ({
 
   if (!src || error) {
     return (
-      <div className={cn("bg-primary/5 pattern-bogolan flex items-center justify-center", className)}>
+      <div className={cn("bg-primary/5 flex items-center justify-center", className)}>
         {fallback || (
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <Home className="h-12 w-12 text-primary/40" />

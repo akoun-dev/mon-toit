@@ -275,7 +275,7 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Button asChild className="w-full rounded-xl min-h-[44px] font-semibold shadow-md active:scale-95 bg-gradient-to-r from-primary to-primary-glow hover:shadow-lg">
+        <Button asChild variant="default" className="w-full rounded-xl min-h-[44px] font-semibold shadow-md active:scale-95">
           <Link to={`/property/${property.id}`}>Découvrir ce bien</Link>
         </Button>
       </CardContent>

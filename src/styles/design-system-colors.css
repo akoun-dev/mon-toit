@@ -17,8 +17,7 @@
  * - Errors/Delete: DESTRUCTIVE (red)
  */
 
-@layer base {
-  :root {
+:root {
     /* Base colors */
     --background: 0 0% 100%; /* Pure white */
     --foreground: 215 25% 17%; /* #1F2937 Dark gray */
@@ -112,4 +111,3 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 27 88% 52%;
   }
-}

@@ -100,7 +100,7 @@ const journeys = [
 
 const HowItWorks = () => {
   return (
-    <section id="comment-ca-marche" className="py-20 md:py-28 bg-gradient-to-br from-primary/8 via-white to-secondary/8 relative overflow-hidden pattern-kita">
+    <section id="comment-ca-marche" className="py-20 md:py-28 bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-0" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -z-0" />

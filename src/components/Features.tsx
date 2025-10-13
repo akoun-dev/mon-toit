@@ -238,7 +238,7 @@ ComparisonList.displayName = "ComparisonList";
 const Features = () => {
   return (
     <section 
-      className="py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white pattern-kita relative overflow-hidden"
+      className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
       aria-labelledby="features-heading"
     >
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -315,8 +315,7 @@ const Features = () => {
             </div>
 
             {/* Avec Mon Toit */}
-            <div className="bg-white rounded-lg p-8 shadow-lg border-2 border-primary/20 pattern-bogolan relative overflow-hidden">
-              <div className="absolute inset-0 pattern-bogolan opacity-[0.03]" aria-hidden="true" />
+            <div className="bg-white rounded-lg p-8 shadow-lg border-2 border-primary/20 relative overflow-hidden">
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-6">
                   <h4 className="text-xl font-bold text-foreground flex items-center gap-2">

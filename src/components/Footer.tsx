@@ -5,7 +5,7 @@ import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 
 const Footer = () => {
   return (
-    <footer className="relative pattern-kita bg-gradient-to-b from-background to-muted/30 text-foreground pt-16 pb-8">
+    <footer className="relative bg-gradient-to-b from-background to-muted/30 text-foreground pt-16 pb-8">
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
