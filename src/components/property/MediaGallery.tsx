@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { VideoPlayer } from "./VideoPlayer";
-import { PanoramaViewer } from "./PanoramaViewer";
+
 import { PanoramaNavigation } from "./PanoramaNavigation";
 import { FloorPlanViewer } from "./FloorPlanViewer";
 import { OptimizedImage } from "./OptimizedImage";
@@ -232,28 +232,13 @@ export const MediaGallery = ({
         {has360 && (
           <TabsContent value="360">
             <div className="space-y-4">
-              <PanoramaViewer
-                imageUrl={panoramicImages[currentPanoramaIndex]?.url}
-                title={panoramicImages[currentPanoramaIndex]?.title}
-                autoRotate={false}
-              />
-
-              {panoramicImages.length > 1 && (
-                <PanoramaNavigation
-                  panoramas={panoramicImages}
-                  currentIndex={currentPanoramaIndex}
-                  onNavigate={setCurrentPanoramaIndex}
-                  className="mt-4"
-                />
-              )}
-
-              {panoramicImages[currentPanoramaIndex]?.title && (
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
-                    {currentPanoramaIndex + 1} / {panoramicImages.length} - {panoramicImages[currentPanoramaIndex].title}
-                  </p>
-                </div>
-              )}
+              <Alert>
+                <Globe className="h-4 w-4" />
+                <AlertTitle>Visite 360° Temporairement Indisponible</AlertTitle>
+                <AlertDescription>
+                  La fonctionnalité de visite panoramique est en cours de maintenance.
+                </AlertDescription>
+              </Alert>
             </div>
           </TabsContent>
         )}

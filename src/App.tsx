@@ -61,7 +61,7 @@ import TestCryptoNeo from "./pages/TestCryptoNeo";
 import Guide from "./pages/Guide";
 import Explorer from "./pages/Explorer";
 import CommentCaMarche from "./pages/CommentCaMarche";
-import Illustrations from "./pages/Illustrations";
+
 import MandatesHelp from "./pages/MandatesHelp";
 
 const queryClient = new QueryClient();
@@ -344,7 +344,7 @@ const AppContent = () => {
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/certification-faq" element={<CertificationFAQ />} />
             <Route path="/tarifs" element={<Tarifs />} />
-            <Route path="/illustrations" element={<Illustrations />} />
+            
             <Route 
               path="/populate-images" 
               element={

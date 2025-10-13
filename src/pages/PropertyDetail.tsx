@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { AgencyMandate } from '@/types/admin';
 import { useQuery } from '@tanstack/react-query';
-import { generatePropertyStructuredData, generateBreadcrumbStructuredData } from '@/lib/structuredData.tsx';
+
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -321,15 +321,8 @@ const PropertyDetail = () => {
 
   const favorite = isFavorite(property.id);
 
-  // Generate structured data for SEO
-  const propertyStructuredData = generatePropertyStructuredData(property, owner?.full_name);
-  const breadcrumbData = generateBreadcrumbStructuredData([
-    { name: 'Accueil', url: 'https://mon-toit.lovable.app/' },
-    { name: 'Recherche', url: 'https://mon-toit.lovable.app/recherche' },
-    { name: property.title, url: `https://mon-toit.lovable.app/properties/${property.id}` }
-  ]);
 
-  // Set document head with meta tags and structured data
+  // Set document head with meta tags
   useDocumentHead({
     title: `${property.title} - ${property.city} | Mon Toit`,
     description: property.description?.substring(0, 155) || `${property.property_type} à ${property.city} - ${property.monthly_rent?.toLocaleString()} FCFA/mois`,
@@ -337,8 +330,7 @@ const PropertyDetail = () => {
     ogDescription: property.description?.substring(0, 200),
     ogImage: property.main_image || property.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg',
     ogUrl: `https://mon-toit.lovable.app/properties/${property.id}`,
-    twitterCard: 'summary_large_image',
-    structuredData: [propertyStructuredData, breadcrumbData]
+    twitterCard: 'summary_large_image'
   });
 
   return (
