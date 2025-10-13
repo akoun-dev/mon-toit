@@ -1,15 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle2, Mic, MicOff } from "lucide-react";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import heroFamilyHome from "@/assets/hero/hero-family-home.jpg";
+import heroSlide1 from "@/assets/hero/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero/hero-slide-3.jpg";
+import heroSlide4 from "@/assets/hero/hero-slide-4.jpg";
+import heroImage from "@/assets/hero/image.png";
 
 const Hero = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const { isListening, transcript, isSupported, startListening, stopListening } = useVoiceSearch();
+
+  // Slideshow images
+  const heroImages = [
+    heroImage,
+    heroFamilyHome,
+    heroSlide1,
+    heroSlide2,
+    heroSlide3,
+    heroSlide4
+  ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-advance slideshow every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -40,15 +66,40 @@ const Hero = () => {
 
   return (
     <section className="hero-section relative min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pattern-bogolan">
-      {/* Fixed Background Image - Right Side */}
+      {/* Slideshow Background Images - Right Side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-        <img
-          src={heroFamilyHome}
-          alt="Famille ivoirienne heureuse devant sa nouvelle maison"
-          className="w-full h-full object-cover animate-float"
-          loading="eager"
-        />
+        {heroImages.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={image}
+              alt={`Vue logement ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        ))}
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent" />
+
+        {/* Slideshow indicators */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentImageIndex
+                  ? 'bg-white w-8'
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Aller à l'image ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Content */}
