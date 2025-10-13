@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle2, Mic, MicOff } from "lucide-react";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
-import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
-import { getIllustrationPath } from "@/lib/utils";
+import heroFamilyHome from "@/assets/hero/hero-family-home.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -43,10 +42,11 @@ const Hero = () => {
     <section className="hero-section relative min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pattern-bogolan">
       {/* Fixed Background Image - Right Side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-        <LazyIllustration 
-          src={getIllustrationPath('ivorian-family-house')!} 
+        <img
+          src={heroFamilyHome}
           alt="Famille ivoirienne heureuse devant sa nouvelle maison"
           className="w-full h-full object-cover animate-float"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent" />
       </div>
