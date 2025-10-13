@@ -64,6 +64,7 @@ import CommentCaMarche from "./pages/CommentCaMarche";
 import Illustrations from "./pages/Illustrations";
 import MandatesHelp from "./pages/MandatesHelp";
 import VisitsCRM from "./pages/VisitsCRM";
+import ProfileDiagnostic from "./pages/ProfileDiagnostic";
 
 const queryClient = new QueryClient();
 
@@ -287,7 +288,15 @@ const AppContent = () => {
                 </ProtectedRoute>
               }
             />
-            <Route 
+            <Route
+              path="/diagnostic-profil"
+              element={
+                <ProtectedRoute>
+                  <ProfileDiagnostic />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/maintenance/:propertyId" 
               element={
                 <ProtectedRoute>
