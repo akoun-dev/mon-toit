@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Bell, Mail, Smartphone, TrendingUp, Users, Activity } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { BarChart, TrendingUp, Download, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { AuditLogViewer } from './AuditLogViewer';
 import { logger } from '@/services/logger';

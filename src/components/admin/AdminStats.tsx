@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Home, Users, FileText, CheckCircle, AlertTriangle, Shield } from 'lucide-react';
 import { handleError } from '@/lib/errorHandler';
 

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { TenantScoreMeter } from './TenantScoreMeter';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export const ProfileScoreCard = () => {
   const { profile, user } = useAuth();
