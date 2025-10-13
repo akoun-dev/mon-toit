@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Cloud, CloudRain, Sun, Home, Users, Calendar } from 'lucide-react';
 import { useWeather } from '@/hooks/useWeather';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
 
 const RightNowSection = () => {

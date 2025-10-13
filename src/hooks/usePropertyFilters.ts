@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Property, SearchFilters, GeoLocation } from '@/types';
 import { calculateDistance, getCurrentLocation, hasCoordinates } from '@/lib/geo';
 import { logger } from '@/services/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 
 export const usePropertyFilters = (properties: Property[]) => {

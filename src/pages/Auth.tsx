@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Shield, Home, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { TwoFactorVerify } from '@/components/auth/TwoFactorVerify';
 import { toast } from '@/hooks/use-toast';
 import { getClientIP, getDeviceFingerprint, formatRetryAfter } from '@/lib/ipUtils';

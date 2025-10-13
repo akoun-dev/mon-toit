@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import type { HelpInteraction } from '@/types/supabase-extended';
 import { logger } from '@/services/logger';
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { FILE_LIMITS, ERROR_MESSAGES, validateImageType, validateVideoType } from '@/constants';
 import { AppError, handleError, handleSuccess } from '@/lib/errorHandler';
 import { logger } from '@/services/logger';

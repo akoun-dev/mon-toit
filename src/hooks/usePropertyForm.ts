@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { ERROR_MESSAGES } from '@/constants';
 import { propertySchema, type PropertyFormData } from '@/components/property/form/PropertyFormSchema';
 import { usePropertyPermissions } from './usePropertyPermissions';

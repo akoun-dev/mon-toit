@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { ERROR_MESSAGES } from '@/constants';
 import { AppError, handleError, handleSuccess } from '@/lib/errorHandler';
 import { logger } from '@/services/logger';

@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import Navbar from '@/components/Navbar';
