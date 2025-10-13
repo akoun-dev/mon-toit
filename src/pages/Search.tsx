@@ -186,11 +186,11 @@ const Search = () => {
         </PullToRefresh>
 
         {/* Recommendations */}
-        {user && profile?.user_type && (
+        {user && (
           <div className="mt-12">
             <RecommendationsSection 
               userId={user.id}
-              type={profile.user_type === 'locataire' ? 'properties' : 'tenants'}
+              type="properties"
             />
           </div>
         )}
