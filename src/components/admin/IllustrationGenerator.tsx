@@ -99,7 +99,6 @@ export const IllustrationGenerator = () => {
           toast.success(`Illustration générée : ${illustration.description}`);
         }
       } catch (error) {
-        console.error(`Error generating ${illustration.filename}:`, error);
         toast.error(`Erreur pour ${illustration.description}`);
       }
       

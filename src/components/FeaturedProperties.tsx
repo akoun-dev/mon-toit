@@ -30,12 +30,12 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
       setLoading(true);
       setError(null);
 
-      console.log('[FeaturedProperties] Fetching properties...');
+      logger.debug('Fetching featured properties');
       const data = await propertyService.fetchAll();
-      console.log('[FeaturedProperties] Received data:', data?.length || 0, 'properties');
+      logger.debug('Featured properties data received', { count: data?.length || 0 });
 
       if (!data || data.length === 0) {
-        console.warn('[FeaturedProperties] No properties returned from API');
+        logger.warn('No properties returned from API');
         setProperties([]);
         setLoading(false);
         setIsRetrying(false);
@@ -47,10 +47,9 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
         .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
         .slice(0, limit);
 
-      console.log('[FeaturedProperties] Featured properties:', featured.length);
+      logger.info('Featured properties prepared', { count: featured.length });
       setProperties(featured);
     } catch (err) {
-      console.error('[FeaturedProperties] Error fetching properties:', err);
       logger.logError(err, { context: 'fetchFeaturedProperties' });
 
       let errorMessage = 'Impossible de charger les biens en vedette. Veuillez réessayer.';

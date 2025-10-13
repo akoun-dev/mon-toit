@@ -52,7 +52,6 @@ export const LazyIllustration = ({
 
   const handleError = () => {
     setError(true);
-    console.error(`Failed to load illustration: ${src}`);
   };
 
   if (!src || error) {

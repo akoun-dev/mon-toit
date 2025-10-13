@@ -162,7 +162,6 @@ const Illustrations = () => {
       await trackDownload(key);
       toast.success(`${title} téléchargée avec succès`);
     } catch (error) {
-      console.error('Download error:', error);
       toast.error('Erreur lors du téléchargement');
     }
   };
@@ -178,7 +177,6 @@ const Illustrations = () => {
       }
       toast.success('Toutes les illustrations ont été téléchargées');
     } catch (error) {
-      console.error('Bulk download error:', error);
       toast.error('Erreur lors du téléchargement groupé');
     } finally {
       setDownloading(false);

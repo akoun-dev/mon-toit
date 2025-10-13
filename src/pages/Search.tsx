@@ -49,7 +49,6 @@ const Search = () => {
         const filters: PropertyFilters = {};
         if (location) {
           filters.city = location;
-          console.log(`🔍 [Search] Filtre URL appliqué - Ville: "${location}"`);
         }
         if (type) filters.propertyType = type;
         if (maxPrice) filters.maxPrice = parseInt(maxPrice);

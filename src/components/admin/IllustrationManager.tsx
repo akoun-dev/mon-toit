@@ -31,7 +31,6 @@ export const IllustrationManager = () => {
       
       toast.success("Toutes les illustrations ont été téléchargées avec succès!");
     } catch (error) {
-      console.error("Erreur lors du téléchargement:", error);
       toast.error("Erreur lors du téléchargement des illustrations");
     } finally {
       setDownloading(false);
