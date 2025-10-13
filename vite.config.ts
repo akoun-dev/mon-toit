@@ -169,31 +169,84 @@ export default defineConfig(({ mode }) => ({
     sourcemap: true, // Required for Sentry error tracking
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Core dependencies
-          'react-core': ['react', 'react-dom', 'react-router-dom'],
-          
-          // ✅ SÉCURITÉ : Supabase isolé pour faciliter les mises à jour de sécurité
-          'supabase': ['@supabase/supabase-js'],
-          
-          // UI components
-          'ui-primitives': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-select',
-            '@radix-ui/react-tabs',
-          ],
-          
-          // Feature chunks
-          'maps': ['mapbox-gl', '@mapbox/mapbox-gl-geocoder'],
-          'charts': ['recharts'],
-          'forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'media': ['react-player', 'yet-another-react-lightbox'],
-          
-          // Admin features (lazy loaded)
-          'admin': [
-            'canvas-confetti'
-          ],
+        manualChunks: (id) => {
+          // Vendor chunks for better caching
+          if (id.includes('node_modules')) {
+            // Core React ecosystem - rarely changes
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+
+            // Router - separate for better caching
+            if (id.includes('react-router')) {
+              return 'router-vendor';
+            }
+
+            // Supabase - isolated for security updates
+            if (id.includes('@supabase')) {
+              return 'supabase-vendor';
+            }
+
+            // Maps - Large, lazy loaded
+            if (id.includes('mapbox')) {
+              return 'maps-vendor';
+            }
+
+            // Charts - Large, lazy loaded
+            if (id.includes('recharts')) {
+              return 'charts-vendor';
+            }
+
+            // UI Components - Medium size
+            if (id.includes('@radix-ui')) {
+              return 'ui-vendor';
+            }
+
+            // Forms libraries
+            if (id.includes('react-hook-form') || id.includes('zod')) {
+              return 'forms-vendor';
+            }
+
+            // Animation libraries
+            if (id.includes('framer-motion') || id.includes('canvas-confetti')) {
+              return 'animation-vendor';
+            }
+
+            // Media players
+            if (id.includes('react-player') || id.includes('lightbox')) {
+              return 'media-vendor';
+            }
+
+            // Query and state management
+            if (id.includes('tanstack') || id.includes('react-query')) {
+              return 'query-vendor';
+            }
+
+            // Sentry monitoring
+            if (id.includes('@sentry')) {
+              return 'monitoring-vendor';
+            }
+
+            // Everything else in common vendor chunk
+            return 'common-vendor';
+          }
+
+          // App code chunking by route
+          if (id.includes('/src/pages/Admin')) {
+            return 'route-admin';
+          }
+          if (id.includes('/src/pages/Owner') || id.includes('/src/pages/MyProperties')) {
+            return 'route-owner';
+          }
+          if (id.includes('/src/pages/Tenant') || id.includes('/src/pages/Dashboard')) {
+            return 'route-tenant';
+          }
+          if (id.includes('/src/pages/Agency')) {
+            return 'route-agency';
+          }
+          if (id.includes('/src/pages/Property')) {
+            return 'route-property';
+          }
         },
         // ✅ SÉCURITÉ : Noms de chunks obfusqués
         chunkFileNames: (chunkInfo) => {
