@@ -39,7 +39,7 @@ const KeyStats = () => {
             const iconBgColor =
               index === 0 ? "bg-primary" :
               index === 1 ? "bg-secondary" :
-              index === 2 ? "bg-success" :
+              index === 2 ? "bg-primary" :
               "bg-warning";
             
             return (
