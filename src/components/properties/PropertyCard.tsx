@@ -122,7 +122,7 @@ export const PropertyCard = ({
         aria-labelledby={`property-title-${property.id}`}
         aria-describedby={`property-description-${property.id}`}
       >
-      <div className="relative h-44 bg-muted overflow-hidden">
+      <div className="relative h-40 bg-muted overflow-hidden">
         {property.main_image ? (
           <>
             <OptimizedImage
@@ -233,12 +233,12 @@ export const PropertyCard = ({
 
       <CardHeader className="p-3 sm:p-4 pb-2">
         <div className="flex items-baseline gap-2 mb-2">
-          <p className="text-3xl sm:text-4xl font-black text-primary">
+          <p className="text-2xl sm:text-3xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
           </p>
           <span className="text-sm font-medium text-muted-foreground">/mois</span>
         </div>
-        <CardTitle id={`property-title-${property.id}`} className="line-clamp-2 text-base sm:text-lg font-bold">
+        <CardTitle id={`property-title-${property.id}`} className="line-clamp-1 text-base sm:text-lg font-bold">
           {property.property_type} {property.bedrooms}ch. - {property.city}
         </CardTitle>
       </CardHeader>
@@ -267,7 +267,7 @@ export const PropertyCard = ({
         </div>
 
         {variant === 'default' && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {property.is_furnished && <Badge variant="secondary" className="text-xs rounded-full">Meublé</Badge>}
             {property.has_ac && <Badge variant="secondary" className="text-xs rounded-full">Climatisation</Badge>}
             {property.has_parking && <Badge variant="secondary" className="text-xs rounded-full">Parking</Badge>}
@@ -275,7 +275,7 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Button asChild variant="default" className="w-full rounded-xl min-h-[44px] font-semibold shadow-md active:scale-95">
+        <Button asChild variant="default" className="w-full rounded-xl min-h-[40px] font-semibold shadow-md active:scale-95">
           <Link to={`/property/${property.id}`}>Découvrir ce bien</Link>
         </Button>
       </CardContent>
