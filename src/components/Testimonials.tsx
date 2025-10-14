@@ -90,7 +90,7 @@ const Testimonials = () => {
             <CarouselContent>
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index}>
-                  <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-lg p-8 md:p-12 shadow-lg border border-primary/10 relative transition-all duration-300 hover:shadow-xl">
+                  <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-lg p-8 md:p-12 shadow-lg border border-primary/10 relative transition-all duration-250 ease-in-out hover:shadow-xl hover:scale-[1.02] cursor-pointer">
                     <Quote className="absolute top-6 right-6 h-12 w-12 text-primary/10" />
                     
                     {/* Badge Certifié ANSUT */}

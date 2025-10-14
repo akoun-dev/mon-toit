@@ -52,7 +52,7 @@ const UserReviews = () => {
           {reviews.map((review, index) => (
             <Card 
               key={index}
-              className="p-6 bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="p-6 bg-white shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-250 ease-in-out cursor-pointer"
             >
               {/* Photo */}
               <div className="flex justify-center mb-4">

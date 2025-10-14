@@ -40,7 +40,7 @@ export const QuickActionsGridCompact = () => {
       {quickActions.map((action) => (
         <Link key={action.title} to={action.link}>
           <Card className={cn(
-            'transition-all duration-300 hover:shadow-md cursor-pointer bg-gradient-to-br h-full',
+            'transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer bg-gradient-to-br h-full',
             action.color
           )}>
             <CardContent className="p-2 flex flex-col items-center justify-center h-full gap-1">

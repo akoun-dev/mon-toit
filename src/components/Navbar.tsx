@@ -60,26 +60,26 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6">
             <Link 
               to="/explorer" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               Explorer
             </Link>
             <Link 
               to="/publier" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Publier</span>
             </Link>
             <Link 
               to="/comment-ca-marche" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               Comment ça marche
             </Link>
             <Link 
               to="/guide" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               <HelpCircle className="h-4 w-4" />
               <span>Aide</span>
