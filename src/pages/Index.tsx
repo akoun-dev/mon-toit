@@ -5,14 +5,12 @@ import KeyStats from "@/components/KeyStats";
 import Footer from "@/components/Footer";
 import OnboardingModal from "@/components/OnboardingModal";
 import CertificationBanner from "@/components/CertificationBanner";
+import UnifiedTrustSection from "@/components/UnifiedTrustSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load des composants lourds
 const FeaturedProperties = lazy(() => import("@/components/FeaturedProperties"));
-const UserReviews = lazy(() => import("@/components/UserReviews"));
-const Features = lazy(() => import("@/components/Features"));
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
-const Testimonials = lazy(() => import("@/components/Testimonials"));
 const UnifiedRoleSelection = lazy(() => import("@/components/UnifiedRoleSelection"));
 
 const Index = () => {
@@ -65,28 +63,13 @@ const Index = () => {
           </div>
         </section>
 
-        <section aria-labelledby="user-reviews-heading">
-          <h2 id="user-reviews-heading" className="sr-only">Ce que disent nos utilisateurs</h2>
-          <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-            <UserReviews />
-          </Suspense>
-        </section>
-
-        <section aria-labelledby="features-heading">
-          <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-            <Features />
-          </Suspense>
+        <section aria-labelledby="unified-trust-section">
+          <UnifiedTrustSection />
         </section>
 
         <section aria-labelledby="how-it-works-heading">
           <Suspense fallback={<Skeleton className="h-96 w-full" />}>
             <HowItWorks />
-          </Suspense>
-        </section>
-
-        <section aria-labelledby="testimonials-heading">
-          <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-            <Testimonials />
           </Suspense>
         </section>
         
