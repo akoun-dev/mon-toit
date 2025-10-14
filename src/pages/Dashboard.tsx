@@ -19,6 +19,7 @@ import { ApplicationsOverviewCompact } from '@/components/dashboard/Applications
 import { MarketInsightsWidget } from '@/components/dashboard/MarketInsightsWidget';
 import { CollapsibleSection } from '@/components/ui/collapsible-section';
 import { StickyHeader } from '@/components/ui/sticky-header';
+import { WelcomeBanner } from '@/components/dashboard/WelcomeBanner';
 
 const Dashboard = () => {
   const { profile, loading, user } = useAuth();
@@ -86,8 +87,10 @@ const Dashboard = () => {
       <Navbar />
       
       <main className="flex-1 container mx-auto px-4 py-6 pt-24">
-        <div className="max-w-7xl mx-auto space-y-4">
+        <div className="max-w-7xl mx-auto space-y-6">
           <DynamicBreadcrumb />
+          
+          <WelcomeBanner />
           
           {/* Header */}
           <StickyHeader>

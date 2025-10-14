@@ -23,6 +23,9 @@ import { PropertyPricing } from '@/components/property/form/PropertyPricing';
 import { PropertyWorkStatus } from '@/components/property/form/PropertyWorkStatus';
 import { LocationPicker } from '@/components/property/LocationPicker';
 import { TitleDeedUploader } from '@/components/property/TitleDeedUploader';
+import { NavigationHelp } from '@/components/navigation/NavigationHelp';
+import { LazyIllustration } from '@/components/illustrations/LazyIllustration';
+import { getIllustrationPath } from '@/lib/utils';
 
 const propertyFormSteps: Step[] = [
   { id: 'basic', label: 'Type de bien' },
@@ -182,11 +185,22 @@ const AddProperty = () => {
         <div className="max-w-4xl mx-auto">
           <DynamicBreadcrumb />
           
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold">Ajouter un bien</h1>
-            <p className="text-muted-foreground mt-2">
-              Remplissez les informations de votre propriété
-            </p>
+          <div className="mb-6 mt-4">
+            <NavigationHelp backTo="/dashboard" backLabel="Retour au dashboard" />
+          </div>
+
+          {/* Illustration motivante */}
+          <div className="mb-8 grid md:grid-cols-[1fr,300px] gap-6 items-center p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-border/50">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-foreground">Publiez votre bien</h1>
+              <p className="text-lg text-muted-foreground">Remplissez le formulaire en quelques clics et touchez des milliers de locataires</p>
+            </div>
+            <LazyIllustration
+              src={getIllustrationPath("ivorian-family-house")}
+              alt="Publier un bien"
+              className="hidden md:block w-full h-[180px] rounded-xl"
+              animate={true}
+            />
           </div>
 
           <FormStepper steps={propertyFormSteps} currentStep={currentStep} />

@@ -18,6 +18,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logger } from '@/services/logger';
 import { PageTransition } from '@/components/navigation/PageTransition';
 import { BrandBar } from '@/components/ui/brand-bar';
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
+import { QuickNav } from "@/components/navigation/QuickNav";
+import { NavigationHelp } from "@/components/navigation/NavigationHelp";
+import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
+import { getIllustrationPath } from "@/lib/utils";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Email invalide" }),
@@ -299,30 +306,74 @@ const Auth = () => {
 
   if (show2FA) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
-        <TwoFactorVerify 
-          onVerified={handle2FAVerified}
-          onCancel={handle2FACancel}
-        />
-      </div>
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background pt-20">
+          <div className="container mx-auto px-4 py-8 max-w-md">
+            <TwoFactorVerify 
+              onVerified={handle2FAVerified}
+              onCancel={handle2FACancel}
+            />
+          </div>
+        </div>
+        <Footer />
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen page-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold text-primary">
-            <Home className="h-8 w-8" />
-            Mon Toit
-          </Link>
-          <BrandBar className="max-w-xs mx-auto mt-2" />
-          <p className="text-muted-foreground">Propulsé par ANSUT</p>
-        </div>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <DynamicBreadcrumb />
+          
+          {/* Hero Illustration */}
+          <div className="mb-8">
+            <LazyIllustration
+              src={getIllustrationPath("ivorian-family-house")}
+              alt="Trouvez votre logement en Côte d'Ivoire"
+              className="w-full h-[250px] md:h-[300px] rounded-2xl"
+              animate={true}
+            />
+          </div>
 
-        {/* Auth Card */}
-        <Tabs defaultValue="signin" className="w-full">
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+            {/* Left Side - Benefits */}
+            <div className="space-y-6">
+              <NavigationHelp backTo="/" backLabel="Retour à l'accueil" />
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold text-foreground">
+                  Bienvenue sur Mon Toit
+                </h1>
+                <p className="text-lg text-muted-foreground">
+                  La plateforme immobilière certifiée ANSUT pour la Côte d'Ivoire
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-foreground">Sécurité garantie</p>
+                      <p className="text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par l'ANSUT</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Home className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-foreground">Biens certifiés</p>
+                      <p className="text-sm text-muted-foreground">Des logements vérifiés et conformes</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+              <QuickNav variant="auth" />
+            </div>
+
+            {/* Right Side - Auth Form */}
+            <div className="space-y-6">
+              <Tabs defaultValue="signin" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signin">Connexion</TabsTrigger>
             <TabsTrigger value="signup">Inscription</TabsTrigger>
@@ -561,8 +612,12 @@ const Auth = () => {
             conditions d'utilisation
           </Link>
         </p>
-      </div>
-    </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <Footer />
+    </>
   );
 };
 

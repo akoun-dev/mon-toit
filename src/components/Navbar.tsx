@@ -21,6 +21,7 @@ import { VerificationProgress } from "@/components/navigation/VerificationProgre
 import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { RoleSwitcherCompact } from "@/components/navigation/RoleSwitcherCompact";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { RoleBadge } from "@/components/navigation/RoleBadge";
 
 const Navbar = () => {
   const { user, profile, signOut } = useAuth();
@@ -83,6 +84,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             {user ? (
               <>
+                <RoleBadge />
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
