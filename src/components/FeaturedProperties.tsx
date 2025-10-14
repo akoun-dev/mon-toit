@@ -181,7 +181,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
             className="hidden md:flex items-center gap-2 mt-6 md:mt-0 font-semibold border-2 hover:bg-primary hover:text-white transition-all"
           >
             <Link to="/recherche">
-              Voir les {properties.length} annonces
+              Voir toutes les annonces
               <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
@@ -233,7 +233,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
         <div className="text-center mt-10">
           <Button asChild size="lg" className="md:hidden font-semibold shadow-lg hover:shadow-xl">
             <Link to="/recherche" className="flex items-center gap-2">
-              Voir les {properties.length} annonces
+              Voir toutes les annonces
               <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
