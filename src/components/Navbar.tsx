@@ -198,7 +198,7 @@ const Navbar = () => {
                 {/* Bouton "Trouver un logement" - Desktop uniquement */}
                 <Button 
                   size="sm"
-                  className="hidden md:flex font-semibold shadow-md hover:shadow-lg transition-all duration-300 bg-secondary hover:bg-secondary/90 text-white px-4 py-2" 
+                  className="hidden md:flex font-semibold shadow-md hover:shadow-lg transition-all duration-300 bg-secondary hover:bg-secondary/90 text-white px-3 py-1.5 text-sm" 
                   asChild
                 >
                   <Link to="/explorer">
