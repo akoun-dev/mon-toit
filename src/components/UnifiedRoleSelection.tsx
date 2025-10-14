@@ -66,11 +66,11 @@ const UnifiedRoleSelection = () => {
   ];
 
   return (
-    <section className="py-12 bg-gradient-to-b from-muted/30 to-background">
+    <section className="py-10 bg-gradient-to-b from-muted/30 to-background">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+        <div className="text-center mb-8 space-y-3">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
             Prêt à vous lancer ?
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
@@ -79,7 +79,7 @@ const UnifiedRoleSelection = () => {
         </div>
         
         {/* Role Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-8">
           {roles.map((role, index) => {
             const Icon = role.icon;
             return (
@@ -94,16 +94,16 @@ const UnifiedRoleSelection = () => {
                   {/* Animated background gradient on hover */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${role.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                   
-                  <CardContent className="p-8 relative z-10">
+                  <CardContent className="p-6 relative z-10">
                     {/* Icon with animation */}
-                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${role.color} flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
-                      <Icon className={`h-10 w-10 ${role.iconColor} group-hover:scale-110 transition-transform duration-300`} />
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${role.color} flex items-center justify-center mb-5 mx-auto group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
+                      <Icon className={`h-8 w-8 ${role.iconColor} group-hover:scale-110 transition-transform duration-300`} />
                     </div>
                     
                     {/* Title with badge */}
-                    <div className="space-y-4 text-center mb-6">
+                    <div className="space-y-3 text-center mb-5">
                       <div className="flex items-center justify-center gap-2 flex-wrap">
-                        <h3 className="text-2xl font-bold tracking-tight">
+                        <h3 className="text-xl font-bold tracking-tight">
                           {role.title}
                         </h3>
                         {role.badge && (
@@ -118,7 +118,7 @@ const UnifiedRoleSelection = () => {
                     </div>
 
                     {/* Benefits list */}
-                    <ul className="space-y-3 mb-6 text-left">
+                    <ul className="space-y-2 mb-5 text-left">
                       {role.benefits.map((benefit, i) => (
                         <li key={i} className="flex items-center gap-2 text-sm">
                           <div className={`h-1.5 w-1.5 rounded-full ${role.bulletColor}`} />
@@ -142,7 +142,7 @@ const UnifiedRoleSelection = () => {
         </div>
 
         {/* Help Section */}
-        <div className="text-center mt-12 animate-fade-in" style={{ animationDelay: '600ms' }}>
+        <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '600ms' }}>
           <p className="text-sm text-muted-foreground">
             Vous ne savez pas quel profil choisir ?{" "}
             <Link 

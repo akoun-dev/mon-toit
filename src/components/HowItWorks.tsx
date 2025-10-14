@@ -100,109 +100,68 @@ const journeys = [
 
 const HowItWorks = () => {
   return (
-    <section id="comment-ca-marche" className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
+    <section id="comment-ca-marche" className="py-12 md:py-14 bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-0" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -z-0" />
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Comment ça marche ?</h2>
+      <div className="container mx-auto px-3 md:px-4 max-w-7xl relative z-10">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Comment ça marche ?</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Choisissez votre parcours et découvrez comment Mon Toit simplifie vos démarches immobilières
           </p>
         </div>
 
-        <Tabs defaultValue="tenant" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-12 h-auto bg-white/80 backdrop-blur-sm shadow-md border border-primary/10">
-            <TabsTrigger value="tenant" className="flex items-center gap-2 py-4 text-base">
-              <User className="h-5 w-5" />
-              <span className="hidden sm:inline">Locataire</span>
-            </TabsTrigger>
-            <TabsTrigger value="owner" className="flex items-center gap-2 py-4 text-base">
-              <Home className="h-5 w-5" />
-              <span className="hidden sm:inline">Propriétaire</span>
-            </TabsTrigger>
-            <TabsTrigger value="agency" className="flex items-center gap-2 py-4 text-base">
-              <Building2 className="h-5 w-5" />
-              <span className="hidden sm:inline">Agence</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {journeys.map((journey, journeyIndex) => {
-            const tabValue = journeyIndex === 0 ? "tenant" : journeyIndex === 1 ? "owner" : "agency";
+        {/* 3-Column Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {journeys.map((journey, index) => {
             const JourneyIcon = journey.icon;
-            const borderColor = 
-              journeyIndex === 0 ? "border-l-blue-600" : 
-              journeyIndex === 1 ? "border-l-primary" : 
-              "border-l-secondary";
             const iconBgColor = 
-              journeyIndex === 0 ? "bg-blue-600" : 
-              journeyIndex === 1 ? "bg-primary" : 
+              index === 0 ? "bg-blue-600" : 
+              index === 1 ? "bg-primary" : 
               "bg-secondary";
 
             return (
-              <TabsContent key={journeyIndex} value={tabValue} className="mt-0">
-                {/* Illustration Header */}
-                <div className="mb-8 relative h-48 rounded-lg overflow-hidden shadow-xl">
-                  <LazyIllustration 
-                    src={getIllustrationPath(journey.illustrationKey)!}
-                    alt={journey.title}
-                    className="w-full h-full object-cover"
-                    animate={true}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
-                    <div className="text-white">
-                      <h3 className="text-3xl font-bold">{journey.title}</h3>
-                      <p className="text-sm opacity-90">Votre parcours en 3 étapes</p>
-                    </div>
+              <div key={index} className="bg-white rounded-lg border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 p-6">
+                {/* Header compact */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className={`${iconBgColor} p-2.5 rounded-full`}>
+                    <JourneyIcon className="h-6 w-6 text-white" />
                   </div>
+                  <h3 className="text-xl font-bold">{journey.title}</h3>
                 </div>
-                
-                <div className={`bg-gradient-to-br from-white to-gray-50/30 rounded-lg border-l-4 ${borderColor} shadow-lg hover:shadow-xl transition-all duration-300 p-8 md:p-12 backdrop-blur-sm`}>
-                  {/* Header */}
-                  <div className="flex items-center gap-4 mb-10">
-                    <div className={`${iconBgColor} p-3 rounded-full`}>
-                      <JourneyIcon className="h-8 w-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">{journey.title}</h3>
-                  </div>
 
-                  {/* Steps */}
-                  <div className="space-y-8 mb-10">
-                    {journey.steps.map((step, stepIndex) => {
-                      const StepIcon = step.icon;
-                      return (
-                        <div key={stepIndex} className="flex gap-6">
-                          <div className="flex-shrink-0">
-                            <div className={`w-12 h-12 ${iconBgColor} rounded-full flex items-center justify-center text-white font-bold text-lg`}>
-                              {step.number}
-                            </div>
-                          </div>
-                          <div className="flex-1 pt-2">
-                            <div className="flex items-center gap-2 mb-2">
-                              <StepIcon className="h-5 w-5 text-primary" />
-                              <h4 className="font-bold text-lg text-foreground">{step.title}</h4>
-                            </div>
-                            <p className="text-muted-foreground leading-relaxed">
-                              {step.description}
-                            </p>
-                          </div>
+                {/* Steps compacts */}
+                <div className="space-y-4 mb-6">
+                  {journey.steps.map((step, stepIndex) => {
+                    const StepIcon = step.icon;
+                    return (
+                      <div key={stepIndex} className="flex gap-3 items-start">
+                        <div className={`w-8 h-8 ${iconBgColor} rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
+                          {step.number}
                         </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* CTA */}
-                  <div className="flex justify-center md:justify-start">
-                    <Button asChild size="lg" className="px-8">
-                      <Link to={journey.cta.link}>{journey.cta.text}</Link>
-                    </Button>
-                  </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <StepIcon className="h-4 w-4 text-primary" />
+                            <h4 className="font-semibold text-sm">{step.title}</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </TabsContent>
+
+                {/* CTA compact */}
+                <Button asChild size="sm" className="w-full">
+                  <Link to={journey.cta.link}>{journey.cta.text}</Link>
+                </Button>
+              </div>
             );
           })}
-        </Tabs>
+        </div>
       </div>
     </section>
   );

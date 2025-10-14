@@ -160,9 +160,9 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
   }
 
   return (
-    <div className="px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10">
+    <div className="px-3 md:px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10">
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 animate-fade-in">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 animate-fade-in">
           <div>
             <h2 
               id="featured-properties-heading"
@@ -188,7 +188,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
         </div>
         
         {/* Filtres rapides */}
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {['Tous', 'Appartements', 'Villas', 'Studios'].map(filter => (
             <Button 
               key={filter} 
@@ -203,7 +203,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
         </div>
         
         <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
           role="list"
           aria-label="Biens immobiliers en vedette"
         >
@@ -230,7 +230,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
           ))}
         </div>
         
-        <div className="text-center mt-10">
+        <div className="text-center mt-8">
           <Button asChild size="lg" className="md:hidden font-semibold shadow-lg hover:shadow-xl">
             <Link to="/recherche" className="flex items-center gap-2">
               Voir toutes les annonces

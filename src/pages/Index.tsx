@@ -26,7 +26,7 @@ const Index = () => {
         </section>
         
         <section 
-          className="py-12 md:py-16" 
+          className="py-8 md:py-12" 
           aria-labelledby="stats-and-featured-heading"
         >
           <h2 id="stats-and-featured-heading" className="sr-only">
@@ -34,12 +34,12 @@ const Index = () => {
           </h2>
           
           {/* Métriques de confiance */}
-          <div className="mb-8">
+          <div className="mb-6">
             <KeyStats />
           </div>
           
           {/* Certification Banner */}
-          <div className="container mx-auto px-4 max-w-7xl mb-8">
+          <div className="container mx-auto px-4 max-w-7xl mb-6">
             <CertificationBanner />
           </div>
           
