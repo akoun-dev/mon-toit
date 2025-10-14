@@ -32,13 +32,13 @@ const KeyStats = () => {
   return (
     <div className="bg-gradient-to-br from-primary/5 via-white to-secondary/5">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="text-center mb-10 animate-fade-in">
+        <div className="text-center mb-8 animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
             Votre confiance, notre priorité
           </h2>
           <div className="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto" />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             const iconBgColor =
@@ -51,14 +51,14 @@ const KeyStats = () => {
             return (
               <div 
                 key={index} 
-                className="flex flex-col items-center gap-4 p-6 bg-white rounded-2xl border border-primary/10 shadow-sm hover:shadow-lg transition-all duration-300 animate-fade-in"
+                className="flex flex-col items-center gap-3 p-4 bg-white rounded-2xl border border-primary/10 shadow-sm hover:shadow-lg transition-all duration-300 animate-fade-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`p-4 rounded-full ${iconBgColor} shadow-lg`}>
-                  <Icon className="h-7 w-7 text-white" />
+                <div className={`p-3 rounded-full ${iconBgColor} shadow-lg`}>
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-black text-foreground mb-1">
+                  <div className="text-2xl md:text-3xl font-black text-foreground mb-1">
                     {stat.value}
                   </div>
                   <div className="text-sm font-medium text-muted-foreground">{stat.label}</div>
