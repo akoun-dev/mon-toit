@@ -7,6 +7,7 @@ import { PropertyCardSkeleton } from '@/components/properties/PropertyCardSkelet
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowDown } from 'lucide-react';
+import { FadeInView } from '@/components/animations/FadeInView';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import type { Property } from '@/types';
@@ -142,25 +143,27 @@ export const PropertyGrid = ({
                 role="list"
                 aria-label="Liste des biens immobiliers"
               >
-                {displayedProperties.map((property) => (
-                  <div key={property.id} role="listitem">
-                    <PropertyCard
-                      property={property}
-                      variant="compact"
-                      onFavoriteClick={(id) => {
-                        if (!user) {
-                          toast({
-                            title: "Connexion requise",
-                            description: "Connectez-vous pour ajouter des favoris",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        // Toggle favorite logic would go here
-                      }}
-                      isFavorite={false}
-                    />
-                  </div>
+                {displayedProperties.map((property, index) => (
+                  <FadeInView key={property.id} delay={Math.min(index * 0.05, 0.4)} direction="up">
+                    <div role="listitem">
+                      <PropertyCard
+                        property={property}
+                        variant="compact"
+                        onFavoriteClick={(id) => {
+                          if (!user) {
+                            toast({
+                              title: "Connexion requise",
+                              description: "Connectez-vous pour ajouter des favoris",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          // Toggle favorite logic would go here
+                        }}
+                        isFavorite={false}
+                      />
+                    </div>
+                  </FadeInView>
                 ))}
               </div>
 

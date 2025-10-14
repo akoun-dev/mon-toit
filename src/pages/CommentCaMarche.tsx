@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, FileCheck, Home, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BogolanPattern } from "@/components/ui/african-patterns";
 
 // Lazy load des sections
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
@@ -14,17 +15,20 @@ const CommentCaMarche = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-24">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-16 animate-fade-in">
-              <h1 className="text-h1 mb-4">
-                Comment ça <span className="text-primary">marche</span> ?
-              </h1>
-              <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez le processus simple et sécurisé de Mon Toit
-              </p>
+            <div className="text-center mb-16 animate-fade-in relative">
+              <BogolanPattern />
+              <div className="relative z-10">
+                <h1 className="text-h1 mb-4">
+                  <span className="text-gradient-animated">Comment ça marche ?</span>
+                </h1>
+                <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
+                  Découvrez le processus simple et sécurisé de Mon Toit
+                </p>
+              </div>
             </div>
 
             {/* Processus détaillé */}
@@ -52,7 +56,7 @@ const CommentCaMarche = () => {
             <section className="py-10">
               <div className="text-center mb-12">
                 <h2 className="text-h2 mb-4">
-                  Questions <span className="text-primary">fréquentes</span>
+                  Questions <span className="text-gradient-secondary">fréquentes</span>
                 </h2>
               </div>
               

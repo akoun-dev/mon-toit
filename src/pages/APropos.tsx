@@ -4,18 +4,28 @@ import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
+import { AkanPattern } from "@/components/ui/african-patterns";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 const APropos = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-24">
         <div className="container mx-auto px-4 py-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold text-center mb-4">À propos de Mon Toit</h1>
-            <p className="text-xl text-muted-foreground text-center mb-12">
-              La plateforme de confiance pour l'immobilier en Côte d'Ivoire
-            </p>
+            {/* Hero avec pattern culturel */}
+            <div className="relative mb-12">
+              <AkanPattern />
+              <div className="relative z-10">
+                <h1 className="text-h1 text-center mb-4">
+                  <span className="text-gradient-primary">À propos</span> de Mon Toit
+                </h1>
+                <p className="text-xl text-muted-foreground text-center">
+                  La plateforme de confiance pour l'immobilier en Côte d'Ivoire
+                </p>
+              </div>
+            </div>
 
             <div className="prose prose-lg max-w-none mb-12">
               <p>
@@ -90,7 +100,7 @@ const APropos = () => {
           {/* Fonctionnalités de la plateforme */}
           <div className="my-20">
             <h2 className="text-h2 text-center mb-12">
-              Nos <span className="text-primary">fonctionnalités</span>
+              Nos <span className="text-gradient-secondary">fonctionnalités</span>
             </h2>
             <Features />
           </div>
@@ -98,7 +108,7 @@ const APropos = () => {
           {/* Témoignages */}
           <div className="my-20">
             <h2 className="text-h2 text-center mb-12">
-              Ce que disent nos <span className="text-primary">utilisateurs</span>
+              Ce que disent nos <span className="text-gradient-secondary">utilisateurs</span>
             </h2>
             <Testimonials />
           </div>

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, PlusCircle, Users, ShieldCheck, FileSignature, MapPin, Home, DollarSign } from 'lucide-react';
+import { RippleButton } from '@/components/animations/RippleButton';
+import { CountUp } from '@/components/animations/CountUp';
 
 export const CompactSearchHero = () => {
   console.log('[CompactSearchHero] Rendering');
@@ -86,14 +88,14 @@ export const CompactSearchHero = () => {
 
           {/* CTA Buttons */}
           <div className="flex gap-3 w-full md:w-auto">
-            <Button
+            <RippleButton
               onClick={handleSearch}
               size="lg"
               className="flex-1 md:flex-none h-12 font-semibold shadow-md"
             >
               <Search className="h-4 w-4 mr-2" />
               Rechercher
-            </Button>
+            </RippleButton>
             <Button
               variant="secondary"
               size="lg"
@@ -121,7 +123,7 @@ export const CompactSearchHero = () => {
               
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Users className="h-4 w-4 text-primary" />
-                <span><strong className="text-foreground">10 000+</strong> Ivoiriens</span>
+                <span><strong className="text-foreground"><CountUp value={10000} suffix="+" /></strong> Ivoiriens</span>
               </div>
               
               <div className="flex items-center gap-2 text-muted-foreground">

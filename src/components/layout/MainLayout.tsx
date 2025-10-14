@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/navigation/AppSidebar";
+import { ModernAppSidebar } from "@/components/navigation/ModernAppSidebar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -25,7 +25,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full">
-        <AppSidebar />
+        <ModernAppSidebar />
         <SidebarInset className="flex flex-col flex-1">
           <Navbar />
           <div className="flex-1 pt-16">

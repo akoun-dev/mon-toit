@@ -437,3 +437,475 @@
     animation: none !important;
   }
 }
+
+
+/* ============================================
+   OPTIMISATIONS ANIMATIONS PHASE 2
+   ============================================ */
+
+/* GPU Acceleration pour les animations */
+.animate-gpu {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth scroll pour toute la page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Performance pour les images */
+img {
+  content-visibility: auto;
+}
+
+/* Animations de hover optimisées */
+.hover-scale {
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03) translateZ(0);
+}
+
+/* Skeleton shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Ripple effect container */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Stagger animation delay classes */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+
+
+/* ============================================
+   PHASE 3 : GRADIENTS ET HOVER EFFECTS
+   ============================================ */
+
+/* Animation de gradient */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+}
+
+/* Transitions de couleurs fluides */
+.smooth-color-transition {
+  transition: color 0.3s ease-in-out, 
+              background-color 0.3s ease-in-out,
+              border-color 0.3s ease-in-out;
+}
+
+/* Hover avec gradient shift */
+.gradient-shift {
+  background-size: 200% 200%;
+  transition: background-position 0.5s ease;
+}
+
+.gradient-shift:hover {
+  background-position: 100% 100%;
+}
+
+/* Glow effect */
+.glow-on-hover {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.glow-on-hover::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  border-radius: inherit;
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.glow-on-hover:hover::before {
+  opacity: 0.7;
+}
+
+/* Glass morphism effect */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Shine effect on hover */
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.shine-on-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-on-hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.shine-on-hover:hover::after {
+  left: 100%;
+}
+
+
+
+/* ============================================
+   PHASE 4 : TYPOGRAPHIE ENRICHIE
+   ============================================ */
+
+/* Import Google Fonts - À ajouter dans index.html aussi */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Application des polices */
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6,
+.heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Hiérarchie typographique */
+h1, .text-h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+h2, .text-h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+h3, .text-h3 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+h4, .text-h4 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Gradients de texte */
+.text-gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-700)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-secondary {
+  background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary-700)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-rainbow {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary)) 0%, 
+    hsl(var(--secondary)) 50%, 
+    hsl(var(--success)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Gradient animé */
+.text-gradient-animated {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary)),
+    hsl(var(--primary))
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 3s ease infinite;
+}
+
+@keyframes gradient-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Text decorations */
+.text-underline-gradient {
+  position: relative;
+  display: inline-block;
+}
+
+.text-underline-gradient::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)));
+  border-radius: 2px;
+}
+
+/* Text shadow pour profondeur */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.text-shadow-md {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+}
+
+/* Highlight effect */
+.text-highlight {
+  background: linear-gradient(180deg, transparent 60%, hsl(var(--secondary) / 0.3) 60%);
+  padding: 0 0.25em;
+}
+
+
+
+/* ============================================
+   PHASE 5 : IDENTITÉ VISUELLE IVOIRIENNE
+   ============================================ */
+
+:root {
+  /* Couleurs du drapeau ivoirien */
+  --ivory-orange: 30 100% 50%;      /* Orange vif du drapeau */
+  --ivory-white: 0 0% 100%;          /* Blanc pur */
+  --ivory-green: 142 76% 36%;        /* Vert du drapeau */
+  
+  /* Couleurs culturelles */
+  --kente-gold: 45 100% 51%;         /* Or des tissus Kente */
+  --bogolan-brown: 30 25% 35%;       /* Marron des tissus Bogolan */
+  --terracotta: 14 77% 62%;          /* Terre cuite artisanale */
+  --lagoon-blue: 202 48% 42%;        /* Bleu de la lagune Ébrié */
+  --forest-green: 140 60% 30%;       /* Vert de la forêt tropicale */
+  
+  /* Tons neutres chauds */
+  --sand-light: 40 40% 95%;
+  --sand: 40 20% 85%;
+  --sand-dark: 40 15% 70%;
+  
+  /* Accents */
+  --sunset-orange: 25 95% 53%;
+  --tropical-teal: 174 62% 47%;
+}
+
+/* Application de la palette */
+.bg-ivory-orange { background-color: hsl(var(--ivory-orange)); }
+.bg-ivory-green { background-color: hsl(var(--ivory-green)); }
+.bg-kente-gold { background-color: hsl(var(--kente-gold)); }
+.bg-bogolan-brown { background-color: hsl(var(--bogolan-brown)); }
+.bg-terracotta { background-color: hsl(var(--terracotta)); }
+.bg-lagoon-blue { background-color: hsl(var(--lagoon-blue)); }
+.bg-forest-green { background-color: hsl(var(--forest-green)); }
+
+.text-ivory-orange { color: hsl(var(--ivory-orange)); }
+.text-ivory-green { color: hsl(var(--ivory-green)); }
+.text-kente-gold { color: hsl(var(--kente-gold)); }
+.text-bogolan-brown { color: hsl(var(--bogolan-brown)); }
+.text-terracotta { color: hsl(var(--terracotta)); }
+.text-lagoon-blue { color: hsl(var(--lagoon-blue)); }
+
+/* Dégradés culturels */
+.bg-gradient-lagoon {
+  background: linear-gradient(135deg, 
+    hsl(var(--lagoon-blue)) 0%, 
+    hsl(var(--tropical-teal)) 100%
+  );
+}
+
+.bg-gradient-sunset {
+  background: linear-gradient(135deg, 
+    hsl(var(--sunset-orange)) 0%, 
+    hsl(var(--kente-gold)) 50%,
+    hsl(var(--terracotta)) 100%
+  );
+}
+
+.bg-gradient-forest {
+  background: linear-gradient(135deg, 
+    hsl(var(--forest-green)) 0%, 
+    hsl(var(--ivory-green)) 100%
+  );
+}
+
+.bg-gradient-flag {
+  background: linear-gradient(90deg, 
+    hsl(var(--ivory-orange)) 0%, 
+    hsl(var(--ivory-orange)) 33.33%,
+    hsl(var(--ivory-white)) 33.33%,
+    hsl(var(--ivory-white)) 66.66%,
+    hsl(var(--ivory-green)) 66.66%,
+    hsl(var(--ivory-green)) 100%
+  );
+}
+
+/* Bordures décoratives ivoiriennes */
+.border-kente {
+  border-image: linear-gradient(
+    90deg,
+    hsl(var(--ivory-orange)),
+    hsl(var(--ivory-green)),
+    hsl(var(--kente-gold))
+  ) 1;
+  border-width: 3px;
+  border-style: solid;
+}
+
+.border-pattern-top {
+  position: relative;
+}
+
+.border-pattern-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    hsl(var(--ivory-orange)) 0px,
+    hsl(var(--ivory-orange)) 10px,
+    hsl(var(--ivory-green)) 10px,
+    hsl(var(--ivory-green)) 20px,
+    hsl(var(--kente-gold)) 20px,
+    hsl(var(--kente-gold)) 30px
+  );
+}
+
+.border-pattern-bottom {
+  position: relative;
+}
+
+.border-pattern-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    hsl(var(--ivory-orange)) 0px,
+    hsl(var(--ivory-orange)) 10px,
+    hsl(var(--ivory-green)) 10px,
+    hsl(var(--ivory-green)) 20px,
+    hsl(var(--kente-gold)) 20px,
+    hsl(var(--kente-gold)) 30px
+  );
+}
+

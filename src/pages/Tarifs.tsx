@@ -3,6 +3,8 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { KentePattern } from "@/components/ui/african-patterns";
+import { GradientButton } from "@/components/ui/gradient-button";
 
 const pricingPlans = [
   {
@@ -65,12 +67,13 @@ const Tarifs = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pt-24">
         {/* Hero Section */}
-        <section className="py-12 md:py-18 bg-white">
-          <div className="container mx-auto px-4 max-w-7xl text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground">
-              Des tarifs simples et transparents
+        <section className="py-12 md:py-18 bg-white relative">
+          <KentePattern />
+          <div className="container mx-auto px-4 max-w-7xl text-center relative z-10">
+            <h1 className="text-h1 mb-6">
+              Des tarifs <span className="text-gradient-primary">simples et transparents</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               Choisissez la formule adaptée à votre besoin. Aucun frais caché, annulation à tout moment.

@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
+import { KentePattern } from '@/components/ui/african-patterns';
 import PropertyFiltersComponent, { PropertyFilters } from '@/components/PropertyFilters';
 import MobileFilters from '@/components/properties/MobileFilters';
 import { PullToRefresh } from '@/components/properties/PullToRefresh';
@@ -69,12 +70,17 @@ const Search = () => {
     <div className="min-h-screen flex flex-col page-background">
       <Navbar />
 
-      <main className="flex-1 page-container section-spacing">
+      <main className="flex-1 page-container section-spacing pt-24">
         <DynamicBreadcrumb />
 
         {/* Header with improved typography */}
-        <div className="mb-8">
-          <h1 className="text-5xl font-bold mb-4">Rechercher un bien</h1>
+        <div className="mb-8 relative">
+          <KentePattern />
+          <div className="relative z-10">
+            <h1 className="text-h1 mb-4">
+              <span className="text-gradient-primary">Rechercher</span> un bien
+            </h1>
+          </div>
           <p className="text-lg text-muted-foreground">
             Trouvez le logement idéal parmi {properties.length} annonces
           </p>

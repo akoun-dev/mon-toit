@@ -16,6 +16,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import { PageSkeleton, PropertyDetailSkeleton } from "@/components/LoadingFallback";
 import ContextBar from "@/components/ContextBar";
+import { ScrollProgress } from "@/components/animations/ScrollProgress";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -67,6 +68,8 @@ import Explorer from "./pages/Explorer";
 import CommentCaMarche from "./pages/CommentCaMarche";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
+import SmartMap from "./pages/SmartMap";
+import SmartMapV2 from "./pages/SmartMapV2";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -95,6 +98,7 @@ const AppContent = () => {
   
   return (
     <>
+      <ScrollProgress />
       {/* Skip link pour accessibilité */}
       <a href="#main-content" className="skip-to-main">
         Aller au contenu principal
@@ -114,6 +118,7 @@ const AppContent = () => {
             <Route path="/" element={<Index />} />
             <Route path="/recherche" element={<Search />} />
             <Route path="/explorer" element={<Explorer />} />
+            <Route path="/carte-intelligente" element={<SmartMapV2 />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             <Route path="/a-propos" element={<AboutPage />} />
             <Route path="/property/:id" element={

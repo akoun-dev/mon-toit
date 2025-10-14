@@ -5,6 +5,7 @@ import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
+import { KentePattern } from "@/components/ui/african-patterns";
 
 // Lazy load des composants lourds
 const ExploreMap = lazy(() => import("@/components/ExploreMap"));
@@ -19,13 +20,16 @@ const Explorer = () => {
           <div className="max-w-7xl mx-auto">
             <DynamicBreadcrumb />
             
-            <div className="text-center mb-12 animate-fade-in">
-              <h1 className="text-h1 mb-4">
-                Explorez les biens <span className="text-primary">disponibles</span>
-              </h1>
-              <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez tous nos biens immobiliers certifiés à travers la Côte d'Ivoire
-              </p>
+            <div className="text-center mb-12 animate-fade-in relative">
+              <KentePattern />
+              <div className="relative z-10">
+                <h1 className="text-h1 mb-4">
+                  Explorez les biens <span className="text-gradient-primary">disponibles</span>
+                </h1>
+                <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
+                  Découvrez tous nos biens immobiliers certifiés à travers la Côte d'Ivoire
+                </p>
+              </div>
             </div>
 
             {/* Bannière quartier */}

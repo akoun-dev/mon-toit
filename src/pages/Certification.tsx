@@ -4,6 +4,7 @@ import CertifiedBadge from "@/components/ui/certified-badge";
 import { Shield, Lock, FileCheck, Users } from "lucide-react";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
+import { BogolanPattern } from "@/components/ui/african-patterns";
 
 const Certification = () => {
   const features = [
@@ -32,7 +33,7 @@ const Certification = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-24">
         {/* Hero with illustration */}
         <section className="relative h-96 overflow-hidden mb-12">
           <LazyIllustration 
@@ -45,8 +46,8 @@ const Certification = () => {
               <div className="flex justify-center mb-6">
                 <CertifiedBadge clickable={false} />
               </div>
-              <h1 className="text-3xl md:text-5xl font-bold mb-4">
-                Certification ANSUT
+              <h1 className="text-h1 mb-4">
+                <span className="text-gradient-animated">Certification ANSUT</span>
               </h1>
               <p className="text-lg max-w-2xl mx-auto opacity-95">
                 Mon Toit est propulsé par l'Agence Nationale de Soutien à l'Urbanisme et au Territoire (ANSUT), 

@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AkanPattern } from "@/components/ui/african-patterns";
 import { 
   Search, Home, Shield, FileText, MessageSquare, CreditCard, 
   CheckCircle, AlertCircle, Clock, Users, Mail, Phone, 
@@ -29,12 +30,15 @@ const Guide = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
       <Navbar />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-24">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12">
-          <div className="container mx-auto px-4 text-center">
+        <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12 relative">
+          <AkanPattern />
+          <div className="container mx-auto px-4 text-center relative z-10">
             <Badge variant="secondary" className="mb-4">Centre d'aide</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Comment pouvons-nous vous aider ?</h1>
+            <h1 className="text-h1 mb-4">
+              Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?
+            </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
               Guides détaillés, FAQ et support pour profiter pleinement de Mon Toit
             </p>
