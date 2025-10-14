@@ -111,7 +111,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
 
   if (loading) {
     return (
-      <section className="py-20 md:py-28 px-4 bg-white">
+      <section className="py-24 md:py-32 px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
@@ -135,7 +135,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
 
   if (error) {
     return (
-      <section className="py-20 md:py-28 px-4 bg-white">
+      <section className="py-24 md:py-32 px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-center py-12 px-4">
             <AlertCircle className="w-12 h-12 text-destructive mb-4" />
@@ -160,7 +160,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
   }
 
   return (
-    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10" aria-labelledby="featured-properties-heading">
+    <section className="py-24 md:py-32 px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10" aria-labelledby="featured-properties-heading">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 animate-fade-in">
           <div>
