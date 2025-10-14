@@ -194,16 +194,31 @@ const Navbar = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <Button 
-                size="default" 
-                className="md:flex font-semibold shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary via-primary-glow to-accent hover:scale-105 animate-pulse-slow" 
-                asChild
-              >
-                <Link to="/auth">
-                  <User className="mr-2 h-4 w-4" />
-                  Se connecter / S'inscrire
-                </Link>
-              </Button>
+              <>
+                {/* Bouton "Trouver un logement" - Desktop uniquement */}
+                <Button 
+                  size="sm"
+                  className="hidden md:flex font-semibold shadow-md hover:shadow-lg transition-all duration-300 bg-secondary hover:bg-secondary/90 text-white px-4 py-2" 
+                  asChild
+                >
+                  <Link to="/explorer">
+                    <Search className="mr-2 h-4 w-4" />
+                    Trouver un logement
+                  </Link>
+                </Button>
+
+                {/* Bouton "Se connecter / S'inscrire" */}
+                <Button 
+                  size="default" 
+                  className="md:flex font-semibold shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary via-primary-glow to-accent hover:scale-105 animate-pulse-slow" 
+                  asChild
+                >
+                  <Link to="/auth">
+                    <User className="mr-2 h-4 w-4" />
+                    Se connecter / S'inscrire
+                  </Link>
+                </Button>
+              </>
             )}
             
             {/* Mobile Menu */}
