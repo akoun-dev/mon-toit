@@ -2,7 +2,8 @@ import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from '@/lib/queryClient';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
@@ -68,8 +69,6 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 
 import MandatesHelp from "./pages/MandatesHelp";
-
-const queryClient = new QueryClient();
 
 const AppContent = () => {
   // ✅ Préchargement intelligent des routes
