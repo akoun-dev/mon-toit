@@ -107,10 +107,8 @@ const Hero = () => {
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
           {/* Main Title - Bold and Large */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-foreground leading-tight tracking-tight">
-            Votre logement{" "}
-            <span className="block mt-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              en toute sécurité
-            </span>
+            Trouvez votre logement idéal en{" "}
+            <span className="text-[#E67E22]">48h</span>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-xl font-medium">
