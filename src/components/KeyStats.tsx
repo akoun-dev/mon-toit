@@ -1,4 +1,4 @@
-import { Users, Building2, Zap, TrendingUp } from "lucide-react";
+import { Users, Building2, Zap, TrendingUp, Star } from "lucide-react";
 
 const stats = [
   {
@@ -21,6 +21,11 @@ const stats = [
     value: "98%",
     label: "satisfaction",
   },
+  {
+    icon: Star,
+    value: "4.8/5",
+    label: "basé sur 1 234 avis vérifiés",
+  },
 ];
 
 const KeyStats = () => {
@@ -33,14 +38,15 @@ const KeyStats = () => {
           </h2>
           <div className="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full mx-auto" />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             const iconBgColor =
               index === 0 ? "bg-primary" :
               index === 1 ? "bg-secondary" :
               index === 2 ? "bg-primary" :
-              "bg-warning";
+              index === 3 ? "bg-warning" :
+              "bg-secondary";
             
             return (
               <div 
