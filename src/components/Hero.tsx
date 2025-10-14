@@ -65,7 +65,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="hero-section relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+    <section className="hero-section relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       {/* Slideshow Background Images - Right Side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
         {heroImages.map((image, index) => (
