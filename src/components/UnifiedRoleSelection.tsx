@@ -135,11 +135,6 @@ const UnifiedRoleSelection = () => {
                       </Link>
                     </Button>
                   </CardContent>
-                  
-                  {/* Badge number */}
-                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-sm font-bold text-muted-foreground">
-                    {index + 1}
-                  </div>
                 </Card>
               </div>
             );
