@@ -122,7 +122,7 @@ export const PropertyCard = ({
         aria-labelledby={`property-title-${property.id}`}
         aria-describedby={`property-description-${property.id}`}
       >
-      <div className="relative h-40 bg-muted overflow-hidden">
+      <div className="relative h-56 sm:h-64 bg-muted overflow-hidden">
         {property.main_image ? (
           <>
             <OptimizedImage
