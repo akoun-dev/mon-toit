@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, PlusCircle, Users, ShieldCheck, FileSignature, MapPin, Home, DollarSign } from 'lucide-react';
 
 export const CompactSearchHero = () => {
+  console.log('[CompactSearchHero] Rendering');
   const [searchQuery, setSearchQuery] = useState('');
   const [city, setCity] = useState('all');
   const [propertyType, setPropertyType] = useState('all');

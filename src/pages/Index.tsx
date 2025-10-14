@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Search, ShieldCheck } from "lucide-react";
 
 const Index = () => {
+  console.log('[Index] Rendering Index page');
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>

@@ -20,6 +20,7 @@ export const PropertyGrid = ({
   limit = 16, 
   showFilters = true,
 }: PropertyGridProps) => {
+  console.log('[PropertyGrid] Rendering with limit:', limit);
   const { user } = useAuth();
   const [displayLimit, setDisplayLimit] = useState(limit);
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc'>('recent');
