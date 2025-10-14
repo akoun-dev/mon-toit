@@ -3,7 +3,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import KeyStats from "@/components/KeyStats";
 import Footer from "@/components/Footer";
-import StickyCTA from "@/components/StickyCTA";
 import OnboardingModal from "@/components/OnboardingModal";
 import CertificationBanner from "@/components/CertificationBanner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -85,7 +84,6 @@ const Index = () => {
       <footer role="contentinfo">
         <Footer />
       </footer>
-      <StickyCTA />
       <OnboardingModal />
     </div>
   );
