@@ -111,7 +111,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
 
   if (loading) {
     return (
-      <section className="py-16 md:py-20 px-4 bg-white">
+      <div className="px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
             <div>
@@ -129,13 +129,13 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
             ))}
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <section className="py-16 md:py-20 px-4 bg-white">
+      <div className="px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-center py-8 px-4">
             <AlertCircle className="w-12 h-12 text-destructive mb-4" />
@@ -151,7 +151,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
             </Button>
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 
@@ -160,7 +160,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
   }
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10" aria-labelledby="featured-properties-heading">
+    <div className="px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 animate-fade-in">
           <div>
@@ -239,7 +239,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
           </Button>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -27,33 +27,42 @@ const Index = () => {
           <Hero />
         </section>
         
-        <section aria-labelledby="stats-heading">
-          <h2 id="stats-heading" className="sr-only">Statistiques de la plateforme</h2>
-          <KeyStats />
-        </section>
-        
-        {/* Certification Banner */}
-        <div className="container mx-auto px-4 max-w-7xl py-8">
-          <CertificationBanner />
-        </div>
-        
-        <section aria-labelledby="featured-heading">
-          <h2 id="featured-heading" className="sr-only">Biens en vedette</h2>
-          <Suspense fallback={
-            <div className="container mx-auto px-4 py-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="space-y-4">
-                    <Skeleton className="h-48 w-full rounded-lg" />
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                ))}
+        <section 
+          className="py-12 md:py-16" 
+          aria-labelledby="stats-and-featured-heading"
+        >
+          <h2 id="stats-and-featured-heading" className="sr-only">
+            Statistiques et biens en vedette
+          </h2>
+          
+          {/* Métriques de confiance */}
+          <div className="mb-8">
+            <KeyStats />
+          </div>
+          
+          {/* Certification Banner */}
+          <div className="container mx-auto px-4 max-w-7xl mb-8">
+            <CertificationBanner />
+          </div>
+          
+          {/* Biens en vedette */}
+          <div>
+            <Suspense fallback={
+              <div className="container mx-auto px-4 py-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="space-y-4">
+                      <Skeleton className="h-48 w-full rounded-lg" />
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-4 w-1/2" />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          }>
-            <FeaturedProperties limit={4} />
-          </Suspense>
+            }>
+              <FeaturedProperties limit={4} />
+            </Suspense>
+          </div>
         </section>
 
         <section aria-labelledby="user-reviews-heading">
