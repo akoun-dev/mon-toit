@@ -65,7 +65,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="hero-section relative min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+    <section className="hero-section relative min-h-[500px] md:min-h-[600px] lg:min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       {/* Slideshow Background Images - Right Side */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
         {heroImages.map((image, index) => (
@@ -103,15 +103,15 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-12 md:py-18 max-w-7xl z-10 animate-fade-in">
+      <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-10 md:py-14 max-w-7xl z-10 animate-fade-in">
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
           {/* Main Title - Bold and Large */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-foreground leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-foreground leading-tight tracking-tight">
             Trouvez votre logement idéal en{" "}
             <span className="text-[#E67E22]">48h</span>
           </h1>
           
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-xl font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 max-w-xl font-medium">
             La première plateforme immobilière certifiée ANSUT en Côte d'Ivoire. 100% gratuit, 100% sécurisé.
           </p>
 
