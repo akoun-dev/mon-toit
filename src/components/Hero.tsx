@@ -112,7 +112,7 @@ const Hero = () => {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-xl font-medium">
-            Trouvez, louez ou publiez votre logement en toute confiance avec la première plateforme certifiée ANSUT.
+            La première plateforme immobilière certifiée ANSUT en Côte d'Ivoire. 100% gratuit, 100% sécurisé.
           </p>
 
           {/* Search bar with integrated voice */}
