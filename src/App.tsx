@@ -62,6 +62,8 @@ import TestCryptoNeo from "./pages/TestCryptoNeo";
 import Guide from "./pages/Guide";
 import Explorer from "./pages/Explorer";
 import CommentCaMarche from "./pages/CommentCaMarche";
+import HowItWorksPage from "./pages/HowItWorksPage";
+import AboutPage from "./pages/AboutPage";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -111,7 +113,8 @@ const AppContent = () => {
             <Route path="/" element={<Index />} />
             <Route path="/recherche" element={<Search />} />
             <Route path="/explorer" element={<Explorer />} />
-            <Route path="/comment-ca-marche" element={<CommentCaMarche />} />
+            <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
+            <Route path="/a-propos" element={<AboutPage />} />
             <Route path="/property/:id" element={
               <Suspense fallback={<PropertyDetailSkeleton />}>
                 <PropertyDetail />

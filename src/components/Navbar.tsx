@@ -30,7 +30,7 @@ const Navbar = () => {
   return (<>
     <nav className={`fixed top-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-md border-b border-border shadow-sm ${isMobile && user ? 'mb-16' : ''}`}>
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <picture>
@@ -50,13 +50,14 @@ const Navbar = () => {
               <span className="text-2xl font-bold text-primary leading-tight">
                 Mon Toit
               </span>
-              <span className="text-xs text-secondary leading-tight">
-                Propulsé par ANSUT
+              <span className="text-xs text-secondary leading-tight flex items-center gap-1">
+                <ShieldCheck className="h-3 w-3" />
+                Certifié ANSUT
               </span>
             </div>
           </Link>
 
-          {/* Navigation Links - Simplified to 6 core items */}
+          {/* Navigation Links - Simplified to 3 core items */}
           <div className="hidden md:flex items-center gap-6">
             <Link 
               to="/explorer" 
@@ -66,23 +67,15 @@ const Navbar = () => {
             </Link>
             <Link 
               to="/publier" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
-            >
-              <PlusCircle className="h-4 w-4" />
-              <span>Publier</span>
-            </Link>
-            <Link 
-              to="/comment-ca-marche" 
               className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
-              Comment ça marche
+              Publier
             </Link>
             <Link 
               to="/guide" 
-              className="flex items-center gap-2 text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
+              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
-              <HelpCircle className="h-4 w-4" />
-              <span>Aide</span>
+              Aide
             </Link>
           </div>
 
@@ -90,10 +83,6 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <div className="hidden md:block">
-                  <VerificationProgress />
-                </div>
-                <RoleSwitcherCompact />
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -194,31 +183,17 @@ const Navbar = () => {
                 </DropdownMenu>
               </>
             ) : (
-              <>
-                {/* Bouton "Trouver un logement" - Desktop uniquement */}
-                <Button 
-                  size="sm"
-                  className="hidden md:flex font-semibold shadow-md hover:shadow-lg transition-all duration-300 bg-secondary hover:bg-secondary/90 text-white px-3 py-1.5 text-sm" 
-                  asChild
-                >
-                  <Link to="/explorer">
-                    <Search className="mr-2 h-4 w-4" />
-                    Trouver un logement
-                  </Link>
-                </Button>
-
-                {/* Bouton "Se connecter / S'inscrire" */}
-                <Button 
-                  size="default" 
-                  className="md:flex font-semibold shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary via-primary-glow to-accent hover:scale-105 animate-pulse-slow" 
-                  asChild
-                >
-                  <Link to="/auth">
-                    <User className="mr-2 h-4 w-4" />
-                    Se connecter / S'inscrire
-                  </Link>
-                </Button>
-              </>
+              <Button 
+                size="sm" 
+                variant="default"
+                className="font-semibold" 
+                asChild
+              >
+                <Link to="/auth">
+                  <User className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Connexion</span>
+                </Link>
+              </Button>
             )}
             
             {/* Mobile Menu */}
@@ -228,7 +203,7 @@ const Navbar = () => {
       </div>
     </nav>
     {/* Barre de couleurs identité */}
-    <div className="fixed top-16 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-40" />
+    <div className="fixed top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-40" />
   </>);
 };
 
