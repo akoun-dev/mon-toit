@@ -50,8 +50,8 @@ const Navbar = () => {
               <span className="text-2xl font-bold text-primary leading-tight">
                 Mon Toit
               </span>
-              <span className="text-xs text-secondary leading-tight flex items-center gap-1">
-                <ShieldCheck className="h-3 w-3" />
+              <span className="text-xs text-secondary leading-tight flex items-center gap-1 font-semibold">
+                <ShieldCheck className="h-3.5 w-3.5" />
                 Certifié ANSUT
               </span>
             </div>
