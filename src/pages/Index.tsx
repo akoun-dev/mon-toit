@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { CompactSearchHero } from "@/components/CompactSearchHero";
 import { PropertyGrid } from "@/components/PropertyGrid";
 import OnboardingModal from "@/components/OnboardingModal";
@@ -11,7 +10,7 @@ import { Search, ShieldCheck } from "lucide-react";
 const Index = () => {
   console.log('[Index] Rendering Index page');
   return (
-    <div className="min-h-screen flex flex-col">
+    <MainLayout>
       <Helmet>
         <title>Mon Toit - Location Immobilière Certifiée ANSUT en Côte d'Ivoire</title>
         <meta 
@@ -21,12 +20,8 @@ const Index = () => {
         <link rel="canonical" href="https://montoit.ci" />
       </Helmet>
 
-      <header role="banner">
-        <Navbar />
-      </header>
-      
-      <main role="main" className="flex-1 pt-16">
-        {/* Compact Search Hero - 180px */}
+      <main role="main">
+        {/* Compact Search Hero */}
         <CompactSearchHero />
         
         {/* Main Property Grid - Dynamic height */}
@@ -63,13 +58,9 @@ const Index = () => {
           </div>
         </section>
       </main>
-      
-      <footer role="contentinfo">
-        <Footer />
-      </footer>
 
       <OnboardingModal />
-    </div>
+    </MainLayout>
   );
 };
 

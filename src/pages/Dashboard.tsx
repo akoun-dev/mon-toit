@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -83,10 +82,8 @@ const Dashboard = () => {
   const content = dashboardContent[profile.user_type];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-6 pt-24">
+    <MainLayout>
+      <main className="container mx-auto px-4 py-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <DynamicBreadcrumb />
           
@@ -217,9 +214,8 @@ const Dashboard = () => {
         </div>
       </main>
 
-      <Footer />
       <PreferencesModal open={preferencesOpen} onOpenChange={setPreferencesOpen} />
-    </div>
+    </MainLayout>
   );
 };
 
