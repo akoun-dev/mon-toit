@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load des composants lourds
 const FeaturedProperties = lazy(() => import("@/components/FeaturedProperties"));
+const UserReviews = lazy(() => import("@/components/UserReviews"));
 const Features = lazy(() => import("@/components/Features"));
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
 const Testimonials = lazy(() => import("@/components/Testimonials"));
@@ -52,6 +53,13 @@ const Index = () => {
             </div>
           }>
             <FeaturedProperties limit={4} />
+          </Suspense>
+        </section>
+
+        <section aria-labelledby="user-reviews-heading">
+          <h2 id="user-reviews-heading" className="sr-only">Ce que disent nos utilisateurs</h2>
+          <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+            <UserReviews />
           </Suspense>
         </section>
 
