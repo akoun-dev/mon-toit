@@ -122,7 +122,7 @@ export const PropertyCard = ({
         aria-labelledby={`property-title-${property.id}`}
         aria-describedby={`property-description-${property.id}`}
       >
-      <div className="relative h-56 bg-muted overflow-hidden">
+      <div className="relative h-44 bg-muted overflow-hidden">
         {property.main_image ? (
           <>
             <OptimizedImage
@@ -178,7 +178,7 @@ export const PropertyCard = ({
         )}
         
         {/* Time badge - top left */}
-        <Badge className="absolute top-3 left-3 rounded-lg font-semibold shadow-md bg-background/90 backdrop-blur-sm text-foreground border border-border/50 flex items-center gap-1">
+        <Badge className="absolute top-3 left-3 text-xs rounded-lg font-semibold shadow-md bg-background/90 backdrop-blur-sm text-foreground border border-border/50 flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {timeAgo}
         </Badge>
@@ -186,7 +186,7 @@ export const PropertyCard = ({
         <div className="absolute top-14 left-3 flex flex-col gap-2">
           {showStatus && (
             <Badge 
-              className={`rounded-lg font-semibold shadow-md flex items-center gap-1 ${
+              className={`text-xs rounded-lg font-semibold shadow-md flex items-center gap-1 ${
                 property.status === 'disponible' 
                   ? 'bg-green-500 hover:bg-green-600 text-white animate-pulse' 
                   : property.status === 'en_negociation'
@@ -202,21 +202,21 @@ export const PropertyCard = ({
           )}
           
           {agencyName && (
-            <Badge className="rounded-lg font-semibold shadow-md bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
+            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
               <Building2 className="h-3 w-3" />
               Géré par {agencyName}
             </Badge>
           )}
           
           {hasCertifiedLease && (
-            <Badge className="rounded-lg font-semibold shadow-md bg-primary/90 text-white flex items-center gap-1">
+            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-primary/90 text-white flex items-center gap-1">
               <ShieldCheck className="h-3 w-3" />
               Certifié ANSUT
             </Badge>
           )}
           
           {property.work_status && property.work_status !== 'aucun_travail' && (
-            <Badge className="rounded-lg font-semibold shadow-md bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-1">
+            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-1">
               <Wrench className="h-3 w-3" />
               Travaux
             </Badge>
@@ -231,8 +231,8 @@ export const PropertyCard = ({
         Statut : {getPropertyStatusLabel(property.status)}.
       </div>
 
-      <CardHeader className="p-4 sm:p-6 pb-3">
-        <div className="flex items-baseline gap-2 mb-3">
+      <CardHeader className="p-3 sm:p-4 pb-2">
+        <div className="flex items-baseline gap-2 mb-2">
           <p className="text-3xl sm:text-4xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
           </p>
@@ -243,13 +243,13 @@ export const PropertyCard = ({
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4 p-4 sm:p-6 pt-0">
+      <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
           <span className="line-clamp-1 font-medium">{property.city}</span>
         </div>
 
-        <div className="flex items-center gap-4 text-sm bg-muted/50 p-3 rounded-xl">
+        <div className="flex items-center gap-4 text-sm bg-muted/50 p-2 rounded-xl">
           <div className="flex items-center gap-1">
             <Bed className="h-4 w-4" />
             <span className="font-medium">{property.bedrooms}</span>
@@ -268,10 +268,10 @@ export const PropertyCard = ({
 
         {variant === 'default' && (
           <div className="flex flex-wrap gap-2">
-            {property.is_furnished && <Badge variant="secondary" className="rounded-full">Meublé</Badge>}
-            {property.has_ac && <Badge variant="secondary" className="rounded-full">Climatisation</Badge>}
-            {property.has_parking && <Badge variant="secondary" className="rounded-full">Parking</Badge>}
-            {property.has_garden && <Badge variant="secondary" className="rounded-full">Jardin</Badge>}
+            {property.is_furnished && <Badge variant="secondary" className="text-xs rounded-full">Meublé</Badge>}
+            {property.has_ac && <Badge variant="secondary" className="text-xs rounded-full">Climatisation</Badge>}
+            {property.has_parking && <Badge variant="secondary" className="text-xs rounded-full">Parking</Badge>}
+            {property.has_garden && <Badge variant="secondary" className="text-xs rounded-full">Jardin</Badge>}
           </div>
         )}
 
