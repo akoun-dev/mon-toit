@@ -27,7 +27,7 @@ export const EmptyState = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className={cn(
-        "flex flex-col items-center justify-center text-center py-16 px-4",
+        "flex flex-col items-center justify-center text-center py-10 px-4",
         className
       )}
     >

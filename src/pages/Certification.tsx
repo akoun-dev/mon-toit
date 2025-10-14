@@ -56,7 +56,7 @@ const Certification = () => {
           </div>
         </section>
 
-        <section className="py-8 md:py-16">
+        <section className="py-6 md:py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="bg-gradient-primary/10 border-2 border-primary/20 rounded-xl p-8 mb-12">
               <h2 className="text-2xl font-bold mb-4">Qu'est-ce que la certification ANSUT ?</h2>

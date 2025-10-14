@@ -15,7 +15,7 @@ const CommentCaMarche = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 pt-16">
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-16 animate-fade-in">
@@ -49,7 +49,7 @@ const CommentCaMarche = () => {
             </Suspense>
 
             {/* FAQ Section */}
-            <section className="py-16">
+            <section className="py-10">
               <div className="text-center mb-12">
                 <h2 className="text-h2 mb-4">
                   Questions <span className="text-primary">fréquentes</span>

@@ -303,7 +303,7 @@ const PropertyDetail = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-24 text-center">
+        <main className="flex-1 container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Bien introuvable</h1>
           <Button asChild>
             <Link to="/recherche">Retour à la recherche</Link>

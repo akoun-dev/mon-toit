@@ -212,7 +212,7 @@ export default function Leases() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="container mx-auto px-4 py-8 pt-24">
+      <main className="container mx-auto px-4 py-6 pt-24">
         <DynamicBreadcrumb />
         
         <div className="mb-8">

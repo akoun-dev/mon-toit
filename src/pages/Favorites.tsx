@@ -53,7 +53,7 @@ const Favorites = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+      <main className="flex-1 container mx-auto px-4 py-6 pt-24">
         <div className="max-w-7xl mx-auto">
           <DynamicBreadcrumb />
           <div className="mb-10">

@@ -10,7 +10,7 @@ const APropos = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 pt-16">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-10">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold text-center mb-4">À propos de Mon Toit</h1>
             <p className="text-xl text-muted-foreground text-center mb-12">

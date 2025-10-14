@@ -31,7 +31,7 @@ const Guide = () => {
       <Navbar />
       <main className="flex-1 pt-20">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-16 mb-12">
+        <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12">
           <div className="container mx-auto px-4 text-center">
             <Badge variant="secondary" className="mb-4">Centre d'aide</Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Comment pouvons-nous vous aider ?</h1>

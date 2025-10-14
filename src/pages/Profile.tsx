@@ -178,7 +178,7 @@ const Profile = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-12 pt-24">
+      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
         <div className="max-w-4xl mx-auto space-y-6">
           <DynamicBreadcrumb />
           {/* Header */}

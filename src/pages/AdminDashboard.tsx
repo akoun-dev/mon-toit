@@ -147,7 +147,7 @@ const AdminDashboard = () => {
           />
 
           <SidebarInset className="flex-1">
-            <main className="container mx-auto px-6 py-8">
+            <main className="container mx-auto px-6 py-6">
               <StickyHeader>
                 <h1 className="text-2xl font-bold">Administration ANSUT</h1>
                 <p className="text-sm text-muted-foreground">

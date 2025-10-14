@@ -67,7 +67,7 @@ const Tarifs = () => {
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 md:py-28 bg-white">
+        <section className="py-12 md:py-18 bg-white">
           <div className="container mx-auto px-4 max-w-7xl text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-foreground">
               Des tarifs simples et transparents
@@ -79,7 +79,7 @@ const Tarifs = () => {
         </section>
 
         {/* Pricing Cards */}
-        <section className="py-12 md:py-20 bg-gray-50">
+        <section className="py-8 md:py-12 bg-gray-50">
           <div className="container mx-auto px-4 max-w-7xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {pricingPlans.map((plan, index) => {

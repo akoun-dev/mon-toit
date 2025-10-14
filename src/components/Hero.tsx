@@ -103,7 +103,7 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-20 md:py-28 max-w-7xl z-10 animate-fade-in">
+      <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-12 md:py-18 max-w-7xl z-10 animate-fade-in">
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
           {/* Main Title - Bold and Large */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-foreground leading-tight tracking-tight">

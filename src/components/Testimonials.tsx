@@ -52,7 +52,7 @@ const Testimonials = () => {
   );
 
   return (
-    <section className="py-24 md:py-32 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         {/* Bannière illustration */}
         <div className="mb-12">

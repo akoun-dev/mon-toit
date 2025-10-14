@@ -238,7 +238,7 @@ ComparisonList.displayName = "ComparisonList";
 const Features = () => {
   return (
     <section 
-      className="py-20 md:py-28 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
+      className="py-12 md:py-18 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
       aria-labelledby="features-heading"
     >
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
