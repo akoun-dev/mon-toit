@@ -377,6 +377,28 @@
   .shadow-card-hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
+
+  /* MOBILE TOUCH TARGET - Minimum size for accessibility */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE TYPOGRAPHY - Mobile Optimization
+   ============================================ */
+@media (max-width: 768px) {
+  /* Ensure minimum readable font sizes on mobile */
+  .text-xs {
+    font-size: 14px !important;
+    line-height: 1.5;
+  }
+  
+  .text-sm {
+    font-size: 16px !important;
+    line-height: 1.5;
+  }
 }
 
 /* High Contrast Mode */

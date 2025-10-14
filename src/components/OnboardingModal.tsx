@@ -35,7 +35,7 @@ const OnboardingModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-5xl mx-auto">
+      <DialogContent className="w-full h-full md:h-auto md:max-w-5xl md:w-auto mx-auto">
         <button
           onClick={handleClose}
           className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"

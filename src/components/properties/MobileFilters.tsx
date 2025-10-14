@@ -210,6 +210,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="Min"
                     value={priceRange[0]}
                     onChange={(e) => {
@@ -220,6 +222,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <span>-</span>
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="Max"
                     value={priceRange[1]}
                     onChange={(e) => {
@@ -249,6 +253,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="Min"
                     value={surfaceRange[0]}
                     onChange={(e) => {
@@ -259,6 +265,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <span>-</span>
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="Max"
                     value={surfaceRange[1]}
                     onChange={(e) => {
@@ -312,6 +320,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <Label>Chambres (min)</Label>
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     min={0}
                     placeholder="0"
                     value={filters.bedrooms || ''}
@@ -325,6 +335,8 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <Label>Salles de bain (min)</Label>
                   <Input
                     type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     min={0}
                     placeholder="0"
                     value={filters.bathrooms || ''}
@@ -352,7 +364,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                     <Button
                       key={key}
                       variant={filters[key as keyof PropertyFilters] ? 'default' : 'outline'}
-                      className="h-auto py-3"
+                      className="min-h-[44px] py-3"
                       onClick={() => {
                         triggerHapticFeedback('light');
                         setFilters({
@@ -379,7 +391,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                     <Button
                       key={key}
                       variant={filters[key as keyof PropertyFilters] ? 'default' : 'outline'}
-                      className="h-auto py-3"
+                      className="min-h-[44px] py-3"
                       onClick={() => {
                         triggerHapticFeedback('light');
                         setFilters({

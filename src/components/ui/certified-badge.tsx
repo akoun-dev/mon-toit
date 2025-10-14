@@ -15,7 +15,7 @@ const CertifiedBadge = ({ variant = "default", clickable = true }: CertifiedBadg
           Certifié ANSUT
         </span>
         {variant === "default" && (
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             Plateforme sécurisée
           </span>
         )}

@@ -100,21 +100,35 @@ export const OptimizedImage = ({
     lowResImg.src = lowResSrc;
   }, [src, isVisible]);
 
+  const generateSrcSet = (url: string): string => {
+    if (!url.includes("supabase")) return url;
+    const separator = url.includes("?") ? "&" : "?";
+    return `
+      ${url}${separator}width=480 480w,
+      ${url}${separator}width=768 768w,
+      ${url}${separator}width=1024 1024w,
+      ${url}${separator}width=1280 1280w
+    `.trim();
+  };
+
   return (
     <div ref={imgRef as any}>
       {isVisible && currentSrc ? (
         <picture>
           <source
-            srcSet={`${currentSrc}?format=webp`}
+            srcSet={generateSrcSet(currentSrc)}
+            sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
             type="image/webp"
           />
           <img
             src={currentSrc}
+            srcSet={generateSrcSet(currentSrc)}
+            sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
             alt={alt}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             className={cn(
-              "transition-opacity duration-500",
+              "transition-opacity duration-500 w-full h-auto",
               isLoading ? "blur-sm opacity-50" : "blur-0 opacity-100",
               className
             )}

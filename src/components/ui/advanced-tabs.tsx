@@ -178,7 +178,7 @@ const MobileTabsNav: React.FC<MobileTabsNavProps> = ({ tabs, value, onValueChang
               {tab.badge !== undefined && (
                 <Badge
                   variant="destructive"
-                  className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px]"
+                  className="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-xs"
                 >
                   {tab.badge}
                 </Badge>

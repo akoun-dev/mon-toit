@@ -51,7 +51,7 @@ const ActiveFilters = ({ filters, onRemove, onClearAll }: ActiveFiltersProps) =>
         <Badge
           key={key}
           variant="secondary"
-          className="pr-1 min-h-[36px] gap-1"
+          className="pr-1 min-h-[44px] gap-1"
         >
           {getFilterLabel(key, value)}
           <button
@@ -74,7 +74,7 @@ const ActiveFilters = ({ filters, onRemove, onClearAll }: ActiveFiltersProps) =>
           onClearAll();
           triggerHapticFeedback('medium');
         }}
-        className="text-destructive hover:text-destructive min-h-[36px]"
+        className="text-destructive hover:text-destructive min-h-[44px]"
         aria-label="Effacer tous les filtres"
       >
         Tout effacer

@@ -151,9 +151,9 @@ const Footer = () => {
             </p>
 
             {/* Badge ANSUT */}
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-lg">
+            <div className="flex items-center gap-2 px-3 py-2 bg-primary/10 border border-primary/20 rounded-lg">
               <Shield className="h-4 w-4 text-primary" />
-              <span className="text-xs font-medium">Propulsé par ANSUT</span>
+              <span className="text-sm font-medium">Propulsé par ANSUT</span>
             </div>
           </div>
         </div>

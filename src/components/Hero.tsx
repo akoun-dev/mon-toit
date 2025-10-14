@@ -123,6 +123,9 @@ const Hero = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              type="search"
+              inputMode="search"
+              autoComplete="street-address"
               className="pl-12 pr-14 h-14 text-lg border-2 border-primary/20 focus:border-primary rounded-full shadow-lg"
             />
             {isSupported && (
@@ -166,7 +169,7 @@ const Hero = () => {
               <button
                 key={location}
                 onClick={() => handleQuickSearch(location)}
-                className="text-xs px-3 py-1 rounded-full bg-muted hover:bg-primary/10 text-foreground hover:text-primary transition-colors"
+                className="text-xs px-3 py-2 min-h-[36px] rounded-full bg-muted hover:bg-primary/10 text-foreground hover:text-primary transition-colors"
               >
                 {location}
               </button>

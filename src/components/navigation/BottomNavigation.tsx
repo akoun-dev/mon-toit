@@ -76,7 +76,7 @@ const NavButton = memo(({ item, isActive }: NavButtonProps) => {
         {item.badge && item.badge > 0 && (
           <Badge 
             variant="destructive" 
-            className="absolute -top-2 -right-2 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-semibold animate-in zoom-in-50"
+            className="absolute -top-2 -right-2 h-4 min-w-4 px-1 flex items-center justify-center text-xs font-semibold animate-in zoom-in-50"
             role="status"
             aria-live="polite"
           >
@@ -88,7 +88,7 @@ const NavButton = memo(({ item, isActive }: NavButtonProps) => {
       
       <span 
         className={cn(
-          "text-[10px] font-medium leading-none transition-all",
+          "text-xs font-medium leading-none transition-all",
           isActive && "font-semibold"
         )}
       >
