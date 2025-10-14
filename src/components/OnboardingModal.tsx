@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Home, User, Building2, X, CheckCircle } from "lucide-react";
+import { Home, Building, Building2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { Card } from "./ui/card";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const OnboardingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,186 +35,66 @@ const OnboardingModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-4xl mx-auto max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl mx-auto">
+        <button
+          onClick={handleClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          aria-label="Fermer"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-              <Home className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <DialogTitle className="text-2xl">Bienvenue sur Mon Toit</DialogTitle>
-              <DialogDescription className="text-base">
-                Plateforme certifiée ANSUT de location immobilière
-              </DialogDescription>
-            </div>
-          </div>
+          <DialogTitle className="text-3xl md:text-4xl font-bold text-center">
+            Bienvenue sur Mon Toit ! 👋
+          </DialogTitle>
+          <DialogDescription className="text-lg text-center mt-2">
+            Que souhaitez-vous faire aujourd'hui ?
+          </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="tenant" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 h-auto bg-muted/30 backdrop-blur-sm shadow-sm border border-border mb-6">
-            <TabsTrigger 
-              value="tenant" 
-              className="flex items-center gap-2 py-4 text-sm md:text-base data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:border-b-2 data-[state=active]:border-b-blue-600"
-            >
-              <User className="h-4 w-4 md:h-5 md:w-5" aria-hidden="true" />
-              <span className="hidden sm:inline">Locataire</span>
-              <span className="sm:hidden">Louer</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="owner"
-              className="flex items-center gap-2 py-4 text-sm md:text-base data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:border-b-2 data-[state=active]:border-b-primary"
-            >
-              <Home className="h-4 w-4 md:h-5 md:w-5" aria-hidden="true" />
-              <span className="hidden sm:inline">Propriétaire</span>
-              <span className="sm:hidden">Louer</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="agency"
-              className="flex items-center gap-2 py-4 text-sm md:text-base data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:border-b-2 data-[state=active]:border-b-secondary"
-            >
-              <Building2 className="h-4 w-4 md:h-5 md:w-5" aria-hidden="true" />
-              <span className="hidden sm:inline">Agence</span>
-              <span className="sm:hidden">Pro</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Locataire */}
-          <TabsContent value="tenant" className="mt-0">
-            <div className="bg-gradient-to-br from-background to-muted/20 rounded-lg border-l-4 border-l-blue-600 p-6 md:p-8 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-full shrink-0">
-                  <User className="h-6 w-6 md:h-8 md:w-8 text-white" aria-hidden="true" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {/* Carte 1 - Locataire */}
+          <Link to="/explorer" onClick={handleChoice} className="group">
+            <Card className="p-6 text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer border-2 hover:border-blue-600">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                  <Home className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold">Pour les Locataires</h3>
               </div>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                Trouvez votre logement idéal et démarquez-vous avec la certification ANSUT
-              </p>
-              
-              <ul className="space-y-3" role="list">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Vérification biométrique rapide en 48h</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Score de confiance automatique (0-100)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Candidature en 1 clic sur tous les biens</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Dossier digital sécurisé et réutilisable</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Protection de vos données personnelles</span>
-                </li>
-              </ul>
-              
-              <Button asChild size="lg" className="w-full bg-blue-600 hover:bg-blue-700" onClick={handleChoice}>
-                <Link to="/auth?type=tenant">
-                  Créer mon profil locataire
-                </Link>
-              </Button>
-            </div>
-          </TabsContent>
+              <h3 className="text-xl font-bold mb-2">Je cherche un logement</h3>
+              <p className="text-muted-foreground">Trouvez votre logement idéal en 48h</p>
+            </Card>
+          </Link>
 
-          {/* Propriétaire */}
-          <TabsContent value="owner" className="mt-0">
-            <div className="bg-gradient-to-br from-background to-muted/20 rounded-lg border-l-4 border-l-primary p-6 md:p-8 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-primary p-4 rounded-full shrink-0">
-                  <Home className="h-6 w-6 md:h-8 md:w-8 text-primary-foreground" aria-hidden="true" />
+          {/* Carte 2 - Propriétaire */}
+          <Link to="/publier" onClick={handleChoice} className="group">
+            <Card className="p-6 text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer border-2 hover:border-primary">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary transition-colors">
+                  <Building className="h-8 w-8 text-primary group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold">Pour les Propriétaires</h3>
               </div>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                Publiez vos biens et recevez uniquement des candidatures certifiées
-              </p>
-              
-              <ul className="space-y-3" role="list">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Candidats pré-vérifiés par l'ANSUT</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Score de confiance visible pour chaque candidat</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Contrats numériques certifiés légalement</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Paiements sécurisés via Mobile Money</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Médiation professionnelle en cas de litige</span>
-                </li>
-              </ul>
-              
-              <Button asChild size="lg" className="w-full" onClick={handleChoice}>
-                <Link to="/auth?type=owner">
-                  Publier mon premier bien
-                </Link>
-              </Button>
-            </div>
-          </TabsContent>
+              <h3 className="text-xl font-bold mb-2">Je suis propriétaire</h3>
+              <p className="text-muted-foreground">Publiez votre bien gratuitement</p>
+            </Card>
+          </Link>
 
-          {/* Agence */}
-          <TabsContent value="agency" className="mt-0">
-            <div className="bg-gradient-to-br from-background to-muted/20 rounded-lg border-l-4 border-l-secondary p-6 md:p-8 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-secondary to-secondary/90 p-4 rounded-full shrink-0">
-                  <Building2 className="h-6 w-6 md:h-8 md:w-8 text-white" aria-hidden="true" />
+          {/* Carte 3 - Agence */}
+          <Link to="/agence" onClick={handleChoice} className="group">
+            <Card className="p-6 text-center hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer border-2 hover:border-secondary">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center group-hover:bg-secondary transition-colors">
+                  <Building2 className="h-8 w-8 text-secondary group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold">Pour les Agences</h3>
               </div>
-              
-              <p className="text-muted-foreground leading-relaxed">
-                Gérez plusieurs propriétés avec des outils professionnels avancés
-              </p>
-              
-              <ul className="space-y-3" role="list">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Gestion multi-propriétés centralisée</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Tableau de bord analytique complet</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Accès à tous les candidats certifiés ANSUT</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Signature électronique de masse</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" aria-hidden="true" />
-                  <span>Support prioritaire et formations</span>
-                </li>
-              </ul>
-              
-              <Button asChild size="lg" className="w-full bg-secondary hover:bg-secondary/90" onClick={handleChoice}>
-                <Link to="/auth?type=agency">
-                  Créer mon compte agence
-                </Link>
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+              <h3 className="text-xl font-bold mb-2">Je suis une agence</h3>
+              <p className="text-muted-foreground">Gérez vos biens avec notre CRM</p>
+            </Card>
+          </Link>
+        </div>
 
-        <div className="border-t pt-4">
+        <div className="border-t pt-4 mt-6">
           <Button
             variant="ghost"
             className="w-full"
