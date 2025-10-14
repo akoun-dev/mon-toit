@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { FormProgressIndicator, Step } from '@/components/forms/FormProgressIndicator';
+import { FormStepper } from '@/components/forms/FormStepper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,10 +30,10 @@ type Property = {
 };
 
 const applicationSteps: Step[] = [
-  { id: 'verification', label: 'Vérification' },
-  { id: 'documents', label: 'Documents' },
-  { id: 'review', label: 'Révision' },
-  { id: 'submit', label: 'Soumission' }
+  { id: 'verification', label: 'Vérification d\'identité' },
+  { id: 'documents', label: 'Documents justificatifs' },
+  { id: 'review', label: 'Révision du dossier' },
+  { id: 'submit', label: 'Soumission finale' }
 ];
 
 const Application = () => {
@@ -247,7 +248,8 @@ const Application = () => {
         </div>
 
         {/* Progress Indicator */}
-        <FormProgressIndicator steps={applicationSteps} currentStep={currentStep} />
+        <FormStepper steps={applicationSteps} currentStep={currentStep} />
+        <FormProgressIndicator steps={applicationSteps} currentStep={currentStep} className="mt-6" />
 
         <div className="space-y-6">
           {/* ONECI Verification Required Alert */}

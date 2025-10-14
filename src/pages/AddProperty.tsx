@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { FormProgressIndicator, type Step } from '@/components/forms/FormProgressIndicator';
+import { FormStepper } from '@/components/forms/FormStepper';
 import { StickyHeader } from '@/components/ui/sticky-header';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
@@ -24,11 +25,11 @@ import { LocationPicker } from '@/components/property/LocationPicker';
 import { TitleDeedUploader } from '@/components/property/TitleDeedUploader';
 
 const propertyFormSteps: Step[] = [
-  { id: 'basic', label: 'Informations' },
-  { id: 'location', label: 'Localisation' },
-  { id: 'characteristics', label: 'Caractéristiques' },
-  { id: 'pricing', label: 'Tarification' },
-  { id: 'media', label: 'Médias' }
+  { id: 'basic', label: 'Type de bien' },
+  { id: 'location', label: 'Informations générales' },
+  { id: 'characteristics', label: 'Photos et description' },
+  { id: 'pricing', label: 'Prix et disponibilité' },
+  { id: 'media', label: 'Vérification' }
 ];
 
 const AddProperty = () => {
@@ -188,7 +189,8 @@ const AddProperty = () => {
             </p>
           </div>
 
-          <FormProgressIndicator steps={propertyFormSteps} currentStep={currentStep} />
+          <FormStepper steps={propertyFormSteps} currentStep={currentStep} />
+          <FormProgressIndicator steps={propertyFormSteps} currentStep={currentStep} className="mt-6" />
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

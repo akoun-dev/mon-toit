@@ -37,6 +37,7 @@ const Applications = lazy(() => import("./pages/Applications"));
 const Leases = lazy(() => import("./pages/Leases"));
 const Payments = lazy(() => import("./pages/Payments"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
+const ScheduleVisit = lazy(() => import("./pages/ScheduleVisit"));
 
 // Load other pages normally
 import Certification from "./pages/Certification";
@@ -299,7 +300,17 @@ const AppContent = () => {
               } 
             />
             <Route 
-              path="/candidatures" 
+              path="/schedule-visit/:propertyId" 
+              element={
+                <ProtectedRoute>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <ScheduleVisit />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/candidatures"
               element={
                 <ProtectedRoute>
                   <Suspense fallback={<PageSkeleton />}>

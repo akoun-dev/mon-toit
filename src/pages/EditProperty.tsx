@@ -14,6 +14,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { FormProgressIndicator, type Step } from '@/components/forms/FormProgressIndicator';
+import { FormStepper } from '@/components/forms/FormStepper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -30,11 +31,11 @@ import { PropertyWorkStatus } from '@/components/property/form/PropertyWorkStatu
 import { LocationPicker } from '@/components/property/LocationPicker';
 
 const propertyFormSteps: Step[] = [
-  { id: 'basic', label: 'Informations' },
-  { id: 'location', label: 'Localisation' },
-  { id: 'characteristics', label: 'Caractéristiques' },
-  { id: 'pricing', label: 'Tarification' },
-  { id: 'media', label: 'Médias' }
+  { id: 'basic', label: 'Type de bien' },
+  { id: 'location', label: 'Informations générales' },
+  { id: 'characteristics', label: 'Photos et description' },
+  { id: 'pricing', label: 'Prix et disponibilité' },
+  { id: 'media', label: 'Vérification' }
 ];
 
 const EditProperty = () => {
@@ -270,7 +271,8 @@ const EditProperty = () => {
             </Alert>
           )}
 
-          <FormProgressIndicator steps={propertyFormSteps} currentStep={currentStep} />
+          <FormStepper steps={propertyFormSteps} currentStep={currentStep} />
+          <FormProgressIndicator steps={propertyFormSteps} currentStep={currentStep} className="mt-6" />
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
