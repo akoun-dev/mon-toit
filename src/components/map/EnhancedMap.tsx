@@ -22,7 +22,14 @@ interface EnhancedMapProps {
   onNeighborhoodClick?: (neighborhood: Neighborhood) => void;
 }
 
-const getStoredMapboxToken = () => localStorage.getItem('mapbox_token') || '';
+const getStoredMapboxToken = () => {
+  // Priorité 1: Variable d'environnement
+  const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
+  if (envToken) return envToken;
+  
+  // Priorité 2: localStorage (fallback)
+  return localStorage.getItem('mapbox_token') || '';
+};
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
 
