@@ -1,5 +1,7 @@
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PremiumHero } from "@/components/PremiumHero";
+import { MobileHero } from "@/components/MobileHero";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { PropertyGrid } from "@/components/PropertyGrid";
 import OnboardingModal from "@/components/OnboardingModal";
 import { Helmet } from "react-helmet-async";
@@ -21,8 +23,8 @@ const Index = () => {
       </Helmet>
 
       <main role="main">
-        {/* Premium Hero with Background Image */}
-        <PremiumHero />
+        {/* Hero adaptatif : Mobile ou Desktop */}
+        {useIsMobile() ? <MobileHero /> : <PremiumHero />}
         
         {/* Main Property Grid - Dynamic height */}
         <PropertyGrid
