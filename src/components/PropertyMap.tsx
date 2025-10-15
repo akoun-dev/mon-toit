@@ -25,8 +25,10 @@ interface PropertyMapProps {
 }
 
 const getStoredMapboxToken = () => {
-  // Priorité 1: Variable d'environnement
-  const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
+  // Priorité 1: Variable d'environnement (supporte plusieurs noms)
+  const envToken = import.meta.env.VITE_MAPBOX_TOKEN || 
+                   import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
+                   import.meta.env.MAPBOX_PUBLIC_TOKEN;
   if (envToken) return envToken;
   
   // Priorité 2: localStorage (fallback)
