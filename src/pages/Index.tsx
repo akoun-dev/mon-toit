@@ -1,5 +1,5 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import { CompactSearchHero } from "@/components/CompactSearchHero";
+import { PremiumHero } from "@/components/PremiumHero";
 import { PropertyGrid } from "@/components/PropertyGrid";
 import OnboardingModal from "@/components/OnboardingModal";
 import { Helmet } from "react-helmet-async";
@@ -21,8 +21,8 @@ const Index = () => {
       </Helmet>
 
       <main role="main">
-        {/* Compact Search Hero */}
-        <CompactSearchHero />
+        {/* Premium Hero with Background Image */}
+        <PremiumHero />
         
         {/* Main Property Grid - Dynamic height */}
         <PropertyGrid
