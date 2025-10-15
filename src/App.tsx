@@ -17,6 +17,8 @@ import BottomNavigation from "@/components/navigation/BottomNavigation";
 import { PageSkeleton, PropertyDetailSkeleton } from "@/components/LoadingFallback";
 import ContextBar from "@/components/ContextBar";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
+import { InstallPWA } from "@/components/pwa/InstallPWA";
+import { SplashScreen } from "@/components/pwa/SplashScreen";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -25,6 +27,7 @@ import Search from "./pages/Search";
 
 // Lazy load heavy pages
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
+const Offline = lazy(() => import("./pages/Offline"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCertifications = lazy(() => import("./pages/AdminCertifications"));
@@ -98,7 +101,9 @@ const AppContent = () => {
   
   return (
     <>
+      <SplashScreen />
       <ScrollProgress />
+      <InstallPWA />
       {/* Skip link pour accessibilité */}
       <a href="#main-content" className="skip-to-main">
         Aller au contenu principal
@@ -116,6 +121,7 @@ const AppContent = () => {
         >
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/offline" element={<Suspense fallback={<PageSkeleton />}><Offline /></Suspense>} />
             <Route path="/recherche" element={<Search />} />
             <Route path="/explorer" element={<Explorer />} />
             <Route path="/carte-intelligente" element={<SmartMapV2 />} />
