@@ -34,13 +34,23 @@
 ### 🤖 Application Native (Capacitor)
 - ✅ APK Android prêt
 - ✅ IPA iOS prêt
-- ✅ 7 plugins natifs
+- ✅ 7 plugins natifs (géolocalisation, notifications, etc.)
+
+### 🔐 Sécurité & Certification
+- ✅ Authentification multi-facteurs (MFA)
+- ✅ Système de rôles (propriétaire, locataire, agence, tiers de confiance)
+- ✅ Certification ANSUT intégrée
+- ✅ Signatures électroniques et contrats certifiés
 
 ---
 
-## 🚀 Déploiement Rapide
+## 🚀 Développement Local
 
-### 1. Cloner le repo
+### Prérequis
+- Node.js 18+
+- npm ou yarn
+
+### 1. Installation
 
 ```bash
 git clone https://github.com/SOMET1010/mon-toit.git
@@ -48,67 +58,172 @@ cd mon-toit
 npm install
 ```
 
-### 2. Configurer Supabase
+### 2. Configuration
 
-1. Créez un projet sur https://supabase.com
-2. Exécutez le SQL dans `scripts/seed-supabase.sql`
-3. Copiez les clés API
-
-### 3. Variables d'environnement
-
-Créez `.env.local` :
+Créez `.env.local` (les valeurs Supabase sont déjà en fallback dans le code) :
 
 ```env
-VITE_SUPABASE_URL=https://xxxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGc...
-VITE_MAPBOX_PUBLIC_TOKEN=pk.eyJ1...
+VITE_SUPABASE_URL=https://votre-projet.supabase.co
+VITE_SUPABASE_ANON_KEY=votre_clé_anon
+VITE_MAPBOX_PUBLIC_TOKEN=votre_token_mapbox
 ```
 
-### 4. Tester localement
+### 3. Démarrer le développement
 
 ```bash
+# Serveur de développement (port 8080)
 npm run dev
+
+# Build de développement
+npm run build:dev
+
+# Build de production
+npm run build
+
+# Linter le code
+npm run lint
+
+# Prévisualiser le build
+npm run preview
 ```
 
-### 5. Déployer sur Vercel
+### 4. Application Mobile
 
+```bash
+# Synchroniser avec les plateformes natives
+npx cap sync
+
+# Ouvrir Android Studio
+npx cap open android
+
+# Ouvrir Xcode
+npx cap open ios
+
+# Tester sur device/emulator
+npx cap run android
+npx cap run ios
+```
+
+### 5. Déploiement
+
+**Vercel (recommandé) :**
 ```bash
 npm install -g vercel
 vercel login
 vercel
 ```
 
-Ou via https://vercel.com/new
+Ou directement via https://vercel.com/new
+
+**Capacitor (Production Mobile) :**
+```bash
+# Build pour mobile
+npm run build
+CAPACITOR=true npm run build
+npx cap sync
+```
 
 ---
 
 ## 📊 Stack Technique
 
 - **Frontend** : React 18 + TypeScript + Vite 5
-- **Styling** : Tailwind CSS 3 + shadcn/ui
-- **Animations** : Framer Motion
-- **Database** : Supabase (PostgreSQL)
-- **Maps** : Mapbox GL JS + Supercluster
-- **Mobile** : Vite PWA + Capacitor 6
-- **Hosting** : Vercel
+- **UI Framework** : Tailwind CSS 3 + shadcn/ui + Radix UI
+- **Animations** : Framer Motion + React Spring
+- **State Management** : TanStack Query + React Context
+- **Forms** : React Hook Form + Zod validation
+- **Database** : Supabase (PostgreSQL) avec RLS
+- **Maps** : Mapbox GL JS + Supercluster clustering
+- **Mobile** : Vite PWA + Capacitor 7
+- **Monitoring** : Sentry (temporairement désactivé)
+- **Hosting** : Vercel avec sécurité renforcée
 
 ---
 
-## 📁 Structure
+## 📁 Architecture du Projet
 
 ```
 mon-toit/
-├── android/              # Android (Capacitor)
-├── ios/                  # iOS (Capacitor)
-├── scripts/              # Scripts seed
+├── android/                  # Application Android native
+├── ios/                      # Application iOS native
+├── scripts/                  # Scripts de base de données
 ├── src/
-│   ├── components/       # Composants React
-│   ├── data/             # Données statiques
-│   ├── hooks/            # Hooks personnalisés
-│   ├── pages/            # Pages
-│   └── styles/           # Styles
-├── vercel.json           # Config Vercel
-└── capacitor.config.ts   # Config Capacitor
+│   ├── components/           # Composants React réutilisables
+│   │   ├── admin/           # Composants administration
+│   │   ├── agency/          # Composants agences
+│   │   ├── auth/            # Authentification
+│   │   ├── dashboard/       # Widgets et tableaux de bord
+│   │   └── navigation/      # Navigation mobile
+│   ├── hooks/               # Hooks personnalisés (50+ hooks)
+│   ├── lib/                 # Utilitaires et configuration
+│   │   ├── supabase.ts      # Client base de données
+│   │   └── queryClient.ts   # Configuration TanStack Query
+│   ├── pages/               # Pages des routes (30+ pages)
+│   │   ├── AdminDashboard.tsx
+│   │   ├── TenantDashboard.tsx
+│   │   ├── AgencyDashboard.tsx
+│   │   └── OwnerDashboard.tsx
+│   └── data/                # Données statiques et constantes
+├── public/                  # Assets statiques et PWA
+├── vercel.json              # Configuration Vercel avec sécurité
+├── capacitor.config.ts      # Configuration application native
+├── vite.config.ts           # Configuration build avec optimisations
+└── CLAUDE.md               # Documentation pour développeurs
+```
+
+### Architecture Multi-tenant
+
+Le projet utilise une architecture multi-tenant avec 4 types d'utilisateurs :
+
+- **propriétaire** : Gestion des biens et candidatures
+- **locataire** : Recherche et suivi des locations
+- **agence** : Gestion de portefeuille et mandats
+- **tiers_de_confiance** : Certification et médiation
+
+### Performance & Optimisations
+
+- **Code splitting** automatique par route et fonctionnalité
+- **Cache intelligent** avec TanStack Query et Workbox
+- **Images optimisées** avec compression WebP
+- **Préchargement** des routes stratégiques
+- **PWA** avec support hors-ligne
+
+### Sécurité
+
+- **RLS (Row Level Security)** sur toutes les tables Supabase
+- **Authentification multi-facteurs** pour les admins
+- **CORS et headers** de sécurité configurés
+- **Rôles et permissions** gérés au niveau composant
+
+---
+
+## 🛠️ Commandes Utiles
+
+### Développement
+```bash
+npm run dev              # Serveur de développement
+npm run build            # Build production optimisé
+npm run build:dev        # Build développement rapide
+npm run lint             # Vérification du code
+npm run preview          # Prévisualisation du build
+```
+
+### Mobile (Capacitor)
+```bash
+npx cap sync             # Synchroniser les assets
+npx cap open android     # Ouvrir Android Studio
+npx cap open ios         # Ouvrir Xcode
+npx cap run android      # Tester sur Android
+npx cap run ios          # Tester sur iOS
+```
+
+### Debug
+```bash
+# Vider le cache local
+npm run build -- --force
+
+# Variables d'environnement
+echo $VITE_SUPABASE_URL
 ```
 
 ---
