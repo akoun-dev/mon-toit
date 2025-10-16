@@ -18,6 +18,7 @@ import { useLongPress } from '@/hooks/useLongPress';
 import { triggerHapticFeedback } from '@/utils/haptics';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { SwipeableGallery } from '@/components/mobile/SwipeableGallery';
+import { CulturalBadge } from '@/components/ui/cultural-badge';
 
 interface PropertyCardProps {
   property: Property;
@@ -220,10 +221,11 @@ export const PropertyCard = ({
           )}
           
           {hasCertifiedLease && (
-            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-primary/90 text-white flex items-center gap-1">
-              <ShieldCheck className="h-3 w-3" />
-              Certifié ANSUT
-            </Badge>
+            <CulturalBadge
+              variant="ansut"
+              size="sm"
+              className="shadow-md"
+            />
           )}
           
           {property.work_status && property.work_status !== 'aucun_travail' && (

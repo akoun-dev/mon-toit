@@ -7,6 +7,8 @@ import { Search, PlusCircle, Users, ShieldCheck, FileSignature, MapPin, Home, Do
 import { RippleButton } from '@/components/animations/RippleButton';
 import { CountUp } from '@/components/animations/CountUp';
 import { motion } from 'framer-motion';
+import { GradientButton } from '@/components/ui/gradient-button';
+import { GradientText } from '@/components/ui/gradient-text';
 
 export const PremiumHero = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,9 +93,9 @@ export const PremiumHero = () => {
             transition={{ delay: 0.3, duration: 0.6 }}
           >
             Trouvez votre{' '}
-            <span className="bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 bg-clip-text text-transparent animate-pulse-slow">
+            <GradientText variant="primary" className="text-5xl md:text-7xl font-bold">
               Toit Idéal
-            </span>
+            </GradientText>
           </motion.h1>
 
           {/* Sous-titre */}
@@ -175,17 +177,17 @@ export const PremiumHero = () => {
                   <Search className="h-5 w-5 mr-2" />
                   Rechercher
                 </RippleButton>
-                <Button
+                <GradientButton
                   variant="secondary"
                   size="lg"
                   asChild
-                  className="h-14 px-6 font-bold shadow-lg hover:shadow-xl transition-shadow"
+                  className="h-14 px-6 font-bold shadow-lg hover:shadow-xl"
                 >
                   <a href="/publier">
                     <PlusCircle className="h-5 w-5 mr-2" />
                     Publier
                   </a>
-                </Button>
+                </GradientButton>
               </div>
             </div>
           </motion.div>
