@@ -1,73 +1,125 @@
-# Welcome to your Lovable project
+# 🏠 Mon Toit - Plateforme Immobilière Certifiée ANSUT
 
-## Project info
+**La première plateforme immobilière certifiée en Côte d'Ivoire**
 
-**URL**: https://lovable.dev/projects/f616cce6-dfb4-4094-ad01-ffc787c08c13
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SOMET1010/mon-toit)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🌟 Fonctionnalités
 
-**Use Lovable**
+### 🎨 Interface Moderne
+- ✅ Design premium avec gradients animés
+- ✅ Patterns culturels ivoiriens (Kente, Akan, Bogolan)
+- ✅ Typographie professionnelle (Poppins + Inter)
+- ✅ Sidebar moderne avec icônes colorées
+- ✅ Hero avec image de fond Abidjan
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f616cce6-dfb4-4094-ad01-ffc787c08c13) and start prompting.
+### 🗺️ Carte Intelligente
+- ✅ Clustering des biens avec Supercluster
+- ✅ Heatmap des prix
+- ✅ 28 POI en 6 catégories
+- ✅ 10 quartiers d'Abidjan délimités
+- ✅ Analyse de quartier avec scores
+- ✅ Filtres avancés en temps réel
 
-Changes made via Lovable will be committed automatically to this repo.
+### 📱 PWA Mobile
+- ✅ Installable sur Android et iOS
+- ✅ Bottom Navigation native
+- ✅ Swipe gestures
+- ✅ Pull to refresh
+- ✅ Splash screen animé
+- ✅ Mode hors ligne
 
-**Use your preferred IDE**
+### 🤖 Application Native (Capacitor)
+- ✅ APK Android prêt
+- ✅ IPA iOS prêt
+- ✅ 7 plugins natifs
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Déploiement Rapide
 
-Follow these steps:
+### 1. Cloner le repo
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+git clone https://github.com/SOMET1010/mon-toit.git
+cd mon-toit
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2. Configurer Supabase
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Créez un projet sur https://supabase.com
+2. Exécutez le SQL dans `scripts/seed-supabase.sql`
+3. Copiez les clés API
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 3. Variables d'environnement
+
+Créez `.env.local` :
+
+```env
+VITE_SUPABASE_URL=https://xxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGc...
+VITE_MAPBOX_PUBLIC_TOKEN=pk.eyJ1...
+```
+
+### 4. Tester localement
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 5. Déployer sur Vercel
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm install -g vercel
+vercel login
+vercel
+```
 
-**Use GitHub Codespaces**
+Ou via https://vercel.com/new
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📊 Stack Technique
 
-This project is built with:
+- **Frontend** : React 18 + TypeScript + Vite 5
+- **Styling** : Tailwind CSS 3 + shadcn/ui
+- **Animations** : Framer Motion
+- **Database** : Supabase (PostgreSQL)
+- **Maps** : Mapbox GL JS + Supercluster
+- **Mobile** : Vite PWA + Capacitor 6
+- **Hosting** : Vercel
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📁 Structure
 
-Simply open [Lovable](https://lovable.dev/projects/f616cce6-dfb4-4094-ad01-ffc787c08c13) and click on Share -> Publish.
+```
+mon-toit/
+├── android/              # Android (Capacitor)
+├── ios/                  # iOS (Capacitor)
+├── scripts/              # Scripts seed
+├── src/
+│   ├── components/       # Composants React
+│   ├── data/             # Données statiques
+│   ├── hooks/            # Hooks personnalisés
+│   ├── pages/            # Pages
+│   └── styles/           # Styles
+├── vercel.json           # Config Vercel
+└── capacitor.config.ts   # Config Capacitor
+```
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 📞 Contact
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Site Web** : https://mon-toit.vercel.app
+- **GitHub** : https://github.com/SOMET1010/mon-toit
+- **Email** : contact@montoit.ci
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+**Fait avec ❤️ en Côte d'Ivoire 🇨🇮**
+
