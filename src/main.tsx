@@ -8,7 +8,7 @@ import App from "./App.tsx";
 import "./index.css";
 
 // Initialize Sentry in production
-if (import.meta.env.PROD) {
+if (false && import.meta.env.PROD) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN || "",
     environment: import.meta.env.MODE,
