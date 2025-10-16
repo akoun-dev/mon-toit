@@ -11,6 +11,7 @@ import { FadeInView } from '@/components/animations/FadeInView';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import type { Property } from '@/types';
+import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 
 interface PropertyGridProps {
   limit?: number;
@@ -28,7 +29,7 @@ export const PropertyGrid = ({
   const [filters, setFilters] = useState<PropertyFilters>({});
 
   // Fetch properties
-  const { data: properties = [], isLoading, isError, error } = useQuery({
+  const { data: properties = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -41,6 +42,14 @@ export const PropertyGrid = ({
       return data as Property[];
     },
   });
+
+  const handleRefresh = async () => {
+    await refetch();
+    toast({
+      description: "✅ Liste des biens mise à jour",
+      duration: 2000,
+    });
+  };
 
   // Apply filters
   const filteredProperties = properties.filter(property => {
@@ -84,6 +93,7 @@ export const PropertyGrid = ({
   };
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <section className="bg-background">
       <div className="container mx-auto px-4 py-8 max-w-[1400px]">
         {/* Header: Filters toggle + Sort */}
@@ -186,5 +196,6 @@ export const PropertyGrid = ({
         </div>
       </div>
     </section>
+    </PullToRefresh>
   );
 };

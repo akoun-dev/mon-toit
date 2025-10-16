@@ -19,6 +19,7 @@ import ContextBar from "@/components/ContextBar";
 import { ScrollProgress } from "@/components/animations/ScrollProgress";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
 import { SplashScreen } from "@/components/pwa/SplashScreen";
+import { PageTransition } from "@/components/animations/PageTransition";
 
 // Eager load critical pages
 import Index from "./pages/Index";
@@ -112,13 +113,7 @@ const AppContent = () => {
       <ContextBar />
       <SarahChatbot />
       <main id="main-content" tabIndex={-1}>
-        <div 
-          key={location.pathname}
-          className={cn(
-            "animate-in duration-200",
-            direction === 'right' ? 'slide-in-from-right-4' : 'slide-in-from-left-4'
-          )}
-        >
+        <PageTransition>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/offline" element={<Suspense fallback={<PageSkeleton />}><Offline /></Suspense>} />
@@ -390,7 +385,7 @@ const AppContent = () => {
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </div>
+        </PageTransition>
       </main>
       <BottomNavigation />
     </>

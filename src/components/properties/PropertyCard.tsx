@@ -17,6 +17,7 @@ import { OptimizedImage } from '@/components/property/OptimizedImage';
 import { useLongPress } from '@/hooks/useLongPress';
 import { triggerHapticFeedback } from '@/utils/haptics';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { SwipeableGallery } from '@/components/mobile/SwipeableGallery';
 
 interface PropertyCardProps {
   property: Property;
@@ -123,7 +124,17 @@ export const PropertyCard = ({
         aria-describedby={`property-description-${property.id}`}
       >
       <div className="relative h-56 sm:h-64 bg-muted overflow-hidden">
-        {property.main_image ? (
+        {property.images && property.images.length > 0 ? (
+          <SwipeableGallery
+            images={property.images.map(img => ({
+              url: img,
+              alt: `${property.title} - ${property.city}`
+            }))}
+            showNavigation={property.images.length > 1}
+            showCounter={property.images.length > 1}
+            className="h-full"
+          />
+        ) : property.main_image ? (
           <>
             <OptimizedImage
               src={property.main_image}
