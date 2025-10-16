@@ -33,6 +33,7 @@ import { GuestContactForm } from '@/components/messaging/GuestContactForm';
 import { TitleDeedSection } from '@/components/property/TitleDeedSection';
 import { WorkStatusSection } from '@/components/property/WorkStatusSection';
 import { logger } from '@/services/logger';
+import { sanitizePropertyDescription, sanitizeText } from '@/lib/sanitize';
 import type { Property, Application, PropertyStats } from '@/types';
 
 interface PropertyOwner {
@@ -408,9 +409,12 @@ const PropertyDetail = () => {
                   <CardTitle>Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground whitespace-pre-line">
-                    {property.description || 'Aucune description disponible.'}
-                  </p>
+                  <div
+                    className="text-muted-foreground whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizePropertyDescription(property.description) || 'Aucune description disponible.'
+                    }}
+                  />
                 </CardContent>
               </Card>
 
@@ -706,9 +710,9 @@ const PropertyDetail = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="font-medium">{owner.full_name}</p>
+                        <p className="font-medium">{sanitizeText(owner.full_name)}</p>
                         <p className="text-sm text-muted-foreground capitalize">
-                          {owner.user_type}
+                          {sanitizeText(owner.user_type)}
                         </p>
                       </div>
                     </div>
@@ -733,7 +737,7 @@ const PropertyDetail = () => {
                       {applications.slice(0, 5).map((app) => (
                         <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
                           <div className="flex-1">
-                            <p className="font-medium">{app.profiles.full_name}</p>
+                            <p className="font-medium">{sanitizeText(app.profiles.full_name)}</p>
                             <div className="flex items-center gap-2 mt-1">
                               <Badge variant={app.status === 'pending' ? 'secondary' : app.status === 'approved' ? 'default' : 'destructive'}>
                                 {app.status === 'pending' ? 'En attente' : app.status === 'approved' ? 'Approuvé' : 'Rejeté'}

@@ -15,6 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, MessageCircle, Paperclip, Download, FileText, Image as ImageIcon, File } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';
+import { sanitizeMessage, sanitizeText } from '@/lib/sanitize';
 import type { Message as MessageType } from '@/types';
 import { Badge } from '@/components/ui/badge';
 
@@ -471,7 +472,7 @@ const Messages = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <p className="font-medium truncate">{conv.user_name}</p>
+                          <p className="font-medium truncate">{sanitizeText(conv.user_name)}</p>
                           {getConversationBadge(conv.conversation_type)}
                         </div>
                         {conv.unread_count > 0 && (
@@ -481,7 +482,7 @@ const Messages = () => {
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground truncate">
-                        {conv.last_message}
+                        {sanitizeText(conv.last_message)}
                       </p>
                     </div>
                   </div>
@@ -499,7 +500,7 @@ const Messages = () => {
                 <>
                   <CardHeader>
                     <CardTitle>
-                      {profiles[selectedConversation].full_name}
+                      {sanitizeText(profiles[selectedConversation].full_name)}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -519,7 +520,12 @@ const Messages = () => {
                                   : 'bg-muted'
                               }`}
                             >
-                              <p className="text-sm">{msg.content}</p>
+                              <div
+                                className="text-sm"
+                                dangerouslySetInnerHTML={{
+                                  __html: sanitizeMessage(msg.content)
+                                }}
+                              />
                               
                               {msg.attachments && msg.attachments.length > 0 && (
                                 <div className="mt-2 space-y-1">

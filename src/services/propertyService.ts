@@ -17,11 +17,11 @@ export const shouldShowProperty = (property: Property, currentUserId?: string): 
 /**
  * Parse Supabase/Postgres errors into user-friendly messages
  */
-export function parsePropertyError(error: any): string {
+export function parsePropertyError(error: Error | { message?: string; code?: string } | unknown): string {
   if (!error) return 'Une erreur inconnue est survenue';
 
-  const errorMessage = error?.message || String(error);
-  const errorCode = error?.code;
+  const errorMessage = error instanceof Error ? error.message : (error?.message || String(error));
+  const errorCode = (error as any)?.code;
 
   // Postgres constraint violations
   if (errorCode === '23505') {

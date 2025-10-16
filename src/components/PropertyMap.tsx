@@ -6,6 +6,7 @@ import { Locate, Map, Satellite, Layers } from 'lucide-react';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { logger } from '@/services/logger';
+import { secureStorage } from '@/lib/secureStorage';
 
 interface Property {
   id: string;
@@ -25,14 +26,27 @@ interface PropertyMapProps {
 }
 
 const getStoredMapboxToken = () => {
-  // Priorité 1: Variable d'environnement (supporte plusieurs noms)
-  const envToken = import.meta.env.VITE_MAPBOX_TOKEN || 
+  // Import environment validator
+  try {
+    const { getEnvVar } = require('@/lib/env-validation');
+
+    // Priorité 1: Variables d'environnement validées (supporte plusieurs noms)
+    const envToken = getEnvVar('VITE_MAPBOX_TOKEN') ||
+                     getEnvVar('VITE_MAPBOX_PUBLIC_TOKEN') ||
+                     getEnvVar('MAPBOX_PUBLIC_TOKEN');
+    if (envToken) return envToken;
+  } catch (error) {
+    console.warn('Environment validation not available, using fallback');
+  }
+
+  // Fallback direct aux variables d'environnement (avec validation de base)
+  const envToken = import.meta.env.VITE_MAPBOX_TOKEN ||
                    import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
                    import.meta.env.MAPBOX_PUBLIC_TOKEN;
-  if (envToken) return envToken;
-  
-  // Priorité 2: localStorage (fallback)
-  return localStorage.getItem('mapbox_token') || '';
+  if (envToken && /^pk\.[a-zA-Z0-9.-_]+$/.test(envToken)) return envToken;
+
+  // Priorité 2: localStorage sécurisé (fallback)
+  return secureStorage.getItem('mapbox_token', true) || '';
 };
 const MAPBOX_TOKEN = getStoredMapboxToken();
 
@@ -56,14 +70,14 @@ const PropertyMap = ({
   const [mapReady, setMapReady] = useState(false);
   const [locating, setLocating] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>(() => {
-    return (localStorage.getItem('preferredMapStyle') as MapStyle) || 'streets';
+    return (secureStorage.getItem('preferredMapStyle') as MapStyle) || 'streets';
   });
   const [mapboxToken, setMapboxToken] = useState(getStoredMapboxToken());
   const [tokenInput, setTokenInput] = useState('');
 
   const handleSaveToken = () => {
     if (tokenInput.trim()) {
-      localStorage.setItem('mapbox_token', tokenInput.trim());
+      secureStorage.setItem('mapbox_token', tokenInput.trim(), true);
       setMapboxToken(tokenInput.trim());
       window.location.reload();
     }
@@ -124,45 +138,93 @@ const PropertyMap = ({
       const el = document.createElement('div');
       el.className = 'property-marker';
       
-      // Enhanced marker styling with ANSUT colors
-      el.innerHTML = `
-        <div class="relative group">
-          <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity"></div>
-          <div class="relative w-10 h-10 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform">
-            ${(property.monthly_rent / 1000).toFixed(0)}k
-          </div>
-        </div>
-      `;
+      // Enhanced marker styling with ANSUT colors - using safe DOM manipulation
+      const markerContainer = document.createElement('div');
+      markerContainer.className = 'relative group';
+
+      const glowEffect = document.createElement('div');
+      glowEffect.className = 'absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity';
+
+      const markerContent = document.createElement('div');
+      markerContent.className = 'relative w-10 h-10 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform';
+      markerContent.textContent = `${(property.monthly_rent / 1000).toFixed(0)}k`;
+
+      markerContainer.appendChild(glowEffect);
+      markerContainer.appendChild(markerContent);
+      el.appendChild(markerContainer);
       el.style.cursor = 'pointer';
 
-      // Enhanced popup with image and better styling
-      const popupHTML = `
-        <div class="min-w-[200px]">
-          ${property.main_image ? `
-            <img 
-              src="${property.main_image}" 
-              alt="${property.title}"
-              class="w-full h-32 object-cover rounded-t-lg mb-2"
-            />
-          ` : ''}
-          <div class="p-3">
-            <h3 class="font-semibold text-sm mb-2 text-foreground">${property.title}</h3>
-            <div class="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-              <span>${property.city}</span>
-            </div>
-            <p class="text-base font-bold text-primary">${property.monthly_rent.toLocaleString()} FCFA<span class="text-xs font-normal">/mois</span></p>
-          </div>
-        </div>
-      `;
+      // Enhanced popup with safe DOM manipulation to prevent XSS
+      const popupContent = document.createElement('div');
+      popupContent.className = 'min-w-[200px]';
 
-      const popup = new mapboxgl.Popup({ 
+      if (property.main_image) {
+        const img = document.createElement('img');
+        img.src = property.main_image;
+        img.alt = property.title;
+        img.className = 'w-full h-32 object-cover rounded-t-lg mb-2';
+        popupContent.appendChild(img);
+      }
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'p-3';
+
+      const title = document.createElement('h3');
+      title.className = 'font-semibold text-sm mb-2 text-foreground';
+      title.textContent = property.title;
+      contentDiv.appendChild(title);
+
+      const locationDiv = document.createElement('div');
+      locationDiv.className = 'flex items-center gap-1 text-xs text-muted-foreground mb-2';
+
+      const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svgIcon.setAttribute('class', 'w-3 h-3');
+      svgIcon.setAttribute('fill', 'none');
+      svgIcon.setAttribute('stroke', 'currentColor');
+      svgIcon.setAttribute('viewBox', '0 0 24 24');
+
+      const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path1.setAttribute('stroke-linecap', 'round');
+      path1.setAttribute('stroke-linejoin', 'round');
+      path1.setAttribute('stroke-width', '2');
+      path1.setAttribute('d', 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z');
+
+      const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path2.setAttribute('stroke-linecap', 'round');
+      path2.setAttribute('stroke-linejoin', 'round');
+      path2.setAttribute('stroke-width', '2');
+      path2.setAttribute('d', 'M15 11a3 3 0 11-6 0 3 3 0 016 0z');
+
+      svgIcon.appendChild(path1);
+      svgIcon.appendChild(path2);
+
+      const citySpan = document.createElement('span');
+      citySpan.textContent = property.city;
+
+      locationDiv.appendChild(svgIcon);
+      locationDiv.appendChild(citySpan);
+      contentDiv.appendChild(locationDiv);
+
+      const pricePara = document.createElement('p');
+      pricePara.className = 'text-base font-bold text-primary';
+
+      const priceSpan = document.createElement('span');
+      priceSpan.textContent = `${property.monthly_rent.toLocaleString()} FCFA`;
+
+      const perMonthSpan = document.createElement('span');
+      perMonthSpan.className = 'text-xs font-normal';
+      perMonthSpan.textContent = '/mois';
+
+      pricePara.appendChild(priceSpan);
+      pricePara.appendChild(perMonthSpan);
+      contentDiv.appendChild(pricePara);
+
+      popupContent.appendChild(contentDiv);
+
+      const popup = new mapboxgl.Popup({
         offset: 25,
         className: 'property-popup'
-      }).setHTML(popupHTML);
+      }).setDOMContent(popupContent);
 
       const marker = new mapboxgl.Marker(el)
         .setLngLat([property.longitude!, property.latitude!])
@@ -198,7 +260,7 @@ const PropertyMap = ({
     if (!map.current || mapStyle === newStyle) return;
     
     setMapStyle(newStyle);
-    localStorage.setItem('preferredMapStyle', newStyle);
+    secureStorage.setItem('preferredMapStyle', newStyle, true);
     
     map.current.once('style.load', () => {
       addMarkersToMap();

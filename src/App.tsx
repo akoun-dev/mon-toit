@@ -10,6 +10,8 @@ import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ErrorBoundary from "@/components/ui/error-boundary";
+import { initializeSentry } from "@/lib/sentry-enhanced";
 import { SarahChatbot } from "@/components/SarahChatbot";
 import { usePrefetchRoutes } from "@/hooks/usePrefetchRoutes";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -77,10 +79,13 @@ import SmartMapV2 from "./pages/SmartMapV2";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
+// Initialiser Sentry au démarrage de l'application
+initializeSentry();
+
 const AppContent = () => {
   // ✅ Préchargement intelligent des routes
   usePrefetchRoutes();
-  
+
   // ✅ Raccourcis clavier globaux (accessibilité)
   useKeyboardShortcuts();
   
@@ -393,19 +398,23 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <AppContent />
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
+  <ErrorBoundary level="error">
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ErrorBoundary level="warning">
+              <AuthProvider>
+                <AppContent />
+              </AuthProvider>
+            </ErrorBoundary>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
+  </ErrorBoundary>
 );
 
 export default App;
