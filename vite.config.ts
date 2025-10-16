@@ -8,8 +8,9 @@ import viteImagemin from 'vite-plugin-imagemin';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // ✅ FIX: Base URL pour Capacitor (évite page blanche dans APK)
-  base: mode === 'production' ? './' : '/',
+  // ✅ FIX: Base URL différente pour Vercel (/) et Capacitor (./)
+  // Utilise la variable d'environnement CAPACITOR pour détecter un build Capacitor
+  base: process.env.CAPACITOR === 'true' ? './' : '/',
   server: {
     host: "::",
     port: 8080,
