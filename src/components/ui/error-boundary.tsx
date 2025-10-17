@@ -67,7 +67,7 @@ class ErrorBoundary extends Component<Props, State> {
     this.setState({
       error,
       errorInfo,
-      errorId: this.generateErrorId()
+      errorId: ErrorBoundary.generateErrorId()
     });
 
     // Reporter l'erreur à Sentry

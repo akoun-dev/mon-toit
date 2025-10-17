@@ -46,6 +46,21 @@ export const PropertyCard = ({
   // Adapt image quality based on network
   const imageQuality = effectiveType === '4g' && !saveData;
 
+  // Generate demo images for properties without images
+  const getDemoImage = (propertyId: string, propertyType: string) => {
+    const seed = propertyId.slice(-8); // Use last 8 chars of ID for consistency
+    const typeMap: Record<string, string> = {
+      'appartement': 'apartment',
+      'villa': 'house',
+      'studio': 'room',
+      'duplex': 'building',
+      'bureau': 'office',
+      'local_commercial': 'store'
+    };
+    const imageType = typeMap[propertyType.toLowerCase()] || 'apartment';
+    return `https://picsum.photos/seed/${imageType}-${seed}/400/300.jpg`;
+  };
+
   useEffect(() => {
     // Temporarily disabled certification and agency checks
     // TODO: Re-enable when database schema is fully deployed
@@ -127,34 +142,68 @@ export const PropertyCard = ({
         aria-describedby={`property-description-${property.id}`}
       >
       <div className="relative h-56 sm:h-64 bg-muted overflow-hidden">
-        {property.images && property.images.length > 0 ? (
-          <SwipeableGallery
-            images={property.images.map(img => ({
-              url: img,
-              alt: `${property.title} - ${property.city}`
-            }))}
-            showNavigation={property.images.length > 1}
-            showCounter={property.images.length > 1}
-            className="h-full"
-          />
-        ) : property.main_image ? (
-          <>
-            <OptimizedImage
-              src={property.main_image}
-              alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              priority={false}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-gradient-to-br from-muted to-muted/50">
-            <div className="text-center">
-              <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>Pas d'image</p>
-            </div>
-          </div>
-        )}
+        {(() => {
+          // Debug: Log property data to understand what we're working with
+          console.log(`Property ${property.id} image data:`, {
+            main_image: property.main_image,
+            images: property.images,
+            imagesCount: property.images?.length || 0
+          });
+
+          // Try images array first
+          if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+            const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+            if (validImages.length > 0) {
+              return (
+                <SwipeableGallery
+                  images={validImages.map(img => ({
+                    url: img,
+                    alt: `${property.title} - ${property.city}`
+                  }))}
+                  showNavigation={validImages.length > 1}
+                  showCounter={validImages.length > 1}
+                  className="h-full"
+                />
+              );
+            }
+          }
+
+          // Fall back to main_image
+          if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
+            return (
+              <>
+                <OptimizedImage
+                  src={property.main_image}
+                  alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  priority={false}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </>
+            );
+          }
+
+          // Use demo image as fallback
+          const demoImage = getDemoImage(property.id, property.property_type);
+          return (
+            <>
+              <OptimizedImage
+                src={demoImage}
+                alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                priority={false}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              {/* Demo badge */}
+              <div className="absolute top-3 left-3">
+                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Démo
+                </Badge>
+              </div>
+            </>
+          );
+        })()}
         
         {onFavoriteClick && (
           <motion.button
@@ -299,14 +348,53 @@ export const PropertyCard = ({
     {/* Preview Modal */}
     <Dialog open={showPreview} onOpenChange={setShowPreview}>
       <DialogContent className="max-w-md">
-        {property.main_image && (
-          <OptimizedImage
-            src={property.main_image}
-            alt={property.title}
-            className="w-full rounded-lg"
-            priority={false}
-          />
-        )}
+        {(() => {
+          // Use same image logic as main card
+          if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+            const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+            if (validImages.length > 0) {
+              return (
+                <OptimizedImage
+                  src={validImages[0]} // Use first image for preview
+                  alt={property.title}
+                  className="w-full rounded-lg"
+                  priority={true}
+                />
+              );
+            }
+          }
+
+          if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
+            return (
+              <OptimizedImage
+                src={property.main_image}
+                alt={property.title}
+                className="w-full rounded-lg"
+                priority={true}
+              />
+            );
+          }
+
+          // Use demo image as fallback
+          const demoImage = getDemoImage(property.id, property.property_type);
+          return (
+            <div className="relative">
+              <OptimizedImage
+                src={demoImage}
+                alt={`Photo démonstration: ${property.title}`}
+                className="w-full rounded-lg"
+                priority={true}
+              />
+              {/* Demo badge */}
+              <div className="absolute top-2 left-2">
+                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Démo
+                </Badge>
+              </div>
+            </div>
+          );
+        })()}
         <h3 className="text-xl font-bold">{property.title}</h3>
         <p className="text-2xl text-primary font-bold">
           {formatPrice(property.monthly_rent)} <span className="text-base font-normal">/mois</span>

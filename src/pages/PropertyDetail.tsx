@@ -73,6 +73,17 @@ const PropertyDetail = () => {
 
   const isOwner = user?.id === property?.owner_id;
 
+  // Set document head with meta tags - MUST be called before any conditional returns
+  useDocumentHead({
+    title: property ? `${property.title} - ${property.city} | Mon Toit` : 'Bien Immobilier | Mon Toit',
+    description: property?.description?.substring(0, 155) || `${property?.property_type || 'Bien'} à ${property?.city || 'Abidjan'} - ${property?.monthly_rent?.toLocaleString() || 'Prix sur demande'} FCFA/mois`,
+    ogTitle: property ? `${property.title} - ${property.city}` : 'Bien Immobilier',
+    ogDescription: property?.description?.substring(0, 200),
+    ogImage: property?.main_image || property?.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg',
+    ogUrl: property ? `https://mon-toit.lovable.app/properties/${property.id}` : 'https://mon-toit.lovable.app',
+    twitterCard: 'summary_large_image'
+  });
+
   useEffect(() => {
     if (id) {
       fetchPropertyDetails();
@@ -321,18 +332,6 @@ const PropertyDetail = () => {
   ].filter(Boolean) as string[];
 
   const favorite = isFavorite(property.id);
-
-
-  // Set document head with meta tags
-  useDocumentHead({
-    title: `${property.title} - ${property.city} | Mon Toit`,
-    description: property.description?.substring(0, 155) || `${property.property_type} à ${property.city} - ${property.monthly_rent?.toLocaleString()} FCFA/mois`,
-    ogTitle: `${property.title} - ${property.city}`,
-    ogDescription: property.description?.substring(0, 200),
-    ogImage: property.main_image || property.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg',
-    ogUrl: `https://mon-toit.lovable.app/properties/${property.id}`,
-    twitterCard: 'summary_large_image'
-  });
 
   return (
     <div className="min-h-screen flex flex-col">
