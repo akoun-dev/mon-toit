@@ -1,17 +1,17 @@
 /**
  * MON TOIT - Hero Section Professionnel
- * "Le logement en toute confiance"
+ * "Trouvez votre Toit Idéal"
  * 
- * Design UX/UI professionnel avec:
- * - Message clair et rassurant
- * - Recherche rapide accessible
- * - Badge ANSUT mis en avant
- * - Identité visuelle ivoirienne avec motifs culturels
+ * Design UX/UI avec palette "Coucher de soleil ivoirien":
+ * - Fond crème clair avec dégradé pastel subtil
+ * - Titre orange vif pour impact visuel
+ * - Motifs culturels Kente discrets
+ * - Badge ANSUT en tant que sponsor (pas identité dominante)
  */
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Home, PlusCircle, ShieldCheck, MapPin, Building2, DollarSign } from 'lucide-react';
+import { Search, PlusCircle, ShieldCheck, MapPin, Building2, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -40,62 +40,49 @@ export const ProfessionalHero = () => {
   };
 
   return (
-    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-hero">
       
-      {/* Gradient de fond dynamique avec couleurs ANSUT */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#2256A3] via-[#1a4278] to-[#2256A3]" />
-      
-      {/* Gradient secondaire animé */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#F08224]/20 via-transparent to-[#F08224]/10 animate-pulse-slow" />
-      
-      {/* Motifs géométriques africains - Kente inspiré */}
-      <div className="absolute inset-0 opacity-10">
+      {/* Motifs géométriques Kente - très discrets */}
+      <div className="absolute inset-0 opacity-[0.03]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="kente-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <pattern id="kente-subtle" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
               {/* Lignes verticales */}
-              <line x1="10" y1="0" x2="10" y2="100" stroke="white" strokeWidth="2" />
-              <line x1="30" y1="0" x2="30" y2="100" stroke="white" strokeWidth="1" />
-              <line x1="50" y1="0" x2="50" y2="100" stroke="white" strokeWidth="3" />
-              <line x1="70" y1="0" x2="70" y2="100" stroke="white" strokeWidth="1" />
-              <line x1="90" y1="0" x2="90" y2="100" stroke="white" strokeWidth="2" />
+              <line x1="10" y1="0" x2="10" y2="100" stroke="#E07A5F" strokeWidth="2" />
+              <line x1="30" y1="0" x2="30" y2="100" stroke="#E07A5F" strokeWidth="1" />
+              <line x1="50" y1="0" x2="50" y2="100" stroke="#FF6B35" strokeWidth="3" />
+              <line x1="70" y1="0" x2="70" y2="100" stroke="#E07A5F" strokeWidth="1" />
+              <line x1="90" y1="0" x2="90" y2="100" stroke="#E07A5F" strokeWidth="2" />
               
               {/* Lignes horizontales */}
-              <line x1="0" y1="10" x2="100" y2="10" stroke="white" strokeWidth="2" />
-              <line x1="0" y1="30" x2="100" y2="30" stroke="white" strokeWidth="1" />
-              <line x1="0" y1="50" x2="100" y2="50" stroke="white" strokeWidth="3" />
-              <line x1="0" y1="70" x2="100" y2="70" stroke="white" strokeWidth="1" />
-              <line x1="0" y1="90" x2="100" y2="90" stroke="white" strokeWidth="2" />
+              <line x1="0" y1="10" x2="100" y2="10" stroke="#E07A5F" strokeWidth="2" />
+              <line x1="0" y1="30" x2="100" y2="30" stroke="#E07A5F" strokeWidth="1" />
+              <line x1="0" y1="50" x2="100" y2="50" stroke="#FF6B35" strokeWidth="3" />
+              <line x1="0" y1="70" x2="100" y2="70" stroke="#E07A5F" strokeWidth="1" />
+              <line x1="0" y1="90" x2="100" y2="90" stroke="#E07A5F" strokeWidth="2" />
               
               {/* Motifs en losange */}
-              <polygon points="50,20 60,30 50,40 40,30" fill="white" opacity="0.3" />
-              <polygon points="50,60 60,70 50,80 40,70" fill="white" opacity="0.3" />
-              <polygon points="20,50 30,60 20,70 10,60" fill="white" opacity="0.3" />
-              <polygon points="80,50 90,60 80,70 70,60" fill="white" opacity="0.3" />
+              <polygon points="50,20 60,30 50,40 40,30" fill="#E07A5F" opacity="0.4" />
+              <polygon points="50,60 60,70 50,80 40,70" fill="#FF6B35" opacity="0.4" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#kente-pattern)" />
+          <rect width="100%" height="100%" fill="url(#kente-subtle)" />
         </svg>
       </div>
       
-      {/* Overlay doux pour profondeur */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-      
-      {/* Formes géométriques flottantes - Inspiration Adinkra */}
-      <div className="absolute top-20 left-10 w-32 h-32 opacity-5">
+      {/* Symboles Adinkra flottants - très discrets */}
+      <div className="absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
-          {/* Symbole Adinkra Gye Nyame (Suprématie de Dieu) */}
-          <circle cx="50" cy="50" r="40" fill="none" stroke="white" strokeWidth="3" />
-          <path d="M50 20 L50 80 M30 50 L70 50" stroke="white" strokeWidth="3" />
-          <circle cx="50" cy="50" r="15" fill="white" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#E07A5F" strokeWidth="3" />
+          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#E07A5F" strokeWidth="3" />
+          <circle cx="50" cy="50" r="15" fill="#E07A5F" />
         </svg>
       </div>
       
-      <div className="absolute bottom-32 right-20 w-24 h-24 opacity-5">
+      <div className="absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
-          {/* Symbole Adinkra Sankofa (Retour aux sources) */}
-          <circle cx="50" cy="50" r="35" fill="none" stroke="white" strokeWidth="3" />
-          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="white" />
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#FF6B35" strokeWidth="3" />
+          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#FF6B35" />
         </svg>
       </div>
 
@@ -103,16 +90,16 @@ export const ProfessionalHero = () => {
       <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-5xl mx-auto text-center space-y-8">
           
-          {/* Badge ANSUT - Certification mise en avant */}
+          {/* Badge ANSUT - discret, en tant que sponsor */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="flex justify-center"
           >
-            <Badge className="bg-white/95 text-primary hover:bg-white px-6 py-3 text-base font-semibold shadow-lg backdrop-blur-sm border-2 border-white/50">
-              <ShieldCheck className="h-5 w-5 mr-2" />
-              Plateforme Certifiée ANSUT
+            <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium shadow-sm border border-gray-200">
+              <ShieldCheck className="h-4 w-4 mr-2 text-ansut-blue" />
+              Certifié ANSUT
             </Badge>
           </motion.div>
 
@@ -123,12 +110,12 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-4"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-              Le logement en toute{' '}
-              <span className="text-[#F08224] relative">
-                confiance
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+              Trouvez votre{' '}
+              <span className="text-primary relative">
+                Toit Idéal
                 <svg
-                  className="absolute -bottom-2 left-0 w-full h-3 text-[#F08224]/40"
+                  className="absolute -bottom-2 left-0 w-full h-3 text-primary/30"
                   viewBox="0 0 200 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -143,8 +130,8 @@ export const ProfessionalHero = () => {
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto font-medium">
-              Trouvez ou publiez un logement en Côte d'Ivoire avec la garantie de la certification ANSUT
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+              Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
             </p>
           </motion.div>
 
@@ -155,7 +142,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="w-full max-w-4xl mx-auto"
           >
-            <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
+            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-4 border border-gray-100">
               
               {/* Titre du formulaire */}
               <div className="flex items-center justify-between mb-2">
@@ -234,16 +221,16 @@ export const ProfessionalHero = () => {
                 <Button
                   onClick={handleSearch}
                   size="lg"
-                  className="flex-1 h-14 text-lg font-bold bg-[#2256A3] hover:bg-[#1a4278] shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1 h-14 text-lg font-bold bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all"
                 >
                   <Search className="h-5 w-5 mr-2" />
-                  Trouver un logement
+                  Rechercher
                 </Button>
                 <Button
                   onClick={() => navigate('/publier')}
                   size="lg"
                   variant="outline"
-                  className="h-14 px-8 font-bold border-2 border-[#F08224] text-[#F08224] hover:bg-[#F08224] hover:text-white shadow-lg hover:shadow-xl transition-all"
+                  className="h-14 px-8 font-bold border-2 border-primary text-primary hover:bg-primary hover:text-white shadow-lg hover:shadow-xl transition-all"
                 >
                   <PlusCircle className="h-5 w-5 mr-2" />
                   Publier une annonce
@@ -266,16 +253,16 @@ export const ProfessionalHero = () => {
             className="grid grid-cols-3 gap-6 md:gap-12 max-w-3xl mx-auto pt-8"
           >
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-white">3500+</div>
-              <div className="text-sm md:text-base text-white/80 mt-1">Biens disponibles</div>
+              <div className="text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
+              <div className="text-sm md:text-base text-gray-600 mt-1">Biens disponibles</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-white">10000+</div>
-              <div className="text-sm md:text-base text-white/80 mt-1">Utilisateurs actifs</div>
+              <div className="text-3xl md:text-4xl font-extrabold text-primary">10000+</div>
+              <div className="text-sm md:text-base text-gray-600 mt-1">Utilisateurs actifs</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-white">98%</div>
-              <div className="text-sm md:text-base text-white/80 mt-1">Satisfaction</div>
+              <div className="text-3xl md:text-4xl font-extrabold text-primary">98%</div>
+              <div className="text-sm md:text-base text-gray-600 mt-1">Satisfaction</div>
             </div>
           </motion.div>
         </div>

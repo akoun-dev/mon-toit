@@ -23,32 +23,43 @@ export default {
     },
     extend: {
       colors: {
-        // Couleurs ANSUT officielles
+        // Palette Mon Toit - Coucher de soleil ivoirien
         primary: {
-          DEFAULT: '#2256A3',
-          50: 'rgba(34, 86, 163, 0.05)',
-          100: 'rgba(34, 86, 163, 0.1)',
-          200: 'rgba(34, 86, 163, 0.2)',
-          300: '#5A89C8',
-          400: '#4A7BC8',
-          500: '#2256A3',
-          600: '#1A4278',
-          700: '#163864',
-          800: '#122D50',
-          900: '#0E233C',
+          DEFAULT: '#FF6B35', // Orange vif
+          50: '#FFF5F0',
+          100: '#FFE8DC',
+          200: '#FFD1B9',
+          300: '#FFBA96',
+          400: '#FFA373',
+          500: '#FF6B35', // Orange vif principal
+          600: '#E25822', // Orange profond (CTA)
+          700: '#C54A1C',
+          800: '#A83C16',
+          900: '#8B2E10',
         },
         secondary: {
-          DEFAULT: '#F08224',
-          50: 'rgba(240, 130, 36, 0.05)',
-          100: 'rgba(240, 130, 36, 0.1)',
-          200: '#FFB876',
-          300: '#FFA55C',
-          400: '#FF9D4A',
-          500: '#F08224',
-          600: '#D66B0F',
-          700: '#B85A0C',
-          800: '#9A4A0A',
-          900: '#7C3A08',
+          DEFAULT: '#E07A5F', // Terracotta
+          50: '#FDF5F3',
+          100: '#FAEBE7',
+          200: '#F5D7CF',
+          300: '#F0C3B7',
+          400: '#EAAF9F',
+          500: '#E07A5F', // Terracotta
+          600: '#D96548',
+          700: '#C7543A',
+          800: '#A8452F',
+          900: '#893624',
+        },
+        // Couleurs de fond
+        background: {
+          DEFAULT: '#FAF7F0', // Crème clair
+          light: '#FFFDF8', // Ivoire
+          sand: '#FEF3C7', // Beige sable
+        },
+        // ANSUT (sponsor, pas identité)
+        ansut: {
+          blue: '#2256A3',
+          orange: '#F08224',
         },
         // Couleurs du drapeau ivoirien (accents)
         ci: {
@@ -177,10 +188,11 @@ export default {
         'scale-in': 'scale-in 200ms ease-out',
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, #2256A3 0%, #4A7BC8 100%)',
-        'gradient-secondary': 'linear-gradient(135deg, #F08224 0%, #FF9D4A 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #FEF3C7 0%, #FFFDF8 100%)', // Beige sable → Ivoire
+        'gradient-primary': 'linear-gradient(135deg, #FF6B35 0%, #E25822 100%)', // Orange vif → profond
+        'gradient-secondary': 'linear-gradient(135deg, #E07A5F 0%, #D96548 100%)', // Terracotta
         'gradient-ci': 'linear-gradient(90deg, #F77F00 0%, #FFFFFF 50%, #009E60 100%)',
-        'pattern-african': 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(34, 86, 163, 0.05) 10px, rgba(34, 86, 163, 0.05) 20px)',
+        'pattern-african': 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(224, 122, 95, 0.03) 10px, rgba(224, 122, 95, 0.03) 20px)',
       },
     },
   },
