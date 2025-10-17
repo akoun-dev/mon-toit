@@ -4,21 +4,18 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from 'vite-plugin-pwa';
 import { sentryVitePlugin } from "@sentry/vite-plugin";
-import viteImagemin from 'vite-plugin-imagemin';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // ✅ FIX: Base URL différente pour Vercel (/) et Capacitor (./)
-  // Utilise la variable d'environnement CAPACITOR pour détecter un build Capacitor
   base: process.env.CAPACITOR === 'true' ? './' : '/',
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(), 
-    mode === "development" && componentTagger(),
-    VitePWA({
+  plugins: (() => {
+    const plugins: any[] = [react(), componentTagger()];
+    
+    plugins.push(VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icons/*.png', 'robots.txt'],
       manifest: {
@@ -84,7 +81,6 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,svg,woff2,webp}'],
-        // Augmenter la limite pour les gros fichiers (10 MB au lieu de 2 MB par défaut)
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         runtimeCaching: [
           {
@@ -94,7 +90,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: 'api-cache',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 5 * 60, // 5 minutes
+                maxAgeSeconds: 5 * 60,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -108,7 +104,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: 'image-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                maxAgeSeconds: 30 * 24 * 60 * 60,
               },
               cacheableResponse: {
                 statuses: [0, 200],
@@ -122,46 +118,22 @@ export default defineConfig(({ mode }) => ({
               cacheName: 'local-images',
               expiration: {
                 maxEntries: 60,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+                maxAgeSeconds: 30 * 24 * 60 * 60,
               },
             },
           },
         ],
       },
-    }),
-    // Image optimization (WebP conversion + compression)
-    viteImagemin({
-      gifsicle: {
-        optimizationLevel: 7,
-        interlaced: false,
-      },
-      optipng: {
-        optimizationLevel: 7,
-      },
-      mozjpeg: {
-        quality: 85,
-      },
-      pngquant: {
-        quality: [0.8, 0.9],
-        speed: 4,
-      },
-      svgo: {
-        plugins: [
-          { name: 'removeViewBox' },
-          { name: 'removeEmptyAttrs', active: false },
-        ],
-      },
-      webp: {
-        quality: 85,
-      },
-    }),
-    // Sentry plugin (only in production builds)
-    mode === "production" && sentryVitePlugin({
+    }));
+    
+    plugins.push(sentryVitePlugin({
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,
-    }),
-  ].filter(Boolean),
+    }));
+    
+    return plugins;
+  })(),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -169,16 +141,14 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true, // Required for Sentry error tracking
-    target: 'es2020', // Ensure broad browser compatibility with BigInt support
+    sourcemap: true,
+    target: 'es2020',
     rollupOptions: {
       output: {
-        inlineDynamicImports: true, // Inline all dynamic imports to avoid chunk issues
-        // ✅ SÉCURITÉ : Noms de chunks obfusqués
-        chunkFileNames: (chunkInfo) => {
+        inlineDynamicImports: true,
+        chunkFileNames: () => {
           return `assets/[name]-[hash].js`;
         },
-        // ✅ SÉCURITÉ : Séparation des assets par type
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {
             return 'assets/styles-[hash][extname]';
@@ -187,6 +157,6 @@ export default defineConfig(({ mode }) => ({
         }
       }
     },
-    chunkSizeWarningLimit: 1000, // Increase limit since we're using one chunk
+    chunkSizeWarningLimit: 1000,
   },
 }));
