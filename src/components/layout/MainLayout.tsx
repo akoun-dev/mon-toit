@@ -4,6 +4,7 @@ import { ModernAppSidebar } from "@/components/navigation/ModernAppSidebar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { BottomNav } from "@/components/mobile/BottomNav";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -11,6 +12,8 @@ interface MainLayoutProps {
 }
 
 export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) => {
+  const isMobile = useIsMobile();
+  
   if (!showSidebar) {
     return (
       <>
@@ -25,7 +28,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
   }
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full">
         <ModernAppSidebar />
         <SidebarInset className="flex flex-col flex-1">

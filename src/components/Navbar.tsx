@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import monToitLogo from "@/assets/logo/mon-toit-logo.png";
@@ -35,8 +36,11 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          {/* Logo avec Sidebar Trigger */}
+          <div className="flex items-center gap-3">
+            <SidebarTrigger className="md:hidden" />
+            
+            <Link to="/" className="flex items-center gap-3 group">
             <picture>
               <img
                 src={monToitLogo}
@@ -58,7 +62,8 @@ const Navbar = () => {
                 Certifié ANSUT
               </span>
             </div>
-          </Link>
+            </Link>
+          </div>
 
           {/* Navigation Links - Simplified to 3 core items */}
           <div className="hidden md:flex items-center gap-6">
