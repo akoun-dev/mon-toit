@@ -147,6 +147,10 @@ export default defineConfig(({ mode }) => ({
     sourcemap: mode === "production",
     target: 'es2020',
     rollupOptions: {
+      external: (id) => {
+        // Externaliser tous les modules Capacitor pour le build web
+        return id.startsWith('@capacitor/');
+      },
       output: {
         inlineDynamicImports: true,
         chunkFileNames: () => {

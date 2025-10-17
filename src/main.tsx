@@ -14,6 +14,7 @@ import { MobileFileSystemService } from '@/lib/mobileFileSystem';
 import { MobileNetworkService } from '@/lib/mobileNetwork';
 import App from "./App.tsx";
 import "./index.css";
+import "./styles/design-system.css";
 
 // Initialize secure storage migration on app startup
 migrateToSecureStorage();

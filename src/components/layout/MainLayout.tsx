@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { ModernAppSidebar } from "@/components/navigation/ModernAppSidebar";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { BottomNav } from "@/components/mobile/BottomNav";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
@@ -21,7 +21,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
         <div className="min-h-screen pt-16 pb-20 md:pb-0">
           {children}
         </div>
-        <Footer />
+        <InstitutionalFooter />
         <BottomNav />
       </>
     );
@@ -36,7 +36,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
           <div className="flex-1 pt-16 pb-20 md:pb-0 w-full">
             {children}
           </div>
-          <Footer />
+          <InstitutionalFooter />
           <BottomNav />
         </SidebarInset>
       </div>
