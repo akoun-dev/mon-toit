@@ -2,8 +2,6 @@ import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from '@/lib/queryClient';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
@@ -393,12 +391,18 @@ const AppContent = () => {
 };
 
 const App = () => (
+<<<<<<< Updated upstream
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
+=======
+  <ErrorBoundary level="error">
+    <HelmetProvider>
+>>>>>>> Stashed changes
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
+<<<<<<< Updated upstream
           <AuthProvider>
             <AppContent />
           </AuthProvider>
@@ -406,6 +410,17 @@ const App = () => (
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
+=======
+          <ErrorBoundary level="warning">
+            <AuthProvider>
+              <AppContent />
+            </AuthProvider>
+          </ErrorBoundary>
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
+  </ErrorBoundary>
+>>>>>>> Stashed changes
 );
 
 export default App;

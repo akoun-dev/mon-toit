@@ -7,6 +7,43 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
+<<<<<<< Updated upstream
+=======
+    // Security: Restrict navigation to app domains
+    allowNavigation: [
+      'https://montoit.ci',
+      'https://*.supabase.co',
+      'https://api.mapbox.com',
+      'https://tiles.mapbox.com',
+      'https://*.mapbox.com',
+      'https://mon-toit.netlify.app/'
+    ],
+    // Cleartext is not permitted
+    cleartext: false,
+  },
+  // iOS configuration
+  ios: {
+    scheme: 'montoit',
+    // Build configuration
+    contentInset: 'automatic',
+    // WebView configuration
+    scrollEnabled: true,
+    // Orientation configuration
+    orientation: ['portrait'],
+  },
+  // Android configuration
+  android: {
+    // Deep linking configuration
+    webContentsDebuggingEnabled: false,
+    // Input method configuration
+    captureInput: true,
+    // Log configuration
+    loggingBehavior: 'production',
+    // WebView configuration
+    allowMixedContent: 'never',
+    // Orientation configuration
+    orientation: 'portrait',
+>>>>>>> Stashed changes
   },
   plugins: {
     SplashScreen: {

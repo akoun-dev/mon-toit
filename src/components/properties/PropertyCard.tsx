@@ -13,7 +13,7 @@ import { supabase } from '@/lib/supabase';
 import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
 import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { toast } from '@/hooks/use-toast';
-import { OptimizedImage } from '@/components/property/OptimizedImage';
+import { SimpleImage } from '@/components/property/SimpleImage';
 import { useLongPress } from '@/hooks/useLongPress';
 import { triggerHapticFeedback } from '@/utils/haptics';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
@@ -125,6 +125,7 @@ export const PropertyCard = ({
         aria-describedby={`property-description-${property.id}`}
       >
       <div className="relative h-56 sm:h-64 bg-muted overflow-hidden">
+<<<<<<< Updated upstream
         {property.images && property.images.length > 0 ? (
           <SwipeableGallery
             images={property.images.map(img => ({
@@ -153,6 +154,64 @@ export const PropertyCard = ({
             </div>
           </div>
         )}
+=======
+        {(() => {
+          // Debug: Log property data to understand what we're working with
+          console.log(`Property ${property.id} image data:`, {
+            main_image: property.main_image,
+            images: property.images,
+            imagesCount: property.images?.length || 0
+          });
+
+          // Try images array first
+          if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+            const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+            if (validImages.length > 0) {
+              return (
+                <SimpleImage
+                  src={validImages[0]}
+                  alt={`${property.title} - ${property.city}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              );
+            }
+          }
+
+          // Fall back to main_image
+          if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
+            return (
+              <>
+                <SimpleImage
+                  src={property.main_image}
+                  alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              </>
+            );
+          }
+
+          // Use demo image as fallback
+          const demoImage = getDemoImage(property.id, property.property_type);
+          return (
+            <>
+              <SimpleImage
+                src={demoImage}
+                alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              {/* Demo badge */}
+              <div className="absolute top-3 left-3">
+                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Démo
+                </Badge>
+              </div>
+            </>
+          );
+        })()}
+>>>>>>> Stashed changes
         
         {onFavoriteClick && (
           <motion.button
@@ -297,6 +356,7 @@ export const PropertyCard = ({
     {/* Preview Modal */}
     <Dialog open={showPreview} onOpenChange={setShowPreview}>
       <DialogContent className="max-w-md">
+<<<<<<< Updated upstream
         {property.main_image && (
           <OptimizedImage
             src={property.main_image}
@@ -305,6 +365,52 @@ export const PropertyCard = ({
             priority={false}
           />
         )}
+=======
+        {(() => {
+          // Use same image logic as main card
+          if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+            const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+            if (validImages.length > 0) {
+              return (
+                <SimpleImage
+                  src={validImages[0]} // Use first image for preview
+                  alt={property.title}
+                  className="w-full rounded-lg"
+                />
+              );
+            }
+          }
+
+          if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
+            return (
+              <SimpleImage
+                src={property.main_image}
+                alt={property.title}
+                className="w-full rounded-lg"
+              />
+            );
+          }
+
+          // Use demo image as fallback
+          const demoImage = getDemoImage(property.id, property.property_type);
+          return (
+            <div className="relative">
+              <SimpleImage
+                src={demoImage}
+                alt={`Photo démonstration: ${property.title}`}
+                className="w-full rounded-lg"
+              />
+              {/* Demo badge */}
+              <div className="absolute top-2 left-2">
+                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  Démo
+                </Badge>
+              </div>
+            </div>
+          );
+        })()}
+>>>>>>> Stashed changes
         <h3 className="text-xl font-bold">{property.title}</h3>
         <p className="text-2xl text-primary font-bold">
           {formatPrice(property.monthly_rent)} <span className="text-base font-normal">/mois</span>
