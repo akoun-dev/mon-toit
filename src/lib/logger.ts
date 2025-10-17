@@ -78,7 +78,11 @@ export const userMessages = {
 export const getErrorMessage = (error: Error | string | unknown): string => {
   if (!error) return userMessages.unknownError;
   
-  const errorMessage = typeof error === 'string' ? error : error.message || '';
+  const errorMessage = typeof error === 'string' 
+    ? error 
+    : error instanceof Error 
+      ? error.message 
+      : String(error);
   
   // Network errors
   if (errorMessage.includes('fetch') || errorMessage.includes('network')) {

@@ -44,22 +44,7 @@ export class DeviceSecurityDetector {
    * Initialize all security checks
    */
   private initializeSecurityChecks(): void {
-    // Android security checks
-    this.securityChecks.push(this.checkRootedAndroid);
-    this.securityChecks.push(this.checkDeveloperModeAndroid);
-    this.securityChecks.push(this.checkUsbDebuggingAndroid);
-    this.securityChecks.push(this.checkEmulatorAndroid);
-    this.securityChecks.push(this.checkAppSourceAndroid);
-
-    // iOS security checks
-    this.securityChecks.push(this.checkJailbrokenIOS);
-    this.securityChecks.push(this.checkDebuggerIOS);
-    this.securityChecks.push(this.checkEmulatorIOS);
-
-    // Common security checks
-    this.securityChecks.push(this.checkDebuggerAttached);
-    this.securityChecks.push(this.checkFridaFramework);
-    this.securityChecks.push(this.checkCydiaSubstrate);
+    // Security checks are defined inline, no initialization needed
   }
 
   /**
@@ -438,6 +423,3 @@ export function useDeviceSecurity() {
     detector: DeviceSecurityDetector.getInstance(),
   };
 }
-
-// Export types for use in other files
-export type { DeviceSecurityStatus };

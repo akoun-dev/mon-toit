@@ -9,7 +9,12 @@ declare global {
   }
 }
 
-export const useVoiceSearch = () => {
+interface UseVoiceSearchOptions {
+  onResult?: (transcript: string) => void;
+  onError?: (error: string) => void;
+}
+
+export const useVoiceSearch = (options?: UseVoiceSearchOptions) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(false);
@@ -33,6 +38,10 @@ export const useVoiceSearch = () => {
       const current = event.resultIndex;
       const transcriptText = event.results[current][0].transcript;
       setTranscript(transcriptText);
+      
+      if (options?.onResult) {
+        options.onResult(transcriptText);
+      }
     };
 
     recognition.onend = () => {
@@ -42,6 +51,10 @@ export const useVoiceSearch = () => {
     recognition.onerror = (event: any) => {
       logger.warn('Speech recognition error', { error: event.error });
       setIsListening(false);
+      
+      if (options?.onError) {
+        options.onError(event.error);
+      }
       
       if (event.error === 'no-speech') {
         toast({

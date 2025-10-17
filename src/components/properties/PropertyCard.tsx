@@ -266,11 +266,10 @@ export const PropertyCard = ({
           )}
           
           {hasCertifiedLease && (
-            <CulturalBadge
-              variant="ansut"
-              size="sm"
-              className="shadow-md"
-            />
+            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3" />
+              ANSUT Certifié
+            </Badge>
           )}
           
           {property.work_status && property.work_status !== 'aucun_travail' && (

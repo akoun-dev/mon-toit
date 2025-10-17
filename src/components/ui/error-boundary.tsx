@@ -14,6 +14,12 @@ import {
 } from 'lucide-react';
 import * as Sentry from '@sentry/react';
 
+declare global {
+  interface Window {
+    __USER_CONTEXT__?: any;
+  }
+}
+
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -373,4 +379,6 @@ export const useErrorContext = () => {
 };
 
 // Export du ErrorBoundary de Sentry pour compatibilité
-export const SentryErrorBoundary = Sentry.withErrorBoundary(ErrorBoundary);
+export const SentryErrorBoundary = Sentry.withErrorBoundary(ErrorBoundary, {
+  fallback: <div>Une erreur est survenue</div>
+});

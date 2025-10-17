@@ -68,7 +68,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { favorites } = useFavorites();
-  const { applications } = useApplications();
+  const { data: applications } = useApplications(user?.id);
 
   const [leaseStatuses, setLeaseStatuses] = useState<LeaseStatus[]>([]);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);

@@ -87,8 +87,12 @@ ${colorConfig
         __html: sanitizeHtml(cssContent, {
           ALLOWED_TAGS: [],
           ALLOWED_ATTR: [],
+          FORBID_ATTR: [],
+          FORBID_TAGS: [],
           KEEP_CONTENT: true,
-          RETURN_DOM: false
+          RETURN_DOM: false,
+          RETURN_DOM_FRAGMENT: false,
+          RETURN_DOM_IMPORT: false
         })
       }}
     />

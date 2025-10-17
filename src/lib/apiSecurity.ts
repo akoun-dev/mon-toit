@@ -250,7 +250,7 @@ export class APISecurity {
   /**
    * Get rate limit action based on endpoint
    */
-  private static getRateLimitAction(endpoint: string): keyof typeof RateLimiter['isAllowed'] {
+  private static getRateLimitAction(endpoint: string): string {
     if (endpoint.includes('/auth/login')) return 'LOGIN_ATTEMPTS';
     if (endpoint.includes('/upload')) return 'FILE_UPLOADS';
     if (endpoint.includes('/message')) return 'MESSAGE_SEND';

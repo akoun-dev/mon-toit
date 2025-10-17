@@ -128,6 +128,7 @@ export function MobileBottomNavigation({
                     "w-6 h-6 transition-transform duration-200",
                     isActive && "scale-110"
                   )}
+                  aria-hidden="true"
                 />
                 {item.badge && item.badge > 0 && (
                   <Badge
@@ -168,19 +169,22 @@ export function MobileBottomNavigation({
       {/* Floating Action Buttons */}
       {actions.length > 0 && (
         <div className="absolute bottom-20 right-4 flex flex-col gap-2">
-          {actions.map((action) => (
-            <Button
-              key={action.id}
-              onClick={action.onPress}
-              variant={action.variant === 'danger' ? 'destructive' :
-                       action.variant === 'secondary' ? 'secondary' : 'default'}
-              size="sm"
-              className="min-w-[120px] justify-start gap-2 shadow-lg"
-            >
-              <action.icon className="w-4 h-4" />
-              {action.label}
-            </Button>
-          ))}
+          {actions.map((action) => {
+            const ActionIcon = action.icon;
+            return (
+              <Button
+                key={action.id}
+                onClick={action.onPress}
+                variant={action.variant === 'danger' ? 'destructive' :
+                         action.variant === 'secondary' ? 'secondary' : 'default'}
+                size="sm"
+                className="min-w-[120px] justify-start gap-2 shadow-lg"
+              >
+                <ActionIcon className="w-4 h-4" />
+                {action.label}
+              </Button>
+            );
+          })}
         </div>
       )}
     </div>

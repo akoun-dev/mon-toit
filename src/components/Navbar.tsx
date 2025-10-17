@@ -43,7 +43,7 @@ const Navbar = () => {
                 alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT"
                 className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
                 width="64"
                 height="64"

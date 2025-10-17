@@ -5,9 +5,10 @@
   * property websites, maps, and other web content within the mobile app.
  */
 
+import React from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Share } from '@capacitor/share';
 
 export interface BrowserOptions {
@@ -269,7 +270,7 @@ export class MobileBrowserService {
         url: this.currentUrl,
       });
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
       return true;
     } catch (error) {
       console.error('Error sharing page:', error);

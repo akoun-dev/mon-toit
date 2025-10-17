@@ -24,7 +24,8 @@ import {
   Target,
   Star,
   Phone,
-  Mail
+  Mail,
+  Filter
 } from 'lucide-react';
 import { MotionDiv } from '@/components/ui/motion';
 import { cn } from '@/lib/utils';
