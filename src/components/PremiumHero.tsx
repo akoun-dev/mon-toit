@@ -30,7 +30,7 @@ export const PremiumHero = () => {
   };
 
   return (
-    <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Image de fond avec overlay */}
       <div className="absolute inset-0 z-0">
         {/* Image d'Abidjan (Unsplash placeholder) */}
