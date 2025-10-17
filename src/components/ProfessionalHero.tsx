@@ -6,7 +6,7 @@
  * - Message clair et rassurant
  * - Recherche rapide accessible
  * - Badge ANSUT mis en avant
- * - Identité visuelle ivoirienne
+ * - Identité visuelle ivoirienne avec motifs culturels
  */
 
 import { useState } from 'react';
@@ -42,23 +42,62 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Skyline d'Abidjan */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/images/hero/abidjan-skyline.jpg)',
-          backgroundPosition: 'center 40%'
-        }}
-      />
+      {/* Gradient de fond dynamique avec couleurs ANSUT */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#2256A3] via-[#1a4278] to-[#2256A3]" />
       
-      {/* Overlay gradient pour lisibilité */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-primary-700/90" />
+      {/* Gradient secondaire animé */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#F08224]/20 via-transparent to-[#F08224]/10 animate-pulse-slow" />
       
-      {/* Motif culturel africain subtil */}
-      <div className="absolute inset-0 bg-pattern-african opacity-5" />
+      {/* Motifs géométriques africains - Kente inspiré */}
+      <div className="absolute inset-0 opacity-10">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="kente-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+              {/* Lignes verticales */}
+              <line x1="10" y1="0" x2="10" y2="100" stroke="white" strokeWidth="2" />
+              <line x1="30" y1="0" x2="30" y2="100" stroke="white" strokeWidth="1" />
+              <line x1="50" y1="0" x2="50" y2="100" stroke="white" strokeWidth="3" />
+              <line x1="70" y1="0" x2="70" y2="100" stroke="white" strokeWidth="1" />
+              <line x1="90" y1="0" x2="90" y2="100" stroke="white" strokeWidth="2" />
+              
+              {/* Lignes horizontales */}
+              <line x1="0" y1="10" x2="100" y2="10" stroke="white" strokeWidth="2" />
+              <line x1="0" y1="30" x2="100" y2="30" stroke="white" strokeWidth="1" />
+              <line x1="0" y1="50" x2="100" y2="50" stroke="white" strokeWidth="3" />
+              <line x1="0" y1="70" x2="100" y2="70" stroke="white" strokeWidth="1" />
+              <line x1="0" y1="90" x2="100" y2="90" stroke="white" strokeWidth="2" />
+              
+              {/* Motifs en losange */}
+              <polygon points="50,20 60,30 50,40 40,30" fill="white" opacity="0.3" />
+              <polygon points="50,60 60,70 50,80 40,70" fill="white" opacity="0.3" />
+              <polygon points="20,50 30,60 20,70 10,60" fill="white" opacity="0.3" />
+              <polygon points="80,50 90,60 80,70 70,60" fill="white" opacity="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#kente-pattern)" />
+        </svg>
+      </div>
       
-      {/* Overlay doux supplémentaire */}
+      {/* Overlay doux pour profondeur */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+      
+      {/* Formes géométriques flottantes - Inspiration Adinkra */}
+      <div className="absolute top-20 left-10 w-32 h-32 opacity-5">
+        <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
+          {/* Symbole Adinkra Gye Nyame (Suprématie de Dieu) */}
+          <circle cx="50" cy="50" r="40" fill="none" stroke="white" strokeWidth="3" />
+          <path d="M50 20 L50 80 M30 50 L70 50" stroke="white" strokeWidth="3" />
+          <circle cx="50" cy="50" r="15" fill="white" />
+        </svg>
+      </div>
+      
+      <div className="absolute bottom-32 right-20 w-24 h-24 opacity-5">
+        <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
+          {/* Symbole Adinkra Sankofa (Retour aux sources) */}
+          <circle cx="50" cy="50" r="35" fill="none" stroke="white" strokeWidth="3" />
+          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="white" />
+        </svg>
+      </div>
 
       {/* Contenu principal */}
       <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
@@ -86,10 +125,10 @@ export const ProfessionalHero = () => {
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
               Le logement en toute{' '}
-              <span className="text-secondary-400 relative">
+              <span className="text-[#F08224] relative">
                 confiance
                 <svg
-                  className="absolute -bottom-2 left-0 w-full h-3 text-secondary-400/30"
+                  className="absolute -bottom-2 left-0 w-full h-3 text-[#F08224]/40"
                   viewBox="0 0 200 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +234,7 @@ export const ProfessionalHero = () => {
                 <Button
                   onClick={handleSearch}
                   size="lg"
-                  className="flex-1 h-14 text-lg font-bold bg-primary hover:bg-primary-600 shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1 h-14 text-lg font-bold bg-[#2256A3] hover:bg-[#1a4278] shadow-lg hover:shadow-xl transition-all"
                 >
                   <Search className="h-5 w-5 mr-2" />
                   Trouver un logement
@@ -204,7 +243,7 @@ export const ProfessionalHero = () => {
                   onClick={() => navigate('/publier')}
                   size="lg"
                   variant="outline"
-                  className="h-14 px-8 font-bold border-2 border-secondary text-secondary hover:bg-secondary hover:text-white shadow-lg hover:shadow-xl transition-all"
+                  className="h-14 px-8 font-bold border-2 border-[#F08224] text-[#F08224] hover:bg-[#F08224] hover:text-white shadow-lg hover:shadow-xl transition-all"
                 >
                   <PlusCircle className="h-5 w-5 mr-2" />
                   Publier une annonce
