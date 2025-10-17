@@ -7,26 +7,23 @@ import { logger } from '@/services/logger';
  */
 export const shouldShowProperty = (property: Property, currentUserId?: string): boolean => {
   // ALWAYS show to property owner
-  if (currentUserId && property.owner_id === currentUserId) {
+  if (currentUserId && (property as any).owner_id === currentUserId) {
     return true;
   }
-  // Hide rented properties from everyone else
-  return property.status !== 'loué';
+  // Normalize status and hide rented/archived states for public users
+  const status = (property as any).status?.toString().toLowerCase();
+  const rentedStatuses = new Set(['loué', 'loue', 'rented', 'occupied', 'indisponible', 'archived', 'archivé']);
+  return !rentedStatuses.has(status);
 };
 
 /**
  * Parse Supabase/Postgres errors into user-friendly messages
  */
-export function parsePropertyError(error: any): string {
+export function parsePropertyError(error: Error | { message?: string; code?: string } | unknown): string {
   if (!error) return 'Une erreur inconnue est survenue';
 
-<<<<<<< Updated upstream
-  const errorMessage = error?.message || String(error);
-  const errorCode = error?.code;
-=======
   const errorMessage = error instanceof Error ? error.message : ((error as any)?.message || String(error));
   const errorCode = (error as any)?.code;
->>>>>>> Stashed changes
 
   // Postgres constraint violations
   if (errorCode === '23505') {
@@ -108,13 +105,8 @@ export const propertyService = {
       return uniqueProperties as Property[];
     }
 
-<<<<<<< Updated upstream
-    // Use secure RPC for public browsing - exclude rented properties
-    const { data, error } = await supabase.rpc('get_public_properties', {
-=======
     // Try secure RPC for public browsing, but with better error handling
     let { data, error } = await supabase.rpc('get_public_properties', {
->>>>>>> Stashed changes
       p_city: filters?.city || null,
       p_property_type: filters?.propertyType?.[0] || null,
       p_min_rent: filters?.minPrice || null,
@@ -123,19 +115,6 @@ export const propertyService = {
       p_status: null, // RPC handles filtering
     });
 
-<<<<<<< Updated upstream
-    if (error) {
-      logger.logError(error, { context: 'propertyService', action: 'fetchAllProperties' });
-
-      // Provide more context in error message
-      const enhancedError = new Error(
-        `Failed to fetch properties: ${error.message || 'Unknown error'}. ${
-          error.code ? `Error code: ${error.code}` : ''
-        }`
-      );
-      (enhancedError as any).originalError = error;
-      throw enhancedError;
-=======
     // Fallback: if RPC is missing (404) or fails, try a safe direct query
     if (error || !data) {
       if (error?.code === 'PGRST116' || error?.message?.includes('function') || error?.message?.includes('404')) {
@@ -164,10 +143,34 @@ export const propertyService = {
 
       const fallbackData = fallback.data as any[];
       data = fallbackData;
->>>>>>> Stashed changes
     }
 
     logger.debug('Properties received from API', { count: data?.length || 0 });
+
+    // Log sample property data structure to understand what we're working with
+    if (data && data.length > 0) {
+      logger.info('Sample property data structure', {
+        sampleProperty: {
+          id: data[0].id,
+          title: data[0].title,
+          main_image: data[0].main_image,
+          images: data[0].images,
+          images_count: data[0].images?.length || 0,
+          property_type: data[0].property_type,
+          monthly_rent: data[0].monthly_rent,
+          city: data[0].city
+        }
+      });
+
+      // Log image availability statistics
+      const stats = {
+        total: data.length,
+        withMainImage: data.filter(p => p.main_image && p.main_image.trim() !== '').length,
+        withImagesArray: data.filter(p => p.images && Array.isArray(p.images) && p.images.length > 0).length,
+        withoutAnyImages: data.filter(p => (!p.main_image || p.main_image.trim() === '') && (!p.images || p.images.length === 0)).length
+      };
+      logger.info('Image availability statistics', stats);
+    }
 
     // Apply client-side filters not supported by RPC
     let results = data || [];
@@ -216,8 +219,48 @@ export const propertyService = {
 
     logger.info('Final property results after filtering', { count: results.length });
 
+    // ENHANCEMENT: Add demo images for properties without real images
+    const enhancedResults = results.map(property => {
+      // Check if property has valid images
+      const hasValidMainImage = property.main_image && property.main_image.trim() !== '';
+      const hasValidImagesArray = property.images && Array.isArray(property.images) && property.images.length > 0;
+
+      // If no valid images, add demo images
+      if (!hasValidMainImage && !hasValidImagesArray) {
+        logger.debug('Adding demo images to property', { propertyId: property.id, title: property.title });
+        const seed = property.id.slice(-8);
+        const typeMap: Record<string, string> = {
+          'appartement': 'apartment',
+          'villa': 'house',
+          'studio': 'room',
+          'duplex': 'building',
+          'bureau': 'office',
+          'local_commercial': 'store'
+        };
+        const imageType = typeMap[property.property_type.toLowerCase()] || 'apartment';
+
+        // Add demo images array
+        property.images = [
+          `https://picsum.photos/seed/${imageType}-${seed}-1/400/300.jpg`,
+          `https://picsum.photos/seed/${imageType}-${seed}-2/400/300.jpg`,
+          `https://picsum.photos/seed/${imageType}-${seed}-3/400/300.jpg`
+        ];
+
+        // Add main_image as first image
+        property.main_image = property.images[0];
+
+        logger.debug('Demo images added', {
+          propertyId: property.id,
+          imagesCount: property.images.length,
+          mainImage: property.main_image
+        });
+      }
+
+      return property;
+    });
+
     // Note: owner_id is intentionally excluded by RPC for security
-    return results as unknown as Property[];
+    return enhancedResults as unknown as Property[];
   },
 
   /**

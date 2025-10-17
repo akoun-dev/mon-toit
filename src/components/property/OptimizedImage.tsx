@@ -10,16 +10,16 @@ interface OptimizedImageProps {
   className?: string;
 }
 
-export const OptimizedImage = ({ 
-  src, 
-  alt, 
-  priority = false, 
+export const OptimizedImage = ({
+  src,
+  alt,
+  priority = false,
   sizes,
-  className 
+  className
 }: OptimizedImageProps) => {
-  const [currentSrc, setCurrentSrc] = useState<string>("");
+  const [currentSrc, setCurrentSrc] = useState<string>(src);
   const [isLoading, setIsLoading] = useState(true);
-  const [isVisible, setIsVisible] = useState(priority);
+  const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
   // ✅ SÉCURITÉ : Validation de l'URL avant affichage
@@ -34,12 +34,6 @@ export const OptimizedImage = ({
       }
 
       const urlObj = new URL(url);
-<<<<<<< Updated upstream
-      // Ne permettre que les URLs Supabase Storage
-      if (!urlObj.hostname.includes('supabase.co')) {
-        logger.warn('Unauthorized URL attempted', { hostname: urlObj.hostname });
-        return '/placeholder.svg';
-=======
       console.log('OptimizedImage: Parsed URL', { hostname: urlObj.hostname });
       
       // Permettre les URLs Supabase Storage, Unsplash, Picsum et autres sources légitimes
@@ -56,122 +50,82 @@ export const OptimizedImage = ({
         logger.warn('Unauthorized URL attempted', { hostname: urlObj.hostname, url });
         console.warn('OptimizedImage: Unauthorized URL', { hostname: urlObj.hostname, url });
         return '';
->>>>>>> Stashed changes
       }
       console.log('OptimizedImage: URL authorized', { url });
       return url;
-<<<<<<< Updated upstream
-    } catch {
-      return '/placeholder.svg';
-=======
     } catch (error) {
       logger.warn('Invalid URL format', { url, error });
       console.error('OptimizedImage: URL parse error', { url, error });
       return '';
->>>>>>> Stashed changes
     }
   };
 
-  const getLowResSrc = (url: string): string => {
-    if (url.includes("supabase")) {
-      const separator = url.includes("?") ? "&" : "?";
-      return `${url}${separator}quality=10&width=50`;
-    }
-    return url;
-  };
-
-  // Intersection Observer for lazy loading
   useEffect(() => {
-    if (priority) {
-      setIsVisible(true);
+    const safeSrc = sanitizeUrl(src);
+    if (!safeSrc) {
+      setHasError(true);
+      setIsLoading(false);
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '50px' }
-    );
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [priority]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const safeSrc = sanitizeUrl(src);
+    setCurrentSrc(safeSrc);
     setIsLoading(true);
-    
-    const lowResImg = new Image();
-    const lowResSrc = getLowResSrc(safeSrc);
-    
-    lowResImg.onload = () => {
-      setCurrentSrc(lowResSrc);
-      
-      const highResImg = new Image();
-      highResImg.onload = () => {
-        setCurrentSrc(safeSrc);
-        setIsLoading(false);
-      };
-      highResImg.onerror = () => {
-        setIsLoading(false);
-      };
-      highResImg.src = safeSrc;
-    };
+    setHasError(false);
 
-    lowResImg.onerror = () => {
-      setCurrentSrc(safeSrc);
+    const img = new Image();
+    img.onload = () => {
       setIsLoading(false);
     };
-
-    lowResImg.src = lowResSrc;
-  }, [src, isVisible]);
+    img.onerror = () => {
+      logger.warn('Image failed to load', { src: safeSrc });
+      setIsLoading(false);
+      setHasError(true);
+    };
+    img.src = safeSrc;
+  }, [src]);
 
   const generateSrcSet = (url: string): string => {
-    if (!url.includes("supabase")) return url;
-    const separator = url.includes("?") ? "&" : "?";
-    return `
-      ${url}${separator}width=480 480w,
-      ${url}${separator}width=768 768w,
-      ${url}${separator}width=1024 1024w,
-      ${url}${separator}width=1280 1280w
-    `.trim();
+    if (!url || !url.includes("supabase")) return url;
+    try {
+      const separator = url.includes("?") ? "&" : "?";
+      return `
+        ${url}${separator}width=480 480w,
+        ${url}${separator}width=768 768w,
+        ${url}${separator}width=1024 1024w,
+        ${url}${separator}width=1280 1280w
+      `.trim();
+    } catch {
+      return url;
+    }
   };
 
+  // Image de fallback simple
+  const fallbackImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f4f6'/%3E%3Ctext x='200' y='150' text-anchor='middle' font-family='Arial' font-size='16' fill='%236b7280'%3EPas d'image%3C/text%3E%3C/svg%3E";
+
+  if (hasError || !currentSrc) {
+    return (
+      <img
+        src={fallbackImage}
+        alt={alt}
+        className={cn("w-full h-auto object-cover", className)}
+      />
+    );
+  }
+
   return (
-    <div ref={imgRef as any}>
-      {isVisible && currentSrc ? (
-        <picture>
-          <source
-            srcSet={generateSrcSet(currentSrc)}
-            sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
-            type="image/webp"
-          />
-          <img
-            src={currentSrc}
-            srcSet={generateSrcSet(currentSrc)}
-            sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
-            alt={alt}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            className={cn(
-              "transition-opacity duration-500 w-full h-auto",
-              isLoading ? "blur-sm opacity-50" : "blur-0 opacity-100",
-              className
-            )}
-          />
-        </picture>
-      ) : (
-        <div className={cn("bg-muted animate-pulse", className)} />
+    <img
+      ref={imgRef}
+      src={currentSrc}
+      srcSet={generateSrcSet(currentSrc)}
+      sizes={sizes || "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      className={cn(
+        "transition-opacity duration-500 w-full h-auto",
+        isLoading ? "opacity-50" : "opacity-100",
+        className
       )}
-    </div>
+    />
   );
 };

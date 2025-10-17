@@ -2,10 +2,12 @@ import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Supercluster from 'supercluster';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import DOMPurify from 'dompurify';
 import { MapProperty } from '@/hooks/useMapProperties';
 import { Button } from '@/components/ui/button';
 import { Locate, Map, Satellite, Layers, ZoomIn, ZoomOut } from 'lucide-react';
 import { logger } from '@/services/logger';
+import { secureStorage } from '@/lib/secureStorage';
 import { motion } from 'framer-motion';
 import { ABIDJAN_POI, POI_CATEGORIES } from '@/data/abidjanPOI';
 import { ABIDJAN_NEIGHBORHOODS, getPriceColor } from '@/data/abidjanNeighborhoods';
@@ -23,14 +25,27 @@ interface EnhancedMapProps {
 }
 
 const getStoredMapboxToken = () => {
-  // Priorité 1: Variable d'environnement (supporte plusieurs noms)
-  const envToken = import.meta.env.VITE_MAPBOX_TOKEN || 
+  // Import environment validator
+  try {
+    const { getEnvVar } = require('@/lib/env-validation');
+
+    // Priorité 1: Variables d'environnement validées (supporte plusieurs noms)
+    const envToken = getEnvVar('VITE_MAPBOX_TOKEN') ||
+                     getEnvVar('VITE_MAPBOX_PUBLIC_TOKEN') ||
+                     getEnvVar('MAPBOX_PUBLIC_TOKEN');
+    if (envToken) return envToken;
+  } catch (error) {
+    console.warn('Environment validation not available, using fallback');
+  }
+
+  // Fallback direct aux variables d'environnement (avec validation de base)
+  const envToken = import.meta.env.VITE_MAPBOX_TOKEN ||
                    import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
                    import.meta.env.MAPBOX_PUBLIC_TOKEN;
-  if (envToken) return envToken;
-  
-  // Priorité 2: localStorage (fallback)
-  return localStorage.getItem('mapbox_token') || '';
+  if (envToken && /^pk\.[a-zA-Z0-9.-_]+$/.test(envToken)) return envToken;
+
+  // Priorité 2: localStorage sécurisé (fallback)
+  return secureStorage.getItem('mapbox_token', true) || '';
 };
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
@@ -163,15 +178,30 @@ export const EnhancedMap = ({
 
         const el = document.createElement('div');
         el.className = 'cluster-marker';
-        el.innerHTML = `
-          <div class="relative group cursor-pointer">
-            <div class="absolute -inset-2 bg-gradient-to-r from-primary to-secondary rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
-            <div class="relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary border-3 border-white shadow-xl flex flex-col items-center justify-center text-white group-hover:scale-110 transition-transform">
-              <span class="text-lg font-bold">${count}</span>
-              <span class="text-xs opacity-90">${(avgPrice / 1000).toFixed(0)}k</span>
-            </div>
-          </div>
-        `;
+
+        // Create safe DOM structure for cluster marker
+        const container = document.createElement('div');
+        container.className = 'relative group cursor-pointer';
+
+        const glowEffect = document.createElement('div');
+        glowEffect.className = 'absolute -inset-2 bg-gradient-to-r from-primary to-secondary rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity';
+
+        const markerContent = document.createElement('div');
+        markerContent.className = 'relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary border-3 border-white shadow-xl flex flex-col items-center justify-center text-white group-hover:scale-110 transition-transform';
+
+        const countSpan = document.createElement('span');
+        countSpan.className = 'text-lg font-bold';
+        countSpan.textContent = count.toString();
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'text-xs opacity-90';
+        priceSpan.textContent = `${(avgPrice / 1000).toFixed(0)}k`;
+
+        markerContent.appendChild(countSpan);
+        markerContent.appendChild(priceSpan);
+        container.appendChild(glowEffect);
+        container.appendChild(markerContent);
+        el.appendChild(container);
 
         el.addEventListener('click', () => {
           const expansionZoom = clusterIndex.current!.getClusterExpansionZoom(clusterId);
@@ -190,46 +220,104 @@ export const EnhancedMap = ({
         const property = cluster.properties;
         const el = document.createElement('div');
         el.className = 'property-marker';
-        el.innerHTML = `
-          <div class="relative group cursor-pointer">
-            <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity"></div>
-            <div class="relative w-12 h-12 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform">
-              ${(property.price / 1000).toFixed(0)}k
-            </div>
-          </div>
-        `;
 
-        const popupHTML = `
-          <div class="min-w-[220px]">
-            ${property.image ? `
-              <img 
-                src="${property.image}" 
-                alt="${property.title}"
-                class="w-full h-32 object-cover rounded-t-lg mb-2"
-              />
-            ` : ''}
-            <div class="p-3">
-              <h3 class="font-semibold text-sm mb-2 text-foreground">${property.title}</h3>
-              <div class="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>${property.city}</span>
-              </div>
-              <p class="text-base font-bold text-primary">${property.price.toLocaleString()} FCFA<span class="text-xs font-normal">/mois</span></p>
-              <button class="mt-3 w-full px-3 py-1.5 bg-primary text-white rounded-md text-xs font-medium hover:bg-primary/90 transition-colors">
-                Voir les détails
-              </button>
-            </div>
-          </div>
-        `;
+        // Safe DOM manipulation for property marker
+        const propertyContainer = document.createElement('div');
+        propertyContainer.className = 'relative group cursor-pointer';
+
+        const propertyGlow = document.createElement('div');
+        propertyGlow.className = 'absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity';
+
+        const propertyMarker = document.createElement('div');
+        propertyMarker.className = 'relative w-12 h-12 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform';
+        propertyMarker.textContent = `${(property.price / 1000).toFixed(0)}k`;
+
+        propertyContainer.appendChild(propertyGlow);
+        propertyContainer.appendChild(propertyMarker);
+        el.appendChild(propertyContainer);
+
+        // Create safe popup DOM content to prevent XSS
+        const popupContent = document.createElement('div');
+        popupContent.className = 'min-w-[220px]';
+
+        if (property.image) {
+          const img = document.createElement('img');
+          img.src = DOMPurify.sanitize(property.image);
+          img.alt = DOMPurify.sanitize(property.title);
+          img.className = 'w-full h-32 object-cover rounded-t-lg mb-2';
+          popupContent.appendChild(img);
+        }
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'p-3';
+
+        const title = document.createElement('h3');
+        title.className = 'font-semibold text-sm mb-2 text-foreground';
+        title.textContent = DOMPurify.sanitize(property.title);
+        contentDiv.appendChild(title);
+
+        const locationDiv = document.createElement('div');
+        locationDiv.className = 'flex items-center gap-1 text-xs text-muted-foreground mb-2';
+
+        const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgIcon.setAttribute('class', 'w-3 h-3');
+        svgIcon.setAttribute('fill', 'none');
+        svgIcon.setAttribute('stroke', 'currentColor');
+        svgIcon.setAttribute('viewBox', '0 0 24 24');
+
+        const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path1.setAttribute('stroke-linecap', 'round');
+        path1.setAttribute('stroke-linejoin', 'round');
+        path1.setAttribute('stroke-width', '2');
+        path1.setAttribute('d', 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z');
+
+        const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path2.setAttribute('stroke-linecap', 'round');
+        path2.setAttribute('stroke-linejoin', 'round');
+        path2.setAttribute('stroke-width', '2');
+        path2.setAttribute('d', 'M15 11a3 3 0 11-6 0 3 3 0 016 0z');
+
+        svgIcon.appendChild(path1);
+        svgIcon.appendChild(path2);
+
+        const citySpan = document.createElement('span');
+        citySpan.textContent = DOMPurify.sanitize(property.city);
+
+        locationDiv.appendChild(svgIcon);
+        locationDiv.appendChild(citySpan);
+        contentDiv.appendChild(locationDiv);
+
+        const pricePara = document.createElement('p');
+        pricePara.className = 'text-base font-bold text-primary';
+
+        const priceSpan = document.createElement('span');
+        priceSpan.textContent = `${property.price.toLocaleString()} FCFA`;
+
+        const perMonthSpan = document.createElement('span');
+        perMonthSpan.className = 'text-xs font-normal';
+        perMonthSpan.textContent = '/mois';
+
+        pricePara.appendChild(priceSpan);
+        pricePara.appendChild(perMonthSpan);
+        contentDiv.appendChild(pricePara);
+
+        const button = document.createElement('button');
+        button.className = 'mt-3 w-full px-3 py-1.5 bg-primary text-white rounded-md text-xs font-medium hover:bg-primary/90 transition-colors';
+        button.textContent = 'Voir les détails';
+        button.addEventListener('click', () => {
+          if (onPropertyClick) {
+            onPropertyClick(property.propertyId);
+          }
+        });
+
+        contentDiv.appendChild(button);
+        popupContent.appendChild(contentDiv);
 
         const popup = new mapboxgl.Popup({
           offset: 25,
           closeButton: false,
           className: 'property-popup',
-        }).setHTML(popupHTML);
+        }).setDOMContent(popupContent);
 
         el.addEventListener('click', () => {
           if (onPropertyClick) {
@@ -312,22 +400,47 @@ export const EnhancedMap = ({
     filteredPOI.forEach(poi => {
       const category = POI_CATEGORIES[poi.type];
       const el = document.createElement('div');
-      el.innerHTML = `
-        <div class="poi-marker cursor-pointer">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:scale-110 transition-transform" style="background-color: ${category.color}">
-            <span class="text-lg">${category.icon}</span>
-          </div>
-        </div>
-      `;
+
+      // Safe DOM manipulation for POI marker
+      const poiContainer = document.createElement('div');
+      poiContainer.className = 'poi-marker cursor-pointer';
+
+      const poiMarker = document.createElement('div');
+      poiMarker.className = 'w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:scale-110 transition-transform';
+      poiMarker.style.backgroundColor = category.color;
+
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'text-lg';
+      iconSpan.textContent = category.icon;
+
+      poiMarker.appendChild(iconSpan);
+      poiContainer.appendChild(poiMarker);
+      el.appendChild(poiContainer);
+
+      // Safe popup content for POI
+      const poiPopupContent = document.createElement('div');
+      poiPopupContent.className = 'p-2';
+
+      const poiName = document.createElement('p');
+      poiName.className = 'font-semibold text-sm';
+      poiName.textContent = poi.name;
+
+      const categoryLabel = document.createElement('p');
+      categoryLabel.className = 'text-xs text-muted-foreground';
+      categoryLabel.textContent = category.label;
+
+      poiPopupContent.appendChild(poiName);
+      poiPopupContent.appendChild(categoryLabel);
+
+      if (poi.description) {
+        const descPara = document.createElement('p');
+        descPara.className = 'text-xs mt-1';
+        descPara.textContent = poi.description;
+        poiPopupContent.appendChild(descPara);
+      }
 
       const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
-        .setHTML(`
-          <div class="p-2">
-            <p class="font-semibold text-sm">${poi.name}</p>
-            <p class="text-xs text-muted-foreground">${category.label}</p>
-            ${poi.description ? `<p class="text-xs mt-1">${poi.description}</p>` : ''}
-          </div>
-        `);
+        .setDOMContent(poiPopupContent);
 
       const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([poi.longitude, poi.latitude])

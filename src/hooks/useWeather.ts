@@ -41,16 +41,24 @@ export const useWeather = (): WeatherReturn => {
   const [weather, setWeather] = useState<WeatherData>(FALLBACK_WEATHER);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const WEATHER_ENABLED = false; // Temporarily disabled to avoid CORS errors
 
   const fetchWeather = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
+      // Optional opt-out (useful if the Edge Function isn't deployed yet in dev)
+      if (!WEATHER_ENABLED) {
+        setWeather(FALLBACK_WEATHER);
+        setIsLoading(false);
+        return;
+      }
+
       // Check cache first (30 min)
       const cachedWeather = localStorage.getItem(CACHE_KEY);
       const cachedTime = localStorage.getItem(CACHE_TIMESTAMP_KEY);
-      
+
       if (cachedWeather && cachedTime) {
         const cacheAge = Date.now() - parseInt(cachedTime);
         if (cacheAge < CACHE_DURATION) {
@@ -65,7 +73,7 @@ export const useWeather = (): WeatherReturn => {
       });
 
       if (apiError) {
-        throw new Error('Weather API error');
+        throw new Error(`Weather API error: ${apiError.message}`);
       }
 
       if (data?.weather) {
@@ -73,7 +81,7 @@ export const useWeather = (): WeatherReturn => {
           ...data.weather,
           feelsLike: data.weather.feelsLike || data.weather.temperature
         };
-        
+
         setWeather(weatherData);
         localStorage.setItem(CACHE_KEY, JSON.stringify(weatherData));
         localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
@@ -83,7 +91,19 @@ export const useWeather = (): WeatherReturn => {
     } catch (err) {
       logger.warn('Weather fetch error', { error: err });
       setError(err as Error);
-      setWeather(FALLBACK_WEATHER);
+
+      // Try to use stale cache if available
+      const staleWeather = localStorage.getItem(CACHE_KEY);
+      if (staleWeather) {
+        try {
+          setWeather(JSON.parse(staleWeather));
+          logger.info('Using stale weather data');
+        } catch (parseError) {
+          setWeather(FALLBACK_WEATHER);
+        }
+      } else {
+        setWeather(FALLBACK_WEATHER);
+      }
     } finally {
       setIsLoading(false);
     }

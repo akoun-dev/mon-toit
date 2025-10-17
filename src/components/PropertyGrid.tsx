@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { propertyService } from '@/services/propertyService';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import PropertyFiltersComponent, { PropertyFilters } from '@/components/PropertyFilters';
 import { PropertyCardSkeleton } from '@/components/properties/PropertyCardSkeleton';
@@ -32,13 +32,8 @@ export const PropertyGrid = ({
   const { data: properties = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('moderation_status', 'approved')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
+      // Use secure RPC through propertyService to avoid RLS/REST 400 errors
+      const data = await propertyService.fetchAll();
       return data as Property[];
     },
   });

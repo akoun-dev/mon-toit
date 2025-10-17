@@ -10,25 +10,25 @@ const IS_DEVELOPMENT = import.meta.env.DEV;
  * Logger de développement (visible uniquement en dev)
  */
 export const devLog = {
-  log: (...args: any[]) => {
+  log: (...args: unknown[]) => {
     if (IS_DEVELOPMENT) {
       console.log('[DEV]', ...args);
     }
   },
-  
-  warn: (...args: any[]) => {
+
+  warn: (...args: unknown[]) => {
     if (IS_DEVELOPMENT) {
       console.warn('[DEV]', ...args);
     }
   },
-  
-  error: (...args: any[]) => {
+
+  error: (...args: unknown[]) => {
     if (IS_DEVELOPMENT) {
       console.error('[DEV]', ...args);
     }
   },
-  
-  info: (...args: any[]) => {
+
+  info: (...args: unknown[]) => {
     if (IS_DEVELOPMENT) {
       console.info('[DEV]', ...args);
     }
@@ -39,11 +39,11 @@ export const devLog = {
  * Logger de production (toujours visible mais formaté)
  */
 export const prodLog = {
-  log: (...args: any[]) => {
+  log: (...args: unknown[]) => {
     console.log('[Mon Toit]', ...args);
   },
-  
-  warn: (...args: any[]) => {
+
+  warn: (...args: unknown[]) => {
     console.warn('[Mon Toit]', ...args);
   },
   
@@ -75,7 +75,7 @@ export const userMessages = {
 /**
  * Convertit une erreur technique en message utilisateur
  */
-export const getErrorMessage = (error: any): string => {
+export const getErrorMessage = (error: Error | string | unknown): string => {
   if (!error) return userMessages.unknownError;
   
   const errorMessage = typeof error === 'string' ? error : error.message || '';

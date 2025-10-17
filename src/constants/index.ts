@@ -400,7 +400,10 @@ export const isValidVerificationStatus = (status: string): status is Verificatio
 /**
  * Format price with FCFA currency
  */
-export const formatPrice = (price: number): string => {
+export const formatPrice = (price: number | undefined | null): string => {
+  if (price === undefined || price === null) {
+    return '0 FCFA';
+  }
   return `${price.toLocaleString('fr-FR')} FCFA`;
 };
 

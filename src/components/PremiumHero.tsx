@@ -180,13 +180,11 @@ export const PremiumHero = () => {
                 <GradientButton
                   variant="secondary"
                   size="lg"
-                  asChild
+                  onClick={() => navigate('/publier')}
                   className="h-14 px-6 font-bold shadow-lg hover:shadow-xl"
                 >
-                  <a href="/publier">
-                    <PlusCircle className="h-5 w-5 mr-2" />
-                    Publier
-                  </a>
+                  <PlusCircle className="h-5 w-5 mr-2" />
+                  Publier
                 </GradientButton>
               </div>
             </div>

@@ -105,6 +105,27 @@ export default {
         "status-info-foreground": "hsl(var(--status-info-foreground))",
         "status-neutral": "hsl(var(--status-neutral))",
         "status-neutral-foreground": "hsl(var(--status-neutral-foreground))",
+
+        // CÔTE D'IVOIRE CULTURAL PALETTE
+        "ivory-orange": "hsl(var(--ivory-orange))",
+        "ivory-white": "hsl(var(--ivory-white))",
+        "ivory-green": "hsl(var(--ivory-green))",
+        "ivory-coast-gold": "hsl(var(--ivory-coast-gold))",
+        "lagoon-blue": "hsl(var(--lagoon-blue))",
+        "tropical-green": "hsl(var(--tropical-green))",
+        "terracotta": "hsl(var(--terracotta))",
+        "bogolan-brown": "hsl(var(--bogolan-brown))",
+        "sand-light": "hsl(var(--sand-light))",
+        "sand": "hsl(var(--sand))",
+        "sand-dark": "hsl(var(--sand-dark))",
+        "sunset-orange": "hsl(var(--sunset-orange))",
+        "tropical-teal": "hsl(var(--tropical-teal))",
+
+        // Property Status Colors
+        "status-available": "hsl(var(--status-available))",
+        "status-pending": "hsl(var(--status-pending))",
+        "status-rented": "hsl(var(--status-rented))",
+        "status-negotiating": "hsl(var(--status-negotiating))",
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
@@ -114,6 +135,11 @@ export default {
         'gradient-mesh': 'var(--gradient-mesh)',
         'gradient-section-primary': 'var(--gradient-section-primary)',
         'gradient-section-secondary': 'var(--gradient-section-secondary)',
+        // Cultural Gradients
+        'gradient-lagoon': 'var(--gradient-lagoon)',
+        'gradient-sunset': 'var(--gradient-sunset)',
+        'gradient-forest': 'var(--gradient-forest)',
+        'gradient-kente': 'var(--gradient-kente)',
       },
       boxShadow: {
         'primary': 'var(--shadow-primary)',
@@ -121,14 +147,34 @@ export default {
         'soft': 'var(--shadow-soft)',
         'glass': 'var(--shadow-glass)',
         'elevated': 'var(--shadow-elevated)',
+        // Elevation System
+        'elevation-1': 'var(--elevation-1)',
+        'elevation-2': 'var(--elevation-2)',
+        'elevation-3': 'var(--elevation-3)',
+        'elevation-4': 'var(--elevation-4)',
+        'elevation-5': 'var(--elevation-5)',
       },
       transitionTimingFunction: {
         'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        // Enhanced Transition Timing
+        'fast': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'normal': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'slow': 'cubic-bezier(0.4, 0, 0.2, 1)',
+      },
+      transitionDuration: {
+        'fast': 'var(--transition-fast)',
+        'normal': 'var(--transition-normal)',
+        'slow': 'var(--transition-slow)',
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        // Enhanced Border Radius System
+        'xs': 'var(--radius-xs)',
+        '4': 'var(--radius-sm)',
+        '12': 'var(--radius-md)',
+        '16': 'var(--radius-lg)',
       },
       keyframes: {
         "accordion-down": {

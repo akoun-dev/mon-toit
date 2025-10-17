@@ -29,19 +29,21 @@ const Navbar = () => {
   const isMobile = useIsMobile();
 
   return (<>
-    <nav className={`fixed top-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-md border-b border-border shadow-sm ${isMobile && user ? 'mb-16' : ''}`}>
+    <nav
+      aria-label="Navigation principale"
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-md border-b border-border shadow-sm ${isMobile && user ? 'mb-16' : ''}`}
+    >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <picture>
-              <source srcSet={monToitLogo.replace('.png', '.webp')} type="image/webp" />
-              <img 
-                src={monToitLogo} 
-                alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT" 
-                className="h-16 w-auto group-hover:scale-105 transition-smooth"
+              <img
+                src={monToitLogo}
+                alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT"
+                className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
                 loading="eager"
-                fetchPriority="high"
+                fetchpriority="high"
                 decoding="async"
                 width="64"
                 height="64"
