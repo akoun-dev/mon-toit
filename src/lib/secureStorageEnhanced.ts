@@ -50,7 +50,7 @@ class EnhancedSecureStorage {
 
       SecurityMonitor.logEvent('SECURE_STORAGE_SET', {
         key: this.hashKey(key),
-        encrypted,
+        encrypted: encrypt,
         expiresAt
       }, 'low');
     } catch (error) {
@@ -90,7 +90,7 @@ class EnhancedSecureStorage {
               key: this.hashKey(key)
             }, 'medium');
           }
-          return this.decryptValue(storedData.data, customKey, storedData.metadata);
+          return this.decryptValue(storedData.data, storedData.metadata, customKey);
         } else {
           return storedData.data;
         }
@@ -359,8 +359,8 @@ class EnhancedSecureStorage {
 
   private decryptValue(
     encryptedValue: string,
-    customKey?: string,
-    metadata: StorageMetadata
+    metadata: StorageMetadata,
+    customKey?: string
   ): string {
     try {
       const decrypted = SecureEncryption.decrypt(encryptedValue, customKey);

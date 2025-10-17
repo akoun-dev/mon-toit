@@ -5,7 +5,8 @@
  * back button management, and action buttons in the Capacitor environment.
  */
 
-import { Capacitor, App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from '@capacitor/app';
 import { StatusBar } from '@capacitor/status-bar';
 import { Keyboard } from '@capacitor/keyboard';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
@@ -198,50 +199,34 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     }
 
     // Handle back button
-    const backButtonListener = CapacitorApp.addListener('backButton', async (event) => {
-      const handled = await handleBackButton();
-      if (!handled) {
-        // Let default behavior happen
-        event.preventDefault = false;
-      }
+    const backButtonListener = CapacitorApp.addListener('backButton', async () => {
+      await handleBackButton();
     });
 
     // Handle app state changes
-    const appStateChangeListeners = [
-      CapacitorApp.addListener('appStateChange', ({ isActive }) => {
-        if (isActive) {
-          // App came to foreground
-          console.log('App is active');
-        } else {
-          // App went to background
-          console.log('App is inactive');
-        }
-      }),
-      CapacitorApp.addListener('urlOpen', ({ url }) => {
-        console.log('App opened with URL:', url);
-        // Handle deep linking
-        if (url.includes('montoit')) {
-          const path = url.replace(/^[^:]*:\/\//, '').replace(/^montoit\/?/, '');
-          mobileNavigate('/' + path, { triggerHaptics: true });
-        }
-      }),
-    ];
+    const appStateListener = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        console.log('App is active');
+      } else {
+        console.log('App is inactive');
+      }
+    });
 
     // Handle keyboard events
-    const keyboardListeners = [
-      Keyboard.addListener('keyboardWillShow', () => {
-        setNavigationState(prev => ({ ...prev, isKeyboardVisible: true }));
-      }),
-      Keyboard.addListener('keyboardWillHide', () => {
-        setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
-      }),
-    ];
+    const keyboardShowListener = Keyboard.addListener('keyboardWillShow', () => {
+      setNavigationState(prev => ({ ...prev, isKeyboardVisible: true }));
+    });
+    
+    const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
+    });
 
     // Cleanup listeners
     return () => {
-      backButtonListener.remove();
-      appStateChangeListeners.forEach(listener => listener.remove());
-      keyboardListeners.forEach(listener => listener.remove());
+      backButtonListener.then(listener => listener.remove());
+      appStateListener.then(listener => listener.remove());
+      keyboardShowListener.then(listener => listener.remove());
+      keyboardHideListener.then(listener => listener.remove());
     };
   }, [handleBackButton, mobileNavigate]);
 

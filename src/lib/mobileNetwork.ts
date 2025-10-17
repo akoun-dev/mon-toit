@@ -5,10 +5,11 @@
  * connectivity management for the real estate application.
  */
 
+import React from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Network, NetworkStatus } from '@capacitor/network';
 import { Preferences } from '@capacitor/preferences';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 export interface NetworkInfo {
   connected: boolean;
@@ -159,7 +160,7 @@ export class MobileNetworkService {
     // Trigger haptic feedback
     if (this.settings.notifyOnConnectionChange) {
       await Haptics.notification({
-        type: this.networkStatus.connected ? 'success' : 'warning'
+        type: this.networkStatus.connected ? NotificationType.Success : NotificationType.Warning
       });
     }
   }

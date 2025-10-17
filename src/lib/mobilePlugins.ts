@@ -13,7 +13,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { Haptics } from '@capacitor/haptics';
 import { Keyboard } from '@capacitor/keyboard';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { StatusBar } from '@capacitor/status-bar';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { Share } from '@capacitor/share';
 import { Device } from '@capacitor/device';
 import { Network } from '@capacitor/network';
@@ -256,7 +256,7 @@ export async function initializeMobilePlugins(): Promise<void> {
 
   try {
     // Initialize StatusBar
-    await StatusBar.setStyle({ style: 'dark' });
+    await StatusBar.setStyle({ style: Style.Dark });
     await StatusBar.setBackgroundColor({ color: '#FF8F00' });
 
     // Hide splash screen

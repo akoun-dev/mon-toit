@@ -366,11 +366,9 @@ export const useFormValidation = <T extends z.ZodSchema>(
 
   const validateField = (name: string, value: any) => {
     try {
-      const fieldSchema = schema.shape[name];
-      if (fieldSchema) {
-        fieldSchema.parse(value);
-        setErrors(prev => ({ ...prev, [name]: '' }));
-      }
+      // For Zod schemas, we need to validate the entire object and extract the field error
+      schema.parse({ ...values, [name]: value });
+      setErrors(prev => ({ ...prev, [name]: '' }));
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldError = error.errors.find(err => err.path[0] === name);

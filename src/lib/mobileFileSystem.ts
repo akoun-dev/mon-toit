@@ -5,10 +5,11 @@
  * contracts, photos, and other real estate related files.
  */
 
+import React from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 export interface FileMetadata {
   id: string;
@@ -187,7 +188,7 @@ export class MobileFileSystemService {
       this.files.set(fileId, metadata);
       await this.saveFileMetadata();
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return metadata;
     } catch (error) {
@@ -340,7 +341,7 @@ export class MobileFileSystemService {
       this.files.clear();
       await this.saveFileMetadata();
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
     } catch (error) {
       console.error('Error clearing files:', error);
       throw error;
@@ -422,7 +423,7 @@ export class MobileFileSystemService {
         mimeType: 'application/json',
       });
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return metadata.id;
     } catch (error) {

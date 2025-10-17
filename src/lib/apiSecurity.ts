@@ -141,7 +141,7 @@ export class APISecurity {
    */
   private static checkRateLimit(context: SecurityContext): RateLimitResult {
     const identifier = context.userId || context.ipAddress;
-    const action = this.getRateLimitAction(context.endpoint);
+    const action = this.getRateLimitAction(context.endpoint) as 'API_REQUESTS' | 'FILE_UPLOADS' | 'LOGIN_ATTEMPTS' | 'MESSAGE_SEND';
 
     const result = RateLimiter.isAllowed(identifier, action);
 

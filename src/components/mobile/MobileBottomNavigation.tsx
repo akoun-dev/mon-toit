@@ -180,7 +180,7 @@ export function MobileBottomNavigation({
                 size="sm"
                 className="min-w-[120px] justify-start gap-2 shadow-lg"
               >
-                <ActionIcon className="w-4 h-4" />
+                {React.createElement(ActionIcon, { className: "w-4 h-4" })}
                 {action.label}
               </Button>
             );

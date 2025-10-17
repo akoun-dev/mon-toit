@@ -5,14 +5,15 @@
  * messages, and other real-time updates for the real estate application.
  */
 
+import React from 'react';
 import { Capacitor } from '@capacitor/core';
 import {
   PushNotifications,
-  PermissionStatus,
   PushNotificationSchema,
-  ActionPerformed
+  ActionPerformed,
+  PermissionStatus as PushPermissionStatus
 } from '@capacitor/push-notifications';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Preferences } from '@capacitor/preferences';
 
 export interface NotificationChannel {
@@ -138,7 +139,7 @@ export class MobileNotificationService {
 
       // Request permissions
       const permission = await this.requestPermissions();
-      if (!permission.granted) {
+      if ((permission as any).receive !== 'granted') {
         console.warn('Push notifications permission not granted');
         return;
       }
@@ -160,7 +161,7 @@ export class MobileNotificationService {
   /**
    * Request notification permissions
    */
-  async requestPermissions(): Promise<PermissionStatus> {
+  async requestPermissions(): Promise<PushPermissionStatus> {
     try {
       const permission = await PushNotifications.requestPermissions();
       return permission;
@@ -173,7 +174,7 @@ export class MobileNotificationService {
   /**
    * Check notification permissions
    */
-  async checkPermissions(): Promise<PermissionStatus> {
+  async checkPermissions(): Promise<PushPermissionStatus> {
     try {
       return await PushNotifications.checkPermissions();
     } catch (error) {
@@ -235,7 +236,7 @@ export class MobileNotificationService {
         // Trigger haptic feedback if enabled
         if (this.settings.vibrationEnabled) {
           await Haptics.notification({
-            type: notification.data?.type === 'message' ? 'success' : 'warning'
+            type: notification.data?.type === 'message' ? NotificationType.Success : NotificationType.Warning
           });
         }
 
@@ -528,7 +529,7 @@ export function useMobileNotifications() {
       setIsInitialized(true);
 
       const permission = await notificationService.checkPermissions();
-      setHasPermission(permission.granted);
+      setHasPermission((permission as any).receive === 'granted');
 
       setSettings(notificationService.getSettings());
     } catch (error) {
@@ -538,7 +539,7 @@ export function useMobileNotifications() {
 
   const requestPermissions = async () => {
     const permission = await notificationService.requestPermissions();
-    setHasPermission(permission.granted);
+    setHasPermission((permission as any).receive === 'granted');
     return permission;
   };
 
