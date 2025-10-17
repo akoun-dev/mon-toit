@@ -47,34 +47,36 @@ export const PropertyCard = ({
   const imageQuality = effectiveType === '4g' && !saveData;
 
   useEffect(() => {
-    const checkCertification = async () => {
-      const { data } = await supabase
-        .from('leases')
-        .select('id')
-        .eq('property_id', property.id)
-        .eq('certification_status', 'certified')
-        .limit(1)
-        .maybeSingle();
-      
-      setHasCertifiedLease(!!data);
-    };
+    // Temporarily disabled certification and agency checks
+    // TODO: Re-enable when database schema is fully deployed
+    // const checkCertification = async () => {
+    //   const { data } = await supabase
+    //     .from('leases')
+    //     .select('id')
+    //     .eq('property_id', property.id)
+    //     .eq('certification_status', 'certified')
+    //     .limit(1)
+    //     .maybeSingle();
+    //
+    //   setHasCertifiedLease(!!data);
+    // };
 
-    const checkAgencyMandate = async () => {
-      const { data } = await supabase
-        .from('agency_mandates')
-        .select('agency_id, profiles!agency_mandates_agency_id_fkey(full_name)')
-        .eq('property_id', property.id)
-        .eq('status', 'active')
-        .limit(1)
-        .maybeSingle();
-      
-      if (data && data.profiles) {
-        setAgencyName((data.profiles as any).full_name);
-      }
-    };
+    // const checkAgencyMandate = async () => {
+    //   const { data } = await supabase
+    //     .from('agency_mandates')
+    //     .select('agency_id, profiles!agency_mandates_agency_id_fkey(full_name)')
+    //     .eq('property_id', property.id)
+    //     .eq('status', 'active')
+    //     .limit(1)
+    //     .maybeSingle();
+    //
+    //   if (data && data.profiles) {
+    //     setAgencyName((data.profiles as any).full_name);
+    //   }
+    // };
 
-    checkCertification();
-    checkAgencyMandate();
+    // checkCertification();
+    // checkAgencyMandate();
   }, [property.id]);
 
   // Long press for preview

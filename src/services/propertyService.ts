@@ -7,11 +7,13 @@ import { logger } from '@/services/logger';
  */
 export const shouldShowProperty = (property: Property, currentUserId?: string): boolean => {
   // ALWAYS show to property owner
-  if (currentUserId && property.owner_id === currentUserId) {
+  if (currentUserId && (property as any).owner_id === currentUserId) {
     return true;
   }
-  // Hide rented properties from everyone else
-  return property.status !== 'loué';
+  // Normalize status and hide rented/archived states for public users
+  const status = (property as any).status?.toString().toLowerCase();
+  const rentedStatuses = new Set(['loué', 'loue', 'rented', 'occupied', 'indisponible', 'archived', 'archivé']);
+  return !rentedStatuses.has(status);
 };
 
 /**
@@ -104,7 +106,7 @@ export const propertyService = {
     }
 
     // Use secure RPC for public browsing - exclude rented properties
-    const { data, error } = await supabase.rpc('get_public_properties', {
+    let { data, error } = await supabase.rpc('get_public_properties', {
       p_city: filters?.city || null,
       p_property_type: filters?.propertyType?.[0] || null,
       p_min_rent: filters?.minPrice || null,
@@ -113,17 +115,29 @@ export const propertyService = {
       p_status: null, // RPC handles filtering
     });
 
+    // Fallback: if RPC is missing on the project or fails, try a safe direct query
     if (error) {
-      logger.logError(error, { context: 'propertyService', action: 'fetchAllProperties' });
+      logger.warn('RPC get_public_properties failed, falling back to direct SELECT', { error });
+      // Try a permissive select without moderation_status (some projects don't have this column)
+      const fallback = await supabase
+        .from('properties')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      // Provide more context in error message
-      const enhancedError = new Error(
-        `Failed to fetch properties: ${error.message || 'Unknown error'}. ${
-          error.code ? `Error code: ${error.code}` : ''
-        }`
-      );
-      (enhancedError as any).originalError = error;
-      throw enhancedError;
+      if (fallback.error) {
+        logger.logError(fallback.error, { context: 'propertyService', action: 'fetchAllPropertiesFallback' });
+
+        // Provide more context in error message
+        const enhancedError = new Error(
+          `Failed to fetch properties: ${fallback.error.message || 'Unknown error'}. ${
+            fallback.error.code ? `Error code: ${fallback.error.code}` : ''
+          }`
+        );
+        (enhancedError as any).originalError = fallback.error;
+        throw enhancedError;
+      }
+
+      data = fallback.data as any[];
     }
 
     logger.debug('Properties received from API', { count: data?.length || 0 });
