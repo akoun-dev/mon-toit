@@ -47,7 +47,7 @@ export const ProfessionalHero = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
-          backgroundPosition: 'center center'
+          backgroundPosition: 'center 60%' // Meilleur cadrage sur mobile
         }}
       />
       
@@ -83,7 +83,7 @@ export const ProfessionalHero = () => {
       </div>
       
       {/* Symboles Adinkra flottants - très discrets */}
-      <div className="absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
+      <div className="hidden md:block absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
           <circle cx="50" cy="50" r="40" fill="none" stroke="#E07A5F" strokeWidth="3" />
           <path d="M50 20 L50 80 M30 50 L70 50" stroke="#E07A5F" strokeWidth="3" />
@@ -91,7 +91,7 @@ export const ProfessionalHero = () => {
         </svg>
       </div>
       
-      <div className="absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
+      <div className="hidden md:block absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
           <circle cx="50" cy="50" r="35" fill="none" stroke="#FF6B35" strokeWidth="3" />
           <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#FF6B35" />
@@ -99,8 +99,8 @@ export const ProfessionalHero = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+        <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
           
           {/* Badge ANSUT - discret, en tant que sponsor */}
           <motion.div
@@ -122,7 +122,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-4"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0">
               Trouvez votre{' '}
               <span className="text-primary relative">
                 Toit Idéal
@@ -142,7 +142,7 @@ export const ProfessionalHero = () => {
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium px-4 sm:px-0">
               Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
             </p>
           </motion.div>
@@ -250,7 +250,7 @@ export const ProfessionalHero = () => {
               </div>
 
               {/* Message de confiance */}
-              <p className="text-sm text-gray-600 text-center pt-2 flex items-center justify-center gap-2">
+              <p className="text-xs sm:text-sm text-gray-600 text-center pt-2 flex flex-wrap items-center justify-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-success" />
                 100% gratuit • Sécurisé • Certifié ANSUT
               </p>
@@ -262,19 +262,19 @@ export const ProfessionalHero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="grid grid-cols-3 gap-6 md:gap-12 max-w-3xl mx-auto pt-8"
+            className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-12 max-w-3xl mx-auto pt-8 px-4"
           >
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
-              <div className="text-sm md:text-base text-gray-600 mt-1">Biens disponibles</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens disponibles</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-primary">10000+</div>
-              <div className="text-sm md:text-base text-gray-600 mt-1">Utilisateurs actifs</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">10000+</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Utilisateurs actifs</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold text-primary">98%</div>
-              <div className="text-sm md:text-base text-gray-600 mt-1">Satisfaction</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">98%</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Satisfaction</div>
             </div>
           </motion.div>
         </div>
