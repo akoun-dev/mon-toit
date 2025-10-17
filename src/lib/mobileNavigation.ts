@@ -388,18 +388,10 @@ export function useSwipeGestures(onSwipeLeft?: () => void, onSwipeRight?: () => 
 /**
  * Mobile Navigation Provider Component
  */
-export function MobileNavigationProvider({
-  children,
-  config
-}: {
+export function MobileNavigationProvider(props: {
   children: React.ReactNode;
   config?: MobileNavigationConfig;
 }) {
-  const navigation = useMobileNavigation(config);
-
-  return (
-    <div className="mobile-navigation-container">
-      {children}
-    </div>
-  );
+  useMobileNavigation(props.config);
+  return props.children;
 }
