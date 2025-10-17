@@ -126,11 +126,14 @@ export default defineConfig(({ mode }) => ({
       },
     }));
     
-    plugins.push(sentryVitePlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-    }));
+    // Only add Sentry in production mode
+    if (mode === "production") {
+      plugins.push(sentryVitePlugin({
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+      }));
+    }
     
     return plugins;
   })(),
@@ -141,7 +144,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: mode === "production",
     target: 'es2020',
     rollupOptions: {
       output: {
