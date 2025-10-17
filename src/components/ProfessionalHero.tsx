@@ -40,10 +40,22 @@ export const ProfessionalHero = () => {
   };
 
   return (
-    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-hero">
+    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Motifs géométriques Kente - très discrets */}
-      <div className="absolute inset-0 opacity-[0.03]">
+      {/* Image de fond - Illustration Abidjan */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
+          backgroundPosition: 'center center'
+        }}
+      />
+      
+      {/* Overlay crème pour lisibilité (75% opacité) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/75 via-background-sand/70 to-background-light/75" />
+      
+      {/* Motifs géométriques Kente - subtils mais visibles */}
+      <div className="absolute inset-0 opacity-[0.06]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="kente-subtle" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
