@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="py-8 bg-gray-900 text-white">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-sm">
           
           {/* Zone gauche : Logo + Copyright + Badge ANSUT */}
           <div className="flex items-center gap-4">
@@ -19,7 +19,7 @@ const Footer = () => {
           </div>
 
           {/* Zone centrale : Liens essentiels */}
-          <nav className="flex gap-6" aria-label="Footer navigation">
+          <nav className="flex flex-wrap justify-center gap-3 md:gap-6" aria-label="Footer navigation">
             <Link to="/mentions-legales" className="text-gray-300 hover:text-white transition-colors">
               Mentions légales
             </Link>

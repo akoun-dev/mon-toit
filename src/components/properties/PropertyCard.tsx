@@ -288,7 +288,7 @@ export const PropertyCard = ({
         Statut : {getPropertyStatusLabel(property.status)}.
       </div>
 
-      <CardHeader className="p-3 sm:p-4 pb-2">
+      <CardHeader className="p-2 sm:p-3 md:p-4 pb-1 sm:pb-2">
         <div className="flex items-baseline gap-2 mb-2">
           <p className="text-2xl sm:text-3xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
@@ -300,7 +300,7 @@ export const PropertyCard = ({
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
+      <CardContent className="space-y-2 sm:space-y-3 p-2 sm:p-3 md:p-4 pt-0">
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
           <span className="line-clamp-1 font-medium">{property.city}</span>

@@ -87,7 +87,7 @@ export const PremiumHero = () => {
 
           {/* Titre Principal avec Gradient */}
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold text-white leading-tight"
+            className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
@@ -100,7 +100,7 @@ export const PremiumHero = () => {
 
           {/* Sous-titre */}
           <motion.p 
-            className="text-xl md:text-2xl text-white/90 max-w-2xl"
+            className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-2xl px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
@@ -110,14 +110,14 @@ export const PremiumHero = () => {
 
           {/* Formulaire de Recherche */}
           <motion.div 
-            className="w-full max-w-4xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 md:p-8"
+            className="w-full max-w-4xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-4 md:p-6 lg:p-8 mx-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <div className="flex flex-col gap-4">
               {/* Ligne de filtres */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {/* Ville */}
                 <Select value={city} onValueChange={setCity}>
                   <SelectTrigger className="h-14 border-2 focus:border-primary bg-white">
@@ -168,7 +168,7 @@ export const PremiumHero = () => {
               </div>
 
               {/* Boutons d'action */}
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <RippleButton
                   onClick={handleSearch}
                   size="lg"
