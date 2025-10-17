@@ -24,7 +24,11 @@ import { RoleSwitcherCompact } from "@/components/navigation/RoleSwitcherCompact
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
 
-const Navbar = () => {
+interface NavbarProps {
+  showSidebarTrigger?: boolean;
+}
+
+const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
   const { user, profile, signOut } = useAuth();
   const { canAccessAdminDashboard } = usePermissions();
   const isMobile = useIsMobile();
@@ -38,7 +42,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-14">
           {/* Logo avec Sidebar Trigger */}
           <div className="flex items-center gap-3">
-            <SidebarTrigger className="md:hidden" />
+            {showSidebarTrigger && <SidebarTrigger className="md:hidden" />}
             
             <Link to="/" className="flex items-center gap-3 group">
             <picture>
