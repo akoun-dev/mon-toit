@@ -40,13 +40,25 @@ export const ProfessionalHero = () => {
   };
 
   return (
-    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-primary-700">
+    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Motif culturel africain en arrière-plan */}
-      <div className="absolute inset-0 bg-pattern-african opacity-10" />
+      {/* Image de fond - Skyline d'Abidjan */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/images/hero/abidjan-skyline.jpg)',
+          backgroundPosition: 'center 40%'
+        }}
+      />
       
-      {/* Overlay doux */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+      {/* Overlay gradient pour lisibilité */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-primary-700/90" />
+      
+      {/* Motif culturel africain subtil */}
+      <div className="absolute inset-0 bg-pattern-african opacity-5" />
+      
+      {/* Overlay doux supplémentaire */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
       {/* Contenu principal */}
       <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
