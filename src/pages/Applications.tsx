@@ -1,8 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -185,85 +184,85 @@ const Applications = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <MainLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </MainLayout>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-6 pt-24">
-        <div className="mb-10">
-          <DynamicBreadcrumb />
-          
-          <h1 className="text-4xl font-bold mb-3 mt-6 flex items-center gap-3">
-            <FileText className="h-8 w-8 text-primary" />
-            {isOwner ? 'Candidatures reçues' : 'Mes candidatures'}
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {isOwner 
-              ? 'Gérez les candidatures pour vos biens immobiliers' 
-              : 'Suivez l\'état de vos candidatures locatives'}
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-auto">
-              <TabsList>
-                <TabsTrigger value="all">Toutes ({applications.length})</TabsTrigger>
-                <TabsTrigger value="pending">
-                  En attente ({applications.filter(a => a.status === 'pending').length})
-                </TabsTrigger>
-                <TabsTrigger value="approved">
-                  Approuvées ({applications.filter(a => a.status === 'approved').length})
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+    <MainLayout>
+      <div className="container mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10">
+            <DynamicBreadcrumb />
             
-            <ViewToggle 
-              view={viewMode === 'cards' ? 'list' : 'table'} 
-              onViewChange={(v) => setViewMode(v === 'list' ? 'cards' : 'table')}
-              options={['list', 'table']}
-            />
+            <h1 className="text-4xl font-bold mb-3 mt-6 flex items-center gap-3">
+              <FileText className="h-8 w-8 text-primary" />
+              {isOwner ? 'Candidatures reçues' : 'Mes candidatures'}
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              {isOwner 
+                ? 'Gérez les candidatures pour vos biens immobiliers' 
+                : 'Suivez l\'état de vos candidatures locatives'}
+            </p>
           </div>
 
-          {viewMode === 'table' ? (
-            <ApplicationsTableView
-              applications={filteredApplications}
-              onSelect={(app: ApplicationDisplay) => setSelectedApplication(app)}
-              isOwner={isOwner}
-            />
-          ) : (
-            <ApplicationsList
-              applications={filteredApplications}
-              onSelect={(app: ApplicationDisplay) => setSelectedApplication(app)}
-              getStatusBadge={getStatusBadge}
-              isOwner={isOwner}
-            />
-          )}
-        </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-auto">
+                <TabsList>
+                  <TabsTrigger value="all">Toutes ({applications.length})</TabsTrigger>
+                  <TabsTrigger value="pending">
+                    En attente ({applications.filter(a => a.status === 'pending').length})
+                  </TabsTrigger>
+                  <TabsTrigger value="approved">
+                    Approuvées ({applications.filter(a => a.status === 'approved').length})
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              
+              <ViewToggle 
+                view={viewMode === 'cards' ? 'list' : 'table'} 
+                onViewChange={(v) => setViewMode(v === 'list' ? 'cards' : 'table')}
+                options={['list', 'table']}
+              />
+            </div>
 
-        {/* Dialog pour ApplicationDetail */}
-        <Dialog open={!!selectedApplication} onOpenChange={() => setSelectedApplication(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
-            {selectedApplication && (
-              <ApplicationDetail
-                application={selectedApplication}
-                onClose={() => setSelectedApplication(null)}
-                onStatusUpdate={updateApplicationStatus}
+            {viewMode === 'table' ? (
+              <ApplicationsTableView
+                applications={filteredApplications}
+                onSelect={(app: ApplicationDisplay) => setSelectedApplication(app)}
+                isOwner={isOwner}
+              />
+            ) : (
+              <ApplicationsList
+                applications={filteredApplications}
+                onSelect={(app: ApplicationDisplay) => setSelectedApplication(app)}
+                getStatusBadge={getStatusBadge}
                 isOwner={isOwner}
               />
             )}
-          </DialogContent>
-        </Dialog>
-      </main>
+          </div>
 
-      <Footer />
-    </div>
+          {/* Dialog pour ApplicationDetail */}
+          <Dialog open={!!selectedApplication} onOpenChange={() => setSelectedApplication(null)}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+              {selectedApplication && (
+                <ApplicationDetail
+                  application={selectedApplication}
+                  onClose={() => setSelectedApplication(null)}
+                  onStatusUpdate={updateApplicationStatus}
+                  isOwner={isOwner}
+                />
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+    </MainLayout>
   );
 };
 
