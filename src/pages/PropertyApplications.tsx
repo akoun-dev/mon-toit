@@ -6,8 +6,7 @@ import { useRecommendations } from '@/hooks/useRecommendations';
 import { usePropertyPermissions } from '@/hooks/usePropertyPermissions';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -284,10 +283,8 @@ const PropertyApplications = () => {
   const rejectedApps = processedApps.filter(app => app.status === 'rejected');
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24 max-w-7xl">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <DynamicBreadcrumb />
         <div className="mb-8">
           {isAgencyView && (
@@ -585,7 +582,6 @@ const PropertyApplications = () => {
             </TabsContent>
           ))}
         </Tabs>
-      </main>
 
       <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
         <DialogContent className="rounded-xl">
@@ -615,9 +611,8 @@ const PropertyApplications = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 

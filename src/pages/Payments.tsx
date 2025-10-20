@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/services/logger";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -182,9 +181,8 @@ export default function Payments() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8 pt-24">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-8">
         <DynamicBreadcrumb />
         
         <div className="mb-8">
@@ -323,8 +321,7 @@ export default function Payments() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 }
