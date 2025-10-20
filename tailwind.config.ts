@@ -162,9 +162,10 @@ export default {
         'scale-in': 'scale-in 200ms ease-out',
       },
       backgroundImage: {
-        'gradient-hero': 'linear-gradient(135deg, #FEF3C7 0%, #FFFDF8 100%)', // Beige sable → Ivoire
-        'gradient-primary': 'linear-gradient(135deg, #FF6B35 0%, #E25822 100%)', // Orange vif → profond
-        'gradient-secondary': 'linear-gradient(135deg, #E07A5F 0%, #D96548 100%)', // Terracotta
+        'gradient-hero-warm': 'var(--gradient-hero-warm)',
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-secondary': 'var(--gradient-secondary)',
+        'gradient-hero': 'var(--gradient-hero)',
         'gradient-ci': 'linear-gradient(90deg, #F77F00 0%, #FFFFFF 50%, #009E60 100%)',
         'pattern-african': 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(224, 122, 95, 0.03) 10px, rgba(224, 122, 95, 0.03) 20px)',
       },
