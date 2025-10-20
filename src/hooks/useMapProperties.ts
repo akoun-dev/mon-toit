@@ -16,7 +16,6 @@ export interface MapProperty {
   bathrooms: number;
   surface_area: number;
   status: string;
-  amenities: string[] | null;
 }
 
 interface UseMapPropertiesOptions {
@@ -53,8 +52,7 @@ export const useMapProperties = (options: UseMapPropertiesOptions = {}) => {
             bedrooms,
             bathrooms,
             surface_area,
-            status,
-            amenities
+            status
           `)
           .eq('status', 'disponible')
           .not('latitude', 'is', null)
@@ -84,16 +82,8 @@ export const useMapProperties = (options: UseMapPropertiesOptions = {}) => {
           throw error;
         }
 
-        // Filter by amenities if needed (client-side since it's an array)
-        let filteredData = data || [];
-        if (filters?.amenities && filters.amenities.length > 0) {
-          filteredData = filteredData.filter(property => {
-            if (!property.amenities) return false;
-            return filters.amenities!.some(amenity => 
-              property.amenities!.includes(amenity)
-            );
-          });
-        }
+        // Note: amenities column removed from schema, skip filtering
+        const filteredData = data || [];
 
         logger.info(`Loaded ${filteredData.length} properties for map`, {
           filters,

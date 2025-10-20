@@ -62,10 +62,12 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     console.error('Edge function error:', error);
     
+    const errorMessage = error instanceof Error ? error.message : 'An error occurred while expiring stale requests';
+    
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'An error occurred while expiring stale requests',
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       }),
       {

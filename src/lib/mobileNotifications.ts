@@ -5,15 +5,8 @@
  * messages, and other real-time updates for the real estate application.
  */
 
-import { Capacitor } from '@capacitor/core';
-import {
-  PushNotifications,
-  PermissionStatus,
-  PushNotificationSchema,
-  ActionPerformed
-} from '@capacitor/push-notifications';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { Preferences } from '@capacitor/preferences';
+import React from 'react';
+import { isNativePlatform } from '@/lib/capacitorWrapper';
 
 export interface NotificationChannel {
   id: string;
@@ -123,7 +116,9 @@ export class MobileNotificationService {
    * Initialize push notifications
    */
   async initialize(): Promise<void> {
-    if (!Capacitor.isNativePlatform()) {
+    const isNative = await isNativePlatform();
+    
+    if (!isNative) {
       console.log('Push notifications: Not running on native platform');
       return;
     }
@@ -133,21 +128,68 @@ export class MobileNotificationService {
     }
 
     try {
+      const [
+        { PushNotifications },
+        { Haptics, ImpactStyle, NotificationType }
+      ] = await Promise.all([
+        import('@capacitor/push-notifications'),
+        import('@capacitor/haptics')
+      ]);
+
       // Load settings
       await this.loadSettings();
 
       // Request permissions
-      const permission = await this.requestPermissions();
-      if (!permission.granted) {
+      const permission = await PushNotifications.requestPermissions();
+      if ((permission as any).receive !== 'granted') {
         console.warn('Push notifications permission not granted');
         return;
       }
 
       // Register for push notifications
-      await this.register();
+      await PushNotifications.register();
 
-      // Set up listeners
-      this.setupListeners();
+      // Get registration token
+      await PushNotifications.addListener('registration', (token) => {
+        console.log('📱 Push notification token:', token.value);
+        this.sendTokenToBackend(token.value);
+      });
+
+      // Handle registration errors
+      await PushNotifications.addListener('registrationError', (error) => {
+        console.error('❌ Push notification registration error:', error.error);
+      });
+
+      // Handle received notifications (app in foreground)
+      PushNotifications.addListener('pushNotificationReceived', async (notification) => {
+        console.log('📨 Push notification received:', notification);
+
+        if (this.isInQuietHours()) {
+          console.log('🔕 Quiet hours - notification muted');
+          return;
+        }
+
+        const channel = notification.data?.type as string;
+        if (!this.settings.channels[channel]) {
+          console.log('🔕 Channel disabled - notification muted');
+          return;
+        }
+
+        if (this.settings.vibrationEnabled) {
+          await Haptics.notification({
+            type: notification.data?.type === 'message' ? NotificationType.Success : NotificationType.Warning
+          });
+        }
+
+        this.handleReceivedNotification(notification);
+      });
+
+      // Handle notification taps
+      PushNotifications.addListener('pushNotificationActionPerformed', async (notification) => {
+        console.log('📱 Push notification action performed:', notification);
+        await Haptics.impact({ style: ImpactStyle.Medium });
+        await this.handleNotificationAction(notification);
+      });
 
       this.isInitialized = true;
       console.log('✅ Push notifications initialized successfully');
@@ -160,10 +202,13 @@ export class MobileNotificationService {
   /**
    * Request notification permissions
    */
-  async requestPermissions(): Promise<PermissionStatus> {
+  async requestPermissions(): Promise<any> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return null;
+
     try {
-      const permission = await PushNotifications.requestPermissions();
-      return permission;
+      const { PushNotifications } = await import('@capacitor/push-notifications');
+      return await PushNotifications.requestPermissions();
     } catch (error) {
       console.error('Error requesting permissions:', error);
       throw error;
@@ -173,8 +218,12 @@ export class MobileNotificationService {
   /**
    * Check notification permissions
    */
-  async checkPermissions(): Promise<PermissionStatus> {
+  async checkPermissions(): Promise<any> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return null;
+
     try {
+      const { PushNotifications } = await import('@capacitor/push-notifications');
       return await PushNotifications.checkPermissions();
     } catch (error) {
       console.error('Error checking permissions:', error);
@@ -183,85 +232,9 @@ export class MobileNotificationService {
   }
 
   /**
-   * Register for push notifications
-   */
-  private async register(): Promise<void> {
-    try {
-      await PushNotifications.register();
-
-      // Get registration token
-      const result = await PushNotifications.addListener('registration',
-        (token) => {
-          console.log('📱 Push notification token:', token.value);
-          // Here you would typically send this token to your backend
-          this.sendTokenToBackend(token.value);
-        }
-      );
-
-      // Handle registration errors
-      await PushNotifications.addListener('registrationError',
-        (error) => {
-          console.error('❌ Push notification registration error:', error.error);
-        }
-      );
-    } catch (error) {
-      console.error('Error registering for push notifications:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Set up notification listeners
-   */
-  private setupListeners(): void {
-    // Handle received notifications (app in foreground)
-    PushNotifications.addListener('pushNotificationReceived',
-      async (notification: PushNotificationSchema) => {
-        console.log('📨 Push notification received:', notification);
-
-        // Check quiet hours
-        if (this.isInQuietHours()) {
-          console.log('🔕 Quiet hours - notification muted');
-          return;
-        }
-
-        // Check channel settings
-        const channel = notification.data?.type as string;
-        if (!this.settings.channels[channel]) {
-          console.log('🔕 Channel disabled - notification muted');
-          return;
-        }
-
-        // Trigger haptic feedback if enabled
-        if (this.settings.vibrationEnabled) {
-          await Haptics.notification({
-            type: notification.data?.type === 'message' ? 'success' : 'warning'
-          });
-        }
-
-        // Handle notification display and logic here
-        this.handleReceivedNotification(notification);
-      }
-    );
-
-    // Handle notification taps (app in background or closed)
-    PushNotifications.addListener('pushNotificationActionPerformed',
-      async (notification: ActionPerformed) => {
-        console.log('📱 Push notification action performed:', notification);
-
-        // Trigger haptic feedback
-        await Haptics.impact({ style: ImpactStyle.Medium });
-
-        // Handle notification action
-        await this.handleNotificationAction(notification);
-      }
-    );
-  }
-
-  /**
    * Handle received notification
    */
-  private handleReceivedNotification(notification: PushNotificationSchema): void {
+  private handleReceivedNotification(notification: any): void {
     // Custom logic for handling notifications
     switch (notification.data?.type) {
       case 'property_alert':
@@ -297,7 +270,7 @@ export class MobileNotificationService {
   /**
    * Handle notification action
    */
-  private async handleNotificationAction(notification: ActionPerformed): Promise<void> {
+  private async handleNotificationAction(notification: any): Promise<void> {
     const { data } = notification.notification;
 
     // Navigate to appropriate screen based on notification type
@@ -416,7 +389,11 @@ export class MobileNotificationService {
    * Load settings from preferences
    */
   private async loadSettings(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const { value } = await Preferences.get({ key: 'notification_settings' });
       if (value) {
         this.settings = { ...this.settings, ...JSON.parse(value) };
@@ -430,7 +407,11 @@ export class MobileNotificationService {
    * Save settings to preferences
    */
   private async saveSettings(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       await Preferences.set({
         key: 'notification_settings',
         value: JSON.stringify(this.settings),
@@ -528,7 +509,7 @@ export function useMobileNotifications() {
       setIsInitialized(true);
 
       const permission = await notificationService.checkPermissions();
-      setHasPermission(permission.granted);
+      setHasPermission((permission as any).receive === 'granted');
 
       setSettings(notificationService.getSettings());
     } catch (error) {
@@ -538,7 +519,7 @@ export function useMobileNotifications() {
 
   const requestPermissions = async () => {
     const permission = await notificationService.requestPermissions();
-    setHasPermission(permission.granted);
+    setHasPermission((permission as any).receive === 'granted');
     return permission;
   };
 

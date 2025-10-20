@@ -5,7 +5,7 @@
  * against JavaScript injection attacks and other mobile-specific threats.
  */
 
-import { Capacitor } from '@capacitor/core';
+import { isNativePlatform, getPlatform } from '@/lib/capacitorWrapper';
 
 export interface WebViewSecurityConfig {
   allowFileAccess: boolean;
@@ -81,8 +81,10 @@ export const CSP_POLICY = `
 /**
  * Initialize WebView security settings
  */
-export function initializeWebViewSecurity(): void {
-  if (!Capacitor.isNativePlatform()) {
+export async function initializeWebViewSecurity(): Promise<void> {
+  const isNative = await isNativePlatform();
+  
+  if (!isNative) {
     console.log('WebView security: Not running on native platform, skipping initialization');
     return;
   }

@@ -36,17 +36,7 @@ export default function AdminVerificationQueue() {
       const { data, error } = await supabase.rpc('get_verifications_for_admin_review');
       if (error) throw error;
 
-      const enrichedData = (data || []).map((verification: {
-        user_id: string;
-        oneci_status: string;
-        cnam_status: string;
-        oneci_data: unknown;
-        cnam_data: unknown;
-        oneci_cni_number: string | null;
-        cnam_employer: string | null;
-        created_at: string;
-        full_name: string;
-      }): VerificationWithUser => ({
+      const enrichedData = (data || []).map((verification: any): VerificationWithUser => ({
         user_id: verification.user_id,
         oneci_status: verification.oneci_status as VerificationStatus,
         cnam_status: verification.cnam_status as VerificationStatus,

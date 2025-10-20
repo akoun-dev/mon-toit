@@ -1,5 +1,5 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import { PremiumHero } from "@/components/PremiumHero";
+import { ProfessionalHero } from "@/components/ProfessionalHero";
 import { MobileHero } from "@/components/MobileHero";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { PropertyGrid } from "@/components/PropertyGrid";
@@ -24,7 +24,7 @@ const Index = () => {
 
       <main role="main">
         {/* Hero adaptatif : Mobile ou Desktop */}
-        {useIsMobile() ? <MobileHero /> : <PremiumHero />}
+        {useIsMobile() ? <MobileHero /> : <ProfessionalHero />}
         
         {/* Main Property Grid - Dynamic height */}
         <PropertyGrid

@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
 
-export const useSearchSuggestions = (query: string) => {
+export const useSearchSuggestions = (initialQuery: string = '') => {
+  const [query, setQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -13,7 +14,7 @@ export const useSearchSuggestions = (query: string) => {
     }
 
     const debounce = setTimeout(async () => {
-      setIsLoading(true);
+      setLoading(true);
       
       try {
         const { data, error } = await supabase
@@ -40,12 +41,16 @@ export const useSearchSuggestions = (query: string) => {
         logger.debug('Failed to fetch search suggestions', { query });
         setSuggestions([]);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }, 300);
 
     return () => clearTimeout(debounce);
   }, [query]);
 
-  return { suggestions, isLoading };
+  const getSuggestions = (newQuery: string) => {
+    setQuery(newQuery);
+  };
+
+  return { suggestions, loading, getSuggestions };
 };

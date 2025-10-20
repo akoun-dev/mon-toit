@@ -5,10 +5,11 @@
  * and document scanning for the real estate application.
  */
 
+import React from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Camera, CameraSource, CameraResultType, Photo } from '@capacitor/camera';
+import { Camera, CameraSource, CameraResultType, Photo, ImageOptions } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Share } from '@capacitor/share';
 
 export interface CameraOptions {
@@ -69,7 +70,7 @@ export class MobileCameraService {
       // Trigger haptic feedback
       await Haptics.impact({ style: ImpactStyle.Light });
 
-      const cameraOptions: CameraOptions = {
+      const cameraOptions: ImageOptions = {
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.Uri,
@@ -94,7 +95,7 @@ export class MobileCameraService {
       this.photos.push(propertyPhoto);
 
       // Trigger success haptic feedback
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return propertyPhoto;
     } catch (error) {
@@ -112,7 +113,7 @@ export class MobileCameraService {
     }
 
     try {
-      const cameraOptions: CameraOptions = {
+      const cameraOptions: ImageOptions = {
         quality: 90,
         allowEditing: false,
         resultType: CameraResultType.Uri,
@@ -151,7 +152,7 @@ export class MobileCameraService {
     }
 
     try {
-      const cameraOptions: CameraOptions = {
+      const cameraOptions: ImageOptions = {
         quality: 100,
         allowEditing: true,
         resultType: CameraResultType.Uri,
@@ -188,7 +189,7 @@ export class MobileCameraService {
 
     try {
       // For now, use camera with video-specific options
-      const cameraOptions: CameraOptions = {
+      const cameraOptions: ImageOptions = {
         quality: 85,
         allowEditing: false,
         resultType: CameraResultType.Uri,
@@ -206,7 +207,7 @@ export class MobileCameraService {
       this.photos.push(videoPhoto);
 
       // Trigger haptic feedback
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return videoPhoto;
     } catch (error) {
@@ -235,10 +236,7 @@ export class MobileCameraService {
       fileSize,
       createdAt: new Date(),
       type,
-      metadata: {
-        width: photo.width,
-        height: photo.height,
-      },
+      metadata: {},
     };
 
     return propertyPhoto;
@@ -341,7 +339,7 @@ export class MobileCameraService {
       });
 
       // Trigger haptic feedback
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return true;
     } catch (error) {

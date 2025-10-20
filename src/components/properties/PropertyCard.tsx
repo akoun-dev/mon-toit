@@ -13,7 +13,7 @@ import { supabase } from '@/lib/supabase';
 import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
 import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { toast } from '@/hooks/use-toast';
-import { OptimizedImage } from '@/components/property/OptimizedImage';
+import { SimpleImage } from '@/components/property/SimpleImage';
 import { useLongPress } from '@/hooks/useLongPress';
 import { triggerHapticFeedback } from '@/utils/haptics';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
@@ -155,14 +155,10 @@ export const PropertyCard = ({
             const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
             if (validImages.length > 0) {
               return (
-                <SwipeableGallery
-                  images={validImages.map(img => ({
-                    url: img,
-                    alt: `${property.title} - ${property.city}`
-                  }))}
-                  showNavigation={validImages.length > 1}
-                  showCounter={validImages.length > 1}
-                  className="h-full"
+                <SimpleImage
+                  src={validImages[0]}
+                  alt={`${property.title} - ${property.city}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               );
             }
@@ -172,11 +168,10 @@ export const PropertyCard = ({
           if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
             return (
               <>
-                <OptimizedImage
+                <SimpleImage
                   src={property.main_image}
                   alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  priority={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
               </>
@@ -187,11 +182,10 @@ export const PropertyCard = ({
           const demoImage = getDemoImage(property.id, property.property_type);
           return (
             <>
-              <OptimizedImage
+              <SimpleImage
                 src={demoImage}
                 alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                priority={false}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
               {/* Demo badge */}
@@ -272,11 +266,10 @@ export const PropertyCard = ({
           )}
           
           {hasCertifiedLease && (
-            <CulturalBadge
-              variant="ansut"
-              size="sm"
-              className="shadow-md"
-            />
+            <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3" />
+              ANSUT Certifié
+            </Badge>
           )}
           
           {property.work_status && property.work_status !== 'aucun_travail' && (
@@ -295,7 +288,7 @@ export const PropertyCard = ({
         Statut : {getPropertyStatusLabel(property.status)}.
       </div>
 
-      <CardHeader className="p-3 sm:p-4 pb-2">
+      <CardHeader className="p-2 sm:p-3 md:p-4 pb-1 sm:pb-2">
         <div className="flex items-baseline gap-2 mb-2">
           <p className="text-2xl sm:text-3xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
@@ -307,7 +300,7 @@ export const PropertyCard = ({
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
+      <CardContent className="space-y-2 sm:space-y-3 p-2 sm:p-3 md:p-4 pt-0">
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
           <span className="line-clamp-1 font-medium">{property.city}</span>
@@ -354,11 +347,10 @@ export const PropertyCard = ({
             const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
             if (validImages.length > 0) {
               return (
-                <OptimizedImage
+                <SimpleImage
                   src={validImages[0]} // Use first image for preview
                   alt={property.title}
                   className="w-full rounded-lg"
-                  priority={true}
                 />
               );
             }
@@ -366,11 +358,10 @@ export const PropertyCard = ({
 
           if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
             return (
-              <OptimizedImage
+              <SimpleImage
                 src={property.main_image}
                 alt={property.title}
                 className="w-full rounded-lg"
-                priority={true}
               />
             );
           }
@@ -379,11 +370,10 @@ export const PropertyCard = ({
           const demoImage = getDemoImage(property.id, property.property_type);
           return (
             <div className="relative">
-              <OptimizedImage
+              <SimpleImage
                 src={demoImage}
                 alt={`Photo démonstration: ${property.title}`}
                 className="w-full rounded-lg"
-                priority={true}
               />
               {/* Demo badge */}
               <div className="absolute top-2 left-2">

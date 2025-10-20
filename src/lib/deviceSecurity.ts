@@ -6,10 +6,7 @@
  */
 
 import React from 'react';
-import { Capacitor } from '@capacitor/core';
-import { Device } from '@capacitor/device';
-import { StatusBar } from '@capacitor/status-bar';
-import { App } from '@capacitor/app';
+import { isNativePlatform, getPlatform } from '@/lib/capacitorWrapper';
 
 export interface DeviceSecurityStatus {
   isJailbroken: boolean;
@@ -44,29 +41,16 @@ export class DeviceSecurityDetector {
    * Initialize all security checks
    */
   private initializeSecurityChecks(): void {
-    // Android security checks
-    this.securityChecks.push(this.checkRootedAndroid);
-    this.securityChecks.push(this.checkDeveloperModeAndroid);
-    this.securityChecks.push(this.checkUsbDebuggingAndroid);
-    this.securityChecks.push(this.checkEmulatorAndroid);
-    this.securityChecks.push(this.checkAppSourceAndroid);
-
-    // iOS security checks
-    this.securityChecks.push(this.checkJailbrokenIOS);
-    this.securityChecks.push(this.checkDebuggerIOS);
-    this.securityChecks.push(this.checkEmulatorIOS);
-
-    // Common security checks
-    this.securityChecks.push(this.checkDebuggerAttached);
-    this.securityChecks.push(this.checkFridaFramework);
-    this.securityChecks.push(this.checkCydiaSubstrate);
+    // Security checks are defined inline, no initialization needed
   }
 
   /**
    * Perform comprehensive device security assessment
    */
   async assessDeviceSecurity(): Promise<DeviceSecurityStatus> {
-    if (!Capacitor.isNativePlatform()) {
+    const isNative = await isNativePlatform();
+    
+    if (!isNative) {
       return this.createSecureStatus();
     }
 
@@ -154,7 +138,8 @@ export class DeviceSecurityDetector {
   // iOS Security Checks
 
   private async checkJailbrokenIOS(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'ios') return false;
+    const platform = await getPlatform();
+    if (platform !== 'ios') return false;
 
     const jailbreakIndicators = [
       '/Applications/Cydia.app',
@@ -194,18 +179,25 @@ export class DeviceSecurityDetector {
   }
 
   private async checkEmulatorIOS(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'ios') return false;
+    const platform = await getPlatform();
+    if (platform !== 'ios') return false;
 
-    const deviceInfo = await Device.getInfo();
-    return deviceInfo.model?.includes('Simulator') ||
-           deviceInfo.model?.includes('x86_64') ||
-           deviceInfo.name?.includes('Simulator');
+    try {
+      const { Device } = await import('@capacitor/device');
+      const deviceInfo = await Device.getInfo();
+      return deviceInfo.model?.includes('Simulator') ||
+             deviceInfo.model?.includes('x86_64') ||
+             deviceInfo.name?.includes('Simulator');
+    } catch {
+      return false;
+    }
   }
 
   // Android Security Checks
 
   private async checkRootedAndroid(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'android') return false;
+    const platform = await getPlatform();
+    if (platform !== 'android') return false;
 
     const rootIndicators = [
       '/system/app/Superuser.apk',
@@ -229,7 +221,8 @@ export class DeviceSecurityDetector {
   }
 
   private async checkDeveloperModeAndroid(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'android') return false;
+    const platform = await getPlatform();
+    if (platform !== 'android') return false;
 
     try {
       // Check for development-related packages
@@ -245,7 +238,8 @@ export class DeviceSecurityDetector {
   }
 
   private async checkUsbDebuggingAndroid(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'android') return false;
+    const platform = await getPlatform();
+    if (platform !== 'android') return false;
 
     try {
       // Check ADB debugging status
@@ -257,17 +251,24 @@ export class DeviceSecurityDetector {
   }
 
   private async checkEmulatorAndroid(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'android') return false;
+    const platform = await getPlatform();
+    if (platform !== 'android') return false;
 
-    const deviceInfo = await Device.getInfo();
-    return deviceInfo.model?.includes('Emulator') ||
-           deviceInfo.model?.includes('Android SDK') ||
-           deviceInfo.manufacturer?.includes('Google') ||
-           deviceInfo.manufacturer?.includes('Genymotion');
+    try {
+      const { Device } = await import('@capacitor/device');
+      const deviceInfo = await Device.getInfo();
+      return deviceInfo.model?.includes('Emulator') ||
+             deviceInfo.model?.includes('Android SDK') ||
+             deviceInfo.manufacturer?.includes('Google') ||
+             deviceInfo.manufacturer?.includes('Genymotion');
+    } catch {
+      return false;
+    }
   }
 
   private async checkAppSourceAndroid(): Promise<boolean> {
-    if (Capacitor.getPlatform() !== 'android') return false;
+    const platform = await getPlatform();
+    if (platform !== 'android') return false;
 
     try {
       // Check if app is installed from Google Play Store
@@ -314,9 +315,11 @@ export class DeviceSecurityDetector {
   }
 
   private async checkEmulator(): Promise<boolean> {
-    if (Capacitor.getPlatform() === 'ios') {
+    const platform = await getPlatform();
+    
+    if (platform === 'ios') {
       return this.checkEmulatorIOS();
-    } else if (Capacitor.getPlatform() === 'android') {
+    } else if (platform === 'android') {
       return this.checkEmulatorAndroid();
     }
     return false;
@@ -364,8 +367,10 @@ export class DeviceSecurityDetector {
 /**
  * Initialize device security detection
  */
-export function initializeDeviceSecurity(): void {
-  if (!Capacitor.isNativePlatform()) {
+export async function initializeDeviceSecurity(): Promise<void> {
+  const isNative = await isNativePlatform();
+  
+  if (!isNative) {
     console.log('Device security: Not running on native platform, skipping initialization');
     return;
   }
@@ -438,6 +443,3 @@ export function useDeviceSecurity() {
     detector: DeviceSecurityDetector.getInstance(),
   };
 }
-
-// Export types for use in other files
-export type { DeviceSecurityStatus };

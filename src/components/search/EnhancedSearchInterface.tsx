@@ -60,7 +60,7 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
     isListening,
     startListening,
     stopListening,
-    supported: voiceSupported
+    isSupported: voiceSupported
   } = useVoiceSearch({
     onResult: (transcript) => {
       setQuery(transcript);
@@ -75,7 +75,7 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
     suggestions,
     loading: suggestionsLoading,
     getSuggestions
-  } = useSearchSuggestions();
+  } = useSearchSuggestions(query);
 
   // Load recent searches on mount
   useEffect(() => {
@@ -132,9 +132,9 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
   };
 
   // Handle suggestion click
-  const handleSuggestionClick = (suggestion: SearchSuggestion) => {
-    setQuery(suggestion.text);
-    handleSearch(suggestion.text);
+  const handleSuggestionClick = (suggestionText: string) => {
+    setQuery(suggestionText);
+    handleSearch(suggestionText);
   };
 
   // Clear search
@@ -317,7 +317,7 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
                         transition={{ delay: index * 0.05 }}
                       >
                         <button
-                          onClick={() => handleSuggestionClick(suggestion)}
+                          onClick={() => handleSuggestionClick(suggestion.text)}
                           className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
                         >
                           <div className="text-primary">{suggestion.icon}</div>
@@ -370,25 +370,25 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
                       Recherche de suggestions...
                     </div>
                   ) : (
-                    <ul className="space-y-1">
-                      {suggestions.slice(0, 8).map((suggestion, index) => (
-                        <MotionLi
-                          key={`${suggestion.text}-${index}`}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                        >
-                          <button
-                            onClick={() => handleSuggestionClick(suggestion)}
-                            className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
-                          >
-                            <div className="text-primary">{suggestion.icon}</div>
-                            <span className="text-sm">{suggestion.text}</span>
-                            <Sparkles className="h-3 w-3 text-primary ml-auto" />
-                          </button>
-                        </MotionLi>
-                      ))}
-                    </ul>
+                     <ul className="space-y-1">
+                       {suggestions.slice(0, 8).map((suggestion, index) => (
+                         <MotionLi
+                           key={`${suggestion}-${index}`}
+                           initial={{ opacity: 0, x: -20 }}
+                           animate={{ opacity: 1, x: 0 }}
+                           transition={{ delay: index * 0.05 }}
+                         >
+                           <button
+                             onClick={() => handleSuggestionClick(suggestion)}
+                             className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
+                           >
+                             <div className="text-primary"><Sparkles className="h-4 w-4" /></div>
+                             <span className="text-sm">{suggestion}</span>
+                             <Sparkles className="h-3 w-3 text-primary ml-auto" />
+                           </button>
+                         </MotionLi>
+                       ))}
+                     </ul>
                   )}
                 </div>
               )}

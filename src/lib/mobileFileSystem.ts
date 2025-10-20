@@ -5,10 +5,8 @@
  * contracts, photos, and other real estate related files.
  */
 
-import { Capacitor } from '@capacitor/core';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { Preferences } from '@capacitor/preferences';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import React from 'react';
+import { isNativePlatform } from '@/lib/capacitorWrapper';
 
 export interface FileMetadata {
   id: string;
@@ -48,7 +46,9 @@ export class MobileFileSystemService {
    * Initialize file system
    */
   async initialize(): Promise<void> {
-    if (!Capacitor.isNativePlatform()) {
+    const isNative = await isNativePlatform();
+    
+    if (!isNative) {
       console.log('File system: Not running on native platform');
       return;
     }
@@ -71,14 +71,17 @@ export class MobileFileSystemService {
    * Ensure app directory exists
    */
   private async ensureDirectoryExists(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Filesystem, Directory } = await import('@capacitor/filesystem');
       await Filesystem.mkdir({
         path: this.APP_DIRECTORY,
         directory: Directory.Documents,
         recursive: true,
       });
     } catch (error) {
-      // Directory might already exist, which is fine
       console.log('Directory already exists or created');
     }
   }
@@ -87,7 +90,11 @@ export class MobileFileSystemService {
    * Load file metadata from preferences
    */
   private async loadFileMetadata(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const { value } = await Preferences.get({ key: 'file_metadata' });
       if (value) {
         const metadataArray = JSON.parse(value) as FileMetadata[];
@@ -109,7 +116,11 @@ export class MobileFileSystemService {
    * Save file metadata to preferences
    */
   private async saveFileMetadata(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const metadataArray = Array.from(this.files.values()).map(meta => ({
         ...meta,
         createdAt: meta.createdAt.toISOString(),
@@ -138,11 +149,18 @@ export class MobileFileSystemService {
       mimeType?: string;
     }
   ): Promise<FileMetadata> {
-    if (!Capacitor.isNativePlatform()) {
+    const isNative = await isNativePlatform();
+    
+    if (!isNative) {
       throw new Error('File system is only available on native platforms');
     }
 
     try {
+      const [{ Filesystem, Directory, Encoding }, { Haptics, ImpactStyle, NotificationType }] = await Promise.all([
+        import('@capacitor/filesystem'),
+        import('@capacitor/haptics')
+      ]);
+
       await Haptics.impact({ style: ImpactStyle.Light });
 
       const fileId = this.generateId();
@@ -187,7 +205,7 @@ export class MobileFileSystemService {
       this.files.set(fileId, metadata);
       await this.saveFileMetadata();
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
 
       return metadata;
     } catch (error) {
@@ -200,7 +218,9 @@ export class MobileFileSystemService {
    * Read file from storage
    */
   async readFile(fileId: string): Promise<{ content: string; metadata: FileMetadata }> {
-    if (!Capacitor.isNativePlatform()) {
+    const isNative = await isNativePlatform();
+    
+    if (!isNative) {
       throw new Error('File system is only available on native platforms');
     }
 
@@ -209,6 +229,11 @@ export class MobileFileSystemService {
       if (!metadata) {
         throw new Error('File not found');
       }
+
+      const [{ Filesystem, Directory, Encoding }, { Haptics, ImpactStyle }] = await Promise.all([
+        import('@capacitor/filesystem'),
+        import('@capacitor/haptics')
+      ]);
 
       const result = await Filesystem.readFile({
         path: metadata.path,
@@ -232,11 +257,19 @@ export class MobileFileSystemService {
    * Delete file
    */
   async deleteFile(fileId: string): Promise<boolean> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return false;
+
     try {
       const metadata = this.files.get(fileId);
       if (!metadata) {
         return false;
       }
+
+      const [{ Filesystem, Directory }, { Haptics, ImpactStyle }] = await Promise.all([
+        import('@capacitor/filesystem'),
+        import('@capacitor/haptics')
+      ]);
 
       // Delete from filesystem
       await Filesystem.deleteFile({
@@ -321,7 +354,15 @@ export class MobileFileSystemService {
    * Clear all files
    */
   async clearAllFiles(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const [{ Filesystem, Directory }, { Haptics, NotificationType }] = await Promise.all([
+        import('@capacitor/filesystem'),
+        import('@capacitor/haptics')
+      ]);
+
       const files = Array.from(this.files.values());
 
       // Delete all files from filesystem
@@ -340,7 +381,7 @@ export class MobileFileSystemService {
       this.files.clear();
       await this.saveFileMetadata();
 
-      await Haptics.notification({ type: 'success' });
+      await Haptics.notification({ type: NotificationType.Success });
     } catch (error) {
       console.error('Error clearing files:', error);
       throw error;
@@ -422,7 +463,15 @@ export class MobileFileSystemService {
         mimeType: 'application/json',
       });
 
-      await Haptics.notification({ type: 'success' });
+      const isNative = await isNativePlatform();
+      if (isNative) {
+        try {
+          const { Haptics, NotificationType } = await import('@capacitor/haptics');
+          await Haptics.notification({ type: NotificationType.Success });
+        } catch (error) {
+          console.warn('Failed to trigger haptic feedback:', error);
+        }
+      }
 
       return metadata.id;
     } catch (error) {

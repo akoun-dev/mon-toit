@@ -49,7 +49,7 @@ export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        {...props}
+        {...(props as any)}
       >
         {/* Shine effect overlay */}
         <motion.div

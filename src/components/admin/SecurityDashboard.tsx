@@ -28,17 +28,17 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { SecurityMonitor, RateLimiter } from '@/lib/security';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface SecurityMetrics {
   totalEvents: number;
   criticalEvents: number;
   highSeverityEvents: number;
   recentAlerts: string[];
-  rateLimitViolations: number;
-  blockedIPs: number;
-  activeSessions: number;
-  failedLogins: number;
+  rateLimitViolations?: number;
+  blockedIPs?: number;
+  activeSessions?: number;
+  failedLogins?: number;
 }
 
 interface SecurityEvent {

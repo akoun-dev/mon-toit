@@ -23,9 +23,9 @@ export class PWAInstaller {
    */
   static initialize(): void {
     // Listen for beforeinstallprompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', (e: Event) => {
       e.preventDefault();
-      this.deferredPrompt = e;
+      this.deferredPrompt = e as BeforeInstallPromptEvent;
       this.showInstallPrompt();
     });
 
@@ -440,9 +440,10 @@ export class PWAPushNotifications {
       const permission = await Notification.requestPermission();
 
       if (permission === 'granted') {
+        const applicationServerKey = this.urlBase64ToUint8Array('YOUR_VAPID_PUBLIC_KEY');
         this.subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: this.urlBase64ToUint8Array('YOUR_VAPID_PUBLIC_KEY')
+          applicationServerKey: new Uint8Array(applicationServerKey)
         });
 
         await this.sendSubscriptionToServer(this.subscription);

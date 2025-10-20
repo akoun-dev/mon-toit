@@ -27,10 +27,18 @@ export interface SecurityEvent {
   source: string;
   userId?: string;
   details: Record<string, any>;
-  timestamp: Date;
-  userAgent: string;
-  ipAddress: string;
-  blocked: boolean;
+  timestamp?: Date;
+  userAgent?: string;
+  ipAddress?: string;
+  blocked?: boolean;
+}
+
+declare global {
+  interface Window {
+    Sentry?: {
+      captureMessage: (message: string, options?: any) => void;
+    };
+  }
 }
 
 /**
@@ -168,12 +176,17 @@ export class SecurityMiddleware {
   /**
    * Enregistre un événement de sécurité
    */
-  public recordSecurityEvent(event: Omit<SecurityEvent, 'timestamp' | 'userAgent' | 'ipAddress'>) {
+  public recordSecurityEvent(event: Partial<SecurityEvent>) {
     const fullEvent: SecurityEvent = {
-      ...event,
       timestamp: new Date(),
       userAgent: navigator.userAgent,
-      ipAddress: this.getClientIP()
+      ipAddress: this.getClientIP(),
+      blocked: false,
+      ...event,
+      type: event.type!,
+      severity: event.severity!,
+      source: event.source!,
+      details: event.details!
     };
 
     this.securityEvents.push(fullEvent);

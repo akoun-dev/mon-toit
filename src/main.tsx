@@ -5,56 +5,73 @@ import * as Sentry from "@sentry/react";
 import { queryClient } from '@/lib/queryClient';
 import { initPerformanceMonitoring } from '@/lib/analytics';
 import { migrateToSecureStorage, secureStorage } from '@/lib/secureStorage';
-import { Capacitor } from '@capacitor/core';
-import { initializeWebViewSecurity } from '@/lib/webviewSecurity';
-import { initializeDeviceSecurity } from '@/lib/deviceSecurity';
-import { initializeMobilePlugins, logPluginReport } from '@/lib/mobilePlugins';
-import { MobileNotificationService } from '@/lib/mobileNotifications';
-import { MobileFileSystemService } from '@/lib/mobileFileSystem';
-import { MobileNetworkService } from '@/lib/mobileNetwork';
+import { isNativePlatform } from '@/lib/capacitorWrapper';
 import App from "./App.tsx";
 import "./index.css";
+import "./styles/design-system.css";
 
 // Initialize secure storage migration on app startup
 migrateToSecureStorage();
 
-// Initialize WebView security for mobile apps
-initializeWebViewSecurity();
+// Initialize mobile services asynchronously only on native platforms
+async function initializeMobileServices() {
+  const isNative = await isNativePlatform();
+  
+  if (!isNative) {
+    console.log('📱 Running in browser mode - Capacitor features disabled');
+    return;
+  }
 
-// Initialize device security detection
-initializeDeviceSecurity();
+  try {
+    // Dynamically import Capacitor modules only on native platforms
+    const [
+      { initializeWebViewSecurity },
+      { initializeDeviceSecurity },
+      { initializeMobilePlugins, logPluginReport },
+      { MobileNotificationService },
+      { MobileFileSystemService },
+      { MobileNetworkService }
+    ] = await Promise.all([
+      import('@/lib/webviewSecurity'),
+      import('@/lib/deviceSecurity'),
+      import('@/lib/mobilePlugins'),
+      import('@/lib/mobileNotifications'),
+      import('@/lib/mobileFileSystem'),
+      import('@/lib/mobileNetwork')
+    ]);
 
-// Initialize and verify mobile plugins
-initializeMobilePlugins();
+    // Initialize WebView security for mobile apps
+    initializeWebViewSecurity();
+
+    // Initialize device security detection
+    initializeDeviceSecurity();
+
+    // Initialize and verify mobile plugins
+    await initializeMobilePlugins();
+
+    // Log plugin report for debugging
+    await logPluginReport();
+
+    // Initialize notification service
+    const notificationService = MobileNotificationService.getInstance();
+    await notificationService.initialize();
+
+    // Initialize file system service
+    const fileSystemService = MobileFileSystemService.getInstance();
+    await fileSystemService.initialize();
+
+    // Initialize network service
+    const networkService = MobileNetworkService.getInstance();
+    await networkService.initialize();
+
+    console.log('✅ All mobile services initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize mobile services:', error);
+  }
+}
 
 // Initialize mobile services
 initializeMobileServices();
-
-// Log plugin report for debugging
-logPluginReport();
-
-// Initialize mobile services asynchronously
-async function initializeMobileServices() {
-  if (Capacitor.isNativePlatform()) {
-    try {
-      // Initialize notification service
-      const notificationService = MobileNotificationService.getInstance();
-      await notificationService.initialize();
-
-      // Initialize file system service
-      const fileSystemService = MobileFileSystemService.getInstance();
-      await fileSystemService.initialize();
-
-      // Initialize network service
-      const networkService = MobileNetworkService.getInstance();
-      await networkService.initialize();
-
-      console.log('✅ All mobile services initialized successfully');
-    } catch (error) {
-      console.error('❌ Failed to initialize mobile services:', error);
-    }
-  }
-}
 
 // Initialize Sentry in production
 if (import.meta.env.PROD) {

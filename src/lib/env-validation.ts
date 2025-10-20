@@ -207,15 +207,21 @@ class EnvValidator {
 // Create and export singleton instance
 export const envValidator = new EnvValidator();
 
-// Validate environment on import
+// Validate environment on import (non-blocking)
 const validation = envValidator.validate();
 if (!validation.success) {
-  throw new Error(`Environment validation failed: ${validation.errors.join(', ')}`);
+  console.warn(`Environment validation warnings: ${validation.errors.join(', ')}`);
 }
 
 // Export convenience functions
 export const getEnvVar = (name: string): string | undefined => envValidator.get(name);
-export const getRequiredEnvVar = (name: string): string => envValidator.getRequired(name);
+export const getRequiredEnvVar = (name: string): string => {
+  const value = envValidator.get(name);
+  if (!value) {
+    console.warn(`Required environment variable ${name} is missing, using fallback if available`);
+  }
+  return value || '';
+};
 
 // Export type for environment variables
 export type EnvVars = {

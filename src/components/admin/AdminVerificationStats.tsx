@@ -62,10 +62,10 @@ export const AdminVerificationStats = () => {
       ).length;
 
       // Calculate average processing time
-      const reviewedVerifications = verifications.filter(v => v.admin_reviewed_at);
+      const reviewedVerifications = verifications.filter((v: any) => v.admin_reviewed_at);
       let avgProcessingTime = 0;
       if (reviewedVerifications.length > 0) {
-        const totalTime = reviewedVerifications.reduce((sum, v) => {
+        const totalTime = reviewedVerifications.reduce((sum: number, v: any) => {
           const created = new Date(v.created_at).getTime();
           const reviewed = new Date(v.admin_reviewed_at!).getTime();
           return sum + (reviewed - created);
