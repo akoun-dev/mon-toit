@@ -36,8 +36,6 @@ export const SarahChatbot = () => {
   const [sessionId] = useState(() => crypto.randomUUID());
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
-
-  // Text-to-speech hook
   const { speak, stop, isPlaying } = useTextToSpeech();
 
   useEffect(() => {
@@ -64,8 +62,11 @@ export const SarahChatbot = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
+      // Construire l'URL correctement depuis la config Supabase
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://btxhuqtirylvkgvoutoc.supabase.co';
+      
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sarah-chat`,
+        `${supabaseUrl}/functions/v1/sarah-chat`,
         {
           method: 'POST',
           headers: {
@@ -83,8 +84,14 @@ export const SarahChatbot = () => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erreur de communication');
+        let errorMessage = 'Erreur de communication';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // Si le JSON parse échoue, utiliser le message par défaut
+        }
+        throw new Error(errorMessage);
       }
 
       const reader = response.body?.getReader();
