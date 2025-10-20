@@ -141,7 +141,7 @@ export const PropertyCard = ({
         aria-labelledby={`property-title-${property.id}`}
         aria-describedby={`property-description-${property.id}`}
       >
-      <div className="relative h-56 sm:h-64 bg-muted overflow-hidden">
+      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
         {(() => {
           // Debug: Log property data to understand what we're working with
           console.log(`Property ${property.id} image data:`, {
