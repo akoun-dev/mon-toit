@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { ModernAppSidebar } from "@/components/navigation/ModernAppSidebar";
 import Navbar from "@/components/Navbar";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
-import { BottomNav } from "@/components/mobile/BottomNav";
+import BottomNavigation from "@/components/navigation/BottomNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface MainLayoutProps {
@@ -22,7 +22,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
           {children}
         </div>
         <InstitutionalFooter />
-        <BottomNav />
+        <BottomNavigation />
       </>
     );
   }
@@ -37,7 +37,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
             {children}
           </div>
           <InstitutionalFooter />
-          <BottomNav />
+          <BottomNavigation />
         </SidebarInset>
       </div>
     </SidebarProvider>
