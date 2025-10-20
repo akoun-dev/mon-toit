@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Send, Loader2, Volume2, VolumeX } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Volume2, VolumeX, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/services/logger";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -37,6 +38,19 @@ export const SarahChatbot = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { speak, stop, isPlaying } = useTextToSpeech();
+  const { 
+    isListening, 
+    isSupported: isVoiceInputSupported, 
+    startListening, 
+    stopListening 
+  } = useVoiceSearch({
+    onResult: (transcript) => {
+      setInput(transcript);
+    },
+    onError: (error) => {
+      logger.error('Voice input error', { error });
+    }
+  });
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -277,10 +291,22 @@ export const SarahChatbot = () => {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={useVoice ? "Tapez votre message (avec voix)..." : "Votre message..."}
+                placeholder={isListening ? "🎤 Parlez maintenant..." : (useVoice ? "Tapez votre message (avec voix)..." : "Votre message...")}
                 disabled={isLoading}
                 className="flex-1"
               />
+              {isVoiceInputSupported && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant={isListening ? "destructive" : "outline"}
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={isLoading}
+                  title={isListening ? "Arrêter l'écoute" : "Parler à SUTA"}
+                >
+                  {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </Button>
+              )}
               <Button 
                 type="submit" 
                 size="icon" 
