@@ -10,8 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Shield, CheckCircle2, XCircle, Award, Settings, Home, MapPin, DollarSign, Bed, Bath } from 'lucide-react';
@@ -175,10 +174,8 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
           <DynamicBreadcrumb />
           {/* Header */}
@@ -486,16 +483,14 @@ const Profile = () => {
               <PropertyAlertsSettings />
             </TabsContent>
           </Tabs>
+
+          <PreferencesModal
+            open={preferencesModalOpen}
+            onOpenChange={setPreferencesModalOpen}
+          />
         </div>
-      </main>
-
-      <PreferencesModal 
-        open={preferencesModalOpen}
-        onOpenChange={setPreferencesModalOpen}
-      />
-
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 

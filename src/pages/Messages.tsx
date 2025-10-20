@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import MessageTemplates from '@/components/messaging/MessageTemplates';
 import AttachmentUpload from '@/components/messaging/AttachmentUpload';
@@ -425,9 +424,8 @@ const Messages = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <DynamicBreadcrumb />
           <h1 className="text-3xl font-bold mb-6">Messages</h1>
@@ -591,9 +589,8 @@ const Messages = () => {
             </Card>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 
