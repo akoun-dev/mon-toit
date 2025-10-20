@@ -110,7 +110,7 @@ export const ProfessionalHero = () => {
             className="flex justify-center"
           >
             <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium shadow-sm border border-gray-200">
-              <ShieldCheck className="h-4 w-4 mr-2 text-ansut-blue" />
+              <ShieldCheck className="h-4 w-4 mr-2" style={{ color: '#2256A3' }} />
               Certifié ANSUT
             </Badge>
           </motion.div>

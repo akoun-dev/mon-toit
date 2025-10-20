@@ -5,8 +5,8 @@ import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSig
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { CertificationBadge } from '@/components/shared/CertificationBadge';
 
 export const MobileMenu = () => {
   const { user, profile, signOut } = useAuth();
@@ -28,36 +28,12 @@ export const MobileMenu = () => {
           {/* Navigation Links */}
           <div className="flex flex-col gap-1">
             <Link
-              to="/recherche"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <Search className="h-5 w-5 text-primary" />
-              <span>Rechercher un bien</span>
-            </Link>
-            <Link
-              to="/publier"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <PlusCircle className="h-5 w-5 text-primary" />
-              <span>Publier une annonce</span>
-            </Link>
-            <Link
               to="/certification"
               onClick={handleNavClick}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary/5 border-l-2 border-primary hover:bg-primary/10 transition-colors"
             >
               <ShieldCheck className="h-5 w-5 text-primary" />
               <span>Certification ANSUT</span>
-            </Link>
-            <Link
-              to="/#comment-ca-marche"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <HelpCircle className="h-5 w-5 text-primary" />
-              <span>Comment ça marche</span>
             </Link>
             <Link
               to="/tarifs"
@@ -77,9 +53,7 @@ export const MobileMenu = () => {
                 <p className="text-sm font-semibold text-foreground mb-1">{profile?.full_name}</p>
                 <p className="text-xs text-muted-foreground mb-2">{user.email}</p>
                 {(profile?.oneci_verified || profile?.cnam_verified) && (
-                  <Badge variant="outline" className="text-xs border-primary text-primary">
-                    ✓ Certifié ANSUT
-                  </Badge>
+                  <CertificationBadge variant="compact" />
                 )}
               </div>
 
@@ -87,24 +61,6 @@ export const MobileMenu = () => {
               
               {/* Account Links */}
               <div className="flex flex-col gap-1">
-                <Link
-                  to="/dashboard"
-                  onClick={handleNavClick}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-                >
-                  <LayoutDashboard className="h-5 w-5 text-primary" />
-                  <span>Tableau de bord</span>
-                </Link>
-
-                <Link
-                  to="/profil"
-                  onClick={handleNavClick}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-                >
-                  <User className="h-5 w-5 text-primary" />
-                  <span>Mon profil</span>
-                </Link>
-
                 <Link
                   to="/verification"
                   onClick={handleNavClick}

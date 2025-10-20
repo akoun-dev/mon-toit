@@ -63,8 +63,6 @@ export function ModernAppSidebar() {
   // Navigation principale simplifiée pour l'accueil
   const primaryLinks = [
     { to: "/", icon: Home, label: "Accueil", color: "text-primary", priority: true },
-    { to: "/recherche", icon: Search, label: "Recherche", color: "text-blue-500", priority: true },
-    { to: "/explorer", icon: MapPin, label: "Explorer", color: "text-green-500", priority: true },
   ];
 
   // Navigation rapide (visible sur l'accueil même pour non-connectés)
@@ -74,13 +72,10 @@ export function ModernAppSidebar() {
   ] : [];
 
   // Action supplémentaire pour l'accueil (visible uniquement sur la page d'accueil)
-  const homeActions = isHomePage && !profile ? [
-    { to: "/publier", icon: PlusCircle, label: "Publier un bien", color: "text-emerald-500" },
-  ] : [];
+  const homeActions = [] as any[]; // Les actions principales sont dans le header
 
   // Navigation pour utilisateurs connectés
   const userLinks = profile ? [
-    { to: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord", color: "text-orange-500", badge: null },
     { to: "/favoris", icon: Heart, label: "Mes Favoris", color: "text-red-500", badge: null },
     { to: "/messages", icon: MessageSquare, label: "Messages", color: "text-blue-500", badge: 3 },
   ] : [];
@@ -95,26 +90,17 @@ export function ModernAppSidebar() {
   // Navigation pour propriétaires et agences
   const ownerLinks = (profile?.user_type === "proprietaire" || profile?.user_type === "agence") ? [
     { to: "/mes-biens", icon: Building2, label: "Mes Biens", color: "text-cyan-500" },
-    { to: "/ajouter-bien", icon: PlusCircle, label: "Publier un bien", color: "text-green-500" },
     { to: "/my-mandates", icon: FileText, label: "Mes Mandats", color: "text-amber-500" },
   ] : [];
 
   // Navigation admin (masquée sur l'accueil pour les non-admins)
-  const adminLinks = !isHomePage && canAccessAdminDashboard ? [
-    { to: "/admin", icon: Shield, label: "Admin Dashboard", color: "text-red-500" },
-    { to: "/admin/certifications", icon: ShieldCheck, label: "Certifications", color: "text-orange-500" },
-  ] : [];
+  const adminLinks = [] as any[]; // Admin links gérés uniquement dans le header
 
   // Navigation utilitaire (réduite sur l'accueil)
-  const utilityLinks = isHomePage ? [
-    { to: "/guide", icon: HelpCircle, label: "Guide", color: "text-gray-500" },
-  ] : [
-    { to: "/guide", icon: HelpCircle, label: "Aide & Guide", color: "text-gray-500" },
-    { to: "/verification", icon: ShieldCheck, label: "Vérification ANSUT", color: "text-primary" },
-  ];
+  const utilityLinks = [] as any[]; // Utilitaires gérés dans le header
 
   const settingsLinks = profile ? [
-    { to: "/profil", icon: Settings, label: "Mon Profil", color: "text-gray-600" },
+    { to: "/verification", icon: ShieldCheck, label: "Vérification ANSUT", color: "text-primary" },
   ] : [];
 
   const renderMenuItems = (links: any[], showBadge = false) => {

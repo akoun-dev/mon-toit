@@ -67,7 +67,7 @@ export const MobileHero = () => {
         >
           {/* Badge ANSUT discret */}
           <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-3 py-1.5 text-xs font-medium shadow-sm border border-gray-200">
-            <ShieldCheck className="h-3 w-3 mr-1.5 text-ansut-blue" />
+            <ShieldCheck className="h-3 w-3 mr-1.5" style={{ color: '#2256A3' }} />
             Certifié ANSUT
           </Badge>
 

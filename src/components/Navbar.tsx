@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 import NotificationBell from "@/components/NotificationBell";
 import CertificationNotificationBadge from "@/components/admin/CertificationNotificationBadge";
@@ -23,6 +22,7 @@ import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { RoleSwitcherCompact } from "@/components/navigation/RoleSwitcherCompact";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
+import { CertificationBadge } from "@/components/shared/CertificationBadge";
 
 interface NavbarProps {
   showSidebarTrigger?: boolean;
@@ -36,7 +36,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
   return (<>
     <nav
       aria-label="Navigation principale"
-      className={`fixed top-0 left-0 right-0 z-50 bg-background/98 backdrop-blur-md border-b border-border shadow-sm ${isMobile && user ? 'mb-16' : ''}`}
+      className="fixed top-0 left-0 right-0 z-30 bg-background/98 backdrop-blur-md border-b border-border shadow-sm"
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-12 md:h-14">
@@ -51,7 +51,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT"
                 className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
                 width="64"
                 height="64"
@@ -61,10 +61,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
               <span className="text-2xl font-bold text-primary leading-tight">
                 Mon Toit
               </span>
-              <span className="text-xs text-secondary leading-tight flex items-center gap-1 font-semibold">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Certifié ANSUT
-              </span>
+              <CertificationBadge variant="compact" className="border-secondary text-secondary" />
             </div>
             </Link>
           </div>
@@ -113,9 +110,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                         <p className="text-sm font-semibold text-foreground">{profile?.full_name}</p>
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                         {(profile?.oneci_verified || profile?.cnam_verified) && (
-                          <Badge variant="outline" className="w-fit mt-1 text-xs border-primary text-primary">
-                            ✓ Certifié ANSUT
-                          </Badge>
+                          <CertificationBadge variant="compact" className="mt-1" />
                         )}
                       </div>
                     </DropdownMenuLabel>
@@ -216,7 +211,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
       </div>
     </nav>
     {/* Barre de couleurs identité */}
-    <div className="fixed top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-40" />
+    <div className="fixed top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-20" />
   </>);
 };
 

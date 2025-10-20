@@ -18,7 +18,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
     return (
       <>
         <Navbar showSidebarTrigger={false} />
-        <div className="min-h-screen pt-16 pb-20 md:pb-0">
+        <div className="min-h-screen pt-14 md:pt-16 pb-20 md:pb-0">
           {children}
         </div>
         <InstitutionalFooter />
@@ -33,7 +33,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
         {!isMobile && <ModernAppSidebar />}
         <SidebarInset className="flex flex-col flex-1">
           <Navbar showSidebarTrigger={true} />
-          <div className="flex-1 pt-16 pb-20 md:pb-0 w-full">
+          <div className="flex-1 pt-14 md:pt-16 pb-20 md:pb-0 w-full">
             {children}
           </div>
           <InstitutionalFooter />

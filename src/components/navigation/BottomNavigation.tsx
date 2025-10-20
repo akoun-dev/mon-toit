@@ -114,9 +114,6 @@ const BottomNavigation = () => {
   const { unreadCount } = useNotifications();
   const newFavorites = useFavoriteCount();
 
-  // Ne pas afficher sur desktop ou si l'utilisateur n'est pas connecté
-  if (!isMobile || !user) return null;
-
   // Configuration des items de navigation avec badges réels
   const navItems: NavItem[] = useMemo(() => [
     {
@@ -128,7 +125,7 @@ const BottomNavigation = () => {
     {
       label: "Recherche",
       icon: Search,
-      path: "/recherche",
+      path: "/explorer",
       ariaLabel: "Rechercher des propriétés",
     },
     {
@@ -160,6 +157,9 @@ const BottomNavigation = () => {
       return location.pathname.startsWith(path);
     };
   }, [location.pathname]);
+
+  // Ne pas afficher sur desktop ou si l'utilisateur n'est pas connecté
+  if (!isMobile || !user) return null;
 
   return (
     <nav 
