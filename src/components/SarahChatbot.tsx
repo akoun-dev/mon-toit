@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Send, Loader2, Mic, MicOff } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/services/logger";
-import { useRealtimeVoice } from "@/hooks/useRealtimeVoice";
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -37,22 +37,8 @@ export const SarahChatbot = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
-  // Voice chat hook
-  const {
-    isConnected: voiceConnected,
-    isSpeaking,
-    messages: voiceMessages,
-    connect: connectVoice,
-    disconnect: disconnectVoice,
-    sendTextMessage: sendVoiceText
-  } = useRealtimeVoice();
-
-  // Update messages from voice when in voice mode
-  useEffect(() => {
-    if (useVoice && voiceMessages.length > 0) {
-      setMessages(voiceMessages);
-    }
-  }, [voiceMessages, useVoice]);
+  // Text-to-speech hook
+  const { speak, stop, isPlaying } = useTextToSpeech();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -60,41 +46,15 @@ export const SarahChatbot = () => {
     }
   }, [messages]);
 
-  const toggleVoiceMode = async () => {
-    if (!useVoice) {
-      try {
-        await connectVoice();
-        setUseVoice(true);
-        setMessages([
-          {
-            role: 'assistant',
-            content: "🎤 Mode vocal activé ! Je vous écoute..."
-          }
-        ]);
-      } catch (error) {
-        logger.error("Failed to start voice mode", { error });
-      }
-    } else {
-      disconnectVoice();
-      setUseVoice(false);
-      setMessages([
-        {
-          role: 'assistant',
-          content: "👋 Bonjour ! Je suis SUTA, votre assistant Mon Toit. Comment puis-je vous aider aujourd'hui ?"
-        }
-      ]);
+  const toggleVoiceMode = () => {
+    if (useVoice) {
+      stop();
     }
+    setUseVoice(!useVoice);
   };
 
   const sendMessage = async (messageText: string) => {
     if (!messageText.trim() || isLoading) return;
-
-    // Use voice mode if enabled
-    if (useVoice && voiceConnected) {
-      sendVoiceText(messageText);
-      setInput("");
-      return;
-    }
 
     const userMessage: Message = { role: 'user', content: messageText };
     setMessages(prev => [...prev, userMessage]);
@@ -165,6 +125,13 @@ export const SarahChatbot = () => {
                   return newMessages;
                 });
               }
+              
+              // If voice mode is enabled and this is the complete response, speak it
+              if (data === '[DONE]' && useVoice && assistantMessage) {
+                speak(assistantMessage).catch(error => {
+                  logger.error('Failed to speak response', { error });
+                });
+              }
             } catch (e) {
               // Ignore parse errors
             }
@@ -213,7 +180,7 @@ export const SarahChatbot = () => {
             <div className="flex-1">
               <h3 className="font-semibold">SUTA</h3>
               <p className="text-xs opacity-90">
-                {useVoice ? (isSpeaking ? "🔊 En train de parler..." : "🎤 À l'écoute...") : "Assistant Mon Toit"}
+                {useVoice ? (isPlaying ? "🔊 En train de parler..." : "🎤 Mode vocal activé") : "Assistant Mon Toit"}
               </p>
             </div>
             <Button
@@ -221,8 +188,9 @@ export const SarahChatbot = () => {
               size="icon"
               onClick={toggleVoiceMode}
               className="text-primary-foreground hover:bg-primary-foreground/10"
+              title={useVoice ? "Désactiver la voix" : "Activer la voix"}
             >
-              {useVoice ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+              {useVoice ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
             </Button>
           </div>
 
@@ -289,14 +257,6 @@ export const SarahChatbot = () => {
             </div>
           )}
 
-          {/* Voice Mode Info */}
-          {useVoice && !voiceConnected && (
-            <div className="p-3 border-t bg-muted/50 text-center">
-              <p className="text-xs text-muted-foreground">
-                🎤 Connexion au mode vocal...
-              </p>
-            </div>
-          )}
 
           {/* Input */}
           <div className="p-4 border-t">
@@ -310,14 +270,14 @@ export const SarahChatbot = () => {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={useVoice ? "Tapez ou parlez..." : "Votre message..."}
-                disabled={isLoading || (useVoice && !voiceConnected)}
+                placeholder={useVoice ? "Tapez votre message (avec voix)..." : "Votre message..."}
+                disabled={isLoading}
                 className="flex-1"
               />
               <Button 
                 type="submit" 
                 size="icon" 
-                disabled={isLoading || !input.trim() || (useVoice && !voiceConnected)}
+                disabled={isLoading || !input.trim()}
               >
                 <Send className="h-4 w-4" />
               </Button>

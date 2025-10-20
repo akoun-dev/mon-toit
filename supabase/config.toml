@@ -72,3 +72,12 @@ verify_jwt = false
 
 [functions.generate-illustration]
 verify_jwt = true
+
+[functions.sarah-chat]
+verify_jwt = false
+
+[functions.realtime-voice]
+verify_jwt = false
+
+[functions.text-to-speech]
+verify_jwt = false

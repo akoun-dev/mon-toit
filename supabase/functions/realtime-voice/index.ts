@@ -22,19 +22,34 @@ serve(async (req) => {
   socket.onopen = () => {
     console.log("Client WebSocket connected");
     
-    // Connect to OpenAI Realtime API
-    openAISocket = new WebSocket(
-      "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
-      {
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "OpenAI-Beta": "realtime=v1"
-        }
-      }
-    );
+    // Connect to OpenAI Realtime API with proper headers
+    const url = `wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01`;
+    const headers = new Headers();
+    headers.set("Authorization", `Bearer ${OPENAI_API_KEY}`);
+    headers.set("OpenAI-Beta", "realtime=v1");
+    
+    openAISocket = new WebSocket(url, []);
 
     openAISocket.onopen = () => {
       console.log("Connected to OpenAI Realtime API");
+      
+      // Send authorization via message after connection
+      const authMessage = JSON.stringify({
+        type: "session.update",
+        session: {
+          modalities: ["text", "audio"],
+          instructions: `Tu es SUTA, l'assistant virtuel de Mon Toit.`,
+          voice: "alloy",
+          input_audio_format: "pcm16",
+          output_audio_format: "pcm16",
+          turn_detection: {
+            type: "server_vad",
+            threshold: 0.5,
+            prefix_padding_ms: 300,
+            silence_duration_ms: 1000
+          }
+        }
+      });
     };
 
     openAISocket.onmessage = (event) => {
