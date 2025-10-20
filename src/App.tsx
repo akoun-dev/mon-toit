@@ -2,7 +2,7 @@ import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
@@ -91,7 +91,7 @@ const AppContent = () => {
   const [direction, setDirection] = useState<'left' | 'right'>('right');
 
   useEffect(() => {
-    const routes = ['/', '/recherche', '/favoris', '/messages', '/profil'];
+    const routes = ['/', '/explorer', '/favoris', '/messages', '/profil'];
     const currentIndex = routes.indexOf(location.pathname);
     const prevIndex = routes.indexOf(prevLocation.current);
     
@@ -119,7 +119,9 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/offline" element={<Suspense fallback={<PageSkeleton />}><Offline /></Suspense>} />
-            <Route path="/recherche" element={<Search />} />
+            {/* Redirections pour les anciennes routes */}
+            <Route path="/recherche" element={<Navigate to="/explorer" replace />} />
+            <Route path="/ajouter-bien" element={<Navigate to="/publier" replace />} />
             <Route path="/explorer" element={<Explorer />} />
             <Route path="/carte-intelligente" element={<SmartMapV2 />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
@@ -264,7 +266,7 @@ const AppContent = () => {
               } 
             />
             <Route 
-              path="/ajouter-bien" 
+              path="/publier" 
               element={
                 <ProtectedRoute allowedUserTypes={['proprietaire', 'agence']}>
                   <Suspense fallback={<PageSkeleton />}>

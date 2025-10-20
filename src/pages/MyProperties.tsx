@@ -248,7 +248,7 @@ const MyProperties = () => {
               </p>
             </div>
             <Button asChild>
-              <Link to="/ajouter-bien">
+              <Link to="/publier">
                 <Plus className="mr-2 h-4 w-4" />
                 Ajouter un bien
               </Link>
@@ -289,7 +289,7 @@ const MyProperties = () => {
                 </p>
                 {properties.length === 0 && (
                   <Button asChild>
-                    <Link to="/ajouter-bien">
+                    <Link to="/publier">
                       <Plus className="mr-2 h-4 w-4" />
                       Ajouter mon premier bien
                     </Link>

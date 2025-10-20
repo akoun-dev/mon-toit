@@ -59,7 +59,7 @@ const NotFound = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="gap-2">
-              <Link to="/recherche">
+              <Link to="/explorer">
                 <Search className="h-5 w-5" />
                 Rechercher un bien
               </Link>
@@ -80,7 +80,7 @@ const NotFound = () => {
             <div className="flex flex-wrap gap-2 justify-center">
               <Link to="/" className="text-sm text-primary hover:underline">Accueil</Link>
               <span className="text-muted-foreground">•</span>
-              <Link to="/recherche" className="text-sm text-primary hover:underline">Recherche</Link>
+              <Link to="/explorer" className="text-sm text-primary hover:underline">Recherche</Link>
               <span className="text-muted-foreground">•</span>
               <Link to="/certification" className="text-sm text-primary hover:underline">Certification</Link>
               <span className="text-muted-foreground">•</span>

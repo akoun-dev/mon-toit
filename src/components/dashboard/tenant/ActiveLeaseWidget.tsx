@@ -74,7 +74,7 @@ export const ActiveLeaseWidget = ({ data }: ActiveLeaseWidgetProps) => {
                 : 'Déposez une candidature pour louer un bien'}
             </p>
             <Button asChild variant="outline" size="sm">
-              <Link to="/recherche">
+              <Link to="/explorer">
                 Rechercher un bien
               </Link>
             </Button>

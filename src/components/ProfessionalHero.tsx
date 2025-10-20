@@ -29,14 +29,23 @@ export const ProfessionalHero = () => {
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [budget, setBudget] = useState('');
+  const [openSelect, setOpenSelect] = useState<string | null>(null);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (city) params.append('city', city);
     if (propertyType) params.append('type', propertyType);
     if (budget) params.append('maxPrice', budget);
-    
+
     navigate(`/explorer?${params.toString()}`);
+  };
+
+  const handleSelectOpen = (selectName: string) => {
+    setOpenSelect(selectName);
+  };
+
+  const handleSelectClose = () => {
+    setOpenSelect(null);
   };
 
   return (
@@ -174,11 +183,16 @@ export const ProfessionalHero = () => {
                     <MapPin className="h-4 w-4 text-primary" />
                     Ville
                   </label>
-                  <Select value={city} onValueChange={setCity}>
+                  <Select
+                    value={city}
+                    onValueChange={setCity}
+                    open={openSelect === 'city'}
+                    onOpenChange={(open) => open ? handleSelectOpen('city') : handleSelectClose()}
+                  >
                     <SelectTrigger className="h-12 border-2 focus:border-primary bg-white">
                       <SelectValue placeholder="Toutes les villes" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
                       <SelectItem value="all">Toutes les villes</SelectItem>
                       <SelectItem value="Abidjan">Abidjan</SelectItem>
                       <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
@@ -195,11 +209,16 @@ export const ProfessionalHero = () => {
                     <Building2 className="h-4 w-4 text-primary" />
                     Type de bien
                   </label>
-                  <Select value={propertyType} onValueChange={setPropertyType}>
+                  <Select
+                    value={propertyType}
+                    onValueChange={setPropertyType}
+                    open={openSelect === 'propertyType'}
+                    onOpenChange={(open) => open ? handleSelectOpen('propertyType') : handleSelectClose()}
+                  >
                     <SelectTrigger className="h-12 border-2 focus:border-primary bg-white">
                       <SelectValue placeholder="Tous les types" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
                       <SelectItem value="all">Tous les types</SelectItem>
                       <SelectItem value="appartement">Appartement</SelectItem>
                       <SelectItem value="villa">Villa</SelectItem>

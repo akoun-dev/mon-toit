@@ -48,8 +48,7 @@ export function AppSidebar() {
   // Navigation commune
   const commonLinks = [
     { to: "/", icon: Home, label: "Accueil" },
-    { to: "/recherche", icon: Search, label: "Recherche" },
-    { to: "/explorer", icon: MapPin, label: "Explorer" },
+    { to: "/explorer", icon: Search, label: "Recherche" },
   ];
 
   // Navigation pour utilisateurs connectés
@@ -69,7 +68,7 @@ export function AppSidebar() {
   // Navigation pour propriétaires et agences
   const ownerLinks = (profile?.user_type === "proprietaire" || profile?.user_type === "agence") ? [
     { to: "/mes-biens", icon: Building2, label: "Mes Biens" },
-    { to: "/ajouter-bien", icon: PlusCircle, label: "Publier un bien" },
+    { to: "/publier", icon: PlusCircle, label: "Publier un bien" },
     { to: "/my-mandates", icon: FileText, label: "Mes Mandats" },
   ] : [];
 

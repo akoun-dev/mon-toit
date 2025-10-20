@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSign, Search, PlusCircle } from 'lucide-react';
+import { Menu, User, LogOut, ShieldCheck, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { CertificationBadge } from '@/components/shared/CertificationBadge';
 

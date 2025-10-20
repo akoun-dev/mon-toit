@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Home, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/config/navigationConfig";
 
 interface NavigationHelpProps {
   backTo?: string;
@@ -8,10 +9,10 @@ interface NavigationHelpProps {
   showHome?: boolean;
 }
 
-export const NavigationHelp = ({ 
-  backTo, 
-  backLabel = "Retour", 
-  showHome = true 
+export const NavigationHelp = ({
+  backTo,
+  backLabel = "Retour",
+  showHome = true
 }: NavigationHelpProps) => {
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -25,7 +26,7 @@ export const NavigationHelp = ({
       )}
       {showHome && (
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/" className="gap-2">
+          <Link to={ROUTES.HOME} className="gap-2">
             <Home className="h-4 w-4" />
             <span className="hidden sm:inline">Accueil</span>
           </Link>

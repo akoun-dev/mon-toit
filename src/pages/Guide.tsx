@@ -48,7 +48,7 @@ const Guide = () => {
         <div className="container mx-auto px-4 pb-16">
           {/* Quick Links */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-            <Link to="/recherche">
+            <Link to="/explorer">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-primary/20 hover:border-primary/40">
                 <CardHeader className="text-center">
                   <Search className="h-8 w-8 mx-auto mb-2 text-primary" />
@@ -327,7 +327,7 @@ const Guide = () => {
                     <AccordionItem value="r1">
                       <AccordionTrigger>Comment rechercher un bien ?</AccordionTrigger>
                       <AccordionContent>
-                        Utilisez la barre de recherche en haut de la page ou allez sur "/recherche". Vous pouvez filtrer par ville, quartier, type de bien, budget, nombre de pièces, etc. Utilisez la carte interactive pour explorer visuellement.
+                        Utilisez la barre de recherche en haut de la page ou allez sur "/explorer". Vous pouvez filtrer par ville, quartier, type de bien, budget, nombre de pièces, etc. Utilisez la carte interactive pour explorer visuellement.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="r2">

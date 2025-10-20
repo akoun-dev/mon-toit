@@ -17,7 +17,7 @@ const Publier = () => {
         navigate("/dashboard");
       } else {
         // Propriétaire/Agence → accès direct
-        navigate("/ajouter-bien");
+        navigate("/publier");
       }
     }
   }, [user, profile, loading, navigate]);

@@ -15,15 +15,24 @@ import { motion } from 'framer-motion';
 export const MobileHero = () => {
   const [city, setCity] = useState('all');
   const [propertyType, setPropertyType] = useState('all');
+  const [openSelect, setOpenSelect] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (city !== 'all') params.append('city', city);
     if (propertyType !== 'all') params.append('type', propertyType);
-    
+
     const queryString = params.toString();
     navigate(`/explorer${queryString ? '?' + queryString : ''}`);
+  };
+
+  const handleSelectOpen = (selectName: string) => {
+    setOpenSelect(selectName);
+  };
+
+  const handleSelectClose = () => {
+    setOpenSelect(null);
   };
 
   return (
@@ -115,11 +124,16 @@ export const MobileHero = () => {
                   <MapPin className="h-3 w-3 text-primary" />
                   Ville
                 </label>
-                <Select value={city} onValueChange={setCity}>
+                <Select
+                  value={city}
+                  onValueChange={setCity}
+                  open={openSelect === 'city'}
+                  onOpenChange={(open) => open ? handleSelectOpen('city') : handleSelectClose()}
+                >
                   <SelectTrigger className="h-11 border-2 focus:border-primary bg-white">
                     <SelectValue placeholder="Toutes les villes" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
                     <SelectItem value="all">Toutes les villes</SelectItem>
                     <SelectItem value="Abidjan">Abidjan</SelectItem>
                     <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
@@ -136,11 +150,16 @@ export const MobileHero = () => {
                   <Building2 className="h-3 w-3 text-primary" />
                   Type de bien
                 </label>
-                <Select value={propertyType} onValueChange={setPropertyType}>
+                <Select
+                  value={propertyType}
+                  onValueChange={setPropertyType}
+                  open={openSelect === 'propertyType'}
+                  onOpenChange={(open) => open ? handleSelectOpen('propertyType') : handleSelectClose()}
+                >
                   <SelectTrigger className="h-11 border-2 focus:border-primary bg-white">
                     <SelectValue placeholder="Tous les types" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
                     <SelectItem value="all">Tous les types</SelectItem>
                     <SelectItem value="appartement">Appartement</SelectItem>
                     <SelectItem value="villa">Villa</SelectItem>

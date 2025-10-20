@@ -87,7 +87,7 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                     <SelectTrigger>
                       <SelectValue placeholder="Ex: Abidjan, Yopougon, Cocody..." />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border-gray-200 shadow-lg">
                       {CITIES.map(city => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
@@ -102,7 +102,7 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                     <SelectTrigger>
                       <SelectValue placeholder="Ex: Appartement, Villa, Studio..." />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border-gray-200 shadow-lg">
                       {PROPERTY_TYPES.map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                       ))}
@@ -117,7 +117,7 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                     <SelectTrigger>
                       <SelectValue placeholder="Tous" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border-gray-200 shadow-lg">
                       <SelectItem value="disponible">Disponible</SelectItem>
                       <SelectItem value="loué">Loué</SelectItem>
                     </SelectContent>
@@ -131,7 +131,7 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                     <SelectTrigger>
                       <SelectValue placeholder="Tout" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white border-gray-200 shadow-lg">
                       <SelectItem value="today">Aujourd'hui</SelectItem>
                       <SelectItem value="week">Cette semaine</SelectItem>
                       <SelectItem value="month">Ce mois-ci</SelectItem>

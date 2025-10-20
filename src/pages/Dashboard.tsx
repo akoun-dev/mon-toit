@@ -105,7 +105,7 @@ const Dashboard = () => {
                 )}
                 {profile.user_type === 'proprietaire' && (
                   <Button asChild size="sm">
-                    <Link to="/ajouter-bien">
+                    <Link to="/publier">
                       <Plus className="mr-2 h-4 w-4" />
                       Ajouter un bien
                     </Link>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, Search, PlusCircle, HelpCircle, FileText } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
 import {
@@ -17,10 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 import NotificationBell from "@/components/NotificationBell";
 import CertificationNotificationBadge from "@/components/admin/CertificationNotificationBadge";
-import { VerificationProgress } from "@/components/navigation/VerificationProgress";
 import { MobileMenu } from "@/components/navigation/MobileMenu";
-import { RoleSwitcherCompact } from "@/components/navigation/RoleSwitcherCompact";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
 import { CertificationBadge } from "@/components/shared/CertificationBadge";
 
@@ -31,7 +28,6 @@ interface NavbarProps {
 const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
   const { user, profile, signOut } = useAuth();
   const { canAccessAdminDashboard } = usePermissions();
-  const isMobile = useIsMobile();
 
   return (<>
     <nav
@@ -57,12 +53,6 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 height="64"
               />
             </picture>
-            <div className="hidden sm:flex flex-col">
-              <span className="text-2xl font-bold text-primary leading-tight">
-                Mon Toit
-              </span>
-              <CertificationBadge variant="compact" className="border-secondary text-secondary" />
-            </div>
             </Link>
           </div>
 
@@ -80,11 +70,11 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
             >
               Publier
             </Link>
-            <Link 
-              to="/guide" 
+            <Link
+              to="/guide"
               className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
-              Aide
+              Guide
             </Link>
           </div>
 
@@ -123,22 +113,6 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                           <span>Tableau de bord</span>
                         </Link>
                       </DropdownMenuItem>
-                      {profile?.user_type === 'locataire' && (
-                        <DropdownMenuItem asChild>
-                          <Link to="/dashboard/tenant" className="cursor-pointer flex items-center">
-                            <LayoutDashboard className="mr-3 h-4 w-4 text-primary" />
-                            <span>Dashboard Locataire</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
-                      {profile?.user_type === 'agence' && (
-                        <DropdownMenuItem asChild>
-                          <Link to="/dashboard/agence" className="cursor-pointer flex items-center">
-                            <LayoutDashboard className="mr-3 h-4 w-4 text-primary" />
-                            <span>Dashboard Agence</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
                       {(profile?.user_type === 'proprietaire' || profile?.user_type === 'agence') && (
                         <DropdownMenuItem asChild>
                           <Link to="/my-mandates" className="cursor-pointer flex items-center">

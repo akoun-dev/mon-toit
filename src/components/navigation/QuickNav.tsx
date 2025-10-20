@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Search, BookOpen, HelpCircle, Home } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { ROUTES, NAV_LABELS } from "@/config/navigationConfig";
 
 interface QuickNavProps {
   variant?: "auth" | "dashboard" | "property";
@@ -9,19 +10,19 @@ interface QuickNavProps {
 export const QuickNav = ({ variant = "auth" }: QuickNavProps) => {
   const links = {
     auth: [
-      { to: "/explorer", icon: Home, label: "Explorer les biens" },
-      { to: "/guide", icon: BookOpen, label: "Comment ça marche" },
-      { to: "/guide#aide", icon: HelpCircle, label: "Besoin d'aide ?" }
+      { to: ROUTES.EXPLORER, icon: Home, label: "Explorer les biens" },
+      { to: ROUTES.GUIDE, icon: BookOpen, label: "Comment ça marche" },
+      { to: `${ROUTES.GUIDE}#aide`, icon: HelpCircle, label: "Besoin d'aide ?" }
     ],
     dashboard: [
-      { to: "/recherche", icon: Search, label: "Rechercher" },
-      { to: "/explorer", icon: Home, label: "Explorer" },
-      { to: "/guide", icon: BookOpen, label: "Guide" }
+      { to: ROUTES.EXPLORER, icon: Search, label: "Rechercher" },
+      { to: ROUTES.EXPLORER, icon: Home, label: "Explorer" },
+      { to: ROUTES.GUIDE, icon: BookOpen, label: "Guide" }
     ],
     property: [
-      { to: "/recherche", icon: Search, label: "Autres biens" },
-      { to: "/dashboard", icon: Home, label: "Mon espace" },
-      { to: "/guide", icon: HelpCircle, label: "Aide" }
+      { to: ROUTES.EXPLORER, icon: Search, label: "Autres biens" },
+      { to: ROUTES.DASHBOARD, icon: Home, label: "Mon espace" },
+      { to: ROUTES.GUIDE, icon: HelpCircle, label: "Aide" }
     ]
   };
 

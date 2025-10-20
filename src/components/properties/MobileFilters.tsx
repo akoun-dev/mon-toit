@@ -193,7 +193,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez une ville" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-gray-200 shadow-lg">
                     {CITIES.map(city => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
@@ -307,7 +307,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                   <SelectTrigger>
                     <SelectValue placeholder="Sélectionnez un type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-gray-200 shadow-lg">
                     {PROPERTY_TYPES.map(type => (
                       <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}

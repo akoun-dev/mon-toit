@@ -142,7 +142,7 @@ const PropertyDetail = () => {
           description: "Ce bien n'est plus disponible à la location.",
           variant: "destructive"
         });
-        navigate('/recherche');
+        navigate('/explorer');
         return;
       }
 
@@ -318,7 +318,7 @@ const PropertyDetail = () => {
         <main className="flex-1 container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold mb-4">Bien introuvable</h1>
           <Button asChild>
-            <Link to="/recherche">Retour à la recherche</Link>
+            <Link to="/explorer">Retour à la recherche</Link>
           </Button>
         </main>
         <Footer />
