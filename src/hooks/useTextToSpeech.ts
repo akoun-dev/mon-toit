@@ -1,14 +1,37 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/services/logger";
 
 export const useTextToSpeech = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const urlRef = useRef<string | null>(null);
+
+  // Cleanup lors du démontage du composant
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, []);
+
+  const cleanup = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current = null;
+    }
+    if (urlRef.current) {
+      URL.revokeObjectURL(urlRef.current);
+      urlRef.current = null;
+    }
+    setIsPlaying(false);
+  };
 
   const speak = async (text: string) => {
+    // Arrêter l'audio en cours si existant
     if (isPlaying) {
-      stop();
+      cleanup();
     }
 
     try {
@@ -29,39 +52,31 @@ export const useTextToSpeech = () => {
       }
       const blob = new Blob([bytes], { type: 'audio/mpeg' });
       const url = URL.createObjectURL(blob);
+      urlRef.current = url;
 
-      // Play audio
+      // Créer et configurer l'audio
       const audio = new Audio(url);
-      setAudioElement(audio);
+      audioRef.current = audio;
 
       audio.onended = () => {
-        setIsPlaying(false);
-        URL.revokeObjectURL(url);
-        setAudioElement(null);
+        cleanup();
       };
 
       audio.onerror = (error) => {
         logger.error('Audio playback error', { error });
-        setIsPlaying(false);
-        URL.revokeObjectURL(url);
-        setAudioElement(null);
+        cleanup();
       };
 
       await audio.play();
     } catch (error) {
       logger.error('Text-to-speech error', { error });
-      setIsPlaying(false);
+      cleanup();
       throw error;
     }
   };
 
   const stop = () => {
-    if (audioElement) {
-      audioElement.pause();
-      audioElement.currentTime = 0;
-      setAudioElement(null);
-    }
-    setIsPlaying(false);
+    cleanup();
   };
 
   return {
