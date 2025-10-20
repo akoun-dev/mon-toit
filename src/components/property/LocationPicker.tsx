@@ -4,7 +4,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
-import { secureStorage } from '@/lib/secureStorage';
 
 interface LocationPickerProps {
   onLocationSelect: (latitude: number, longitude: number) => void;
@@ -12,6 +11,9 @@ interface LocationPickerProps {
   initialLng?: number;
   city?: string;
 }
+
+// Clé publique Mapbox préconfigurée
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicHNvbWV0IiwiYSI6ImNtYTgwZ2xmMzEzdWcyaXM2ZG45d3A4NmEifQ.MYXzdc5CREmcvtBLvfV0Lg';
 
 const CITY_COORDINATES: Record<string, [number, number]> = {
   'Abidjan': [-4.0083, 5.3600],
@@ -23,27 +25,7 @@ const CITY_COORDINATES: Record<string, [number, number]> = {
   'Man': [-7.5542, 7.4125],
 };
 
-const getStoredMapboxToken = () => {
-  if (typeof window === 'undefined') return '';
-  
-  try {
-    const envToken = import.meta.env.VITE_MAPBOX_TOKEN ||
-                     import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
-                     import.meta.env.MAPBOX_PUBLIC_TOKEN;
-    
-    if (envToken) {
-      return envToken;
-    }
-    
-    return secureStorage.getItem('mapbox_token', true) || '';
-  } catch (error) {
-    console.error('Error getting Mapbox token:', error);
-    return '';
-  }
-};
-
 export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city }: LocationPickerProps) => {
-  const mapboxToken = getStoredMapboxToken();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
@@ -59,12 +41,7 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     const initialCoords: [number, number] = 
       coordinates || cityCoords || CITY_COORDINATES['Abidjan'];
 
-    mapboxgl.accessToken = mapboxToken;
-    
-    if (!mapboxToken) {
-      console.warn('Mapbox token not configured');
-      return;
-    }
+    mapboxgl.accessToken = MAPBOX_TOKEN;
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -113,7 +90,7 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken, city]);
+  }, [city]);
 
   return (
     <Card>

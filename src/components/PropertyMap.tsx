@@ -25,30 +25,8 @@ interface PropertyMapProps {
   showLocationButton?: boolean;
 }
 
-const getStoredMapboxToken = () => {
-  // Import environment validator
-  try {
-    const { getEnvVar } = require('@/lib/env-validation');
-
-    // Priorité 1: Variables d'environnement validées (supporte plusieurs noms)
-    const envToken = getEnvVar('VITE_MAPBOX_TOKEN') ||
-                     getEnvVar('VITE_MAPBOX_PUBLIC_TOKEN') ||
-                     getEnvVar('MAPBOX_PUBLIC_TOKEN');
-    if (envToken) return envToken;
-  } catch (error) {
-    console.warn('Environment validation not available, using fallback');
-  }
-
-  // Fallback direct aux variables d'environnement (avec validation de base)
-  const envToken = import.meta.env.VITE_MAPBOX_TOKEN ||
-                   import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
-                   import.meta.env.MAPBOX_PUBLIC_TOKEN;
-  if (envToken && /^pk\.[a-zA-Z0-9.-_]+$/.test(envToken)) return envToken;
-
-  // Priorité 2: localStorage sécurisé (fallback)
-  return secureStorage.getItem('mapbox_token', true) || '';
-};
-const MAPBOX_TOKEN = getStoredMapboxToken();
+// Clé publique Mapbox préconfigurée
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicHNvbWV0IiwiYSI6ImNtYTgwZ2xmMzEzdWcyaXM2ZG45d3A4NmEifQ.MYXzdc5CREmcvtBLvfV0Lg';
 
 type MapStyle = 'streets' | 'satellite' | 'hybrid';
 
@@ -72,28 +50,13 @@ const PropertyMap = ({
   const [mapStyle, setMapStyle] = useState<MapStyle>(() => {
     return (secureStorage.getItem('preferredMapStyle') as MapStyle) || 'streets';
   });
-  const [mapboxToken, setMapboxToken] = useState(getStoredMapboxToken());
-  const [tokenInput, setTokenInput] = useState('');
-
-  const handleSaveToken = () => {
-    if (tokenInput.trim()) {
-      secureStorage.setItem('mapbox_token', tokenInput.trim(), true);
-      setMapboxToken(tokenInput.trim());
-      window.location.reload();
-    }
-  };
 
   // Initialize map
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
     try {
-      if (!mapboxToken) {
-        logger.warn('Mapbox token not configured');
-        return;
-      }
-
-      mapboxgl.accessToken = mapboxToken;
+      mapboxgl.accessToken = MAPBOX_TOKEN;
 
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
@@ -116,7 +79,7 @@ const PropertyMap = ({
       map.current?.remove();
       map.current = null;
     };
-  }, [mapStyle, mapboxToken]);
+  }, [mapStyle]);
 
   // Function to add markers to the map
   const addMarkersToMap = () => {
@@ -308,34 +271,9 @@ const PropertyMap = ({
 
   return (
     <div className="relative w-full h-[600px]">
-      {!mapboxToken ? (
-        <Card className="p-6 flex flex-col items-center justify-center h-full">
-          <h3 className="text-lg font-semibold mb-4">Configuration Mapbox requise</h3>
-          <p className="text-sm text-muted-foreground mb-4 text-center max-w-md">
-            Veuillez entrer votre token PUBLIC Mapbox (pk.xxx) pour afficher la carte.
-            <br />
-            <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-              Obtenez votre token ici
-            </a>
-          </p>
-          <div className="flex gap-2 w-full max-w-md">
-            <Input
-              type="text"
-              placeholder="pk.xxxxxxxxxxxxx"
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleSaveToken} disabled={!tokenInput.trim()}>
-              Enregistrer
-            </Button>
-          </div>
-        </Card>
-      ) : (
-        <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
-      )}
+      <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
       
-      {mapboxToken && showLocationButton && (
+      {showLocationButton && (
         <div className="absolute top-4 left-4 z-10">
           <Button
             onClick={handleLocateMe}
@@ -349,8 +287,7 @@ const PropertyMap = ({
         </div>
       )}
 
-      {mapboxToken && (
-        <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
+      <div className="absolute top-16 left-4 z-10 flex flex-col gap-2">
         <Button
           onClick={() => handleStyleChange('streets')}
           size="sm"
@@ -378,10 +315,9 @@ const PropertyMap = ({
           <Layers className="h-4 w-4 md:mr-2" />
           <span className="hidden md:inline">Hybride</span>
         </Button>
-        </div>
-      )}
+      </div>
 
-      {mapboxToken && properties.filter(p => p.latitude === null || p.longitude === null).length > 0 && (
+      {properties.filter(p => p.latitude === null || p.longitude === null).length > 0 && (
         <Card className="absolute bottom-4 left-4 right-4 p-3 z-10 bg-background/95 backdrop-blur">
           <p className="text-sm text-muted-foreground">
             {properties.filter(p => p.latitude === null || p.longitude === null).length} bien(s) sans géolocalisation
