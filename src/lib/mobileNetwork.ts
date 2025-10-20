@@ -6,10 +6,7 @@
  */
 
 import React from 'react';
-import { Capacitor } from '@capacitor/core';
-import { Network, NetworkStatus } from '@capacitor/network';
-import { Preferences } from '@capacitor/preferences';
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
+import { isNativePlatform } from '@/lib/capacitorWrapper';
 
 export interface NetworkInfo {
   connected: boolean;
@@ -78,7 +75,15 @@ export class MobileNetworkService {
       return;
     }
 
+    const isNative = await isNativePlatform();
+    if (!isNative) {
+      console.log('Network monitoring: Not running on native platform');
+      return;
+    }
+
     try {
+      const { Network } = await import('@capacitor/network');
+
       // Load settings
       await this.loadSettings();
 
@@ -108,9 +113,16 @@ export class MobileNetworkService {
    * Get current network status
    */
   async getNetworkStatus(): Promise<NetworkInfo> {
-    if (Capacitor.isNativePlatform()) {
-      const status = await Network.getStatus();
-      this.updateNetworkStatus(status);
+    const isNative = await isNativePlatform();
+    
+    if (isNative) {
+      try {
+        const { Network } = await import('@capacitor/network');
+        const status = await Network.getStatus();
+        this.updateNetworkStatus(status);
+      } catch (error) {
+        console.warn('Failed to get network status:', error);
+      }
     }
     return { ...this.networkStatus };
   }
@@ -118,7 +130,7 @@ export class MobileNetworkService {
   /**
    * Update network status
    */
-  private updateNetworkStatus(status: NetworkStatus): void {
+  private updateNetworkStatus(status: any): void {
     const newStatus: NetworkInfo = {
       connected: status.connected,
       connectionType: status.connectionType,
@@ -138,7 +150,7 @@ export class MobileNetworkService {
   /**
    * Handle network change
    */
-  private async handleNetworkChange(status: NetworkStatus): Promise<void> {
+  private async handleNetworkChange(status: any): Promise<void> {
     const oldStatus = { ...this.networkStatus };
     this.updateNetworkStatus(status);
 
@@ -159,9 +171,17 @@ export class MobileNetworkService {
 
     // Trigger haptic feedback
     if (this.settings.notifyOnConnectionChange) {
-      await Haptics.notification({
-        type: this.networkStatus.connected ? NotificationType.Success : NotificationType.Warning
-      });
+      const isNative = await isNativePlatform();
+      if (isNative) {
+        try {
+          const { Haptics, NotificationType } = await import('@capacitor/haptics');
+          await Haptics.notification({
+            type: this.networkStatus.connected ? NotificationType.Success : NotificationType.Warning
+          });
+        } catch (error) {
+          console.warn('Failed to trigger haptic feedback:', error);
+        }
+      }
     }
   }
 
@@ -383,7 +403,11 @@ export class MobileNetworkService {
    * Save offline queue to preferences
    */
   private async saveOfflineQueue(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const queueData = this.offlineQueue.map(action => ({
         ...action,
         timestamp: action.timestamp.toISOString(),
@@ -402,7 +426,11 @@ export class MobileNetworkService {
    * Load offline queue from preferences
    */
   private async loadOfflineQueue(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const { value } = await Preferences.get({ key: 'offline_queue' });
       if (value) {
         const queueData = JSON.parse(value);
@@ -435,7 +463,11 @@ export class MobileNetworkService {
    * Save settings to preferences
    */
   private async saveSettings(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       await Preferences.set({
         key: 'network_settings',
         value: JSON.stringify(this.settings),
@@ -449,7 +481,11 @@ export class MobileNetworkService {
    * Load settings from preferences
    */
   private async loadSettings(): Promise<void> {
+    const isNative = await isNativePlatform();
+    if (!isNative) return;
+
     try {
+      const { Preferences } = await import('@capacitor/preferences');
       const { value } = await Preferences.get({ key: 'network_settings' });
       if (value) {
         this.settings = { ...this.settings, ...JSON.parse(value) };
@@ -462,7 +498,7 @@ export class MobileNetworkService {
   /**
    * Get effective connection type
    */
-  private getEffectiveType(status: NetworkStatus): 'slow-2g' | '2g' | '3g' | '4g' | 'unknown' {
+  private getEffectiveType(status: any): 'slow-2g' | '2g' | '3g' | '4g' | 'unknown' {
     // This is a simplified implementation
     // In a real app, you might use additional APIs to determine actual speed
     switch (status.connectionType) {
