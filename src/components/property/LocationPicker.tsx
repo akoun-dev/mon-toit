@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
+import { secureStorage } from '@/lib/secureStorage';
 
 interface LocationPickerProps {
   onLocationSelect: (latitude: number, longitude: number) => void;
@@ -22,7 +23,27 @@ const CITY_COORDINATES: Record<string, [number, number]> = {
   'Man': [-7.5542, 7.4125],
 };
 
+const getStoredMapboxToken = () => {
+  if (typeof window === 'undefined') return '';
+  
+  try {
+    const envToken = import.meta.env.VITE_MAPBOX_TOKEN ||
+                     import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
+                     import.meta.env.MAPBOX_PUBLIC_TOKEN;
+    
+    if (envToken) {
+      return envToken;
+    }
+    
+    return secureStorage.getItem('mapbox_token', true) || '';
+  } catch (error) {
+    console.error('Error getting Mapbox token:', error);
+    return '';
+  }
+};
+
 export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city }: LocationPickerProps) => {
+  const mapboxToken = getStoredMapboxToken();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
@@ -38,7 +59,12 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     const initialCoords: [number, number] = 
       coordinates || cityCoords || CITY_COORDINATES['Abidjan'];
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZS1kZXYiLCJhIjoiY200N2lwbDJhMDBseTJrcHlnOTluZnN1biJ9.JLechweMLsxP7qlR6cT-Og';
+    mapboxgl.accessToken = mapboxToken;
+    
+    if (!mapboxToken) {
+      console.warn('Mapbox token not configured');
+      return;
+    }
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -87,7 +113,7 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     return () => {
       map.current?.remove();
     };
-  }, [city]);
+  }, [mapboxToken, city]);
 
   return (
     <Card>
