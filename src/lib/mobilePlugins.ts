@@ -6,21 +6,7 @@
  */
 
 import React from 'react';
-import { Capacitor } from '@capacitor/core';
-import { App } from '@capacitor/app';
-import { Camera } from '@capacitor/camera';
-import { Geolocation } from '@capacitor/geolocation';
-import { Haptics } from '@capacitor/haptics';
-import { Keyboard } from '@capacitor/keyboard';
-import { SplashScreen } from '@capacitor/splash-screen';
-import { StatusBar, Style } from '@capacitor/status-bar';
-import { Share } from '@capacitor/share';
-import { Device } from '@capacitor/device';
-import { Network } from '@capacitor/network';
-import { PushNotifications } from '@capacitor/push-notifications';
-import { Filesystem } from '@capacitor/filesystem';
-import { Preferences } from '@capacitor/preferences';
-import { Browser } from '@capacitor/browser';
+import { isNativePlatform, getPlatform } from '@/lib/capacitorWrapper';
 
 export interface PluginStatus {
   name: string;
@@ -154,8 +140,8 @@ async function checkPluginAvailability(pluginName: string): Promise<PluginStatus
  * Generate mobile plugin report
  */
 export async function generateMobilePluginReport(): Promise<MobilePluginReport> {
-  const isNative = Capacitor.isNativePlatform();
-  const platform = Capacitor.getPlatform();
+  const isNative = await isNativePlatform();
+  const platform = await getPlatform();
 
   const corePluginStatuses: PluginStatus[] = [];
   const communityPluginStatuses: PluginStatus[] = [];
@@ -249,12 +235,19 @@ export async function logPluginReport(): Promise<void> {
  * Initialize essential mobile plugins
  */
 export async function initializeMobilePlugins(): Promise<void> {
-  if (!Capacitor.isNativePlatform()) {
+  const isNative = await isNativePlatform();
+  
+  if (!isNative) {
     console.log('📱 Not running on native platform, skipping plugin initialization');
     return;
   }
 
   try {
+    const [{ StatusBar, Style }, { SplashScreen }] = await Promise.all([
+      import('@capacitor/status-bar'),
+      import('@capacitor/splash-screen')
+    ]);
+
     // Initialize StatusBar
     await StatusBar.setStyle({ style: Style.Dark });
     await StatusBar.setBackgroundColor({ color: '#FF8F00' });
