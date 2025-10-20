@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, MapPin, Home, ShieldCheck, Building2 } from 'lucide-react';
+import { Search, MapPin, Home, ShieldCheck, Building2, PlusCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const MobileHero = () => {
@@ -103,7 +103,7 @@ export const MobileHero = () => {
 
           {/* Sous-titre */}
           <p className="text-sm text-gray-600 max-w-sm font-medium px-2">
-            Explorez une vaste sélection de biens immobiliers à Abidjan
+            Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
           </p>
 
           {/* Formulaire de recherche */}
@@ -169,15 +169,26 @@ export const MobileHero = () => {
                 </Select>
               </div>
 
-              {/* Bouton de recherche */}
-              <Button
-                onClick={handleSearch}
-                size="lg"
-                className="w-full h-12 text-base font-bold bg-primary-600 hover:bg-primary-700 shadow-lg mt-2"
-              >
-                <Search className="h-4 w-4 mr-2" />
-                Rechercher
-              </Button>
+              {/* Boutons d'action */}
+              <div className="flex flex-col gap-2 pt-2">
+                <Button
+                  onClick={handleSearch}
+                  size="lg"
+                  className="w-full h-12 text-base font-bold bg-primary-600 hover:bg-primary-700 shadow-lg"
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Rechercher
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full h-11 text-base font-semibold border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white transition-all"
+                  onClick={() => navigate('/publier')}
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Publier une annonce
+                </Button>
+              </div>
 
               {/* Message de confiance */}
               <p className="text-xs text-gray-600 text-center pt-1 flex flex-wrap items-center justify-center gap-1.5">

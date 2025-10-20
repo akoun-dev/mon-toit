@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { Search, ShieldCheck } from "lucide-react";
 
 const Index = () => {
-  console.log('[Index] Rendering Index page');
   return (
     <MainLayout>
       <Helmet>
@@ -29,7 +28,7 @@ const Index = () => {
         {/* Main Property Grid - Dynamic height */}
         <PropertyGrid
           limit={16}
-          showFilters={true}
+          showFilters={false}
         />
 
         {/* Mini CTA - Subtle, non-intrusive */}

@@ -281,19 +281,23 @@ export const ProfessionalHero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-12 max-w-3xl mx-auto pt-8 px-4"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 md:gap-8 max-w-4xl mx-auto pt-8 px-4"
           >
             <div className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens disponibles</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">10000+</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Utilisateurs actifs</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Utilisateurs</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">98%</div>
               <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Satisfaction</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">24h</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Support</div>
             </div>
           </motion.div>
         </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, LogOut, ShieldCheck, DollarSign } from 'lucide-react';
+import { Menu, User, LogOut, ShieldCheck, DollarSign, Search, PlusCircle, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Separator } from '@/components/ui/separator';
@@ -26,6 +26,30 @@ export const MobileMenu = () => {
         <div className="flex flex-col gap-6 mt-8">
           {/* Navigation Links */}
           <div className="flex flex-col gap-1">
+            <Link
+              to="/explorer"
+              onClick={handleNavClick}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+            >
+              <Search className="h-5 w-5 text-primary" />
+              <span>Explorer</span>
+            </Link>
+            <Link
+              to="/publier"
+              onClick={handleNavClick}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+            >
+              <PlusCircle className="h-5 w-5 text-primary" />
+              <span>Publier</span>
+            </Link>
+            <Link
+              to="/guide"
+              onClick={handleNavClick}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+            >
+              <BookOpen className="h-5 w-5 text-primary" />
+              <span>Guide</span>
+            </Link>
             <Link
               to="/certification"
               onClick={handleNavClick}

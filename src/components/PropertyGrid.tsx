@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { propertyService } from '@/services/propertyService';
 import { PropertyCard } from '@/components/properties/PropertyCard';
@@ -18,77 +18,81 @@ interface PropertyGridProps {
   showFilters?: boolean;
 }
 
-export const PropertyGrid = ({ 
-  limit = 16, 
+export const PropertyGrid = ({
+  limit = 16,
   showFilters = true,
 }: PropertyGridProps) => {
-  console.log('[PropertyGrid] Rendering with limit:', limit);
   const { user } = useAuth();
   const [displayLimit, setDisplayLimit] = useState(limit);
   const [sortBy, setSortBy] = useState<'recent' | 'price_asc' | 'price_desc'>('recent');
   const [filters, setFilters] = useState<PropertyFilters>({});
 
-  // Fetch properties
+  // Fetch properties avec configuration stable
   const { data: properties = [], isLoading, isError, error, refetch } = useQuery({
     queryKey: ['properties'],
     queryFn: async () => {
-      // Use secure RPC through propertyService to avoid RLS/REST 400 errors
       const data = await propertyService.fetchAll();
       return data as Property[];
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  const handleRefresh = async () => {
+  const handleRefresh = useCallback(async () => {
     await refetch();
     toast({
       description: "✅ Liste des biens mise à jour",
       duration: 2000,
     });
-  };
+  }, [refetch]);
 
-  // Apply filters
-  const filteredProperties = properties.filter(property => {
-    if (filters.city && property.city !== filters.city) return false;
-    if (filters.propertyType && property.property_type !== filters.propertyType) return false;
-    if (filters.minPrice && property.monthly_rent < filters.minPrice) return false;
-    if (filters.maxPrice && property.monthly_rent > filters.maxPrice) return false;
-    if (filters.minSurface && property.surface_area && property.surface_area < filters.minSurface) return false;
-    if (filters.maxSurface && property.surface_area && property.surface_area > filters.maxSurface) return false;
-    if (filters.bedrooms && property.bedrooms < filters.bedrooms) return false;
-    if (filters.bathrooms && property.bathrooms < filters.bathrooms) return false;
-    if (filters.isFurnished && !property.is_furnished) return false;
-    if (filters.hasAc && !property.has_ac) return false;
-    if (filters.hasParking && !property.has_parking) return false;
-    if (filters.hasGarden && !property.has_garden) return false;
-    if (filters.status && property.status !== filters.status) return false;
-    return true;
-  });
+  // Apply filters avec useMemo pour éviter les recalculs
+  const filteredProperties = useMemo(() => {
+    return properties.filter(property => {
+      if (filters.city && property.city !== filters.city) return false;
+      if (filters.propertyType && property.property_type !== filters.propertyType) return false;
+      if (filters.minPrice && property.monthly_rent < filters.minPrice) return false;
+      if (filters.maxPrice && property.monthly_rent > filters.maxPrice) return false;
+      if (filters.minSurface && property.surface_area && property.surface_area < filters.minSurface) return false;
+      if (filters.maxSurface && property.surface_area && property.surface_area > filters.maxSurface) return false;
+      if (filters.bedrooms && property.bedrooms < filters.bedrooms) return false;
+      if (filters.bathrooms && property.bathrooms < filters.bathrooms) return false;
+      if (filters.isFurnished && !property.is_furnished) return false;
+      if (filters.hasAc && !property.has_ac) return false;
+      if (filters.hasParking && !property.has_parking) return false;
+      if (filters.hasGarden && !property.has_garden) return false;
+      if (filters.status && property.status !== filters.status) return false;
+      return true;
+    });
+  }, [properties, filters]);
 
-  // Sorting
-  const sortedProperties = [...filteredProperties].sort((a, b) => {
-    if (sortBy === 'recent') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    if (sortBy === 'price_asc') return a.monthly_rent - b.monthly_rent;
-    if (sortBy === 'price_desc') return b.monthly_rent - a.monthly_rent;
-    return 0;
-  });
+  // Sorting avec useMemo pour éviter les recalculs
+  const sortedProperties = useMemo(() => {
+    return [...filteredProperties].sort((a, b) => {
+      if (sortBy === 'recent') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      if (sortBy === 'price_asc') return a.monthly_rent - b.monthly_rent;
+      if (sortBy === 'price_desc') return b.monthly_rent - a.monthly_rent;
+      return 0;
+    });
+  }, [filteredProperties, sortBy]);
 
-  const displayedProperties = sortedProperties.slice(0, displayLimit);
-  const hasMore = sortedProperties.length > displayLimit;
+  const displayedProperties = useMemo(() => sortedProperties.slice(0, displayLimit), [sortedProperties, displayLimit]);
+  const hasMore = useMemo(() => sortedProperties.length > displayLimit, [sortedProperties.length, displayLimit]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     setDisplayLimit(prev => prev + 12);
-  };
+  }, []);
 
-  const handleFilterChange = (newFilters: PropertyFilters) => {
+  const handleFilterChange = useCallback((newFilters: PropertyFilters) => {
     setFilters(newFilters);
-  };
+  }, []);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setFilters({});
-  };
+  }, []);
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
+    // <PullToRefresh onRefresh={handleRefresh}>
     <section className="bg-background">
       <div className="container mx-auto px-4 py-8 max-w-[1400px]">
         {/* Header: Filters toggle + Sort */}
@@ -191,6 +195,6 @@ export const PropertyGrid = ({
         </div>
       </div>
     </section>
-    </PullToRefresh>
+    // </PullToRefresh>
   );
 };
