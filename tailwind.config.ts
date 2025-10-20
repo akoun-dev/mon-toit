@@ -23,83 +23,57 @@ export default {
     },
     extend: {
       colors: {
-        // Palette Mon Toit - Coucher de soleil ivoirien
+        // Using HSL format to match design-system-colors.css
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: '#FF6B35', // Orange vif
-          50: '#FFF5F0',
-          100: '#FFE8DC',
-          200: '#FFD1B9',
-          300: '#FFBA96',
-          400: '#FFA373',
-          500: '#FF6B35', // Orange vif principal
-          600: '#E25822', // Orange profond (CTA)
-          700: '#C54A1C',
-          800: '#A83C16',
-          900: '#8B2E10',
+          DEFAULT: 'hsl(var(--primary))',
+          50: 'hsl(var(--primary-50))',
+          100: 'hsl(var(--primary-100))',
+          500: 'hsl(var(--primary-500))',
+          700: 'hsl(var(--primary-700))',
+          900: 'hsl(var(--primary-900))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          DEFAULT: '#E07A5F', // Terracotta
-          50: '#FDF5F3',
-          100: '#FAEBE7',
-          200: '#F5D7CF',
-          300: '#F0C3B7',
-          400: '#EAAF9F',
-          500: '#E07A5F', // Terracotta
-          600: '#D96548',
-          700: '#C7543A',
-          800: '#A8452F',
-          900: '#893624',
+          DEFAULT: 'hsl(var(--secondary))',
+          50: 'hsl(var(--secondary-50))',
+          100: 'hsl(var(--secondary-100))',
+          500: 'hsl(var(--secondary-500))',
+          700: 'hsl(var(--secondary-700))',
+          900: 'hsl(var(--secondary-900))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
-        // Couleurs de fond
-        background: {
-          DEFAULT: '#FAF7F0', // Crème clair
-          light: '#FFFDF8', // Ivoire
-          sand: '#FEF3C7', // Beige sable
-        },
-        // ANSUT (sponsor, pas identité)
-        ansut: {
-          blue: '#2256A3',
-          orange: '#F08224',
-        },
-        // Couleurs du drapeau ivoirien (accents)
-        ci: {
-          orange: '#F77F00',
-          white: '#FFFFFF',
-          green: '#009E60',
-        },
-        // Couleurs fonctionnelles
         success: {
-          DEFAULT: '#10B981',
-          light: '#34D399',
-          dark: '#059669',
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))',
         },
         warning: {
-          DEFAULT: '#F59E0B',
-          light: '#FBBF24',
-          dark: '#D97706',
+          DEFAULT: 'hsl(var(--warning))',
+          foreground: 'hsl(var(--warning-foreground))',
         },
-        error: {
-          DEFAULT: '#EF4444',
-          light: '#F87171',
-          dark: '#DC2626',
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
         },
-        info: {
-          DEFAULT: '#3B82F6',
-          light: '#60A5FA',
-          dark: '#2563EB',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
         },
-        // Couleurs neutres
-        gray: {
-          50: '#F9FAFB',
-          100: '#F5F5F5',
-          200: '#E5E7EB',
-          300: '#D1D5DB',
-          400: '#9CA3AF',
-          500: '#6B7280',
-          600: '#4B5563',
-          700: '#374151',
-          800: '#1F2937',
-          900: '#111827',
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
         },
       },
       fontFamily: {
