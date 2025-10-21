@@ -9,21 +9,29 @@
 -- ============================================
 -- Cette vue expose toutes les informations de profil SAUF le numéro de téléphone
 -- Elle sera utilisée pour l'affichage général des profils utilisateurs
-CREATE OR REPLACE VIEW public.profiles_public AS
-SELECT 
-  id,
-  full_name,
-  user_type,
-  avatar_url,
-  bio,
-  city,
-  is_verified,
-  oneci_verified,
-  cnam_verified,
-  face_verified,
-  created_at,
-  updated_at
-FROM public.profiles;
+-- Vérifier d'abord si la table profiles existe
+DO $$
+BEGIN
+  -- Ne créer la vue que si la table profiles existe
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'profiles'
+  ) THEN
+    -- Construire la requête dynamiquement en fonction des colonnes disponibles
+    EXECUTE format('
+      CREATE OR REPLACE VIEW public.profiles_public AS
+      SELECT %s
+      FROM public.profiles',
+      -- Construire la liste des colonnes dynamiquement en excluant phone
+      (SELECT string_agg(column_name, ', ')
+       FROM information_schema.columns
+       WHERE table_schema = 'public'
+       AND table_name = 'profiles'
+       AND column_name != 'phone' -- Exclure explicitement la colonne phone
+      )
+    );
+  END IF;
+END $$;
 
 -- Grant SELECT sur la vue aux utilisateurs authentifiés
 GRANT SELECT ON public.profiles_public TO authenticated;
@@ -61,6 +69,12 @@ BEGIN
   -- Cas 2 : Propriétaire voit le téléphone de ses candidats
   -- (candidats qui ont postulé à une propriété du propriétaire)
   IF NOT has_access AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'rental_applications'
+  ) AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'properties'
+  ) AND EXISTS (
     SELECT 1 FROM public.rental_applications ra
     JOIN public.properties p ON p.id = ra.property_id
     WHERE ra.applicant_id = target_user_id
@@ -71,6 +85,12 @@ BEGIN
 
   -- Cas 3 : Candidat voit le téléphone du propriétaire de la propriété qu'il a candidaté
   IF NOT has_access AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'rental_applications'
+  ) AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'properties'
+  ) AND EXISTS (
     SELECT 1 FROM public.rental_applications ra
     JOIN public.properties p ON p.id = ra.property_id
     WHERE ra.applicant_id = auth.uid()
@@ -81,6 +101,9 @@ BEGIN
 
   -- Cas 4 : Parties d'un bail actif (propriétaire ↔ locataire)
   IF NOT has_access AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'leases'
+  ) AND EXISTS (
     SELECT 1 FROM public.leases
     WHERE (landlord_id = auth.uid() AND tenant_id = target_user_id)
        OR (tenant_id = auth.uid() AND landlord_id = target_user_id)
@@ -93,15 +116,20 @@ BEGIN
     has_access := true;
   END IF;
 
-  -- Récupérer le téléphone si accès autorisé
-  IF has_access THEN
+  -- Récupérer le téléphone si accès autorisé et si la colonne existe
+  IF has_access AND EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'profiles'
+    AND column_name = 'phone'
+  ) THEN
     SELECT phone INTO user_phone
     FROM public.profiles
     WHERE id = target_user_id;
-    
+
     RETURN user_phone;
   ELSE
-    -- Pas d'accès légitime, retourne NULL
+    -- Pas d'accès légitime ou colonne phone n'existe pas, retourne NULL
     RETURN NULL;
   END IF;
 END;
@@ -125,14 +153,29 @@ Retourne NULL si aucun accès légitime.';
 -- 3. Index pour optimisation des performances
 -- ============================================
 -- Ces index améliorent les performances des vérifications d'accès
-CREATE INDEX IF NOT EXISTS idx_rental_applications_applicant 
-ON public.rental_applications(applicant_id);
+DO $$
+BEGIN
+  -- Index pour rental_applications si la table existe
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'rental_applications'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_rental_applications_applicant
+                  ON public.rental_applications(applicant_id)';
 
-CREATE INDEX IF NOT EXISTS idx_rental_applications_property 
-ON public.rental_applications(property_id);
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_rental_applications_property
+                  ON public.rental_applications(property_id)';
+  END IF;
 
-CREATE INDEX IF NOT EXISTS idx_leases_landlord_tenant 
-ON public.leases(landlord_id, tenant_id);
+  -- Index pour leases si la table existe
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'leases'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_leases_landlord_tenant
+                  ON public.leases(landlord_id, tenant_id)';
 
-CREATE INDEX IF NOT EXISTS idx_leases_tenant_landlord 
-ON public.leases(tenant_id, landlord_id);
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_leases_tenant_landlord
+                  ON public.leases(tenant_id, landlord_id)';
+  END IF;
+END $$;
