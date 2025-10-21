@@ -67,7 +67,7 @@ const UnifiedRoleSelection = () => {
 
   return (
     <section className="py-10 bg-gradient-to-b from-muted/30 to-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2">
         {/* Header */}
         <div className="text-center mb-8 space-y-3">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">

@@ -134,7 +134,7 @@ const PropertyModerationQueue = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Tabs value={filter} onValueChange={setFilter}>
         <TabsList>
           <TabsTrigger value="pending">En attente</TabsTrigger>
@@ -151,7 +151,7 @@ const PropertyModerationQueue = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {properties.map((property) => (
                 <Card key={property.id}>
                   <CardHeader>

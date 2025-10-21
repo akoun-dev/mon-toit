@@ -13,7 +13,7 @@ const CertificationFAQ = () => {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-2 py-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary/10 rounded-full mb-4">

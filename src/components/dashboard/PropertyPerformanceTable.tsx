@@ -50,7 +50,7 @@ export const PropertyPerformanceTable = ({ properties, loading }: PropertyPerfor
           <CardTitle>Performance par Bien</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center py-8">
+          <p className="text-muted-foreground text-center py-4">
             Aucune propriété à afficher pour le moment
           </p>
         </CardContent>

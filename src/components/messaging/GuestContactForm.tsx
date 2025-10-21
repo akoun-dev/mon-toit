@@ -159,7 +159,7 @@ export const GuestContactForm = ({ propertyId, ownerId, propertyTitle }: GuestCo
       </div>
 
       {isSuccess ? (
-        <div className="flex flex-col items-center justify-center py-8 text-center">
+        <div className="flex flex-col items-center justify-center py-4 text-center">
           <CheckCircle2 className="h-12 w-12 text-green-500 mb-4" />
           <p className="text-lg font-medium text-foreground mb-2">Message envoyé !</p>
           <p className="text-sm text-muted-foreground">

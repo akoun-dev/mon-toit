@@ -241,7 +241,7 @@ const Features = () => {
       className="py-12 md:py-18 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
       aria-labelledby="features-heading"
     >
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-2 max-w-7xl relative z-10">
         {/* Header - Mon Toit en avant */}
         <header className="text-center mb-16">
           <div className="flex flex-col items-center justify-center gap-3 mb-6">

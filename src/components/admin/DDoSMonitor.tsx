@@ -151,7 +151,7 @@ export const DDoSMonitor = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Alertes DDoS */}
       {ddosPatterns.length > 0 && (
         <Alert variant="destructive">
@@ -334,7 +334,7 @@ export const DDoSMonitor = () => {
           </Table>
 
           {blockedIPs.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-4 text-muted-foreground">
               Aucune IP bloquée
             </div>
           )}

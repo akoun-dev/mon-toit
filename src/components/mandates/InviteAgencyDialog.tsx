@@ -199,7 +199,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Sélection agence avec recherche */}
             <FormField
               control={form.control}

@@ -204,7 +204,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
           )}
 
           {step === 2 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="space-y-3">
                 <Label>Prix mensuel (FCFA)</Label>
                 <div className="flex items-center gap-2">
@@ -351,7 +351,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
           )}
 
           {step === 4 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="space-y-3">
                 <Label>Équipements</Label>
                 <div className="grid grid-cols-2 gap-3">

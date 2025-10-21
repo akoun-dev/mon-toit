@@ -40,7 +40,7 @@ export const WorkStatusSection = ({
         </div>
         <CardTitle className="text-xl mt-4">État des travaux</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Description */}
         {workDescription && (
           <div>

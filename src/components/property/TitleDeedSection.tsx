@@ -162,7 +162,7 @@ export const TitleDeedSection = ({ propertyId, titleDeedUrl, ownerId }: TitleDee
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="flex items-center justify-center py-8">
+          <div className="flex items-center justify-center py-4">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : canAccess ? (

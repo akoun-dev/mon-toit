@@ -185,7 +185,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Welcome Header */}
       <MotionDiv
         initial={{ opacity: 0, y: -20 }}
@@ -225,7 +225,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-4">
           {/* Financial Metrics */}
           {financialMetrics && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -440,7 +440,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Properties Tab */}
-        <TabsContent value="properties" className="space-y-6">
+        <TabsContent value="properties" className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Gestion des Propriétés</h2>
             <Button onClick={() => navigate('/ajouter-bien')}>
@@ -512,7 +512,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Applications Tab */}
-        <TabsContent value="applications" className="space-y-6">
+        <TabsContent value="applications" className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Candidatures Reçues</h2>
             <Button variant="outline">
@@ -580,7 +580,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Financial Tab */}
-        <TabsContent value="financial" className="space-y-6">
+        <TabsContent value="financial" className="space-y-4">
           {financialMetrics && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -686,7 +686,7 @@ export const OwnerDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Maintenance Tab */}
-        <TabsContent value="maintenance" className="space-y-6">
+        <TabsContent value="maintenance" className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Demandes de Maintenance</h2>
             <Button variant="outline">

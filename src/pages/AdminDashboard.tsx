@@ -151,7 +151,7 @@ const AdminDashboard = () => {
 
         {/* Vue d'ensemble */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <SeedDemoDataButton />
             <AdminStats />
           </div>
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
 
         {/* Audit */}
         {activeTab === 'audit' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {!hasRole('super_admin') && !hasRole('admin') && (
               <PromoteToSuperAdmin />
             )}

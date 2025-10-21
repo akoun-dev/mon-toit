@@ -65,7 +65,7 @@ export const ActiveLeaseWidget = ({ data }: ActiveLeaseWidgetProps) => {
             </Button>
           </div>
         ) : (
-          <div className="text-center py-8 space-y-3">
+          <div className="text-center py-4 space-y-3">
             <FileCheck className="h-12 w-12 text-muted-foreground mx-auto opacity-50" />
             <p className="text-sm text-muted-foreground">Aucun bail actif</p>
             <p className="text-xs text-muted-foreground">

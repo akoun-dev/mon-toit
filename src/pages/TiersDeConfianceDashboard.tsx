@@ -87,7 +87,7 @@ const TiersDeConfianceDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 py-4">
         <h1 className="text-4xl font-bold mb-8">Espace Tiers de Confiance</h1>
 
         {/* Stats Cards */}

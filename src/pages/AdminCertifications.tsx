@@ -14,7 +14,7 @@ const AdminCertifications = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 py-3">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
             Certifications ANSUT
@@ -24,7 +24,7 @@ const AdminCertifications = () => {
           </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           <CertificationStats />
           
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">

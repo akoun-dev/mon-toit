@@ -503,7 +503,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
           Vérification sécurisée via Smile ID pour ressortissants ivoiriens
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>

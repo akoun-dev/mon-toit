@@ -36,7 +36,7 @@ const AccessibilitePage = () => {
 
       {/* En-tête */}
       <div className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-2 py-8">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/10 rounded-full">
@@ -68,7 +68,7 @@ const AccessibilitePage = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-2 py-6">
         <div className="max-w-4xl mx-auto space-y-12">
 
           {/* Notre engagement */}
@@ -109,7 +109,7 @@ const AccessibilitePage = () => {
                 Fonctionnalités d'accessibilité
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -179,7 +179,7 @@ const AccessibilitePage = () => {
                 Technologies d'assistance supportées
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <Eye className="h-8 w-8 text-primary mx-auto mb-3" />
@@ -261,7 +261,7 @@ const AccessibilitePage = () => {
                 Test utilisateur et amélioration continue
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-900">Tests réguliers</h4>
@@ -306,7 +306,7 @@ const AccessibilitePage = () => {
                 Signaler un problème d'accessibilité
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 Malgré nos efforts pour rendre notre site accessible, vous pourriez rencontrer
                 des difficultés. Nous vous invitons à nous signaler tout problème pour que nous
@@ -394,8 +394,8 @@ const AccessibilitePage = () => {
 
       {/* Footer rapide */}
       <div className="bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-6">
+        <div className="container mx-auto px-2">
+          <div className="text-center space-y-4">
             <h3 className="text-2xl font-bold text-gray-900">
               Besoin d'aide pour l'accessibilité ?
             </h3>

@@ -65,7 +65,7 @@ export const TiersVerificationQueue = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <div className="flex items-center justify-center py-4">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -73,7 +73,7 @@ export const TiersVerificationQueue = () => {
 
   if (verifications.length === 0) {
     return (
-      <div className="py-8 text-center text-muted-foreground">
+      <div className="py-4 text-center text-muted-foreground">
         Aucune vérification en attente de révision
       </div>
     );

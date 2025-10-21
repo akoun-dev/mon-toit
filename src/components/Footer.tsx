@@ -4,8 +4,8 @@ import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 
 const Footer = () => {
   return (
-    <footer className="py-8 bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <footer className="py-4 bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
+      <div className="container mx-auto px-2 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-sm">
           
           {/* Zone gauche : Logo + Copyright + Badge ANSUT */}

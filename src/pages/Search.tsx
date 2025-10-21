@@ -68,7 +68,7 @@ const Search = () => {
   return (
     <MainLayout>
       <div className="bg-background min-h-screen">
-        <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8">
+        <div className="content-left py-4 sm:py-3 md:py-4">
           <DynamicBreadcrumb />
 
           {/* Header with improved typography */}
@@ -141,13 +141,13 @@ const Search = () => {
               ) : (
                 <>
                   {isLoading ? (
-                    <div className={viewMode === 'grid' ? 'card-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-6'}>
+                    <div className={viewMode === 'grid' ? 'card-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
                       {[1, 2, 3, 4, 5, 6].map((i) => (
                         <PropertyCardSkeleton key={i} />
                       ))}
                     </div>
                   ) : filteredProperties.length > 0 ? (
-                    <div className={viewMode === 'grid' ? 'card-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-6'}>
+                    <div className={viewMode === 'grid' ? 'card-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'space-y-4'}>
                       {filteredProperties.map((property) => (
                         <PropertyCard
                           key={property.id}
@@ -159,7 +159,7 @@ const Search = () => {
                       ))}
                     </div>
                   ) : (
-                    <Card className="p-12 text-center space-y-6">
+                    <Card className="p-12 text-center space-y-4">
                       <SearchIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                       <div>
                         <h3 className="text-2xl font-semibold mb-2">

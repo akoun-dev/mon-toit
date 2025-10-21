@@ -27,7 +27,7 @@ export const PropertyCharacteristics = ({ property }: PropertyCharacteristicsPro
       <CardHeader>
         <CardTitle>Caractéristiques</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {characteristics.map((char, index) => (
             <div key={index} className="flex items-center gap-3 p-3 bg-muted rounded-lg">

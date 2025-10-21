@@ -316,7 +316,7 @@ const SecurityDashboard: React.FC = () => {
 
   return (
     <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -477,7 +477,7 @@ const SecurityDashboard: React.FC = () => {
                     </div>
                   ))}
                   {threats.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="text-center py-4 text-muted-foreground">
                       <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <p>Aucune menace détectée</p>
                     </div>
@@ -530,7 +530,7 @@ const SecurityDashboard: React.FC = () => {
                     </div>
                   ))}
                   {events.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="text-center py-4 text-muted-foreground">
                       <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
                       <p>Aucun événement récent</p>
                     </div>

@@ -170,7 +170,7 @@ const Maintenance = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <div className="flex-1 container mx-auto px-4 py-8 pt-24">
+        <div className="flex-1 container mx-auto px-2 py-4 pt-24">
           <div className="max-w-3xl mx-auto">
             <Card className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-white">
               <CardHeader className="space-y-4">
@@ -185,7 +185,7 @@ const Maintenance = () => {
                 </CardDescription>
               </CardHeader>
               
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
                 {/* Étapes visuelles */}
                 <div className="space-y-4">
                   <div className="flex gap-4 items-start p-4 rounded-lg bg-white border">
@@ -242,8 +242,8 @@ const Maintenance = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-1 container mx-auto px-4 py-8 pt-24">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex-1 container mx-auto px-2 py-4 pt-24">
+        <div className="max-w-4xl mx-auto space-y-4">
           <DynamicBreadcrumb />
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold">Demandes de maintenance</h1>

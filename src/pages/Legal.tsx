@@ -11,7 +11,7 @@ const LegalPage = ({ title, lastUpdated, children }: LegalPageProps) => {
   return (
     <MainLayout>
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-10">
+        <div className="container mx-auto px-2 py-10">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold mb-2">{title}</h1>
             <p className="text-sm text-muted-foreground mb-8">

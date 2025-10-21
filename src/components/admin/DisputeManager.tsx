@@ -222,7 +222,7 @@ const DisputeManager = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Gestion des litiges</h2>
         <Select value={filter} onValueChange={setFilter}>
@@ -308,7 +308,7 @@ const DisputeManager = () => {
                         <DialogTitle>Détails du litige</DialogTitle>
                       </DialogHeader>
                       {selectedDispute && (
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <div className="flex items-center gap-2">
                               <Avatar className="h-10 w-10">

@@ -120,7 +120,7 @@ export const MfaSecurityMonitor = () => {
   const adminsWithoutMfa = adminStatuses.filter(a => !a.has_2fa);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Metrics Overview */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>

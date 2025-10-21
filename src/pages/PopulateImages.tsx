@@ -116,7 +116,7 @@ export default function PopulateImages() {
             Cette page permet de générer automatiquement des images pour toutes les propriétés qui n'en ont pas encore.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div className="flex gap-4">
             <Button
               onClick={generateImagesForProperties}

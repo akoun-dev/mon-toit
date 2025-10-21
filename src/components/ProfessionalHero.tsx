@@ -108,8 +108,8 @@ export const ProfessionalHero = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
-        <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
+      <div className="relative z-10 container mx-auto px-2 sm:px-6 py-12 sm:py-16 md:py-24">
+        <div className="max-w-5xl mx-auto text-center space-y-4 sm:space-y-8">
           
           {/* Badge ANSUT - discret, en tant que sponsor */}
           <motion.div

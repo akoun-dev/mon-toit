@@ -186,7 +186,7 @@ export const DocumentManager = ({ leaseId, landlordId, tenantId }: DocumentManag
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Checklist des documents obligatoires */}
       <Card>
         <CardHeader>
@@ -265,7 +265,7 @@ export const DocumentManager = ({ leaseId, landlordId, tenantId }: DocumentManag
         <CardContent>
           <ScrollArea className="h-[400px]">
             {documents.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-4 text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>Aucun document uploadé</p>
               </div>

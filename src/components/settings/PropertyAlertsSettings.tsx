@@ -150,7 +150,7 @@ export const PropertyAlertsSettings = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export const PropertyAlertsSettings = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {alerts.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-4 text-muted-foreground">
               <BellOff className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>Aucune alerte configurée</p>
               <p className="text-sm">Créez votre première alerte pour ne manquer aucune opportunité</p>

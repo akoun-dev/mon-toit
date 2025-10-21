@@ -14,7 +14,7 @@ const CommentCaMarche = () => {
   return (
     <MainLayout>
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-2 py-4">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-16 animate-fade-in relative">

@@ -177,7 +177,7 @@ export const ProcessingAnalytics = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Card>

@@ -137,7 +137,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
     return (
       <div className="px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
-          <div className="flex flex-col items-center justify-center py-8 px-4">
+          <div className="flex flex-col items-center justify-center py-4 px-4">
             <AlertCircle className="w-12 h-12 text-destructive mb-4" />
             <h3 className="text-xl font-semibold mb-2 text-foreground">
               Une erreur est survenue

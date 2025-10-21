@@ -220,11 +220,11 @@ export const SensitiveDataAccessMonitor = () => {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-8">
+            <div className="flex items-center justify-center py-4">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : logs.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-4 text-muted-foreground">
               Aucun log d'accès trouvé
             </div>
           ) : (

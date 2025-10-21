@@ -122,7 +122,7 @@ const ScheduleVisit = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+      <main className="flex-1 container mx-auto px-2 py-4 pt-24">
         <div className="max-w-4xl mx-auto">
           <DynamicBreadcrumb />
           
@@ -130,7 +130,7 @@ const ScheduleVisit = () => {
 
           <FormStepper steps={visitSteps} currentStep={currentStep} />
 
-          <div className="mt-6 space-y-6">
+          <div className="mt-6 space-y-4">
             {/* Step 1: Property Selection */}
             {currentStep === 0 && (
               <Card>
@@ -176,7 +176,7 @@ const ScheduleVisit = () => {
 
             {/* Step 2: Date & Time Selection */}
             {currentStep === 1 && (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">

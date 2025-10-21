@@ -51,7 +51,7 @@ export const PreCertificationChecklist = ({ leaseId }: PreCertificationChecklist
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-8">
+        <CardContent className="flex items-center justify-center py-4">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>

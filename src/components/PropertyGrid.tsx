@@ -94,7 +94,7 @@ export const PropertyGrid = ({
   return (
     // <PullToRefresh onRefresh={handleRefresh}>
     <section className="bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-[1400px]">
+      <div className="container mx-auto px-2 py-4 max-w-[1400px]">
         {/* Header: Filters toggle + Sort */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <p className="text-sm text-muted-foreground">

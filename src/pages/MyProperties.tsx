@@ -232,8 +232,8 @@ const MyProperties = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto space-y-8">
+      <div className="container mx-auto px-2 py-4">
+        <div className="max-w-7xl mx-auto space-y-4">
           <DynamicBreadcrumb />
           
           {/* Header */}

@@ -176,7 +176,7 @@ const DossierValidationQueue = ({ onUpdate }: DossierValidationQueueProps) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Filtres et Tri */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex gap-2 items-center flex-wrap">
@@ -275,7 +275,7 @@ const DossierValidationQueue = ({ onUpdate }: DossierValidationQueueProps) => {
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   {/* Application Score */}
                   {app.application_score > 0 && (
                     <TenantScoreBreakdown 

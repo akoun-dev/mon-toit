@@ -334,7 +334,7 @@ export const CertificateManager = () => {
   ], [getStatusBadge, isExpiringSoon, handleRegenerateCertificate, confirmRevoke]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>

@@ -159,7 +159,7 @@ export const ActivityTimeline = ({ className }: ActivityTimelineProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-8">
+          <p className="text-sm text-muted-foreground text-center py-4">
             Aucune activité récente
           </p>
         </CardContent>

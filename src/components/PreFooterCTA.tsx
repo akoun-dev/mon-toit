@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const PreFooterCTA = () => {
   return (
     <section className="relative py-12 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-2 max-w-7xl relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-h2 mb-4">
             Prêt à <span className="text-primary">commencer</span> ?

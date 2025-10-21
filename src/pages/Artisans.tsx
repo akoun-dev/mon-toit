@@ -143,7 +143,7 @@ const ArtisansPage = () => {
 
       {/* En-tête */}
       <div className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-2 py-8">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/10 rounded-full">
@@ -176,7 +176,7 @@ const ArtisansPage = () => {
       </div>
 
       {/* Filtres par catégorie */}
-      <div className="container mx-auto px-4 -mt-8">
+      <div className="container mx-auto px-2 -mt-8">
         <div className="bg-white rounded-xl shadow-lg p-6">
           <div className="flex items-center gap-4 mb-4">
             <Filter className="h-5 w-5 text-gray-500" />
@@ -202,7 +202,7 @@ const ArtisansPage = () => {
       </div>
 
       {/* Résultats */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 py-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
             {filteredArtisans.length} artisan{filteredArtisans.length > 1 ? 's' : ''} trouvé{filteredArtisans.length > 1 ? 's' : ''}
@@ -313,7 +313,7 @@ const ArtisansPage = () => {
 
       {/* Section Comment ça marche */}
       <div className="bg-white py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Comment trouver le bon artisan ?
@@ -366,7 +366,7 @@ const ArtisansPage = () => {
 
       {/* Call-to-action artisans */}
       <div className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2">
           <div className="bg-gradient-to-r from-primary to-primary-600 rounded-2xl p-8 text-center text-white">
             <h2 className="text-3xl font-bold mb-4">
               Vous êtes artisan ?

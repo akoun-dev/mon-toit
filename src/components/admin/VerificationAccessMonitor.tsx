@@ -176,7 +176,7 @@ export const VerificationAccessMonitor = () => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
@@ -260,13 +260,13 @@ export const VerificationAccessMonitor = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-4 text-muted-foreground">
                     Chargement...
                   </TableCell>
                 </TableRow>
               ) : filteredLogs.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-4 text-muted-foreground">
                     <Eye className="h-8 w-8 mx-auto mb-2 opacity-50" />
                     Aucun accès enregistré
                   </TableCell>

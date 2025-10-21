@@ -228,7 +228,7 @@ const Application = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pt-24 max-w-4xl">
+      <main className="flex-1 container mx-auto px-2 py-3 pt-24 max-w-4xl">
         <DynamicBreadcrumb />
         
         <div className="mb-8">
@@ -251,7 +251,7 @@ const Application = () => {
         <FormStepper steps={applicationSteps} currentStep={currentStep} />
         <FormProgressIndicator steps={applicationSteps} currentStep={currentStep} className="mt-6" />
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* ONECI Verification Required Alert */}
           {!profile?.oneci_verified && verification?.oneci_status !== 'verified' && (
             <Alert className="border-primary/50 bg-primary/5">

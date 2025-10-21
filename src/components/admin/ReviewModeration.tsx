@@ -172,7 +172,7 @@ const ReviewModeration = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -211,7 +211,7 @@ const ReviewModeration = () => {
 
             <TabsContent value={activeTab} className="mt-6">
               {reviews.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
+                <p className="text-center text-muted-foreground py-4">
                   Aucun avis dans cette catégorie
                 </p>
               ) : (

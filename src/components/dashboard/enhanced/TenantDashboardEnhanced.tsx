@@ -148,7 +148,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Welcome Header */}
       <MotionDiv
         initial={{ opacity: 0, y: -20 }}
@@ -187,7 +187,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-4">
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <MotionDiv
@@ -380,7 +380,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Leases Tab */}
-        <TabsContent value="leases" className="space-y-6">
+        <TabsContent value="leases" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Historique des Baux</CardTitle>
@@ -389,7 +389,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
+              <div className="text-center py-4">
                 <Home className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Aucun bail actif</h3>
                 <p className="text-muted-foreground mb-4">
@@ -405,7 +405,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Applications Tab */}
-        <TabsContent value="applications" className="space-y-6">
+        <TabsContent value="applications" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Mes Candidatures</CardTitle>
@@ -414,7 +414,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
+              <div className="text-center py-4">
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Aucune candidature</h3>
                 <p className="text-muted-foreground mb-4">
@@ -430,7 +430,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
         </TabsContent>
 
         {/* Discovery Tab */}
-        <TabsContent value="discovery" className="space-y-6">
+        <TabsContent value="discovery" className="space-y-4">
           {/* Saved Searches */}
           <Card>
             <CardHeader>

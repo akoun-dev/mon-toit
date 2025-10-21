@@ -26,7 +26,7 @@ export const PropertyDetailSkeleton = () => (
     initial="hidden"
     animate="visible"
   >
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-2 py-6 space-y-4">
       <motion.div variants={itemVariants}>
         <Shimmer className="h-96 w-full rounded-2xl" />
       </motion.div>
@@ -57,7 +57,7 @@ export const PropertyDetailSkeleton = () => (
 
 export const PageSkeleton = () => (
   <motion.div 
-    className="container mx-auto px-4 py-20"
+    className="container mx-auto px-2 py-20"
     variants={containerVariants}
     initial="hidden"
     animate="visible"

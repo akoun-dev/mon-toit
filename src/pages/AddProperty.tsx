@@ -127,7 +127,7 @@ const AddProperty = () => {
   if (!accessCheck.hasAccess) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-2 py-6">
           <Card>
             <CardHeader>
               <CardTitle>Accès refusé</CardTitle>
@@ -176,7 +176,7 @@ const AddProperty = () => {
         </StickyHeader>
       )}
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 py-4">
         <div className="max-w-4xl mx-auto">
           <DynamicBreadcrumb />
           
@@ -202,7 +202,7 @@ const AddProperty = () => {
           <FormProgressIndicator steps={propertyFormSteps} currentStep={currentStep} className="mt-6" />
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div ref={basicInfoRef} className="scroll-mt-32">
                 <PropertyBasicInfo form={form} />
               </div>

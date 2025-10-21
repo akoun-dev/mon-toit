@@ -284,7 +284,7 @@ const PropertyApplications = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-2 py-4 max-w-7xl">
         <DynamicBreadcrumb />
         <div className="mb-8">
           {isAgencyView && (

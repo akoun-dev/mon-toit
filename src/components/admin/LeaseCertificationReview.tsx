@@ -200,7 +200,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
   return (
     <Dialog open={open} onOpenChange={onOpenChange || handleClose}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-center py-8">
+          <div className="flex items-center justify-center py-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         </DialogContent>
@@ -226,7 +226,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Status actuel */}
           <div>
             <ANSUTCertifiedBadge 

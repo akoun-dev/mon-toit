@@ -83,7 +83,7 @@ export const EnhancedMfaSecurityMonitor = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-4">
           {[...Array(4)].map((_, i) => (
             <Card key={i}>
@@ -102,7 +102,7 @@ export const EnhancedMfaSecurityMonitor = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Alerts */}
       {stats.critical > 0 && (
         <Alert variant="destructive">
@@ -239,7 +239,7 @@ export const EnhancedMfaSecurityMonitor = () => {
               ))}
               {admins.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-4">
                     Aucun administrateur trouvé
                   </TableCell>
                 </TableRow>

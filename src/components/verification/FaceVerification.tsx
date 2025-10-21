@@ -179,7 +179,7 @@ const FaceVerification = ({ onSuccess, onSkip }: FaceVerificationProps) => {
               Vérification biométrique sécurisée propulsée par Smile ID
             </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>

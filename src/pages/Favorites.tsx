@@ -52,7 +52,7 @@ const Favorites = () => {
   return (
     <MainLayout>
       <div className="bg-gradient-to-br from-background via-background to-primary/5">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-2 py-3">
           <div className="max-w-7xl mx-auto">
             <DynamicBreadcrumb />
             <div className="mb-10">

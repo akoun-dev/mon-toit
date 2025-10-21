@@ -249,7 +249,7 @@ class ErrorBoundary extends Component<Props, State> {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               {/* ID d'erreur pour référence */}
               <Alert>
                 <Bug className="h-4 w-4" />

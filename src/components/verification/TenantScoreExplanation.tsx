@@ -79,7 +79,7 @@ export const TenantScoreExplanation = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Current Score Progress */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">

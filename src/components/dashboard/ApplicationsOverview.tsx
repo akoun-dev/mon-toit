@@ -143,7 +143,7 @@ export const ApplicationsOverview = () => {
           <CardTitle>Mes candidatures</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">Chargement...</div>
+          <div className="text-center py-4 text-muted-foreground">Chargement...</div>
         </CardContent>
       </Card>
     );
@@ -156,7 +156,7 @@ export const ApplicationsOverview = () => {
           <CardTitle>Mes candidatures</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-4 text-muted-foreground">
             Aucune candidature pour le moment
           </div>
         </CardContent>

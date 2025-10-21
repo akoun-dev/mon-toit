@@ -65,7 +65,7 @@ export const IllustrationManager = () => {
           Téléchargez les illustrations générées dans votre projet
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {illustrations.length > 0 ? (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -107,7 +107,7 @@ export const IllustrationManager = () => {
             </Button>
           </>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-4 text-muted-foreground">
             <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-30" />
             <p>Aucune illustration générée pour le moment</p>
             <p className="text-sm mt-1">Générez d'abord les illustrations via l'onglet "Illustrations"</p>

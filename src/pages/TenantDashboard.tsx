@@ -66,7 +66,7 @@ const TenantDashboard = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8 pt-24">
+      <main className="flex-1 container mx-auto px-2 py-4 pt-24">
         <div className="mb-10">
           <DynamicBreadcrumb />
           

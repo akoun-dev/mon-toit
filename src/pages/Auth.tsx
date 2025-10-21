@@ -399,7 +399,7 @@ const Auth = () => {
   if (show2FA) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-8 max-w-md">
+        <div className="container mx-auto px-2 py-4 max-w-md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -421,8 +421,8 @@ const Auth = () => {
         {/* Hero Section with Pattern */}
         <section className="relative pt-12 pb-6 md:pt-16 md:pb-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
           <KentePattern />
-          <div className="container mx-auto px-4 sm:px-6 relative z-10">
-            <div className="text-center max-w-4xl mx-auto mb-6 md:mb-8">
+          <div className="container mx-auto px-2 sm:px-6 relative z-10">
+            <div className="text-center max-w-4xl mx-auto mb-3 md:mb-4">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -437,7 +437,7 @@ const Auth = () => {
                   Bienvenue sur <span className="text-gradient-primary">Mon Toit</span>
                 </motion.h1>
                 <motion.p
-                  className="text-sm sm:text-base md:text-body-lg text-muted-foreground mb-6 md:mb-8 px-4"
+                  className="text-sm sm:text-base md:text-body-lg text-muted-foreground mb-3 md:mb-4 px-4"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -450,17 +450,17 @@ const Auth = () => {
         </section>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 sm:px-6 pb-8 md:pb-12">
+        <div className="container mx-auto px-2 sm:px-6 pb-8 md:pb-12">
           <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start max-w-6xl mx-auto">
             {/* Left Side - Benefits */}
             <motion.div
-              className="space-y-6"
+              className="space-y-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
 
-              <div className="space-y-6 bg-card/50 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-border/50 shadow-lg">
+              <div className="space-y-4 bg-card/50 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-border/50 shadow-lg">
                 <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">
                   Pourquoi choisir Mon Toit ?
                 </h2>
@@ -501,7 +501,7 @@ const Auth = () => {
 
             {/* Right Side - Auth Form */}
             <motion.div
-              className="space-y-6"
+              className="space-y-4"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}

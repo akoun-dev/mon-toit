@@ -175,8 +175,8 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <div className="container mx-auto px-2 py-4">
+        <div className="max-w-4xl mx-auto space-y-4">
           <DynamicBreadcrumb />
           {/* Header */}
           <div className="flex items-center gap-4">
@@ -199,7 +199,7 @@ const Profile = () => {
               <TabsTrigger value="alerts">Alertes</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile" className="space-y-6 mt-6">
+            <TabsContent value="profile" className="space-y-4 mt-6">
 
           {/* Tenant Score */}
           {tenantScore && tenantScore > 0 && (
@@ -343,7 +343,7 @@ const Profile = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="preferences" className="space-y-6 mt-6">
+            <TabsContent value="preferences" className="space-y-4 mt-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -354,7 +354,7 @@ const Profile = () => {
                     Configurez vos critères pour recevoir des recommandations personnalisées
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   {preferences ? (
                     <>
                       {/* Current preferences display */}
@@ -479,7 +479,7 @@ const Profile = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="alerts" className="space-y-6 mt-6">
+            <TabsContent value="alerts" className="space-y-4 mt-6">
               <PropertyAlertsSettings />
             </TabsContent>
           </Tabs>

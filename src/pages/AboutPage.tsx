@@ -5,7 +5,7 @@ const AboutPage = () => {
   return (
     <MainLayout>
       <main>
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-2 py-6">
           <h1 className="text-4xl font-bold mb-4">À propos de Mon Toit</h1>
           <p className="text-lg text-muted-foreground mb-8">
             La plateforme immobilière certifiée par l'État ivoirien pour des locations sécurisées

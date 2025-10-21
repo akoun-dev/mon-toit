@@ -133,7 +133,7 @@ export const MapFilters = ({ filters, onFiltersChange, stats }: MapFiltersProps)
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               {/* Stats Section */}
               <div className="grid grid-cols-2 gap-3">
                 <motion.div

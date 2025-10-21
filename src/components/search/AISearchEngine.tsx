@@ -251,7 +251,7 @@ export const AISearchEngine: React.FC<AISearchEngineProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* AI Header */}
       <MotionDiv
         initial={{ opacity: 0, y: -20 }}

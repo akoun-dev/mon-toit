@@ -119,7 +119,7 @@ const SearchHistory = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -159,7 +159,7 @@ const SearchHistory = () => {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-muted-foreground py-4">
               Aucune recherche récente
             </p>
           ) : (

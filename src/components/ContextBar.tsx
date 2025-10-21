@@ -32,7 +32,7 @@ const ContextBar = () => {
       aria-label="Barre d'informations contextuelles"
     >
       {isCollapsed ? (
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-2 max-w-7xl">
           <div className="h-8 flex items-center justify-center">
             <Button 
               variant="ghost" 
@@ -46,7 +46,7 @@ const ContextBar = () => {
           </div>
         </div>
       ) : (
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-2 max-w-7xl">
           <div className="py-3 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 md:gap-6 text-sm flex-1 justify-center">

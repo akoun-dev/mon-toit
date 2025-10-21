@@ -124,7 +124,7 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
           Analyse basée sur vos recherches récentes
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {insights.trends.map((trend) => (
           <div key={trend.city} className="space-y-3 pb-6 border-b last:border-b-0 last:pb-0">
             {/* City Header */}

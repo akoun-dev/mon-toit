@@ -25,7 +25,7 @@ export const PropertyWorkStatus = ({ form }: PropertyWorkStatusProps) => {
           Informez les locataires potentiels de l'état du bien
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <FormField
           control={form.control}
           name="work_status"

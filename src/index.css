@@ -106,6 +106,17 @@
 }
 
 @layer components {
+  /* Left-aligned content container for pages with a sidebar */
+  .content-left {
+    /* Full-width content area inside SidebarInset with consistent gutters */
+    @apply w-full max-w-none mx-0 px-4 md:px-6;
+  }
+
+  /* Tighter default vertical spacing between blocks */
+  .section-tight {
+    @apply mb-4 md:mb-6;
+  }
+
   /* Page background with subtle texture */
   .page-background {
     @apply bg-gradient-to-br from-background via-background to-muted/20 min-h-screen;

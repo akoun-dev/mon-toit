@@ -25,7 +25,7 @@ const ProtectionDonneesPage = () => {
 
       {/* En-tête */}
       <div className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-2 py-8">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-white/10 rounded-full">
@@ -53,7 +53,7 @@ const ProtectionDonneesPage = () => {
       </div>
 
       {/* Contenu principal */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-2 py-6">
         <div className="max-w-4xl mx-auto space-y-12">
 
           {/* Notre engagement */}
@@ -95,7 +95,7 @@ const ProtectionDonneesPage = () => {
                 Quelles données collectons-nous ?
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-900">Données de compte</h4>
@@ -142,7 +142,7 @@ const ProtectionDonneesPage = () => {
                 Vos droits sur vos données
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -214,7 +214,7 @@ const ProtectionDonneesPage = () => {
                 Nos mesures de sécurité
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
                   <Lock className="h-8 w-8 text-primary mx-auto mb-3" />
@@ -289,7 +289,7 @@ const ProtectionDonneesPage = () => {
                 Contact Délégué à la Protection des Données
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
                 Pour toute question concernant la protection de vos données ou pour exercer
                 vos droits, contactez notre Délégué à la Protection des Données (DPD).
@@ -356,8 +356,8 @@ const ProtectionDonneesPage = () => {
 
       {/* Footer rapide */}
       <div className="bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center space-y-6">
+        <div className="container mx-auto px-2">
+          <div className="text-center space-y-4">
             <h3 className="text-2xl font-bold text-gray-900">
               Des questions sur vos données ?
             </h3>

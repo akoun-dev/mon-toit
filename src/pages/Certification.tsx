@@ -40,7 +40,7 @@ const Certification = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80 flex items-center justify-center">
-            <div className="container mx-auto px-4 text-center text-white">
+            <div className="container mx-auto px-2 text-center text-white">
               <div className="flex justify-center mb-6">
                 <CertifiedBadge clickable={false} />
               </div>
@@ -56,7 +56,7 @@ const Certification = () => {
         </section>
 
         <section className="py-6 md:py-10">
-          <div className="container mx-auto px-4 max-w-4xl">
+          <div className="container mx-auto px-2 max-w-4xl">
             <div className="bg-gradient-primary/10 border-2 border-primary/20 rounded-xl p-8 mb-12">
               <h2 className="text-2xl font-bold mb-4">Qu'est-ce que la certification ANSUT ?</h2>
               <p className="text-muted-foreground mb-4">

@@ -53,7 +53,7 @@ const Testimonials = () => {
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+      <div className="container mx-auto px-2 max-w-7xl relative z-10">
         {/* Bannière illustration */}
         <div className="mb-12">
           <div className="relative h-64 rounded-2xl overflow-hidden shadow-xl">

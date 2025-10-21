@@ -411,7 +411,7 @@ export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = (
             <DialogTitle>Filtres de recherche</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Property Type */}
             <div>
               <label className="text-sm font-medium mb-2 block">Type de bien</label>

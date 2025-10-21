@@ -272,7 +272,7 @@ const OwnerDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 py-4">
         <div className="max-w-7xl mx-auto space-y-4">
           <DynamicBreadcrumb />
           <StickyHeader className="flex items-center justify-between">
@@ -391,7 +391,7 @@ const OwnerDashboard = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-6">
+            <TabsContent value="analytics" className="space-y-4">
               {/* Analytics KPIs */}
               <PropertyStats
                 stats={{

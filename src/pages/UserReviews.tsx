@@ -84,7 +84,7 @@ const UserReviews = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-12">
+        <main className="flex-1 container mx-auto px-2 py-6">
           <Card>
             <CardContent className="p-8 text-center">
               <p className="text-muted-foreground">Utilisateur introuvable</p>
@@ -107,8 +107,8 @@ const UserReviews = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <main className="flex-1 container mx-auto px-2 py-4">
+        <div className="max-w-4xl mx-auto space-y-4">
           {/* Header */}
           <Card>
             <CardContent className="p-6">

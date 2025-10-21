@@ -83,8 +83,8 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <main className="container mx-auto px-4 py-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <main className="container mx-auto px-2 py-3">
+        <div className="max-w-7xl mx-auto space-y-4">
           <DynamicBreadcrumb />
           
           <WelcomeBanner />

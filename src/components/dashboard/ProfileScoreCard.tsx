@@ -89,7 +89,7 @@ export const ProfileScoreCard = () => {
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Tenant Score Meter */}
         {tenantScore > 0 && (
           <div className="flex justify-center">

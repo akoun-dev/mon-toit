@@ -194,7 +194,7 @@ const Applications = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 py-3">
         <div className="max-w-7xl mx-auto">
           <div className="mb-10">
             <DynamicBreadcrumb />

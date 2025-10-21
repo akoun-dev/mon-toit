@@ -356,7 +356,7 @@ export function LeaseTemplateManager() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Modèles de Baux</h2>

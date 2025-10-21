@@ -111,7 +111,7 @@ const ApplicationDetail = ({ application, onClose, onStatusUpdate, isOwner }: Ap
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
+      <main className="flex-1 container mx-auto px-2 py-4 max-w-5xl">
         <Button
           variant="ghost"
           onClick={onClose}

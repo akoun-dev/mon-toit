@@ -10,7 +10,7 @@ export default function MandatesHelp() {
   const navigate = useNavigate();
 
   return (
-    <div className="container max-w-5xl py-8 space-y-8">
+    <div className="container max-w-5xl py-8 space-y-4">
       {/* Header */}
       <div className="space-y-4">
         <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
@@ -125,7 +125,7 @@ export default function MandatesHelp() {
           <CardDescription>Choisissez précisément ce que l'agence peut faire</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Propriétés */}
             <div>
               <h4 className="font-semibold mb-3 flex items-center gap-2">

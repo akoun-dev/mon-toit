@@ -142,7 +142,7 @@ const NotificationPreferences = () => {
           Gérez comment vous souhaitez recevoir vos notifications
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {NOTIFICATION_CATEGORIES.map(({ value, label, icon: Icon, description }) => {
           const pref = preferences.find(p => p.category === value);
           if (!pref) return null;

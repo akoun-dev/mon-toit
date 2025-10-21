@@ -313,7 +313,7 @@ const PropertyDetail = () => {
   if (!property) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-16 text-center">
+        <div className="container mx-auto px-2 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Bien introuvable</h1>
           <Button asChild>
             <Link to="/explorer">Retour à la recherche</Link>
@@ -332,7 +332,7 @@ const PropertyDetail = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 py-4">
         <div className="max-w-7xl mx-auto">
           {/* Back button */}
           <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
@@ -342,7 +342,7 @@ const PropertyDetail = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Images and main content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4">
               {/* Multimedia Gallery */}
               <div className="relative">
                 <MediaGallery
@@ -543,7 +543,7 @@ const PropertyDetail = () => {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Owner actions */}
               {isOwner && (
                 <Card className="border-primary">

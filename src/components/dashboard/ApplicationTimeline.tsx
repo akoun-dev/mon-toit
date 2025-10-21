@@ -102,7 +102,7 @@ const ApplicationTimeline = ({ application }: ApplicationTimelineProps) => {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Chronologie de la candidature</h3>
             <Badge variant={steps[currentStepIndex].variant}>

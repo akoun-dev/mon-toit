@@ -119,7 +119,7 @@ export default function TestCryptoNeo() {
   const userType = testLease.landlord_id === user?.id ? 'proprietaire' : 'locataire';
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="container mx-auto py-8 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">

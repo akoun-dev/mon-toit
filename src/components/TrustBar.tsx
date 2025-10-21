@@ -22,7 +22,7 @@ const TrustBar = () => {
 
   return (
     <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 border-y border-border/50">
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-2 py-3">
         <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
           {trustItems.map((item, index) => (
             <div key={index} className="flex items-center gap-2">

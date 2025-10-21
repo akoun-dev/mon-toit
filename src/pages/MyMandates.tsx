@@ -48,7 +48,7 @@ export default function MyMandates() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto py-8 space-y-8">
+      <div className="container mx-auto py-8 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Mes mandats de gestion</h1>
@@ -139,7 +139,7 @@ export default function MyMandates() {
       </div>
 
       {/* Liste des mandats */}
-      <Tabs defaultValue="active" className="space-y-6">
+      <Tabs defaultValue="active" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="active">
             Actifs ({activeMandates.length})

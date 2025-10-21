@@ -69,7 +69,7 @@ const Tarifs = () => {
         {/* Hero Section */}
         <section className="py-12 md:py-18 bg-white relative">
           <KentePattern />
-          <div className="container mx-auto px-4 max-w-7xl text-center relative z-10">
+          <div className="container mx-auto px-2 max-w-7xl text-center relative z-10">
             <h1 className="text-h1 mb-6">
               Des tarifs <span className="text-gradient-primary">simples et transparents</span>
             </h1>
@@ -81,7 +81,7 @@ const Tarifs = () => {
 
         {/* Pricing Cards */}
         <section className="py-8 md:py-12 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-7xl">
+          <div className="container mx-auto px-2 max-w-7xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {pricingPlans.map((plan, index) => {
                 const borderColor = 
@@ -149,7 +149,7 @@ const Tarifs = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-foreground">
                 Questions fréquentes
               </h2>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="bg-white rounded-lg p-6 shadow-md">
                   <h3 className="font-bold text-lg mb-2 text-foreground">
                     Comment fonctionne la commission de 5% ?

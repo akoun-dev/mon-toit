@@ -167,7 +167,7 @@ export const PreferencesModal = ({ open, onOpenChange }: PreferencesModalProps) 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Villes préférées */}
           <div className="space-y-2">
             <Label>Villes préférées</Label>

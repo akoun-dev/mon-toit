@@ -137,7 +137,7 @@ export const IllustrationGenerator = () => {
           Générez automatiquement les 10 illustrations prioritaires avec Lovable AI
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Actions */}
         <div className="flex gap-3">
           <Button 

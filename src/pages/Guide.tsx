@@ -5,9 +5,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AkanPattern } from "@/components/ui/african-patterns";
-import { 
-  Search, Home, Shield, FileText, MessageSquare, CreditCard, 
-  CheckCircle, AlertCircle, Clock, Users, Mail, Phone, 
+import SEOHead from "@/components/seo/SEOHead";
+import SEOFAQ from "@/components/seo/SEOFAQ";
+import SEOHowTo from "@/components/seo/SEOHowTo";
+import { useSEO } from "@/hooks/useSEO";
+import {
+  Search, Home, Shield, FileText, MessageSquare, CreditCard,
+  CheckCircle, AlertCircle, Clock, Users, Mail, Phone,
   Building2, UserCheck, HelpCircle, ExternalLink
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,6 +20,20 @@ import { Input } from "@/components/ui/input";
 
 const Guide = () => {
   const [faqSearch, setFaqSearch] = useState('');
+  const seoConfig = useSEO({
+    title: 'Guide Complet de la Location Immobilière',
+    description: 'Guides détaillés, FAQ et conseils pour réussir votre location en toute sécurité en Côte d\'Ivoire avec Mon Toit.',
+    keywords: [
+      'guide location',
+      'conseils immobilier',
+      'location sécurité',
+      'droit locatif Côte d\'Ivoire',
+      'guide propriétaire',
+      'guide locataire',
+      'immobilier Abidjan'
+    ],
+    type: 'article'
+  });
 
   const filterFAQItems = (items: Array<{id: string, question: string, answer: string}>) => {
     if (!faqSearch.trim()) return items;
@@ -28,12 +46,13 @@ const Guide = () => {
 
   return (
     <MainLayout>
+      <SEOHead {...seoConfig} />
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12 relative">
           <AkanPattern />
-          <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="container mx-auto px-2 text-center relative z-10">
             <Badge variant="secondary" className="mb-4">Centre d'aide</Badge>
             <h1 className="text-3xl sm:text-4xl md:text-h1 mb-4">
               Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?
@@ -44,7 +63,7 @@ const Guide = () => {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 pb-16">
+        <div className="container mx-auto px-2 pb-16">
           {/* Quick Links */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             <Link to="/explorer">
@@ -100,9 +119,9 @@ const Guide = () => {
             </TabsList>
 
             {/* Locataire Guide */}
-            <TabsContent value="locataire" className="space-y-6">
+            <TabsContent value="locataire" className="space-y-4">
               {/* Hero Section Locataire */}
-              <div className="bg-gradient-to-r from-primary/10 via-white to-background/5 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 md:mb-8 text-center">
+              <div className="bg-gradient-to-r from-primary/10 via-white to-background/5 rounded-2xl p-4 sm:p-6 md:p-8 mb-3 md:mb-4 text-center">
                 <div className="max-w-2xl mx-auto">
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                     <div className="p-3 bg-primary/10 rounded-full">
@@ -121,7 +140,7 @@ const Guide = () => {
               </div>
 
               {/* Avantages Locataire */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-3 md:mb-4">
                 <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-shadow">
                   <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-4">
                     <CheckCircle className="h-6 w-6 text-orange-600" />
@@ -159,7 +178,7 @@ const Guide = () => {
                     Comment trouver votre logement idéal en 4 étapes simples
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
                     {/* Étape 1 */}
                     <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md">
@@ -236,7 +255,7 @@ const Guide = () => {
             </TabsContent>
 
             {/* Propriétaire Guide */}
-            <TabsContent value="proprietaire" className="space-y-6">
+            <TabsContent value="proprietaire" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -277,7 +296,7 @@ const Guide = () => {
             </TabsContent>
 
             {/* Agence Guide */}
-            <TabsContent value="agence" className="space-y-6">
+            <TabsContent value="agence" className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">

@@ -58,7 +58,7 @@ const SmartMap = () => {
         {/* Hero Section */}
         <section className="relative py-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
           <KentePattern />
-          <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-2 relative z-10">
             <div className="text-center max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -83,7 +83,7 @@ const SmartMap = () => {
 
         {/* Map Section */}
         <section className="py-8">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-2">
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Sidebar with Filters */}
               <motion.div
@@ -194,7 +194,7 @@ const SmartMap = () => {
 
         {/* Info Section */}
         <section className="py-12 bg-muted/20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-2">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-h2 mb-6">
                 Une carte <span className="text-gradient-secondary">vraiment intelligente</span>

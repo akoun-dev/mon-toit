@@ -194,7 +194,7 @@ export const PropertyAlertsMonitor = () => {
   }, [] as { date: string; total: number; opened: number; clicked: number }[]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="p-4">

@@ -128,7 +128,7 @@ export const ProcessingConfigPanel = () => {
           Gérez les délais et actions automatiques pour le traitement des candidatures
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Section Délai */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">

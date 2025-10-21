@@ -77,7 +77,7 @@ export const ReportGenerator = () => {
           📊 Générateur de Rapports
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label>Propriétaire</Label>
           <Select value={selectedOwner} onValueChange={setSelectedOwner}>

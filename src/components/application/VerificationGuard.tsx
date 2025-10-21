@@ -190,7 +190,7 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className="space-y-4 py-4">
             {/* Why verification is needed */}
             <Alert>
               <AlertTriangle className="h-4 w-4" />
