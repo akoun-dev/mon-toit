@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { EnhancedMap } from '@/components/map/EnhancedMap';
 import { MapFilters, MapFiltersState } from '@/components/map/MapFilters';
 import { POILayer, POIType } from '@/components/map/POILayer';
@@ -75,10 +74,8 @@ const SmartMapV2 = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 pt-24">
+    <MainLayout>
+      <main>
         {/* Hero Section */}
         <section className="relative py-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
           <KentePattern />
@@ -308,9 +305,7 @@ const SmartMapV2 = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 

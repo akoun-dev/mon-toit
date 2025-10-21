@@ -16,15 +16,15 @@ import { toast } from '@/hooks/use-toast';
 import { getClientIP, getDeviceFingerprint, formatRetryAfter } from '@/lib/ipUtils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logger } from '@/services/logger';
-import { PageTransition } from '@/components/navigation/PageTransition';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { MainLayout } from "@/components/layout/MainLayout";
 import { BrandBar } from '@/components/ui/brand-bar';
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 import { QuickNav } from "@/components/navigation/QuickNav";
-import { NavigationHelp } from "@/components/navigation/NavigationHelp";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
+import { KentePattern } from "@/components/ui/african-patterns";
+import { motion } from "framer-motion";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Email invalide" }),
@@ -306,91 +306,146 @@ const Auth = () => {
 
   if (show2FA) {
     return (
-      <>
-        <Navbar />
-        <div className="min-h-screen bg-background pt-20">
-          <div className="container mx-auto px-4 py-8 max-w-md">
-            <TwoFactorVerify 
+      <MainLayout>
+        <div className="container mx-auto px-4 py-8 max-w-md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <TwoFactorVerify
               onVerified={handle2FAVerified}
               onCancel={handle2FACancel}
             />
-          </div>
+          </motion.div>
         </div>
-        <Footer />
-      </>
+      </MainLayout>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-background pt-20">
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <DynamicBreadcrumb />
-          
-          {/* Hero Illustration */}
-          <div className="mb-8">
-            <LazyIllustration
-              src={getIllustrationPath("ivorian-family-house")}
-              alt="Trouvez votre logement en Côte d'Ivoire"
-              className="w-full h-[250px] md:h-[300px] rounded-2xl"
-              animate={true}
-            />
-          </div>
+    <MainLayout>
+      <div className="relative">
+        {/* Hero Section with Pattern */}
+        <section className="relative py-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
+          <KentePattern />
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center max-w-4xl mx-auto mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <DynamicBreadcrumb />
 
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Left Side - Benefits */}
-            <div className="space-y-6">
-              <NavigationHelp backTo="/" backLabel="Retour à l'accueil" />
-              
-              <div className="space-y-4">
-                <h1 className="text-4xl font-bold text-foreground">
-                  Bienvenue sur Mon Toit
-                </h1>
-                <p className="text-lg text-muted-foreground">
+                <motion.h1
+                  className="text-h1 mb-4 mt-6"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  Bienvenue sur <span className="text-gradient-primary">Mon Toit</span>
+                </motion.h1>
+                <motion.p
+                  className="text-body-lg text-muted-foreground mb-8"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
                   La plateforme immobilière certifiée ANSUT pour la Côte d'Ivoire
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                </motion.p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Main Content */}
+        <div className="container mx-auto px-4 pb-12">
+          <div className="grid md:grid-cols-2 gap-8 items-start max-w-6xl mx-auto">
+            {/* Left Side - Benefits */}
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+
+              <div className="space-y-6 bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border/50 shadow-lg">
+                <h2 className="text-2xl font-bold text-foreground mb-4">
+                  Pourquoi choisir Mon Toit ?
+                </h2>
+                <ul className="space-y-4">
+                  <motion.li
+                    className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 }}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Shield className="h-5 w-5 text-primary" />
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Sécurité garantie</p>
+                      <p className="font-semibold text-foreground mb-1">Sécurité garantie</p>
                       <p className="text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par l'ANSUT</p>
                     </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Home className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  </motion.li>
+                  <motion.li
+                    className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.6 }}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                      <Home className="h-5 w-5 text-secondary" />
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Biens certifiés</p>
+                      <p className="font-semibold text-foreground mb-1">Biens certifiés</p>
                       <p className="text-sm text-muted-foreground">Des logements vérifiés et conformes</p>
                     </div>
-                  </li>
+                  </motion.li>
                 </ul>
               </div>
-              
+
               <QuickNav variant="auth" />
-            </div>
+            </motion.div>
 
             {/* Right Side - Auth Form */}
-            <div className="space-y-6">
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
               <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Connexion</TabsTrigger>
-            <TabsTrigger value="signup">Inscription</TabsTrigger>
-          </TabsList>
+                <TabsList className="grid w-full grid-cols-2 h-12">
+                  <TabsTrigger value="signin" className="text-sm font-medium">Connexion</TabsTrigger>
+                  <TabsTrigger value="signup" className="text-sm font-medium">Inscription</TabsTrigger>
+                </TabsList>
 
           {/* Sign In Tab */}
-          <TabsContent value="signin">
-            <Card>
-              <CardHeader>
-                <CardTitle>Connexion</CardTitle>
-                <CardDescription>Connectez-vous à votre compte Mon Toit</CardDescription>
-                {userTypeFromUrl && (
-                  <p className="text-xs text-muted-foreground mt-2 bg-muted/50 p-2 rounded">
-                    💡 <strong>Vous avez déjà un compte ?</strong> Connectez-vous puis gérez vos rôles depuis <Link to="/profil" className="text-primary hover:underline font-medium">votre profil</Link>
-                  </p>
-                )}
-              </CardHeader>
+                <TabsContent value="signin">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Card className="shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
+                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30">
+                        <CardTitle className="text-xl font-semibold text-center">Connexion</CardTitle>
+                        <CardDescription className="text-center">
+                          Connectez-vous à votre compte Mon Toit
+                        </CardDescription>
+                        {userTypeFromUrl && (
+                          <motion.p
+                            className="text-xs text-muted-foreground mt-3 bg-muted/70 p-3 rounded-lg border border-border/30"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                          >
+                            💡 <strong>Vous avez déjà un compte ?</strong> Connectez-vous puis gérez vos rôles depuis <Link to="/profil" className="text-primary hover:underline font-medium">votre profil</Link>
+                          </motion.p>
+                        )}
+                      </CardHeader>
               <form onSubmit={handleSignIn}>
                 <CardContent className="space-y-4">
                   {isBlocked && (
@@ -498,25 +553,36 @@ const Auth = () => {
                 </CardFooter>
               </form>
             </Card>
-          </TabsContent>
+                  </motion.div>
+                </TabsContent>
 
-          {/* Sign Up Tab */}
-          <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>Inscription</CardTitle>
-                <CardDescription>
-                  {userTypeFromUrl === 'agence' && 'Créez votre compte Agence immobilière'}
-                  {userTypeFromUrl === 'proprietaire' && 'Créez votre compte Propriétaire'}
-                  {userTypeFromUrl === 'locataire' && 'Créez votre compte Locataire'}
-                  {!userTypeFromUrl && 'Créez votre compte Mon Toit'}
-                </CardDescription>
-                {userTypeFromUrl && (
-                  <p className="text-xs text-muted-foreground mt-2 bg-muted/50 p-2 rounded">
-                    💡 <strong>Vous voulez ajouter ce rôle à un compte existant ?</strong> Connectez-vous puis <Link to="/profil" className="text-primary hover:underline font-medium">gérez vos rôles depuis votre profil</Link>
-                  </p>
-                )}
-              </CardHeader>
+                {/* Sign Up Tab */}
+                <TabsContent value="signup">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                  >
+                    <Card className="shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
+                      <CardHeader className="bg-gradient-to-r from-secondary/5 to-primary/5 border-b border-border/30">
+                        <CardTitle className="text-xl font-semibold text-center">Inscription</CardTitle>
+                        <CardDescription className="text-center">
+                          {userTypeFromUrl === 'agence' && 'Créez votre compte Agence immobilière'}
+                          {userTypeFromUrl === 'proprietaire' && 'Créez votre compte Propriétaire'}
+                          {userTypeFromUrl === 'locataire' && 'Créez votre compte Locataire'}
+                          {!userTypeFromUrl && 'Créez votre compte Mon Toit'}
+                        </CardDescription>
+                        {userTypeFromUrl && (
+                          <motion.p
+                            className="text-xs text-muted-foreground mt-3 bg-muted/70 p-3 rounded-lg border border-border/30"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.2 }}
+                          >
+                            💡 <strong>Vous voulez ajouter ce rôle à un compte existant ?</strong> Connectez-vous puis <Link to="/profil" className="text-primary hover:underline font-medium">gérez vos rôles depuis votre profil</Link>
+                          </motion.p>
+                        )}
+                      </CardHeader>
               <form onSubmit={handleSignUp}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -602,22 +668,27 @@ const Auth = () => {
                 </CardFooter>
               </form>
             </Card>
-          </TabsContent>
-        </Tabs>
+                  </motion.div>
+                </TabsContent>
+              </Tabs>
 
-        {/* Footer */}
-        <p className="text-center text-sm text-muted-foreground">
-          En créant un compte, vous acceptez nos{' '}
-          <Link to="/conditions" className="text-primary hover:underline">
-            conditions d'utilisation
-          </Link>
-        </p>
-              </div>
-            </div>
-          </div>
+            {/* Footer */}
+            <motion.p
+              className="text-center text-sm text-muted-foreground mt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              En créant un compte, vous acceptez nos{' '}
+              <Link to="/conditions" className="text-primary hover:underline font-medium">
+                conditions d'utilisation
+              </Link>
+            </motion.p>
+          </motion.div>
         </div>
-      <Footer />
-    </>
+      </div>
+      </div>
+    </MainLayout>
   );
 };
 

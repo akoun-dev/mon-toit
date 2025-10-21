@@ -1,0 +1,579 @@
+/**
+ * Enhanced Map Controls & Markers Styling
+ * Fixes for invisible white buttons and markers on Mapbox
+ */
+
+/* Map Markers - Enhanced visibility */
+.property-marker {
+  z-index: 1000 !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+.cluster-marker {
+  z-index: 999 !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)) !important;
+}
+
+/* Ensure text inside markers is always visible */
+.property-marker span,
+.cluster-marker span {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(0, 0, 0, 0.3) !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Enhanced marker backgrounds with better contrast */
+.property-marker .bg-primary,
+.cluster-marker .bg-primary,
+.property-marker .from-primary,
+.cluster-marker .from-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+  border-color: #ffffff !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(255, 255, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Force white text with enhanced contrast */
+.property-marker .text-white,
+.cluster-marker .text-white {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-stroke: 1px #000000 !important;
+  -webkit-text-stroke: 1px #000000 !important;
+  paint-order: stroke fill !important;
+}
+
+/* Additional fallback for marker visibility */
+@property --marker-visible {
+  syntax: '*';
+  initial-value: initial;
+  inherits: false;
+}
+
+.property-marker,
+.cluster-marker {
+  --marker-visible: visible;
+  opacity: 1 !important;
+  visibility: var(--marker-visible) !important;
+}
+
+/* Hover effects for markers */
+.property-marker:hover .bg-primary,
+.cluster-marker:hover .bg-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  transform: scale(1.1) !important;
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    0 0 0 3px rgba(255, 255, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Dark mode marker adjustments */
+@media (prefers-color-scheme: dark) {
+  .property-marker,
+  .cluster-marker {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) !important;
+  }
+
+  .property-marker .bg-primary,
+  .cluster-marker .bg-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border-color: #ffffff !important;
+  }
+}
+
+/* High contrast mode for markers */
+@media (prefers-contrast: high) {
+  .property-marker,
+  .cluster-marker {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8)) !important;
+  }
+
+  .property-marker .bg-primary,
+  .cluster-marker .bg-primary {
+    background: #2563eb !important;
+    border: 3px solid #ffffff !important;
+    border-radius: 50% !important;
+  }
+
+  .property-marker span,
+  .cluster-marker span {
+    text-shadow:
+      0 1px 3px rgba(0, 0, 0, 1),
+      0 0 12px rgba(0, 0, 0, 0.8) !important;
+    color: #ffffff !important;
+    font-weight: 900 !important;
+  }
+}
+
+/* Animation for marker appearance */
+@keyframes markerPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.property-marker,
+.cluster-marker {
+  animation: markerPulse 0.3s ease-out !important;
+  transform-origin: center center !important;
+}
+
+/* Force text visibility regardless of theme */
+.property-marker [class*="text"],
+.cluster-marker [class*="text"] {
+  color: #ffffff !important;
+  text-shadow:
+    -1px -1px 0 #000000,
+    1px -1px 0 #000000,
+    -1px 1px 0 #000000,
+    1px 1px 0 #000000,
+    0 0 4px #000000,
+    0 0 8px #000000 !important;
+  position: relative !important;
+  z-index: 20 !important;
+}
+
+/* Map Style Buttons (Streets, Satellite, Hybrid) */
+.map-style-button {
+  background-color: hsl(var(--background)/0.95) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.map-style-button:hover {
+  background-color: hsl(30, 100%, 50%) / 0.3) !important;
+  border-color: hsl(30, 100%, 50%) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(247, 127, 0, 0.15) !important;
+}
+
+.map-style-button.active {
+  background-color: hsl(30, 100%, 50%) !important;
+  border-color: hsl(30, 100%, 50%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px hsl(30, 100%, 50%) / 0.4) !important;
+}
+
+.map-style-button[data-active="true"] {
+  background: linear-gradient(135deg, hsl(30, 100%, 50%), hsl(25, 95%, 53%)) !important;
+  border-color: hsl(30, 100%, 50%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* Style button icons */
+.map-style-button svg {
+  color: hsl(var(--foreground)) !important;
+  stroke: hsl(var(--foreground)) !important;
+  fill: hsl(var(--foreground)) !important;
+}
+
+.map-style-button.active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Dark mode support for style buttons */
+@media (prefers-color-scheme: dark) {
+  .map-style-button {
+    background-color: hsl(var(--background)/0.90) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+
+  .map-style-button:hover {
+    background-color: hsl(var(--primary)/0.3) !important;
+  }
+}
+
+/* High contrast mode for style buttons */
+@media (prefers-contrast: high) {
+  .map-style-button {
+    background-color: hsl(var(--background)) !important;
+    border: 2px solid hsl(var(--foreground)) !important;
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .map-style-button:hover {
+    background-color: hsl(var(--muted)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+
+  .map-style-button.active,
+  .map-style-button[data-active="true"] {
+    background-color: hsl(var(--primary)) !important;
+    border: 2px solid hsl(var(--foreground)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+}
+
+/* Animation for style buttons */
+@keyframes styleButtonPulse {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--primary)/0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--primary)/0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary)/0.4);
+  }
+}
+
+.map-style-button.active {
+  animation: styleButtonPulse 2s infinite !important;
+}
+
+/* Map Control Buttons (Zoom, Locate) */
+.map-control-button {
+  background-color: hsl(var(--background)/0.95) !important;
+  border: 1px solid hsl(30, 100%, 50%) !important;
+  color: hsl(var(--foreground)) !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.map-control-button:hover {
+  background-color: hsl(30, 100%, 50%) / 0.3) !important;
+  border-color: hsl(30, 100%, 50%) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(247, 127, 0, 0.15) !important;
+}
+
+.map-control-button:active {
+  transform: scale(0.95) !important;
+}
+
+/* Control button icons */
+.map-control-button svg {
+  color: hsl(var(--foreground)) !important;
+  stroke: hsl(var(--foreground)) !important;
+  fill: hsl(var(--foreground)) !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Dark mode support for control buttons */
+@media (prefers-color-scheme: dark) {
+  .map-control-button {
+    background-color: hsl(var(--background)/0.90) !important;
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  .map-control-button:hover {
+    background-color: hsl(var(--primary)/0.3) !important;
+  }
+}
+
+/* High contrast mode for control buttons */
+@media (prefers-contrast: high) {
+  .map-control-button {
+    background-color: hsl(var(--background)) !important;
+    border: 2px solid hsl(var(--foreground)) !important;
+    color: hsl(var(--foreground)) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .map-control-button:hover {
+    background-color: hsl(var(--muted)) !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+}
+
+/* Animation for control buttons */
+@keyframes controlButtonAppear {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.map-control-button {
+  animation: controlButtonAppear 0.3s ease-out !important;
+  transform-origin: center center !important;
+}
+
+/* Focus styles for accessibility */
+.map-style-button:focus-visible,
+.map-control-button:focus-visible {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 2px !important;
+}
+
+/* Base Mapbox controls styling */
+.mapboxgl-ctrl {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Navigation control (zoom buttons) */
+.mapboxgl-ctrl-group {
+  background-color: hsl(var(--background)) !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.mapboxgl-ctrl-group:not(:empty) {
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Individual zoom buttons */
+.mapboxgl-ctrl-zoom-in,
+.mapboxgl-ctrl-zoom-out {
+  background-color: hsl(var(--background)) !important;
+  border: none !important;
+  border-radius: 0.375rem !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: hsl(var(--foreground)) !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  position: relative !important;
+}
+
+.mapboxgl-ctrl-zoom-in:hover,
+.mapboxgl-ctrl-zoom-out:hover {
+  background-color: hsl(var(--muted)) !important;
+  transform: scale(1.05) !important;
+}
+
+.mapboxgl-ctrl-zoom-in:active,
+.mapboxgl-ctrl-zoom-out:active {
+  transform: scale(0.95) !important;
+}
+
+/* Add visible icons to zoom buttons since they're invisible */
+.mapboxgl-ctrl-zoom-in::before {
+  content: '+' !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  color: hsl(var(--foreground)) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.mapboxgl-ctrl-zoom-out::before {
+  content: '−' !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  color: hsl(var(--foreground)) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Compass control */
+.mapboxgl-ctrl-compass {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+.mapboxgl-ctrl-compass:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* Fullscreen control */
+.mapboxgl-ctrl-fullscreen {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.375rem !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: hsl(var(--foreground)) !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+.mapboxgl-ctrl-fullscreen:hover {
+  background-color: hsl(var(--muted)) !important;
+  transform: scale(1.05) !important;
+}
+
+.mapboxgl-ctrl-fullscreen:active {
+  transform: scale(0.95) !important;
+}
+
+/* Add visible fullscreen icon */
+.mapboxgl-ctrl-fullscreen::before {
+  content: '⛶' !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: hsl(var(--foreground)) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* When fullscreen is active */
+.mapboxgl-ctrl-fullscreen.mapboxgl-compact::before {
+  content: '⛶' !important;
+}
+
+/* Attribution control */
+.mapboxgl-ctrl-attrib {
+  background-color: hsl(var(--background)/0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.25rem !important;
+  padding: 4px 8px !important;
+  font-size: 10px !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Scale control */
+.mapboxgl-ctrl-scale {
+  background-color: hsl(var(--background)/0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.25rem !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Geolocate control */
+.mapboxgl-ctrl-geolocate {
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.375rem !important;
+  width: 40px !important;
+  height: 40px !important;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1) !important;
+  transition: all 0.2s !important;
+}
+
+.mapboxgl-ctrl-geolocate:hover {
+  background-color: hsl(var(--muted)) !important;
+  transform: scale(1.05) !important;
+}
+
+.mapboxgl-ctrl-geolocate:active {
+  transform: scale(0.95) !important;
+}
+
+.mapboxgl-ctrl-geolocate.active {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .mapboxgl-ctrl {
+    background-color: hsl(var(--background)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+
+  .mapboxgl-ctrl-group {
+    background-color: hsl(var(--background)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+
+  .mapboxgl-ctrl-attrib {
+    background-color: hsl(var(--background)/0.9) !important;
+  }
+
+  .mapboxgl-ctrl-scale {
+    background-color: hsl(var(--background)/0.9) !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .mapboxgl-ctrl {
+    border: 2px solid !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+
+  .mapboxgl-ctrl-group {
+    border: 2px solid !important;
+    border-color: hsl(var(--foreground)) !important;
+  }
+}
+
+/* Focus styles for accessibility */
+.mapboxgl-ctrl:focus,
+.mapboxgl-ctrl-group:focus-within {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 2px !important;
+}
+
+/* Animation for control appearance */
+@keyframes mapControlsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mapboxgl-ctrl {
+  animation: mapControlsFadeIn 0.3s ease-out !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .mapboxgl-ctrl {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .mapboxgl-ctrl-zoom-in,
+  .mapboxgl-ctrl-zoom-out,
+  .mapboxgl-ctrl-fullscreen {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .mapboxgl-ctrl-compass {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}

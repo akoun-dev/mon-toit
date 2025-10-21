@@ -13,6 +13,7 @@ import {
   Wrench,
   ShieldCheck,
   MapPin,
+  Map,
   PlusCircle,
   LayoutDashboard,
   Shield,
@@ -49,6 +50,7 @@ export function AppSidebar() {
   const commonLinks = [
     { to: "/", icon: Home, label: "Accueil" },
     { to: "/explorer", icon: Search, label: "Recherche" },
+    { to: "/carte-intelligente", icon: Map, label: "Carte Intelligente" },
   ];
 
   // Navigation pour utilisateurs connectés

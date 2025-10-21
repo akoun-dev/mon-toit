@@ -12,20 +12,7 @@ export const InstitutionalFooter = () => {
 
   return (
     <footer className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-      {/* Bandeau ANSUT */}
-      <div className="bg-secondary py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center md:text-left">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-6 w-6 text-white" />
-              <span className="font-bold text-lg">Certifié ANSUT</span>
-            </div>
-            <span className="hidden md:inline text-white/60">•</span>
-            <span className="text-white/90">Service Public du Numérique</span>
-          </div>
-        </div>
-      </div>
-
+  
       {/* Contenu principal du footer */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">

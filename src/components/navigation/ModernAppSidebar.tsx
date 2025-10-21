@@ -14,6 +14,7 @@ import {
   Wrench,
   ShieldCheck,
   MapPin,
+  Map,
   PlusCircle,
   LayoutDashboard,
   Shield,
@@ -63,6 +64,12 @@ export function ModernAppSidebar() {
   // Navigation principale simplifiée pour l'accueil
   const primaryLinks = [
     { to: "/", icon: Home, label: "Accueil", color: "text-primary", priority: true },
+  ];
+
+  // Navigation globale accessible à tous
+  const globalLinks = [
+    { to: "/explorer", icon: Search, label: "Explorer", color: "text-blue-500" },
+    { to: "/carte-intelligente", icon: Map, label: "Carte Intelligente", color: "text-emerald-500" },
   ];
 
   // Navigation rapide (visible sur l'accueil même pour non-connectés)
@@ -168,7 +175,7 @@ export function ModernAppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50 bg-gradient-to-b from-background via-background to-muted/20">
       {/* Header avec logo et badge ANSUT */}
-      <SidebarHeader className="border-b border-border/50 px-4 py-4 bg-gradient-to-r from-primary/5 to-secondary/5">
+      <SidebarHeader className="border-b border-border/50 px-4 py-3 bg-gradient-to-r from-primary/5 to-secondary/5">
         <Link to="/" className="flex items-center gap-3">
           <motion.img 
             src={monToitLogo} 
@@ -190,7 +197,7 @@ export function ModernAppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-4">
+      <SidebarContent className="px-3 py-4">
         {/* User Profile Card */}
         {profile && open && (
           <motion.div 
@@ -233,9 +240,24 @@ export function ModernAppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Navigation Globale */}
+        <SidebarGroup className="mt-3">
+          {open && (
+            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
+              <div className="w-1 h-1 bg-emerald-500 rounded-full" />
+              Découvrir
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {renderMenuItems(globalLinks)}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         {/* Actions Rapides (pour non-connectés) */}
         {quickActions.length > 0 && (
-          <SidebarGroup className="mt-6">
+          <SidebarGroup className="mt-4">
             {open && (
               <SidebarGroupLabel className="text-xs font-semibold text-orange-600 uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
                 <div className="w-1 h-1 bg-orange-500 rounded-full animate-pulse" />
@@ -269,7 +291,7 @@ export function ModernAppSidebar() {
 
         {/* Mon Espace */}
         {userLinks.length > 0 && (
-          <SidebarGroup className="mt-4">
+          <SidebarGroup className="mt-3">
             {open && (
               <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
                 <div className="w-1 h-1 bg-blue-500 rounded-full" />
@@ -286,7 +308,7 @@ export function ModernAppSidebar() {
 
         {/* Section Locataire */}
         {tenantLinks.length > 0 && (
-          <SidebarGroup className="mt-4">
+          <SidebarGroup className="mt-3">
             {open && (
               <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
                 <div className="w-1 h-1 bg-indigo-500 rounded-full" />
@@ -303,7 +325,7 @@ export function ModernAppSidebar() {
 
         {/* Section Propriétaire */}
         {ownerLinks.length > 0 && (
-          <SidebarGroup className="mt-4">
+          <SidebarGroup className="mt-3">
             {open && (
               <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
                 <div className="w-1 h-1 bg-cyan-500 rounded-full" />
@@ -354,7 +376,7 @@ export function ModernAppSidebar() {
 
         {/* Paramètres */}
         {settingsLinks.length > 0 && (
-          <SidebarGroup className="mt-4">
+          <SidebarGroup className="mt-3">
             {open && (
               <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
                 <div className="w-1 h-1 bg-gray-600 rounded-full" />

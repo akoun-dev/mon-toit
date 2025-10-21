@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Supercluster from 'supercluster';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import './EnhancedMap.css';
 import DOMPurify from 'dompurify';
 import { MapProperty } from '@/hooks/useMapProperties';
 import { Button } from '@/components/ui/button';
@@ -187,14 +188,14 @@ export const EnhancedMap = ({
         glowEffect.className = 'absolute -inset-2 bg-gradient-to-r from-primary to-secondary rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity';
 
         const markerContent = document.createElement('div');
-        markerContent.className = 'relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary border-3 border-white shadow-xl flex flex-col items-center justify-center text-white group-hover:scale-110 transition-transform';
+        markerContent.className = 'relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-600 border-3 border-white shadow-xl flex flex-col items-center justify-center text-white font-bold group-hover:scale-110 transition-transform';
 
         const countSpan = document.createElement('span');
-        countSpan.className = 'text-lg font-bold';
+        countSpan.className = 'text-lg font-bold drop-shadow-lg';
         countSpan.textContent = count.toString();
 
         const priceSpan = document.createElement('span');
-        priceSpan.className = 'text-xs opacity-90';
+        priceSpan.className = 'text-xs opacity-90 drop-shadow-md';
         priceSpan.textContent = `${(avgPrice / 1000).toFixed(0)}k`;
 
         markerContent.appendChild(countSpan);
@@ -229,8 +230,18 @@ export const EnhancedMap = ({
         propertyGlow.className = 'absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-50 transition-opacity';
 
         const propertyMarker = document.createElement('div');
-        propertyMarker.className = 'relative w-12 h-12 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform';
-        propertyMarker.textContent = `${(property.price / 1000).toFixed(0)}k`;
+        propertyMarker.className = 'relative w-12 h-12 rounded-full bg-primary border-2 border-white shadow-lg flex items-center justify-center text-white font-bold text-xs group-hover:scale-110 transition-transform backdrop-blur-sm';
+
+        // Add a dark background for better text contrast
+        const textBackground = document.createElement('div');
+        textBackground.className = 'absolute inset-0 rounded-full bg-black/20 flex items-center justify-center';
+
+        const priceText = document.createElement('span');
+        priceText.className = 'relative z-10 drop-shadow-md';
+        priceText.textContent = `${(property.price / 1000).toFixed(0)}k`;
+
+        textBackground.appendChild(priceText);
+        propertyMarker.appendChild(textBackground);
 
         propertyContainer.appendChild(propertyGlow);
         propertyContainer.appendChild(propertyMarker);
@@ -453,17 +464,47 @@ export const EnhancedMap = ({
 
   // Add neighborhood zones
   useEffect(() => {
-    if (!map.current || !mapReady || !showNeighborhoods) return;
+    if (!map.current || !mapReady) return;
 
+    // Cleanup function to remove all neighborhood layers and sources
+    const cleanupNeighborhoods = () => {
+      ABIDJAN_NEIGHBORHOODS.forEach((neighborhood) => {
+        const sourceId = `neighborhood-${neighborhood.id}`;
+        const layerId = `neighborhood-layer-${neighborhood.id}`;
+        const labelLayerId = `neighborhood-label-${neighborhood.id}`;
+        const outlineLayerId = `${layerId}-outline`;
+
+        try {
+          // Remove layers in correct order (outline first, then fill, then label)
+          if (map.current!.getLayer(outlineLayerId)) map.current!.removeLayer(outlineLayerId);
+          if (map.current!.getLayer(layerId)) map.current!.removeLayer(layerId);
+          if (map.current!.getLayer(labelLayerId)) map.current!.removeLayer(labelLayerId);
+
+          // Remove source only after all layers are removed
+          if (map.current!.getSource(sourceId)) map.current!.removeSource(sourceId);
+        } catch (error) {
+          console.warn(`Error cleaning up neighborhood ${neighborhood.id}:`, error);
+        }
+      });
+    };
+
+    // If showNeighborhoods is false, cleanup and return
+    if (!showNeighborhoods) {
+      cleanupNeighborhoods();
+      return;
+    }
+
+    // Add neighborhoods
     ABIDJAN_NEIGHBORHOODS.forEach((neighborhood, index) => {
       const sourceId = `neighborhood-${neighborhood.id}`;
       const layerId = `neighborhood-layer-${neighborhood.id}`;
       const labelLayerId = `neighborhood-label-${neighborhood.id}`;
 
-      // Remove existing layers
-      if (map.current!.getLayer(labelLayerId)) map.current!.removeLayer(labelLayerId);
-      if (map.current!.getLayer(layerId)) map.current!.removeLayer(layerId);
-      if (map.current!.getSource(sourceId)) map.current!.removeSource(sourceId);
+      // Check if source already exists to prevent duplication
+      if (map.current!.getSource(sourceId)) {
+        console.warn(`Source ${sourceId} already exists, skipping`);
+        return;
+      }
 
       // Create polygon from bounds
       const polygon = {
@@ -546,6 +587,9 @@ export const EnhancedMap = ({
         map.current!.getCanvas().style.cursor = '';
       });
     });
+
+    // Cleanup function when useEffect unmounts or dependencies change
+    return cleanupNeighborhoods;
   }, [showNeighborhoods, mapReady, onNeighborhoodClick]);
 
   const handleLocate = () => {
@@ -577,18 +621,18 @@ export const EnhancedMap = ({
       {/* Map Controls */}
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button size="icon" variant="secondary" className="shadow-lg bg-background/90 backdrop-blur-sm" onClick={handleLocate}>
-            <Locate className="h-4 w-4" />
+          <Button size="icon" variant="outline" className="shadow-lg bg-orange-500/20 hover:bg-orange-500/30 border-orange-500/50 text-orange-600 backdrop-blur-sm map-control-button" onClick={handleLocate}>
+            <Locate className="h-4 w-4 text-orange-600" />
           </Button>
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button size="icon" variant="secondary" className="shadow-lg bg-background/90 backdrop-blur-sm" onClick={() => map.current?.zoomIn()}>
-            <ZoomIn className="h-4 w-4" />
+          <Button size="icon" variant="outline" className="shadow-lg bg-orange-500/20 hover:bg-orange-500/30 border-orange-500/50 text-orange-600 backdrop-blur-sm map-control-button" onClick={() => map.current?.zoomIn()}>
+            <ZoomIn className="h-4 w-4 text-orange-600" />
           </Button>
         </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button size="icon" variant="secondary" className="shadow-lg bg-background/90 backdrop-blur-sm" onClick={() => map.current?.zoomOut()}>
-            <ZoomOut className="h-4 w-4" />
+          <Button size="icon" variant="outline" className="shadow-lg bg-orange-500/20 hover:bg-orange-500/30 border-orange-500/50 text-orange-600 backdrop-blur-sm map-control-button" onClick={() => map.current?.zoomOut()}>
+            <ZoomOut className="h-4 w-4 text-orange-600" />
           </Button>
         </motion.div>
       </div>
@@ -599,13 +643,13 @@ export const EnhancedMap = ({
           <motion.div key={style} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               size="sm"
-              variant={mapStyle === style ? 'default' : 'secondary'}
-              className="shadow-lg bg-background/90 backdrop-blur-sm"
+              variant={mapStyle === style ? 'default' : 'outline'}
+              className="shadow-lg bg-orange-500/20 hover:bg-orange-500/30 border-orange-500/50 text-orange-600 backdrop-blur-sm map-style-button"
               onClick={() => setMapStyle(style)}
             >
-              {style === 'streets' && <Map className="h-4 w-4 mr-1" />}
-              {style === 'satellite' && <Satellite className="h-4 w-4 mr-1" />}
-              {style === 'hybrid' && <Layers className="h-4 w-4 mr-1" />}
+              {style === 'streets' && <Map className="h-4 w-4 mr-1 text-orange-600" />}
+              {style === 'satellite' && <Satellite className="h-4 w-4 mr-1 text-orange-600" />}
+              {style === 'hybrid' && <Layers className="h-4 w-4 mr-1 text-orange-600" />}
               {style.charAt(0).toUpperCase() + style.slice(1)}
             </Button>
           </motion.div>
