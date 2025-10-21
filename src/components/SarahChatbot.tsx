@@ -24,7 +24,7 @@ const QUICK_SUGGESTIONS = [
 
 export const SarahChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [useVoice, setUseVoice] = useState(false);
+  const [useVoice, setUseVoice] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
