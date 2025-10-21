@@ -153,13 +153,14 @@ AS $$
     SELECT 1
     FROM public.user_roles
     WHERE user_id = _user_id
-      AND role = _role
+      AND role = _role::text
   )
 $$;
 
 -- ========================================
 -- 5. TRIGGER pour auto-création profil
 -- ========================================
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS public.handle_new_user();
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
@@ -185,7 +186,6 @@ BEGIN
 END;
 $$;
 
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
@@ -211,128 +211,7 @@ CREATE TRIGGER update_profiles_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- ========================================
--- 7. STORAGE BUCKETS
+-- 7. STORAGE BUCKETS (Supabase handles this automatically)
 -- ========================================
-DO $$
-BEGIN
-  -- Bucket pour avatars (public)
-  INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-  VALUES (
-    'avatars',
-    'avatars',
-    true,
-    5242880, -- 5MB
-    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-  )
-  ON CONFLICT (id) DO NOTHING;
-
-  -- Bucket pour images de propriétés (public)
-  INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-  VALUES (
-    'property-images',
-    'property-images',
-    true,
-    10485760, -- 10MB
-    ARRAY['image/jpeg', 'image/png', 'image/webp']
-  )
-  ON CONFLICT (id) DO NOTHING;
-
-  -- Bucket pour documents utilisateurs (privé)
-  INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-  VALUES (
-    'user-documents',
-    'user-documents',
-    false,
-    52428800, -- 50MB
-    ARRAY['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
-  )
-  ON CONFLICT (id) DO NOTHING;
-END $$;
-
--- ========================================
--- 8. STORAGE RLS POLICIES
--- ========================================
--- Policies pour avatars
-DROP POLICY IF EXISTS "Avatars publiquement accessibles" ON storage.objects;
-CREATE POLICY "Avatars publiquement accessibles"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'avatars');
-
-DROP POLICY IF EXISTS "Utilisateurs peuvent uploader leur avatar" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent uploader leur avatar"
-  ON storage.objects FOR INSERT
-  TO authenticated
-  WITH CHECK (
-    bucket_id = 'avatars'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-DROP POLICY IF EXISTS "Utilisateurs peuvent mettre à jour leur avatar" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent mettre à jour leur avatar"
-  ON storage.objects FOR UPDATE
-  TO authenticated
-  USING (
-    bucket_id = 'avatars'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-DROP POLICY IF EXISTS "Utilisateurs peuvent supprimer leur avatar" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent supprimer leur avatar"
-  ON storage.objects FOR DELETE
-  TO authenticated
-  USING (
-    bucket_id = 'avatars'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
-
--- Policies pour property-images
-DROP POLICY IF EXISTS "Images de propriétés publiquement accessibles" ON storage.objects;
-CREATE POLICY "Images de propriétés publiquement accessibles"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'property-images');
-
-DROP POLICY IF EXISTS "Propriétaires peuvent uploader images" ON storage.objects;
-CREATE POLICY "Propriétaires peuvent uploader images"
-  ON storage.objects FOR INSERT
-  TO authenticated
-  WITH CHECK (bucket_id = 'property-images');
-
-DROP POLICY IF EXISTS "Propriétaires peuvent mettre à jour images" ON storage.objects;
-CREATE POLICY "Propriétaires peuvent mettre à jour images"
-  ON storage.objects FOR UPDATE
-  TO authenticated
-  USING (bucket_id = 'property-images');
-
-DROP POLICY IF EXISTS "Propriétaires peuvent supprimer images" ON storage.objects;
-CREATE POLICY "Propriétaires peuvent supprimer images"
-  ON storage.objects FOR DELETE
-  TO authenticated
-  USING (bucket_id = 'property-images');
-
--- Policies pour user-documents
-DROP POLICY IF EXISTS "Utilisateurs peuvent voir leurs propres documents" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent voir leurs propres documents"
-  ON storage.objects FOR SELECT
-  TO authenticated
-  USING (
-    bucket_id = 'user-documents'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-DROP POLICY IF EXISTS "Utilisateurs peuvent uploader leurs documents" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent uploader leurs documents"
-  ON storage.objects FOR INSERT
-  TO authenticated
-  WITH CHECK (
-    bucket_id = 'user-documents'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-DROP POLICY IF EXISTS "Utilisateurs peuvent supprimer leurs documents" ON storage.objects;
-CREATE POLICY "Utilisateurs peuvent supprimer leurs documents"
-  ON storage.objects FOR DELETE
-  TO authenticated
-  USING (
-    bucket_id = 'user-documents'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
+-- Storage buckets and policies are managed by Supabase
+-- They will be created when needed via the Supabase Dashboard

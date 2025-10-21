@@ -1,0 +1,707 @@
+📊 AUDIT COMPLET DE LA BASE DE DONNÉES SUPABASE
+
+  1. RÉSUMÉ SYNTHÉTIQUE DE LA SANTÉ DU SCHÉMA
+
+  🎯 Vue d'ensemble
+
+  - Complexité : Élevée - Plateforme multi-acteurs sophistiquée avec 73+ tables
+  - Maturité : Moyenne - Schéma consolidé mais encore en évolution active
+  - Sécurité : Bonne - RLS implémenté sur toutes les tables avec corrections récentes
+  - Performance : Moyenne - Indexation présente mais pourrait être optimisée
+
+  ⚠️ Problèmes critiques identifiés
+
+  1. Incohérences de types entre certaines clés primaires et étrangères
+  2. Index manquants sur plusieurs colonnes de clés étrangères fréquemment jointes
+  3. Tables orphelines sans relations claires (ex: illustration_analytics)
+  4. Dépendances circulaires potentielles dans le système de notifications
+  5. Contraintes CHECK manquantes sur certaines colonnes critiques
+
+  ✅ Points forts
+
+  - Architecture RLS complète et bien pensée
+  - Design multi-tenant avec rôles bien définis
+  - Fonctionnalités avancées (IA/ML, gamification)
+  - Historique de migrations bien documenté
+
+● 2. INVENTAIRE DÉTAILLÉ DES TABLES
+
+  🔐 Tables d'authentification et profils
+
+  auth.users (table système Supabase)
+
+  - id UUID PRIMARY KEY
+  - email TEXT UNIQUE NOT NULL
+  - encrypted_password TEXT
+  - email_confirmed_at TIMESTAMPTZ
+  - invited_at TIMESTAMPTZ
+  - confirmation_token TEXT
+  - recovery_token TEXT
+  - email_change_token_new TEXT
+  - email_change TEXT
+  - last_sign_in_at TIMESTAMPTZ
+  - raw_app_meta_data JSONB
+  - raw_user_meta_data JSONB
+  - is_super_admin BOOLEAN
+  - created_at TIMESTAMPTZ
+  - updated_at TIMESTAMPTZ
+
+  public.profiles
+
+  - id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE
+  - first_name TEXT
+  - last_name TEXT
+  - company_name TEXT
+  - phone TEXT
+  - avatar_url TEXT
+  - user_type app_role NOT NULL DEFAULT 'tenant'
+  - is_verified BOOLEAN DEFAULT FALSE
+  - verification_date TIMESTAMPTZ
+  - bio TEXT
+  - preferred_language TEXT DEFAULT 'fr'
+  - timezone TEXT DEFAULT 'Africa/Abidjan'
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.user_roles
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+  - role app_role NOT NULL
+  - assigned_by UUID REFERENCES auth.users(id)
+  - assigned_at TIMESTAMPTZ DEFAULT NOW()
+  - UNIQUE(user_id, role)
+
+  🏠 Tables immobilières
+
+  public.properties
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - owner_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - title TEXT NOT NULL
+  - description TEXT
+  - address TEXT NOT NULL
+  - city TEXT NOT NULL
+  - neighborhood TEXT
+  - property_type TEXT NOT NULL CHECK (property_type IN ('appartement', 'maison', 'studio', 'duplex', 'villa', 'chambre', 'commerce'))
+  - area_sqm INTEGER CHECK (area_sqm > 0)
+  - bedrooms INTEGER CHECK (bedrooms >= 0)
+  - bathrooms INTEGER CHECK (bathrooms >= 0)
+  - monthly_rent DECIMAL(10,2) CHECK (monthly_rent >= 0)
+  - deposit_amount DECIMAL(10,2) CHECK (deposit_amount >= 0)
+  - is_furnished BOOLEAN DEFAULT FALSE
+  - is_available BOOLEAN DEFAULT TRUE
+  - status TEXT DEFAULT 'disponible' CHECK (status IN ('disponible', 'loue', 'loué', 'en_attente', 'retire', 'retiré', 'en_maintenance', 'en_negociation',
+  'pending', 'approved', 'rejected'))
+  - images JSONB DEFAULT '[]'
+  - amenities JSONB DEFAULT '{}'
+  - geolocation_lat DECIMAL(10,8)
+  - geolocation_lng DECIMAL(11,8)
+  - mapbox_feature JSONB
+  - published_at TIMESTAMPTZ
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.property_applications
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE
+  - tenant_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'withdrawn'))
+  - message TEXT
+  - proposed_rent DECIMAL(10,2)
+  - move_in_date DATE
+  - documents JSONB DEFAULT '[]'
+  - reviewed_by UUID REFERENCES profiles(id)
+  - reviewed_at TIMESTAMPTZ
+  - review_notes TEXT
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+  - UNIQUE(property_id, tenant_id)
+
+  💰 Tables financières
+
+  public.rent_payments
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - lease_id UUID NOT NULL REFERENCES lease_agreements(id) ON DELETE CASCADE
+  - tenant_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - amount DECIMAL(10,2) NOT NULL CHECK (amount > 0)
+  - due_date DATE NOT NULL
+  - payment_date TIMESTAMPTZ
+  - payment_method TEXT CHECK (payment_method IN ('orange_money', 'mtn_money', 'wave', 'card', 'cash', 'bank_transfer'))
+  - transaction_id TEXT
+  - status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'late', 'overdue', 'partial'))
+  - late_fee DECIMAL(10,2) DEFAULT 0
+  - notes TEXT
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.lease_agreements
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE
+  - tenant_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - owner_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - start_date DATE NOT NULL
+  - end_date DATE NOT NULL
+  - monthly_rent DECIMAL(10,2) NOT NULL CHECK (monthly_rent > 0)
+  - deposit_amount DECIMAL(10,2) NOT NULL CHECK (deposit_amount >= 0)
+  - status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'active', 'terminated', 'expired'))
+  - terms TEXT
+  - signed_by_tenant_at TIMESTAMPTZ
+  - signed_by_owner_at TIMESTAMPTZ
+  - termination_date DATE
+  - termination_reason TEXT
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  🏢 Tables agences et délégation
+
+  public.agencies
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - name TEXT NOT NULL
+  - description TEXT
+  - address TEXT NOT NULL
+  - phone TEXT NOT NULL
+  - email TEXT UNIQUE NOT NULL
+  - logo_url TEXT
+  - license_number TEXT UNIQUE
+  - is_verified BOOLEAN DEFAULT FALSE
+  - verification_date TIMESTAMPTZ
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.agency_memberships
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - agency_id UUID NOT NULL REFERENCES agencies(id) ON DELETE CASCADE
+  - user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE
+  - role TEXT NOT NULL CHECK (role IN ('owner', 'admin', 'agent', 'assistant'))
+  - is_active BOOLEAN DEFAULT TRUE
+  - joined_at TIMESTAMPTZ DEFAULT NOW()
+  - left_at TIMESTAMPTZ
+  - UNIQUE(agency_id, user_id)
+
+  public.agency_mandates
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - agency_id UUID NOT NULL REFERENCES agencies(id) ON DELETE CASCADE
+  - property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE
+  - type TEXT NOT NULL CHECK (type IN ('exclusive', 'simple', 'co-exclusive'))
+  - start_date DATE NOT NULL
+  - end_date DATE
+  - commission_rate DECIMAL(5,4) CHECK (commission_rate BETWEEN 0 AND 1)
+  - status TEXT DEFAULT 'active' CHECK (status IN ('active', 'expired', 'terminated', 'suspended'))
+  - terms JSONB DEFAULT '{}'
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - UNIQUE(agency_id, property_id)
+
+  📱 Tables messagerie et notifications
+
+  public.messages
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - sender_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+  - receiver_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+  - property_id UUID REFERENCES properties(id) ON DELETE SET NULL
+  - content TEXT
+  - message_type TEXT DEFAULT 'text' CHECK (message_type IN ('text', 'audio', 'video', 'file', 'image'))
+  - metadata JSONB DEFAULT '{}'
+  - is_read BOOLEAN DEFAULT FALSE
+  - reply_to_id UUID REFERENCES messages(id) ON DELETE SET NULL
+  - reactions JSONB DEFAULT '[]'
+  - delivery_status TEXT DEFAULT 'sent' CHECK (delivery_status IN ('sent', 'delivered', 'read', 'failed'))
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.message_attachments
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - message_id UUID NOT NULL REFERENCES messages(id) ON DELETE CASCADE
+  - file_type TEXT NOT NULL CHECK (file_type IN ('image', 'audio', 'video', 'document'))
+  - file_name TEXT NOT NULL
+  - file_url TEXT NOT NULL
+  - file_size INTEGER
+  - mime_type TEXT
+  - thumbnail_url TEXT
+  - duration INTEGER
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+
+  🎮 Tables gamification et IA
+
+  public.user_game_stats
+
+  - user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE
+  - level INTEGER DEFAULT 1 CHECK (level > 0)
+  - total_points INTEGER DEFAULT 0 CHECK (total_points >= 0)
+  - available_points INTEGER DEFAULT 0 CHECK (available_points >= 0)
+  - current_streak INTEGER DEFAULT 0 CHECK (current_streak >= 0)
+  - longest_streak INTEGER DEFAULT 0 CHECK (longest_streak >= 0)
+  - last_activity_date DATE
+  - profile_completion_percentage INTEGER DEFAULT 0 CHECK (profile_completion_percentage BETWEEN 0 AND 100)
+  - achievements_count INTEGER DEFAULT 0
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.property_reviews
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE
+  - reviewer_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+  - reviewee_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+  - rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5)
+  - categories JSONB DEFAULT '{}'
+  - review TEXT
+  - is_verified BOOLEAN DEFAULT FALSE
+  - helpful_count INTEGER DEFAULT 0
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  🔒 Tables sécurité et monitoring
+
+  public.security_audit_logs
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - user_id UUID REFERENCES auth.users(id)
+  - action TEXT NOT NULL
+  - resource_type TEXT
+  - resource_id UUID
+  - ip_address INET
+  - user_agent TEXT
+  - success BOOLEAN DEFAULT TRUE
+  - error_message TEXT
+  - metadata JSONB DEFAULT '{}'
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+
+  🎨 Tables multimédia et illustration
+
+  public.property_photos
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE
+  - url TEXT NOT NULL
+  - alt TEXT
+  - sort_order INTEGER DEFAULT 0
+  - is_primary BOOLEAN DEFAULT FALSE
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+
+  public.illustrations (Table avec problème potentiel)
+
+  - id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  - name TEXT NOT NULL
+  - type TEXT NOT NULL CHECK (type IN ('3d', 'virtual_tour', 'image', 'plan'))
+  - data JSONB NOT NULL
+  - created_at TIMESTAMPTZ DEFAULT NOW()
+  - updated_at TIMESTAMPTZ DEFAULT NOW()
+
+  Types énumérés (ENUM)
+
+  app_role
+
+  CREATE TYPE app_role AS ENUM (
+    'admin',
+    'super_admin',
+    'tenant',
+    'proprietaire',
+    'agence',
+    'tiers_de_confiance'
+  );
+
+● 3. CARTOGRAPHIE COMPLÈTE DES RELATIONS
+
+  🔗 Relations clés primaires → clés étrangères
+
+  Relations d'authentification et profils
+
+  auth.users.id → profiles.id (ON DELETE CASCADE)
+  auth.users.id → user_roles.user_id (ON DELETE CASCADE)
+  auth.users.id → security_audit_logs.user_id (ON DELETE SET NULL)
+  profiles.id → properties.owner_id (ON DELETE CASCADE)
+  profiles.id → property_applications.tenant_id (ON DELETE CASCADE)
+  profiles.id → lease_agreements.tenant_id (ON DELETE CASCADE)
+  profiles.id → lease_agreements.owner_id (ON DELETE CASCADE)
+  profiles.id → property_reviews.reviewer_id (ON DELETE CASCADE)
+  profiles.id → property_reviews.reviewee_id (ON DELETE CASCADE)
+
+  Relations immobilières
+
+  properties.id → property_applications.property_id (ON DELETE CASCADE)
+  properties.id → lease_agreements.property_id (ON DELETE CASCADE)
+  properties.id → messages.property_id (ON DELETE SET NULL)
+  properties.id → property_reviews.property_id (ON DELETE CASCADE)
+  properties.id → agency_mandates.property_id (ON DELETE CASCADE)
+  properties.id → property_photos.property_id (ON DELETE CASCADE)
+
+  Relations financières
+
+  lease_agreements.id → rent_payments.lease_id (ON DELETE CASCADE)
+  property_applications.id → lease_agreements.application_id (ON DELETE SET NULL)
+
+  Relations de messagerie
+
+  messages.id → message_attachments.message_id (ON DELETE CASCADE)
+  messages.id → messages.reply_to_id (ON DELETE SET NULL)
+
+  Relations agences
+
+  agencies.id → agency_memberships.agency_id (ON DELETE CASCADE)
+  agencies.id → agency_mandates.agency_id (ON DELETE CASCADE)
+
+  Relations gamification
+
+  auth.users.id → user_game_stats.user_id (ON DELETE CASCADE)
+  auth.users.id → game_achievements.user_id (ON DELETE CASCADE)
+  auth.users.id → user_challenge_progress.user_id (ON DELETE CASCADE)
+  auth.users.id → notification_preferences.user_id (ON DELETE CASCADE)
+
+  Relations IA/ML
+
+  auth.users.id → user_behavior_patterns.user_id (ON DELETE CASCADE)
+  properties.id → recommendation_scores.property_id (ON DELETE CASCADE)
+  auth.users.id → recommendation_scores.user_id (ON DELETE CASCADE)
+  auth.users.id → property_interactions.user_id (ON DELETE CASCADE)
+  properties.id → property_interactions.property_id (ON DELETE CASCADE)
+
+  Relations sécurité
+
+  security_scans.id → vulnerabilities.scan_id (ON DELETE CASCADE)
+  auth.users.id → vulnerabilities.resolved_by (ON DELETE SET NULL)
+  auth.users.id → security_scans.created_by (ON DELETE SET NULL)
+
+  ⚠️ Relations problématiques identifiées
+
+  1. Référence croisée profiles : Certaines tables référencent profiles.id au lieu de auth.users.id
+  2. Cascade multiples : Risques de suppressions en cascade imbriquées
+  3. Self-référence : messages.reply_to_id peut créer des boucles infinies
+
+● 4. ANALYSE DES RISQUES ET INCOHÉRENCES
+
+  🚨 RISQUES CRITIQUES
+
+  1. Incohérences de types de données
+
+  - Problème : profiles.id est UUID mais certaines tables utilisent des références indirectes
+  - Impact : Erreurs de jointure possibles entre auth.users.id et profiles.id
+  - Tables affectées : properties.owner_id, property_applications.tenant_id
+
+  2. Clés étrangères orphelines
+
+  - illustration_analytics.illustration_id → Table illustrations avec colonne manquante
+  - user_behavior_patterns : Référence auth.users mais pas de nettoyage cascade
+  - recommendation_scores : Double dépendance qui peut créer des incohérences
+
+  3. Dépendances circulaires
+
+  users → profiles → properties → messages → users (via sender/receiver)
+  users → user_game_stats → achievements → users
+
+  4. Tables complètement orphelines
+
+  - illustration_analytics : Aucune relation entrante/sortante identifiable
+  - performance_metrics : Collecte de données sans lien vers les ressources
+  - review_categories : Table de référence sans utilisation dans les contraintes
+
+  ⚠️ RISQUES MOYENS
+
+  5. Absence d'index sur clés étrangères
+
+  -- Index manquants critiques
+  properties(owner_id) -- Pas d'index pour les recherches par propriétaire
+  messages(property_id) -- Pas d'index pour les messages par propriété
+  security_audit_logs(user_id) -- Pas d'index pour les audits par utilisateur
+
+  6. Contraintes CHECK manquantes
+
+  - monthly_rent : Pas de validation de montant maximum
+  - area_sqm : Pas de plage réaliste définie
+  - phone : Pas de validation de format
+  - email : Pas de validation de format dans les tables custom
+
+  7. Colonnes NOT NULL manquantes
+
+  - properties.description : Pourrait être NOT NULL
+  - profiles.first_name / last_name : Au moins un devrait être NOT NULL
+  - messages.content : Devrait être NOT NULL pour les messages text
+
+  📊 RISQUES FAIBLES
+
+  8. Conventions de nommage incohérentes
+
+  - Tables : mixte snake_case et camelCase
+  - Colonnes : created_at vs createdAt
+  - Index : Pas de convention standardisée
+
+  9. Sur-utilisation de JSONB
+
+  - properties.amenities : Pourrait être normalisé
+  - messages.metadata : Structure non documentée
+  - game_challenges.requirements : Format variable non validé
+
+  10. Performances potentielles
+
+  - JSONB dans les clauses WHERE : Impact sur les performances
+  - Absence de partitionnement : Tables volumineuses non partitionnées
+  - Pas d'index partiels pour les données archivées
+
+● 5. RECOMMANDATIONS D'OPTIMISATION ET BONNES PRATIQUES
+
+  🚀 RECOMMANDATIONS CRITIQUES (À IMPLEMENTER IMMÉDIATEMENT)
+
+  1. Corriger les incohérences de références
+
+  -- Migration à créer
+  ALTER TABLE properties
+  DROP CONSTRAINT properties_owner_id_fkey,
+  ADD CONSTRAINT properties_owner_id_fkey
+  FOREIGN KEY (owner_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+  -- Standardiser toutes les références user_id vers auth.users
+
+  2. Ajouter les index manquants critiques
+
+  -- Index pour les performances des jointures
+  CREATE INDEX CONCURRENTLY idx_properties_owner_id ON properties(owner_id);
+  CREATE INDEX CONCURRENTLY idx_messages_property_id ON messages(property_id);
+  CREATE INDEX CONCURRENTLY idx_security_audit_logs_user_id ON security_audit_logs(user_id);
+  CREATE INDEX CONCURRENTLY idx_lease_agreements_tenant_id ON lease_agreements(tenant_id);
+  CREATE INDEX CONCURRENTLY idx_property_applications_status ON property_applications(status);
+
+  3. Résoudre les tables orphelines
+
+  -- Option 1 : Supprimer illustration_analytics si inutilisée
+  DROP TABLE IF EXISTS illustration_analytics;
+
+  -- Option 2 : Ajouter les relations manquantes
+  ALTER TABLE illustration_analytics
+  ADD COLUMN illustration_id UUID REFERENCES illustrations(id) ON DELETE CASCADE;
+
+  4. Renforcer les contraintes CHECK
+
+  ALTER TABLE properties
+  ADD CONSTRAINT properties_monthly_rent_check
+  CHECK (monthly_rent BETWEEN 5000 AND 5000000); -- Plages réalistes pour la Côte d'Ivoire
+
+  ALTER TABLE properties
+  ADD CONSTRAINT properties_area_check
+  CHECK (area_sqm BETWEEN 10 AND 1000);
+
+  ALTER TABLE profiles
+  ADD CONSTRAINT profiles_phone_format
+  CHECK (phone ~ '^\+225[0-9]{8,10}$' OR phone IS NULL);
+
+  🎯 OPTIMISATIONS DE PERFORMANCE
+
+  5. Index composites pour les requêtes fréquentes
+
+  -- Recherche de propriétés par ville + type + prix
+  CREATE INDEX CONCURRENTLY idx_properties_search
+  ON properties(city, property_type, monthly_rent)
+  WHERE is_available = TRUE;
+
+  -- Messages de conversation entre 2 utilisateurs
+  CREATE INDEX CONCURRENTLY idx_messages_conversation
+  ON messages(LEAST(sender_id, receiver_id), GREATEST(sender_id, receiver_id), created_at DESC);
+
+  -- Applications par statut et date
+  CREATE INDEX CONCURRENTLY idx_applications_status_date
+  ON property_applications(status, created_at DESC);
+
+  6. Partitionnement des tables volumineuses
+
+  -- Partitionner messages par mois
+  CREATE TABLE messages_partitioned (
+    LIKE messages INCLUDING ALL
+  ) PARTITION BY RANGE (created_at);
+
+  -- Partitionner security_audit_logs par trimestre
+  CREATE TABLE security_audit_logs_partitioned (
+    LIKE security_audit_logs INCLUDING ALL
+  ) PARTITION BY RANGE (created_at);
+
+  7. Optimisation JSONB
+
+  -- Index GIN pour les requêtes JSONB fréquentes
+  CREATE INDEX CONCURRENTLY idx_properties_amenities_gin
+  ON properties USING GIN (amenities);
+
+  CREATE INDEX CONCURRENTLY idx_messages_metadata_gin
+  ON messages USING GIN (metadata);
+
+  -- Contraintes de validation JSONB
+  ALTER TABLE properties
+  ADD CONSTRAINT properties_amenities_structure
+  CHECK (
+    jsonb_typeof(amenities) = 'object' AND
+    (amenities ? 'parking' OR amenities ? 'balcon' OR amenities ? 'climatisation')
+  );
+
+  🔒 AMÉLIORATIONS DE SÉCURITÉ
+
+  8. Politiques RLS renforcées
+
+  -- Politiques plus granulaires pour les agences
+  CREATE POLICY "Agency members can see agency properties"
+  ON properties FOR SELECT
+  USING (
+    owner_id IN (
+      SELECT user_id FROM agency_memberships
+      WHERE agency_id = (
+        SELECT agency_id FROM agency_memberships
+        WHERE user_id = auth.uid()
+      ) AND is_active = TRUE
+    )
+  );
+
+  -- Politiques temporelles pour les audits
+  CREATE POLICY "Users can see own recent audit logs"
+  ON security_audit_logs FOR SELECT
+  USING (
+    user_id = auth.uid()
+    AND created_at > NOW() - INTERVAL '90 days'
+  );
+
+  9. Audit et logging améliorés
+
+  -- Trigger pour tracer les modifications sensibles
+  CREATE OR REPLACE FUNCTION audit_sensitive_changes()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    IF TG_OP = 'UPDATE' THEN
+      INSERT INTO security_audit_logs (user_id, action, resource_type, resource_id, metadata)
+      VALUES (
+        COALESCE(current_setting('app.current_user_id', true)::UUID, auth.uid()),
+        'update_sensitive',
+        TG_TABLE_NAME,
+        NEW.id,
+        jsonb_build_object('old', row_to_json(OLD), 'new', row_to_json(NEW))
+      );
+    END IF;
+    RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+  📋 BONNES PRATIQUES DE CONCEPTION
+
+  10. Normalisation des conventions
+
+  -- Convention de nommage standardisée
+  -- Tables : snake_case en minuscules
+  -- Colonnes : snake_case en minuscules  
+  -- Index : idx_table_columns_purpose
+  -- Contraintes : ck_table_column_condition
+  -- Foreign keys : fk_table_column_target
+
+  11. Documentation automatique
+
+  -- Commentaires pour toutes les tables et colonnes importantes
+  COMMENT ON TABLE properties IS 'Catalogue des biens immobiliers disponibles à la location';
+  COMMENT ON COLUMN properties.monthly_rent IS 'Loyer mensuel en FCFA, négociable selon durée';
+  COMMENT ON COLUMN lease_agreements.status IS 'Statut du bail : draft=projet, active=actif, terminated=terminé';
+
+  12. Vues matérialisées pour les rapports
+
+  -- Vue pour les statistiques de l'agence
+  CREATE MATERIALIZED VIEW agency_stats AS
+  SELECT
+    a.id as agency_id,
+    a.name as agency_name,
+    COUNT(p.id) as total_properties,
+    COUNT(CASE WHEN p.is_available THEN 1 END) as available_properties,
+    AVG(p.monthly_rent) as avg_rent,
+    COUNT(la.id) as active_leases
+  FROM agencies a
+  LEFT JOIN agency_mandates am ON a.id = am.agency_id AND am.status = 'active'
+  LEFT JOIN properties p ON am.property_id = p.id
+  LEFT JOIN lease_agreements la ON p.id = la.property_id AND la.status = 'active'
+  GROUP BY a.id, a.name;
+
+  -- Index pour la vue
+  CREATE UNIQUE INDEX idx_agency_stats_id ON agency_stats(agency_id);
+
+  🔧 MAINTENANCE ET MONITORING
+
+  13. Maintenance automatisée
+
+  -- Nettoyage des anciennes données
+  CREATE OR REPLACE FUNCTION cleanup_old_data()
+  RETURNS void AS $$
+  BEGIN
+    -- Archiver les messages de plus de 2 ans
+    DELETE FROM messages WHERE created_at < NOW() - INTERVAL '2 years';
+
+    -- Archiver les logs de sécurité de plus de 1 an
+    DELETE FROM security_audit_logs WHERE created_at < NOW() - INTERVAL '1 year';
+
+    -- Optimiser les tables
+    VACUUM ANALYZE properties;
+    VACUUM ANALYZE messages;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  -- Planifier l'exécution
+  SELECT cron.schedule('cleanup-old-data', '0 2 * * 0', 'SELECT cleanup_old_data();');
+
+  14. Monitoring des performances
+
+  -- Table pour métriques de performance
+  CREATE TABLE query_performance_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    query_name TEXT NOT NULL,
+    execution_time_ms INTEGER NOT NULL,
+    rows_affected INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  -- Trigger pour tracer les requêtes lentes
+  CREATE OR REPLACE FUNCTION log_slow_queries()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    IF NEW.execution_time_ms > 1000 THEN -- Plus d'1 seconde
+      INSERT INTO query_performance_log (query_name, execution_time_ms, rows_affected)
+      VALUES (TG_NAME, NEW.execution_time_ms, NEW.rows_affected);
+    END IF;
+    RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+● ---
+  🎯 CONCLUSION ET PROCHAINES ÉTAPES
+
+  📋 Priorisation des actions
+
+  🚨 IMMÉDIAT (Jour 1-3)
+
+  1. Corriger les références profiles.id → auth.users.id
+  2. Ajouter les index manquants critiques
+  3. Résoudre illustration_analytics orpheline
+  4. Renforcer les contraintes CHECK essentielles
+
+  ⚡ COURT TERME (Semaine 1-2)
+
+  1. Optimiser les requêtes avec index composites
+  2. Améliorer les politiques RLS
+  3. Ajouter les contraintes de validation JSONB
+  4. Standardiser les conventions de nommage
+
+  🚀 MOYEN TERME (Mois 1-2)
+
+  1. Implémenter le partitionnement des tables volumineuses
+  2. Créer les vues matérialisées de reporting
+  3. Mettre en place le monitoring des performances
+  4. Automatiser la maintenance des données
+
+  💡 Recommandation finale
+
+  Votre schéma de base de données présente une architecture globalement solide avec des fonctionnalités innovantes (IA/ML, gamification) et une bonne sécurité RLS.
+   Cependant, les incohérences de références et les index manquants représentent des risques critiques pour la production.
+
+  La priorité absolue devrait être la standardisation des références utilisateur (tout pointer vers auth.users.id) et l'optimisation des performances via les index
+   recommandés.
+
+  Une fois ces corrections appliquées, votre base de données sera prête pour une montée en charge sereine avec des performances optimales et une sécurité
+  renforcée.
+
+  ---
+  Audité par votre expert PostgreSQL/Supabase - N'hésitez pas si vous avez besoin de clarifications sur des points spécifiques ! 🎯

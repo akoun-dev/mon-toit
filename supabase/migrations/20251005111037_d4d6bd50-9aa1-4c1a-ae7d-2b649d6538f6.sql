@@ -13,7 +13,7 @@ AS $$
     SELECT 1
     FROM public.user_roles
     WHERE user_id = _user_id
-      AND role = _role
+      AND role = _role::text
   )
 $$;
 
