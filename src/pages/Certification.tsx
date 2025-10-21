@@ -1,9 +1,7 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import CertifiedBadge from "@/components/ui/certified-badge";
 import { Shield, Lock, FileCheck, Users } from "lucide-react";
-import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
-import { getIllustrationPath } from "@/lib/utils";
-import { BogolanPattern } from "@/components/ui/african-patterns";
+import { HeroHeader } from "@/components/shared/HeroHeader";
+import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 
 const Certification = () => {
   const features = [
@@ -32,31 +30,14 @@ const Certification = () => {
   return (
     <MainLayout showSidebar={false}>
       <main>
-        {/* Hero with illustration */}
-        <section className="relative h-96 overflow-hidden mb-12">
-          <LazyIllustration 
-            src={getIllustrationPath('certification-ansut-illustration')!}
-            alt="Certification officielle ANSUT"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80 flex items-center justify-center">
-            <div className="container mx-auto px-2 text-center text-white">
-              <div className="flex justify-center mb-6">
-                <CertifiedBadge clickable={false} />
-              </div>
-              <h1 className="text-h1 mb-4">
-                <span className="text-gradient-animated">Certification ANSUT</span>
-              </h1>
-              <p className="text-lg max-w-2xl mx-auto opacity-95">
-                Mon Toit est propulsé par l'Agence Nationale de Soutien à l'Urbanisme et au Territoire (ANSUT), 
-                garantissant sécurité, fiabilité et conformité pour tous vos projets immobiliers.
-              </p>
-            </div>
-          </div>
-        </section>
+        <HeroHeader 
+          title={<span className="text-gradient-animated">Certification ANSUT</span>}
+          description={"Mon Toit est propulsé par l'Agence Nationale de Soutien à l'Urbanisme et au Territoire (ANSUT), garantissant sécurité, fiabilité et conformité pour tous vos projets immobiliers."}
+          badgeLabel="Confiance & Sécurité"
+        />
 
         <section className="py-6 md:py-10">
-          <div className="container mx-auto px-2 max-w-4xl">
+          <div className="content-left max-w-4xl">
             <div className="bg-gradient-primary/10 border-2 border-primary/20 rounded-xl p-8 mb-12">
               <h2 className="text-2xl font-bold mb-4">Qu'est-ce que la certification ANSUT ?</h2>
               <p className="text-muted-foreground mb-4">

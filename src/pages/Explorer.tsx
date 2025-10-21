@@ -1,10 +1,10 @@
 import { lazy, Suspense } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
-import { KentePattern } from "@/components/ui/african-patterns";
+import { HeroHeader } from "@/components/shared/HeroHeader";
+import { Map } from "lucide-react";
 
 // Lazy load des composants lourds
 const ExploreMap = lazy(() => import("@/components/ExploreMap"));
@@ -15,19 +15,12 @@ const Explorer = () => {
     <MainLayout>
       <div className="content-left py-2 md:py-4">
         <div className="w-full">
-          <DynamicBreadcrumb />
-
-          <div className="text-center mb-4 md:mb-6 animate-fade-in relative">
-            <KentePattern />
-            <div className="relative z-10">
-              <h1 className="text-h1 mb-4">
-                Explorez les biens <span className="text-gradient-primary">disponibles</span>
-              </h1>
-              <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez tous nos biens immobiliers certifiés à travers la Côte d'Ivoire
-              </p>
-            </div>
-          </div>
+          <HeroHeader 
+            badgeLabel="Exploration interactive" 
+            badgeIcon={Map}
+            title={<>Explorez les biens <span className="text-gradient-primary">disponibles</span></>} 
+            description={"Découvrez tous nos biens immobiliers certifiés à travers la Côte d'Ivoire"}
+          />
 
           {/* Bannière quartier */}
           <section className="mb-3 md:mb-4">

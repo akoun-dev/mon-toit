@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText, LogIn } from "lucide-react";
+import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText, LogIn, Search, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +20,7 @@ import NotificationBell from "@/components/NotificationBell";
 import CertificationNotificationBadge from "@/components/admin/CertificationNotificationBadge";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
 import { CertificationBadge } from "@/components/shared/CertificationBadge";
+import { HeaderSearch } from "@/components/search/HeaderSearch";
 
 interface NavbarProps {
   showSidebarTrigger?: boolean;
@@ -27,6 +29,7 @@ interface NavbarProps {
 const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
   const { user, profile, signOut } = useAuth();
   const { canAccessAdminDashboard } = usePermissions();
+  const isMobile = useIsMobile();
 
   return (<>
     <nav
@@ -37,12 +40,15 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
         <div className="flex items-center justify-between h-12 md:h-14">
           {/* Logo avec Sidebar Trigger */}
           <div className="flex items-center gap-3">
+            {showSidebarTrigger && (
+              <SidebarTrigger className="md:hidden" />
+            )}
             <Link to="/" className="flex items-center gap-3 group">
             <picture>
               <img
                 src={monToitLogo}
                 alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT"
-                className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
+                className="h-8 sm:h-10 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
@@ -53,16 +59,23 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
             </Link>
           </div>
 
-          {/* Navigation Links - Simplified to 3 core items */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link 
-              to="/explorer" 
+          {/* Zone de recherche - Desktop */}
+          {!isMobile && (
+            <div className="flex-1 max-w-md mx-6">
+              <HeaderSearch placeholder="Rechercher un bien, une ville..." />
+            </div>
+          )}
+
+          {/* Navigation Links - Desktop */}
+          <div className="hidden lg:flex items-center gap-6">
+            <Link
+              to="/explorer"
               className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               Explorer
             </Link>
-            <Link 
-              to="/publier" 
+            <Link
+              to="/publier"
               className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
             >
               Publier
@@ -76,7 +89,30 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Bouton recherche mobile */}
+            {isMobile && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const searchModal = document.getElementById('mobile-search-modal');
+                  if (searchModal) {
+                    searchModal.classList.remove('hidden');
+                    // Focus sur l'input de recherche après l'ouverture
+                    setTimeout(() => {
+                      const searchInput = searchModal.querySelector('input');
+                      searchInput?.focus();
+                    }, 100);
+                  }
+                }}
+                className="md:hidden"
+                aria-label="Ouvrir la recherche"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            )}
+
             {user ? (
               <>
                 {/* Allège le header en mobile */}
@@ -180,6 +216,42 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
         </div>
       </div>
     </nav>
+
+    {/* Modal de recherche mobile */}
+    {isMobile && (
+      <div
+        id="mobile-search-modal"
+        className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            e.currentTarget.classList.add('hidden');
+          }
+        }}
+      >
+        <div className="container mx-auto px-4 pt-16">
+          <div className="flex items-center gap-3 mb-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                const searchModal = document.getElementById('mobile-search-modal');
+                searchModal?.classList.add('hidden');
+              }}
+              aria-label="Fermer la recherche"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <h2 className="text-lg font-semibold">Rechercher un bien</h2>
+          </div>
+          <HeaderSearch
+            placeholder="Rechercher un bien, une ville, un quartier..."
+            compact={false}
+            className="w-full"
+          />
+        </div>
+      </div>
+    )}
+
     {/* Barre de couleurs identité */}
     <div className="fixed top-12 md:top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-20" />
   </>);

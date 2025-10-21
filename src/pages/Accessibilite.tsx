@@ -22,6 +22,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SUTAChatbot } from '@/components/SUTAChatbot';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { HeroHeader } from '@/components/shared/HeroHeader';
+import { Users as UsersIcon } from 'lucide-react';
 
 const AccessibilitePage = () => {
   return (
@@ -34,41 +36,17 @@ const AccessibilitePage = () => {
 
       <SUTAChatbot />
 
-      {/* En-tête */}
-      <div className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-        <div className="container mx-auto px-2 py-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white/10 rounded-full">
-                <Users className="h-12 w-12" />
-              </div>
-            </div>
-            <h1 className="text-4xl font-bold mb-4">
-              Accessibilité pour tous
-            </h1>
-            <p className="text-xl text-white/90 mb-8">
-              Mon Toit s'engage à rendre ses services accessibles à toutes et à tous
-            </p>
-            <div className="flex items-center justify-center gap-4">
-              <Badge variant="secondary" className="bg-green-500/20 text-green-100 border-green-400/30">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                WCAG 2.1 AA
-              </Badge>
-              <Badge variant="secondary" className="bg-blue-500/20 text-blue-100 border-blue-400/30">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                RGAA Conforme
-              </Badge>
-              <Badge variant="secondary" className="bg-purple-500/20 text-purple-100 border-purple-400/30">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                ANSUT Certifié
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* En-tête unifié */}
+      <HeroHeader 
+        badgeLabel="Accessibilité"
+        badgeIcon={UsersIcon}
+        title={<>Accessibilité pour tous</>}
+        description={"Mon Toit s'engage à rendre ses services accessibles à toutes et à tous"}
+        containerClassName="content-left"
+      />
 
       {/* Contenu principal */}
-      <div className="container mx-auto px-2 py-6">
+      <div className="content-left py-6">
         <div className="max-w-4xl mx-auto space-y-12">
 
           {/* Notre engagement */}

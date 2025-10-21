@@ -158,7 +158,7 @@ export const SUTAChatbot = () => {
       {/* Floating Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform z-50 bg-gradient-to-br from-primary to-secondary"
+        className="fixed bottom-24 md:bottom-6 right-4 md:right-6 h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform z-[70] bg-gradient-to-br from-primary to-secondary"
         size="icon"
       >
         {isOpen ? <X className="h-6 w-6" /> : <span className="text-2xl">✨</span>}
@@ -166,7 +166,7 @@ export const SUTAChatbot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-background border rounded-lg shadow-2xl flex flex-col z-50 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-36 md:bottom-24 right-4 md:right-6 w-[calc(100vw-2rem)] md:w-96 max-w-md h-[65vh] md:h-[600px] bg-background border rounded-lg shadow-2xl flex flex-col z-[70] animate-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
             <Avatar className="h-10 w-10 bg-gradient-to-br from-primary to-secondary">

@@ -38,14 +38,21 @@ export const MobileHero = () => {
   return (
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Illustration Abidjan */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
-          backgroundPosition: 'center 60%'
-        }}
-      />
+      {/* Image de fond - Dégradé mobile */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+        {/* Motifs mobiles */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="w-full h-full" style={{
+            backgroundImage: `repeating-linear-gradient(
+              60deg,
+              transparent,
+              transparent 15px,
+              #E67E22 15px,
+              #E67E22 16px
+            )`
+          }} />
+        </div>
+      </div>
       
       {/* Overlay crème pour lisibilité */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background-sand/75 to-background-light/80" />

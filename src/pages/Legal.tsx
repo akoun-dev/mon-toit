@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { HeroHeader } from "@/components/shared/HeroHeader";
+import { FileText } from "lucide-react";
 
 interface LegalPageProps {
   title: string;
@@ -11,15 +13,16 @@ const LegalPage = ({ title, lastUpdated, children }: LegalPageProps) => {
   return (
     <MainLayout>
       <main className="flex-1">
-        <div className="container mx-auto px-2 py-10">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2">{title}</h1>
-            <p className="text-sm text-muted-foreground mb-8">
-              Dernière mise à jour : {lastUpdated}
-            </p>
-            <div className="prose prose-lg max-w-none">
-              {children}
-            </div>
+        <HeroHeader 
+          badgeLabel="Informations légales"
+          badgeIcon={FileText}
+          title={<>{title}</>}
+          description={`Dernière mise à jour : ${lastUpdated}`}
+          containerClassName="content-left"
+        />
+        <div className="content-left py-8">
+          <div className="rich-text max-w-4xl mx-auto">
+            {children}
           </div>
         </div>
       </main>

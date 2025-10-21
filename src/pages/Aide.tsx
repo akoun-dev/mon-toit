@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
+import { HeroHeader } from '@/components/shared/HeroHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -179,18 +179,12 @@ export default function Aide() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
-        <DynamicBreadcrumb />
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Centre d'Aide et Support
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Retrouvez des réponses rapides à vos questions et découvrez comment utiliser efficacement Mon Toit
-          </p>
-        </div>
+      <div className="content-left py-4">
+        <HeroHeader 
+          badgeLabel="Support"
+          title={<>Centre d'Aide et Support</>}
+          description={"Retrouvez des réponses rapides à vos questions et découvrez comment utiliser efficacement Mon Toit"}
+        />
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

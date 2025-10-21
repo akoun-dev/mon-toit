@@ -5,7 +5,6 @@ import { IntelligentMap } from '@/components/map/IntelligentMap';
 import { MapFilters, MapFiltersState } from '@/components/map/MapFilters';
 import { useMapProperties, useMapStats } from '@/hooks/useMapProperties';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
@@ -17,7 +16,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { KentePattern } from '@/components/ui/african-patterns';
+import { HeroHeader } from '@/components/shared/HeroHeader';
 
 const SmartMap = () => {
   const navigate = useNavigate();
@@ -55,35 +54,16 @@ const SmartMap = () => {
   return (
     <MainLayout>
       <main>
-        {/* Hero Section */}
-        <section className="relative py-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
-          <KentePattern />
-          <div className="container mx-auto px-2 relative z-10">
-            <div className="text-center max-w-3xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Badge variant="secondary" className="mb-4">
-                  <MapIcon className="h-3 w-3 mr-1" />
-                  Carte Intelligente
-                </Badge>
-                <h1 className="text-h1 mb-4">
-                  Explorez <span className="text-gradient-primary">Abidjan</span> intelligemment
-                </h1>
-                <p className="text-body-lg text-muted-foreground">
-                  Découvrez les biens immobiliers avec notre carte interactive avancée : 
-                  clustering, heatmap des prix, et analyse de quartier en temps réel
-                </p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        <HeroHeader 
+          badgeLabel="Carte Intelligente"
+          badgeIcon={MapIcon}
+          title={<>Explorez <span className="text-gradient-primary">Abidjan</span> intelligemment</>}
+          description={"Découvrez les biens immobiliers avec notre carte interactive avancée : clustering, heatmap des prix, et analyse de quartier en temps réel"}
+        />
 
         {/* Map Section */}
         <section className="py-8">
-          <div className="container mx-auto px-2">
+          <div className="content-left">
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Sidebar with Filters */}
               <motion.div
@@ -239,4 +219,3 @@ const SmartMap = () => {
 };
 
 export default SmartMap;
-

@@ -51,14 +51,27 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Illustration Abidjan */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
-          backgroundPosition: 'center 60%' // Meilleur cadrage sur mobile
-        }}
-      />
+      {/* Image de fond - Dégradé avec motif */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+        {/* Motifs géométriques subtils */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="w-full h-full" style={{
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 20px,
+              #E67E22 20px,
+              #E67E22 21px
+            ), repeating-linear-gradient(
+              -45deg,
+              transparent,
+              transparent 20px,
+              #3498DB 20px,
+              #3498DB 21px
+            )`
+          }} />
+        </div>
+      </div>
       
       {/* Overlay crème pour lisibilité (75% opacité) */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/75 via-background-sand/70 to-background-light/75" />

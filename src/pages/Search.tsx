@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
-import { KentePattern } from '@/components/ui/african-patterns';
+import { HeroHeader } from '@/components/shared/HeroHeader';
+import { Search as SearchIcon } from 'lucide-react';
 import PropertyFiltersComponent, { PropertyFilters } from '@/components/PropertyFilters';
 import MobileFilters from '@/components/properties/MobileFilters';
 import { PullToRefresh } from '@/components/properties/PullToRefresh';
@@ -71,18 +72,12 @@ const Search = () => {
         <div className="content-left py-4 sm:py-3 md:py-4">
           <DynamicBreadcrumb />
 
-          {/* Header with improved typography */}
-          <div className="mb-6 sm:mb-8 md:mb-12">
-            <KentePattern />
-            <div className="relative z-10">
-              <h1 className="text-h1 mb-4">
-                <span className="text-gradient-primary">Rechercher</span> un bien
-              </h1>
-            </div>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl">
-              Trouvez le logement idéal parmi {properties.length} annonces à Abidjan et environs
-            </p>
-          </div>
+          <HeroHeader 
+            badgeLabel="Recherche"
+            badgeIcon={SearchIcon}
+            title={<> <span className="text-gradient-primary">Rechercher</span> un bien</>}
+            description={`Trouvez le logement idéal parmi ${properties.length} annonces à Abidjan et environs`}
+          />
 
           {/* Filters with better spacing */}
           <div className="mb-6 sm:mb-8">

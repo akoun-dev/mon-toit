@@ -3,7 +3,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, FileCheck, Home, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BogolanPattern } from "@/components/ui/african-patterns";
+import { HeroHeader } from "@/components/shared/HeroHeader";
 
 // Lazy load des sections
 const HowItWorks = lazy(() => import("@/components/HowItWorks"));
@@ -14,20 +14,12 @@ const CommentCaMarche = () => {
   return (
     <MainLayout>
       <main className="flex-1">
-        <div className="container mx-auto px-2 py-4">
-          <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-16 animate-fade-in relative">
-              <BogolanPattern />
-              <div className="relative z-10">
-                <h1 className="text-h1 mb-4">
-                  <span className="text-gradient-animated">Comment ça marche ?</span>
-                </h1>
-                <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                  Découvrez le processus simple et sécurisé de Mon Toit
-                </p>
-              </div>
-            </div>
+        <div className="content-left py-4">
+          <div className="w-full">
+            <HeroHeader 
+              title={<span className="text-gradient-animated">Comment ça marche ?</span>}
+              description={"Découvrez le processus simple et sécurisé de Mon Toit"}
+            />
 
             {/* Processus détaillé */}
             <Suspense fallback={<Skeleton className="h-96 w-full rounded-lg mb-20" />}>

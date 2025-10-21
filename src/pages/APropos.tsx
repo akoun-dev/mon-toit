@@ -3,27 +3,19 @@ import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
-import { AkanPattern } from "@/components/ui/african-patterns";
-import { GradientButton } from "@/components/ui/gradient-button";
+import { HeroHeader } from "@/components/shared/HeroHeader";
 
 const APropos = () => {
   return (
     <MainLayout showSidebar={false}>
       <main>
-        <div className="container mx-auto px-2 py-10">
-          <div className="max-w-4xl mx-auto">
-            {/* Hero avec pattern culturel */}
-            <div className="relative mb-12">
-              <AkanPattern />
-              <div className="relative z-10">
-                <h1 className="text-h1 text-center mb-4">
-                  <span className="text-gradient-primary">À propos</span> de Mon Toit
-                </h1>
-                <p className="text-xl text-muted-foreground text-center">
-                  La plateforme de confiance pour l'immobilier en Côte d'Ivoire
-                </p>
-              </div>
-            </div>
+        <div className="content-left py-8">
+          <div className="max-w-4xl">
+            <HeroHeader
+              title={<>À propos de <span className="text-gradient-primary">Mon Toit</span></>}
+              description="La plateforme de confiance pour l'immobilier en Côte d'Ivoire"
+              badgeLabel="Notre histoire"
+            />
 
             <div className="prose prose-lg max-w-none mb-12">
               <p>

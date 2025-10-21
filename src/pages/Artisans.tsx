@@ -30,6 +30,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SUTAChatbot } from '@/components/SUTAChatbot';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { HeroHeader } from '@/components/shared/HeroHeader';
 
 interface Artisan {
   id: string;
@@ -142,43 +143,30 @@ const ArtisansPage = () => {
       <SUTAChatbot />
 
       {/* En-tête */}
-      <div className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
-        <div className="container mx-auto px-2 py-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white/10 rounded-full">
-                <Wrench className="h-12 w-12" />
-              </div>
-            </div>
-            <h1 className="text-4xl font-bold mb-4">
-              Artisans & Services
-            </h1>
-            <p className="text-xl text-white/90 mb-8">
-              Trouvez des artisans de confiance certifiés par ANSUT pour tous vos travaux
-            </p>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-3 h-5 w-5 text-white/60" />
-                  <Input
-                    type="text"
-                    placeholder="Rechercher un artisan, une spécialité..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-white/20 border-white/30 text-white placeholder-white/60"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HeroHeader 
+        badgeLabel="Services"
+        title={<>Artisans & Services</>}
+        description={"Trouvez des artisans de confiance certifiés par ANSUT pour tous vos travaux"}
+      />
 
       {/* Filtres par catégorie */}
-      <div className="container mx-auto px-2 -mt-8">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <div className="flex items-center gap-4 mb-4">
+      <div className="content-left py-4">
+        <div className="bg-white rounded-xl shadow p-6">
+          {/* Recherche */}
+          <div className="mb-4">
+            <div className="relative max-w-xl">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Rechercher un artisan, une spécialité..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 mb-3">
             <Filter className="h-5 w-5 text-gray-500" />
             <h3 className="font-semibold">Catégories</h3>
           </div>
@@ -202,7 +190,7 @@ const ArtisansPage = () => {
       </div>
 
       {/* Résultats */}
-      <div className="container mx-auto px-2 py-4">
+      <div className="content-left py-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
             {filteredArtisans.length} artisan{filteredArtisans.length > 1 ? 's' : ''} trouvé{filteredArtisans.length > 1 ? 's' : ''}
@@ -313,7 +301,7 @@ const ArtisansPage = () => {
 
       {/* Section Comment ça marche */}
       <div className="bg-white py-16">
-        <div className="container mx-auto px-2">
+        <div className="content-left">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Comment trouver le bon artisan ?
@@ -366,7 +354,7 @@ const ArtisansPage = () => {
 
       {/* Call-to-action artisans */}
       <div className="bg-gray-50 py-16">
-        <div className="container mx-auto px-2">
+        <div className="content-left">
           <div className="bg-gradient-to-r from-primary to-primary-600 rounded-2xl p-8 text-center text-white">
             <h2 className="text-3xl font-bold mb-4">
               Vous êtes artisan ?

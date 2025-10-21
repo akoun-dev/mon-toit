@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { KentePattern } from "@/components/ui/african-patterns";
+import { HeroHeader } from "@/components/shared/HeroHeader";
 import { GradientButton } from "@/components/ui/gradient-button";
 
 const pricingPlans = [
@@ -66,22 +66,15 @@ const Tarifs = () => {
   return (
     <MainLayout showSidebar={false}>
       <main>
-        {/* Hero Section */}
-        <section className="py-12 md:py-18 bg-white relative">
-          <KentePattern />
-          <div className="container mx-auto px-2 max-w-7xl text-center relative z-10">
-            <h1 className="text-h1 mb-6">
-              Des tarifs <span className="text-gradient-primary">simples et transparents</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Choisissez la formule adaptée à votre besoin. Aucun frais caché, annulation à tout moment.
-            </p>
-          </div>
-        </section>
+        <HeroHeader
+          title={<>Des tarifs <span className="text-gradient-primary">simples et transparents</span></>}
+          description="Choisissez la formule adaptée à votre besoin. Aucun frais caché, annulation à tout moment."
+          badgeLabel="Tarifs"
+        />
 
         {/* Pricing Cards */}
         <section className="py-8 md:py-12 bg-gray-50">
-          <div className="container mx-auto px-2 max-w-7xl">
+          <div className="content-left">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {pricingPlans.map((plan, index) => {
                 const borderColor = 

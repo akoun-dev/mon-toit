@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AkanPattern } from "@/components/ui/african-patterns";
+import { HeroHeader } from "@/components/shared/HeroHeader";
 import SEOHead from "@/components/seo/SEOHead";
 import SEOFAQ from "@/components/seo/SEOFAQ";
 import SEOHowTo from "@/components/seo/SEOHowTo";
@@ -12,7 +12,7 @@ import { useSEO } from "@/hooks/useSEO";
 import {
   Search, Home, Shield, FileText, MessageSquare, CreditCard,
   CheckCircle, AlertCircle, Clock, Users, Mail, Phone,
-  Building2, UserCheck, HelpCircle, ExternalLink
+  Building2, UserCheck, HelpCircle, ExternalLink, BookOpen
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -49,21 +49,13 @@ const Guide = () => {
       <SEOHead {...seoConfig} />
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12 relative">
-          <AkanPattern />
-          <div className="container mx-auto px-2 text-center relative z-10">
-            <Badge variant="secondary" className="mb-4">Centre d'aide</Badge>
-            <h1 className="text-3xl sm:text-4xl md:text-h1 mb-4">
-              Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              Guides détaillés, FAQ et support pour profiter pleinement de Mon Toit
-            </p>
-          </div>
-        </section>
+        <HeroHeader 
+          badgeLabel="Centre d'aide"
+          title={<>Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?</>}
+          description={"Guides détaillés, FAQ et support pour profiter pleinement de Mon Toit"}
+        />
 
-        <div className="container mx-auto px-2 pb-16">
+        <div className="content-left pb-16">
           {/* Quick Links */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             <Link to="/explorer">
