@@ -74,6 +74,9 @@ import AboutPage from "./pages/AboutPage";
 import SmartMap from "./pages/SmartMap";
 import SmartMapV2 from "./pages/SmartMapV2";
 import Aide from "./pages/Aide";
+import Artisans from "./pages/Artisans";
+import ProtectionDonnees from "./pages/ProtectionDonnees";
+import Accessibilite from "./pages/Accessibilite";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -371,14 +374,17 @@ const AppContent = () => {
             <Route path="/certification-faq" element={<CertificationFAQ />} />
             <Route path="/tarifs" element={<Tarifs />} />
             <Route path="/aide" element={<Aide />} />
-            
-            <Route 
-              path="/populate-images" 
+            <Route path="/artisans" element={<Artisans />} />
+            <Route path="/protection-donnees" element={<ProtectionDonnees />} />
+            <Route path="/accessibilite" element={<Accessibilite />} />
+
+            <Route
+              path="/populate-images"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
                   <PopulateImages />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route 
               path="/test-cryptoneo" 
