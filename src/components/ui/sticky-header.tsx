@@ -8,7 +8,7 @@ interface StickyHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const StickyHeader = React.forwardRef<HTMLDivElement, StickyHeaderProps>(
-  ({ children, offsetTop = "top-16", blur = true, className, ...props }, ref) => {
+  ({ children, offsetTop = "top-12 md:top-14", blur = true, className, ...props }, ref) => {
     return (
       <div
         ref={ref}

@@ -121,7 +121,7 @@ export function ModernAppSidebar() {
                 className={cn(
                   "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 transition-all duration-200 relative overflow-hidden",
                   active 
-                    ? "bg-gradient-to-r from-primary/10 to-secondary/10 border-l-3 border-primary shadow-sm" 
+                    ? "bg-gradient-to-r from-primary/10 to-secondary/10 border-l-[3px] border-primary shadow-sm" 
                     : link?.highlight
                     ? "bg-gradient-to-r from-orange-500/10 to-orange-500/5 border border-orange-500/20 hover:from-orange-500/15 hover:to-orange-500/10"
                     : "hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent"

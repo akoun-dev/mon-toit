@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,9 +8,8 @@ import { GradientButton } from "@/components/ui/gradient-button";
 
 const APropos = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pt-24">
+    <MainLayout showSidebar={false}>
+      <main>
         <div className="container mx-auto px-4 py-10">
           <div className="max-w-4xl mx-auto">
             {/* Hero avec pattern culturel */}
@@ -114,8 +112,7 @@ const APropos = () => {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 

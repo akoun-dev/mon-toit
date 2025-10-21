@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import CertifiedBadge from "@/components/ui/certified-badge";
 import { Shield, Lock, FileCheck, Users } from "lucide-react";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
@@ -31,9 +30,8 @@ const Certification = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pt-24">
+    <MainLayout showSidebar={false}>
+      <main>
         {/* Hero with illustration */}
         <section className="relative h-96 overflow-hidden mb-12">
           <LazyIllustration 
@@ -102,8 +100,7 @@ const Certification = () => {
           </div>
         </section>
       </main>
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 

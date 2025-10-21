@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -65,9 +64,8 @@ const pricingPlans = [
 
 const Tarifs = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pt-24">
+    <MainLayout showSidebar={false}>
+      <main>
         {/* Hero Section */}
         <section className="py-12 md:py-18 bg-white relative">
           <KentePattern />
@@ -216,8 +214,7 @@ const Tarifs = () => {
           </div>
         </section>
       </main>
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 
