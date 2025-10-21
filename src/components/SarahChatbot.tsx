@@ -146,18 +146,18 @@ export const SarahChatbot = () => {
                   return newMessages;
                 });
               }
-              
-              // If voice mode is enabled and this is the complete response, speak it
-              if (data === '[DONE]' && useVoice && assistantMessage) {
-                speak(assistantMessage).catch(error => {
-                  logger.error('Failed to speak response', { error });
-                });
-              }
             } catch (e) {
               // Ignore parse errors
             }
           }
         }
+      }
+
+      // Déclencher la synthèse vocale après le streaming complet
+      if (useVoice && assistantMessage.trim()) {
+        speak(assistantMessage).catch(error => {
+          logger.error('Failed to speak response', { error });
+        });
       }
     } catch (error) {
       logger.error('Error sending Sarah chat message', { error });
