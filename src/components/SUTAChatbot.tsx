@@ -22,12 +22,12 @@ const QUICK_SUGGESTIONS = [
   "Quels sont les tarifs ?",
 ];
 
-export const SarahChatbot = () => {
+export const SUTAChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "👋 Bonjour ! Je suis Sarrah, votre assistante Mon Toit. Comment puis-je vous aider aujourd'hui ?"
+      content: "👋 Bonjour ! Je suis SUTA, votre assistante Mon Toit. Comment puis-je vous aider aujourd'hui ?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -175,7 +175,7 @@ export const SarahChatbot = () => {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <h3 className="font-semibold">Sarrah</h3>
+              <h3 className="font-semibold">SUTA</h3>
               <p className="text-xs opacity-90">Assistante Mon Toit</p>
             </div>
           </div>

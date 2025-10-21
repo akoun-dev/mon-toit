@@ -10,7 +10,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ErrorBoundary from "@/components/ui/error-boundary";
 import { initializeSentry } from "@/lib/sentry-enhanced";
-import { SarahChatbot } from "@/components/SarahChatbot";
+import { SUTAChatbot } from "@/components/SUTAChatbot";
 import { usePrefetchRoutes } from "@/hooks/usePrefetchRoutes";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { PageSkeleton, PropertyDetailSkeleton } from "@/components/LoadingFallback";
@@ -113,7 +113,7 @@ const AppContent = () => {
       </a>
       
       <ContextBar />
-      <SarahChatbot />
+      <SUTAChatbot />
       <main id="main-content" tabIndex={-1}>
         <PageTransition>
           <Routes>
