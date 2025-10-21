@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText } from "lucide-react";
+import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -171,9 +171,8 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 className="font-semibold h-10 md:h-9"
                 asChild
               >
-                <Link to="/auth" aria-label="Connexion">
-                  <User className="h-4 w-4 md:mr-2" />
-                  <span className="hidden md:inline">Connexion</span>
+                <Link to="/auth" aria-label="Se connecter">
+                  <span>Se connecter</span>
                 </Link>
               </Button>
             )}
