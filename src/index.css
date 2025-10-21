@@ -180,8 +180,8 @@
   .rich-text {
     @apply text-base leading-relaxed text-foreground;
   }
-  .rich-text h2 { @apply text-2xl font-bold mt-6 mb-3; }
-  .rich-text h3 { @apply text-xl font-semibold mt-5 mb-2; }
+  .rich-text h2 { @apply text-xl md:text-2xl font-bold mt-6 mb-3; }
+  .rich-text h3 { @apply text-lg md:text-xl font-semibold mt-5 mb-2; }
   .rich-text p { @apply my-3; }
   .rich-text a { @apply text-primary underline underline-offset-4 hover:text-primary/80; }
   .rich-text ul { @apply list-disc ml-6 my-3 space-y-1; }
@@ -189,6 +189,9 @@
   .rich-text li { @apply leading-relaxed; }
   .rich-text hr { @apply my-6 border-border; }
   .rich-text blockquote { @apply border-l-4 pl-4 italic text-muted-foreground; }
+  .rich-text img, .rich-text video { @apply max-w-full h-auto rounded-md my-2; }
+  .rich-text pre, .rich-text code { word-break: break-word; overflow-wrap: anywhere; }
+  .rich-text table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; }
 }
 
 /* Animation pour le bouton CTA */
