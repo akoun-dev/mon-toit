@@ -76,7 +76,7 @@ const SmartMapV2 = () => {
     <MainLayout>
       <main>
         <HeroHeader
-          badgeLabel="Carte Intelligente V2"
+          badgeLabel="Carte Intelligente"
           badgeIcon={Map}
           title={<>Explorez <span className="text-gradient-primary">Abidjan</span> intelligemment</>}
           description="Découvrez les biens avec clustering, heatmap, POI, zones de quartiers et analyse complète"
