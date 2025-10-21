@@ -332,17 +332,17 @@ const PropertyDetail = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 md:py-8">
         <div className="max-w-7xl mx-auto">
           {/* Back button */}
-          <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
+          <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour
           </Button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Images and main content */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
               {/* Multimedia Gallery */}
               <div className="relative">
                 <MediaGallery
@@ -378,16 +378,16 @@ const PropertyDetail = () => {
 
               {/* Agency Management Info */}
               {agencyMandate && (
-                <Alert>
+                <Alert className="mb-4">
                   <Building2 className="h-4 w-4" />
                   <AlertTitle>Géré par une agence</AlertTitle>
                   <AlertDescription>
-                    <p className="mb-2">
+                    <p className="mb-3">
                       Ce bien est actuellement géré par une agence immobilière
                     </p>
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">
-                        {agencyMandate.mandate_type === 'location' ? 'Location' : 
+                        {agencyMandate.mandate_type === 'location' ? 'Location' :
                          agencyMandate.mandate_type === 'gestion_complete' ? 'Gestion complète' : 'Vente'}
                       </Badge>
                       {agencyMandate.commission_rate && (
@@ -415,39 +415,39 @@ const PropertyDetail = () => {
 
               {/* Characteristics */}
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-4">
                   <CardTitle>Caractéristiques</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2">
-                      <Home className="h-5 w-5 text-primary" />
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="flex items-center gap-3">
+                      <Home className="h-5 w-5 text-primary flex-shrink-0" />
                       <div>
                         <p className="text-sm text-muted-foreground">Type</p>
                         <p className="font-medium">{property.property_type}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Maximize className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3">
+                      <Maximize className="h-5 w-5 text-primary flex-shrink-0" />
                       <div>
                         <p className="text-sm text-muted-foreground">Surface</p>
                         <p className="font-medium">{property.surface_area || 'N/A'} m²</p>
                       </div>
                     </div>
-                <div className="flex items-center gap-2">
-                  <Bed className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Chambres</p>
-                    <p className="font-medium">
-                      {property.bedrooms === 0 
-                        ? 'Studio (0 chambre séparée)' 
-                        : property.bedrooms
-                      }
-                    </p>
-                  </div>
-                </div>
-                    <div className="flex items-center gap-2">
-                      <Bath className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3">
+                      <Bed className="h-5 w-5 text-primary flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Chambres</p>
+                        <p className="font-medium">
+                          {property.bedrooms === 0
+                            ? 'Studio (0 chambre séparée)'
+                            : property.bedrooms
+                          }
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Bath className="h-5 w-5 text-primary flex-shrink-0" />
                       <div>
                         <p className="text-sm text-muted-foreground">Salles de bain</p>
                         <p className="font-medium">{property.bathrooms}</p>
@@ -455,33 +455,36 @@ const PropertyDetail = () => {
                     </div>
                   </div>
 
-                  <Separator className="my-4" />
+                  <Separator />
 
-                  <div className="flex flex-wrap gap-2">
-                    {property.is_furnished && (
-                      <Badge variant="secondary" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Meublé
-                      </Badge>
-                    )}
-                    {property.has_ac && (
-                      <Badge variant="secondary" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Climatisation
-                      </Badge>
-                    )}
-                    {property.has_parking && (
-                      <Badge variant="secondary" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Parking
-                      </Badge>
-                    )}
-                    {property.has_garden && (
-                      <Badge variant="secondary" className="gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Jardin
-                      </Badge>
-                    )}
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-3">Équipements et services</p>
+                    <div className="flex flex-wrap gap-2">
+                      {property.is_furnished && (
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Meublé
+                        </Badge>
+                      )}
+                      {property.has_ac && (
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Climatisation
+                        </Badge>
+                      )}
+                      {property.has_parking && (
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Parking
+                        </Badge>
+                      )}
+                      {property.has_garden && (
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Jardin
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -489,20 +492,20 @@ const PropertyDetail = () => {
               {/* Location */}
               {property.latitude && property.longitude && (
                 <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
+                  <CardHeader className="pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <CardTitle className="flex items-center gap-2">
                         <MapPin className="h-5 w-5" />
                         Localisation
                       </CardTitle>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         asChild
                       >
-                        <a 
+                        <a
                           href={`https://maps.google.com/?q=${property.latitude},${property.longitude}`}
-                          target="_blank" 
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="gap-2"
                         >
@@ -513,7 +516,7 @@ const PropertyDetail = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <LocationSection 
+                    <LocationSection
                       propertyId={property.id}
                       latitude={property.latitude}
                       longitude={property.longitude}
@@ -543,7 +546,7 @@ const PropertyDetail = () => {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Owner actions */}
               {isOwner && (
                 <Card className="border-primary">
@@ -631,15 +634,17 @@ const PropertyDetail = () => {
               )}
 
               {/* Price card */}
-              <Card>
-                <CardHeader>
-                  <h1 className="text-3xl font-bold">{property.title}</h1>
-                  <p className="text-3xl font-bold text-primary mt-2">
-                    {property.monthly_rent ? property.monthly_rent.toLocaleString('fr-FR') : 'N/A'} FCFA
-                    <span className="text-sm text-muted-foreground font-normal">/mois</span>
-                  </p>
+              <Card className="sticky top-6">
+                <CardHeader className="pb-4">
+                  <h1 className="text-2xl md:text-3xl font-bold leading-tight">{property.title}</h1>
+                  <div className="flex items-baseline gap-2 mt-3">
+                    <p className="text-2xl md:text-3xl font-bold text-primary">
+                      {property.monthly_rent ? property.monthly_rent.toLocaleString('fr-FR') : 'N/A'} FCFA
+                    </p>
+                    <span className="text-sm text-muted-foreground">/mois</span>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                   {property.deposit_amount && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Caution</span>
@@ -650,8 +655,8 @@ const PropertyDetail = () => {
                   <Separator />
 
                   {!isOwner && !user && property.status === 'disponible' && (
-                    <div className="space-y-2">
-                      <Button asChild size="lg" className="w-full gap-2">
+                    <div className="space-y-3">
+                      <Button asChild size="lg" className="w-full gap-2 h-12">
                         <Link to="/auth">
                           <Users className="h-5 w-5" />
                           Créer un compte pour postuler
@@ -662,16 +667,16 @@ const PropertyDetail = () => {
                       </p>
                     </div>
                   )}
-                  
+
                   {!isOwner && user && (
-                    <div className="space-y-2">
-                      <Button className="w-full gap-2" onClick={handleContact}>
+                    <div className="space-y-3">
+                      <Button className="w-full gap-2 h-11" onClick={handleContact}>
                         <MessageCircle className="h-4 w-4" />
                         Contacter le propriétaire
                       </Button>
                       {property.status === 'disponible' && (
                         <VerificationGuard propertyId={property.id}>
-                          <Button variant="outline" className="w-full gap-2">
+                          <Button variant="outline" className="w-full gap-2 h-11">
                             <Calendar className="h-4 w-4" />
                             Postuler
                           </Button>
@@ -783,7 +788,7 @@ const PropertyDetail = () => {
 
           {/* Similar Properties Section */}
           {!isOwner && user && (
-            <div className="mt-12">
+            <div className="mt-8 md:mt-12">
               <RecommendationsSection
                 userId={user.id}
                 type="properties"
