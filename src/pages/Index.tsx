@@ -32,16 +32,16 @@ const Index = () => {
         />
 
         {/* Mini CTA - Subtle, non-intrusive */}
-        <section className="py-8 bg-gradient-to-b from-primary/5 to-background border-t border-primary/10">
-          <div className="container mx-auto px-4 max-w-4xl">
+        <section className="py-6 md:py-8 bg-gradient-to-b from-primary/5 to-background border-t border-primary/10">
+          <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2 text-foreground">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-foreground">
                 Pas encore trouvé votre toit idéal ?
               </h2>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
                 Explorez plus de biens ou découvrez pourquoi 10 000+ Ivoiriens nous font confiance
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button asChild size="lg" className="shadow-md min-w-[200px]">
                   <Link to="/explorer">
                     <Search className="h-4 w-4 mr-2" />

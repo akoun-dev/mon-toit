@@ -136,7 +136,7 @@ export const PropertyCard = ({
       <Card 
         {...swipeHandlers}
         {...longPressProps}
-        className="group relative overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-all duration-300 border border-border rounded-2xl animate-scale-in active:scale-95"
+        className="group relative overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-all duration-300 border border-border rounded-xl animate-scale-in active:scale-95"
         role="article"
         aria-labelledby={`property-title-${property.id}`}
         aria-describedby={`property-description-${property.id}`}
@@ -288,25 +288,25 @@ export const PropertyCard = ({
         Statut : {getPropertyStatusLabel(property.status)}.
       </div>
 
-      <CardHeader className="p-2 sm:p-3 md:p-4 pb-1 sm:pb-2">
+      <CardHeader className="p-3 sm:p-4 pb-2">
         <div className="flex items-baseline gap-2 mb-2">
-          <p className="text-2xl sm:text-3xl font-black text-primary">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
           </p>
           <span className="text-sm font-medium text-muted-foreground">/mois</span>
         </div>
-        <CardTitle id={`property-title-${property.id}`} className="line-clamp-1 text-base sm:text-lg font-bold">
+        <CardTitle id={`property-title-${property.id}`} className="line-clamp-2 sm:line-clamp-1 text-sm sm:text-base md:text-lg font-bold">
           {property.property_type} {property.bedrooms}ch. - {property.city}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-2 sm:space-y-3 p-2 sm:p-3 md:p-4 pt-0">
+      <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-4 pt-2">
         <div className="flex items-center text-muted-foreground">
           <MapPin className="h-4 w-4 mr-2 flex-shrink-0 text-primary" />
           <span className="line-clamp-1 font-medium">{property.city}</span>
         </div>
 
-        <div className="flex items-center gap-4 text-sm bg-muted/50 p-2 rounded-xl">
+        <div className="flex items-center gap-4 text-sm bg-muted/50 p-3 rounded-lg">
           <div className="flex items-center gap-1">
             <Bed className="h-4 w-4" />
             <span className="font-medium">{property.bedrooms}</span>
@@ -332,7 +332,7 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Button asChild variant="default" className="w-full rounded-xl min-h-[40px] font-semibold shadow-md active:scale-95">
+        <Button asChild variant="default" className="w-full rounded-lg min-h-[44px] font-semibold shadow-md active:scale-95">
           <Link to={`/property/${property.id}`}>Découvrir ce bien</Link>
         </Button>
       </CardContent>

@@ -13,11 +13,11 @@ const FeaturedProperties = lazy(() => import("@/components/FeaturedProperties"))
 const Explorer = () => {
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 md:py-8">
         <div className="max-w-7xl mx-auto">
           <DynamicBreadcrumb />
           
-          <div className="text-center mb-12 animate-fade-in relative">
+          <div className="text-center mb-8 md:mb-12 animate-fade-in relative">
             <KentePattern />
             <div className="relative z-10">
               <h1 className="text-h1 mb-4">
@@ -30,7 +30,7 @@ const Explorer = () => {
           </div>
 
           {/* Bannière quartier */}
-          <section className="mb-8">
+          <section className="mb-6 md:mb-8">
             <div className="relative h-40 md:h-48 rounded-lg overflow-hidden shadow-lg">
               <LazyIllustration 
                 src={getIllustrationPath('abidjan-neighborhood')!}
@@ -48,7 +48,7 @@ const Explorer = () => {
 
           {/* Carte interactive */}
           <Suspense fallback={<Skeleton className="h-96 w-full rounded-lg mb-16" />}>
-            <div className="mb-16 animate-fade-in">
+            <div className="mb-12 md:mb-16 animate-fade-in">
               <ExploreMap />
             </div>
           </Suspense>
