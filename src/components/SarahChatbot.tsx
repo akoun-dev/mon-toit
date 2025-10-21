@@ -154,10 +154,21 @@ export const SarahChatbot = () => {
       }
 
       // Déclencher la synthèse vocale après le streaming complet
+      console.log('🔊 TTS Debug:', {
+        useVoice,
+        hasMessage: !!assistantMessage.trim(),
+        messageLength: assistantMessage.length,
+        message: assistantMessage.substring(0, 50)
+      });
+      
       if (useVoice && assistantMessage.trim()) {
+        console.log('🎤 Tentative de lecture vocale...');
         speak(assistantMessage).catch(error => {
+          console.error('❌ Erreur TTS:', error);
           logger.error('Failed to speak response', { error });
         });
+      } else {
+        console.log('⏸️ TTS non déclenché:', { useVoice, hasMessage: !!assistantMessage.trim() });
       }
     } catch (error) {
       logger.error('Error sending Sarah chat message', { error });
