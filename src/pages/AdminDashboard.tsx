@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { StickyHeader } from '@/components/ui/sticky-header';
 import { Shield } from 'lucide-react';
@@ -130,189 +127,181 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <SidebarProvider>
-        <div className="flex w-full min-h-screen">
-          <AdminSidebar 
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            badges={{
-              certifications: pendingCertifications,
-              disputes: openDisputes,
-              properties: pendingProperties,
-              overdueApplications: overdueApplications,
-            }}
-          />
+    <MainLayout 
+      customSidebar={
+        <AdminSidebar 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          badges={{
+            certifications: pendingCertifications,
+            disputes: openDisputes,
+            properties: pendingProperties,
+            overdueApplications: overdueApplications,
+          }}
+        />
+      }
+    >
+      <div className="container mx-auto px-6 py-6">
+        <StickyHeader>
+          <h1 className="text-2xl font-bold">Administration ANSUT</h1>
+          <p className="text-sm text-muted-foreground">
+            Gestion et validation de la plateforme Mon Toit
+          </p>
+        </StickyHeader>
 
-          <SidebarInset className="flex-1">
-            <main className="container mx-auto px-6 py-6">
-              <StickyHeader>
-                <h1 className="text-2xl font-bold">Administration ANSUT</h1>
-                <p className="text-sm text-muted-foreground">
-                  Gestion et validation de la plateforme Mon Toit
-                </p>
-              </StickyHeader>
+        {/* Vue d'ensemble */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <SeedDemoDataButton />
+            <AdminStats />
+          </div>
+        )}
 
-              {/* Vue d'ensemble */}
-              {activeTab === 'overview' && (
-                <div className="space-y-6">
-                  <SeedDemoDataButton />
-                  <AdminStats />
-                </div>
-              )}
+        {/* Certifications */}
+        {activeTab === 'certifications' && (
+          <LeaseCertificationQueue />
+        )}
 
-              {/* Certifications */}
-              {activeTab === 'certifications' && (
-                <LeaseCertificationQueue />
-              )}
+        {/* Vérifications */}
+        {activeTab === 'verifications' && (
+          <AdminVerificationQueue />
+        )}
 
-              {/* Vérifications */}
-              {activeTab === 'verifications' && (
-                <AdminVerificationQueue />
-              )}
+        {/* Traitement */}
+        {activeTab === 'processing' && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <ProcessingConfigPanel />
+            <ProcessingAnalytics />
+          </div>
+        )}
 
-              {/* Traitement */}
-              {activeTab === 'processing' && (
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <ProcessingConfigPanel />
-                  <ProcessingAnalytics />
-                </div>
-              )}
+        {/* Sécurité - Accès sensibles */}
+        {activeTab === 'security' && (
+          <SensitiveDataAccessMonitor />
+        )}
 
-              {/* Sécurité - Accès sensibles */}
-              {activeTab === 'security' && (
-                <SensitiveDataAccessMonitor />
-              )}
+        {/* Sécurité 2FA */}
+        {activeTab === 'mfa' && (
+          <EnhancedMfaSecurityMonitor />
+        )}
 
-              {/* Sécurité 2FA */}
-            {activeTab === 'mfa' && (
-              <EnhancedMfaSecurityMonitor />
+        {/* Audit */}
+        {activeTab === 'audit' && (
+          <div className="space-y-6">
+            {!hasRole('super_admin') && !hasRole('admin') && (
+              <PromoteToSuperAdmin />
             )}
+            <AuditLogViewer />
+          </div>
+        )}
 
-              {/* Audit */}
-              {activeTab === 'audit' && (
-                <div className="space-y-6">
-                  {!hasRole('super_admin') && !hasRole('admin') && (
-                    <PromoteToSuperAdmin />
-                  )}
-                  <AuditLogViewer />
-                </div>
-              )}
+        {/* Analytics */}
+        {activeTab === 'analytics' && (
+          <PlatformAnalytics />
+        )}
 
-              {/* Analytics */}
-              {activeTab === 'analytics' && (
-                <PlatformAnalytics />
-              )}
+        {/* Litiges */}
+        {activeTab === 'disputes' && (
+          <DisputeManager />
+        )}
 
-              {/* Litiges */}
-              {activeTab === 'disputes' && (
-                <DisputeManager />
-              )}
+        {/* Modération */}
+        {activeTab === 'moderation' && (
+          <ReviewModeration />
+        )}
 
-              {/* Modération */}
-              {activeTab === 'moderation' && (
-                <ReviewModeration />
-              )}
+        {/* Rapports */}
+        {activeTab === 'reporting' && (
+          <AdvancedReporting />
+        )}
 
-              {/* Rapports */}
-              {activeTab === 'reporting' && (
-                <AdvancedReporting />
-              )}
+        {/* Rapports Mensuels */}
+        {activeTab === 'reports' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                📊 Générateur de Rapports Mensuels
+              </CardTitle>
+              <CardDescription>
+                Générer et envoyer des rapports de performance aux propriétaires
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReportGenerator />
+            </CardContent>
+          </Card>
+        )}
 
-              {/* Rapports Mensuels */}
-              {activeTab === 'reports' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      📊 Générateur de Rapports Mensuels
-                    </CardTitle>
-                    <CardDescription>
-                      Générer et envoyer des rapports de performance aux propriétaires
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ReportGenerator />
-                  </CardContent>
-                </Card>
-              )}
+        {/* Générateur d'Illustrations */}
+        {activeTab === 'illustrations' && (
+          <IllustrationGenerator />
+        )}
 
-              {/* Générateur d'Illustrations */}
-              {activeTab === 'illustrations' && (
-                <IllustrationGenerator />
-              )}
+        {/* Signatures Électroniques */}
+        {activeTab === 'electronic-signatures' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Signatures Électroniques CryptoNeo
+              </CardTitle>
+              <CardDescription>
+                Gestion des certificats numériques et signatures électroniques
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="dashboard" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="dashboard">Tableau de bord</TabsTrigger>
+                  <TabsTrigger value="certificates">Gestion des certificats</TabsTrigger>
+                </TabsList>
 
-              {/* Signatures Électroniques */}
-              {activeTab === 'electronic-signatures' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5" />
-                      Signatures Électroniques CryptoNeo
-                    </CardTitle>
-                    <CardDescription>
-                      Gestion des certificats numériques et signatures électroniques
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Tabs defaultValue="dashboard" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2 mb-6">
-                        <TabsTrigger value="dashboard">Tableau de bord</TabsTrigger>
-                        <TabsTrigger value="certificates">Gestion des certificats</TabsTrigger>
-                      </TabsList>
+                <TabsContent value="dashboard">
+                  <ElectronicSignaturesDashboard />
+                </TabsContent>
 
-                      <TabsContent value="dashboard">
-                        <ElectronicSignaturesDashboard />
-                      </TabsContent>
+                <TabsContent value="certificates">
+                  <CertificateManager />
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        )}
 
-                      <TabsContent value="certificates">
-                        <CertificateManager />
-                      </TabsContent>
-                    </Tabs>
-                  </CardContent>
-                </Card>
-              )}
+        {/* Biens */}
+        {activeTab === 'properties' && (
+          <AdminProperties />
+        )}
 
-              {/* Biens */}
-              {activeTab === 'properties' && (
-                <AdminProperties />
-              )}
+        {/* Utilisateurs */}
+        {activeTab === 'users' && (
+          <AdminUsers />
+        )}
 
-              {/* Utilisateurs */}
-              {activeTab === 'users' && (
-                <AdminUsers />
-              )}
+        {/* Baux */}
+        {activeTab === 'leases' && (
+          <Tabs defaultValue="list" className="w-full">
+            <TabsList>
+              <TabsTrigger value="list">Liste des Baux</TabsTrigger>
+              <TabsTrigger value="templates">Modèles de Baux</TabsTrigger>
+            </TabsList>
 
-              {/* Baux */}
-              {activeTab === 'leases' && (
-                <Tabs defaultValue="list" className="w-full">
-                  <TabsList>
-                    <TabsTrigger value="list">Liste des Baux</TabsTrigger>
-                    <TabsTrigger value="templates">Modèles de Baux</TabsTrigger>
-                  </TabsList>
+            <TabsContent value="list" className="mt-4">
+              <AdminLeases />
+            </TabsContent>
 
-                  <TabsContent value="list" className="mt-4">
-                    <AdminLeases />
-                  </TabsContent>
+            <TabsContent value="templates" className="mt-4">
+              <LeaseTemplateManager />
+            </TabsContent>
+          </Tabs>
+        )}
 
-                  <TabsContent value="templates" className="mt-4">
-                    <LeaseTemplateManager />
-                  </TabsContent>
-                </Tabs>
-              )}
-
-              {/* Alertes Propriétés */}
-              {activeTab === 'alerts' && (
-                <PropertyAlertsMonitor />
-              )}
-            </main>
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
-
-      <Footer />
-    </div>
+        {/* Alertes Propriétés */}
+        {activeTab === 'alerts' && (
+          <PropertyAlertsMonitor />
+        )}
+      </div>
+    </MainLayout>
   );
 };
 

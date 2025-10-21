@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAgencyMandates } from '@/hooks/useAgencyMandates';
 import { useAgencyProperties } from '@/hooks/useAgencyProperties';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -46,7 +47,8 @@ export default function MyMandates() {
   }, 0);
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <MainLayout>
+      <div className="container mx-auto py-8 space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Mes mandats de gestion</h1>
@@ -217,6 +219,7 @@ export default function MyMandates() {
         open={inviteDialogOpen} 
         onOpenChange={setInviteDialogOpen}
       />
-    </div>
+      </div>
+    </MainLayout>
   );
 }

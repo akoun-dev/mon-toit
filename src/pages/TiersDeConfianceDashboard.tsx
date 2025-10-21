@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react';
@@ -87,10 +86,8 @@ const TiersDeConfianceDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8">Espace Tiers de Confiance</h1>
 
         {/* Stats Cards */}
@@ -179,10 +176,8 @@ const TiersDeConfianceDashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 

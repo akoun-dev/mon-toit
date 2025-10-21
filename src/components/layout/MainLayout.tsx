@@ -9,10 +9,12 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 interface MainLayoutProps {
   children: ReactNode;
   showSidebar?: boolean;
+  customSidebar?: ReactNode;
 }
 
-export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) => {
+export const MainLayout = ({ children, showSidebar = true, customSidebar }: MainLayoutProps) => {
   const isMobile = useIsMobile();
+  const sidebarComponent = customSidebar || <ModernAppSidebar />;
   
   if (!showSidebar) {
     return (
@@ -30,7 +32,7 @@ export const MainLayout = ({ children, showSidebar = true }: MainLayoutProps) =>
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full">
-        {!isMobile && <ModernAppSidebar />}
+        {!isMobile && sidebarComponent}
         <SidebarInset className="flex flex-col flex-1">
           <Navbar showSidebarTrigger={true} />
           <div className="flex-1 pt-14 md:pt-16 pb-20 md:pb-0 w-full">

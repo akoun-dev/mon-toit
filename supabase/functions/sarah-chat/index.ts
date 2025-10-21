@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,181 +12,134 @@ serve(async (req) => {
 
   try {
     const { message, conversationId, sessionId } = await req.json();
-    
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!lovableApiKey) {
+    if (!message) {
+      throw new Error('Message is required');
+    }
+
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    console.log('Processing SUTA chat message:', { message, conversationId, sessionId });
 
-    // Récupérer ou créer la conversation
-    let currentConversationId = conversationId;
-    
-    if (!currentConversationId) {
-      const authHeader = req.headers.get('Authorization');
-      let userId = null;
-      
-      if (authHeader) {
-        const token = authHeader.replace('Bearer ', '');
-        const { data: { user } } = await supabase.auth.getUser(token);
-        userId = user?.id || null;
-      }
+    // System prompt pour SUTA (assistant Mon Toit)
+    const systemPrompt = `Tu es SUTA, l'assistant virtuel intelligent de Mon Toit, la plateforme immobilière ivoirienne.
 
-      const { data: conversation, error: convError } = await supabase
-        .from('sarah_conversations')
-        .insert({
-          user_id: userId,
-          session_id: sessionId || crypto.randomUUID()
-        })
-        .select()
-        .single();
+CONTEXTE:
+Mon Toit est une plateforme qui connecte locataires, propriétaires et agents immobiliers en Côte d'Ivoire.
 
-      if (convError) throw convError;
-      currentConversationId = conversation.id;
-    }
+TON RÔLE:
+- Aider les utilisateurs à naviguer sur la plateforme
+- Répondre aux questions sur les fonctionnalités
+- Guider dans la création de profils et la publication d'annonces
+- Expliquer le processus de location/vente
+- Donner des conseils immobiliers adaptés au marché ivoirien
 
-    // Sauvegarder le message utilisateur
-    await supabase.from('sarah_messages').insert({
-      conversation_id: currentConversationId,
-      role: 'user',
-      content: message
-    });
+INFORMATIONS CLÉS:
+- ANSUT: Agence Nationale de Suivi des Travaux (vérifie les projets de construction)
+- CNAM: Caisse Nationale d'Assurance Maladie (vérification d'identité)
+- OneCI: Vérification d'identité nationale ivoirienne
+- La plateforme utilise Mobile Money (Orange Money, MTN, Moov) pour les paiements
+- Documents requis: pièce d'identité, justificatifs de revenus, certificat ANSUT pour les biens neufs
 
-    // Récupérer l'historique de la conversation
-    const { data: history } = await supabase
-      .from('sarah_messages')
-      .select('role, content')
-      .eq('conversation_id', currentConversationId)
-      .order('created_at', { ascending: true });
+STYLE DE COMMUNICATION:
+- Amical et professionnel
+- Utilise des émojis avec modération
+- Réponses concises et claires
+- Adapté au contexte ivoirien
+- Tutoiement naturel
 
-    // Préparer les messages pour l'IA
-    const messages = [
-      {
-        role: 'system',
-        content: `Tu es Sarah, l'assistante virtuelle de Mon Toit, la plateforme de location immobilière certifiée en Côte d'Ivoire.
+IMPORTANT:
+- Si tu ne connais pas une information, dis-le honnêtement
+- Propose toujours une action concrète
+- Sois précis sur les délais et processus`;
 
-Tu es chaleureuse, professionnelle et empathique. Tu connais parfaitement :
-- La location immobilière en Côte d'Ivoire
-- Le processus de certification ANSUT (Agence Nationale de Sécurité des Usagers des TIC)
-- Les différents quartiers et villes de Côte d'Ivoire (Abidjan, Yamoussoukro, etc.)
-- Les types de biens disponibles (appartements, studios, villas, bureaux)
-
-Tes responsabilités :
-1. Aider les locataires à créer leur dossier de candidature
-2. Guider les propriétaires dans la publication de leurs biens
-3. Expliquer le processus de certification ANSUT et ses avantages
-4. Répondre aux questions sur la location sécurisée
-5. Orienter les utilisateurs dans l'application
-
-Contexte technique :
-- Mon Toit offre des baux certifiés ANSUT avec signature électronique
-- Les locataires peuvent se faire vérifier (ONECI, CNAM, biométrie)
-- Les propriétaires peuvent publier des biens avec photos, vidéos, visites 360°
-- La plateforme gère les paiements mobile money et les candidatures
-
-Ton style :
-- Tutoiement amical mais professionnel
-- Réponses concises et actionnables
-- Utilise des emojis avec parcimonie (max 2 par message)
-- Propose toujours une prochaine étape concrète
-
-Si tu ne connais pas une information, redis-le honnêtement et propose d'autres ressources.`
-      },
-      ...(history || [])
-    ];
-
-    // Appeler Lovable AI avec streaming
+    // Appel à Lovable AI
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
-        messages,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
         stream: true,
         temperature: 0.7,
+        max_tokens: 1000
       }),
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ 
-          error: "Trop de demandes. Merci de patienter un instant." 
-        }), {
-          status: 429,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ 
-          error: "Service temporairement indisponible. Veuillez réessayer." 
-        }), {
-          status: 402,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      
       const errorText = await response.text();
       console.error('Lovable AI error:', response.status, errorText);
-      throw new Error('Erreur de communication avec l\'IA');
+      
+      if (response.status === 429) {
+        throw new Error('Limite de requêtes atteinte. Veuillez réessayer dans quelques instants.');
+      }
+      if (response.status === 402) {
+        throw new Error('Crédit insuffisant. Veuillez contacter le support.');
+      }
+      
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
-    // Stream la réponse
-    const reader = response.body?.getReader();
+    // Créer un stream pour la réponse
     const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
-    let fullResponse = '';
-
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error('No response body');
+          }
+
+          const decoder = new TextDecoder();
+          let buffer = '';
+
           while (true) {
-            const { done, value } = await reader!.read();
+            const { done, value } = await reader.read();
             if (done) break;
 
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
 
             for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const data = line.slice(6);
-                if (data === '[DONE]') continue;
+              if (line.trim() === '' || line.startsWith(':')) continue;
+              if (!line.startsWith('data: ')) continue;
 
-                try {
-                  const parsed = JSON.parse(data);
-                  const content = parsed.choices?.[0]?.delta?.content;
-                  
-                  if (content) {
-                    fullResponse += content;
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
-                      content, 
-                      conversationId: currentConversationId 
-                    })}\n\n`));
-                  }
-                } catch (e) {
-                  // Ignore parse errors
+              const data = line.slice(6);
+              if (data === '[DONE]') {
+                controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+                continue;
+              }
+
+              try {
+                const parsed = JSON.parse(data);
+                const content = parsed.choices?.[0]?.delta?.content;
+                
+                if (content) {
+                  const streamData = {
+                    content,
+                    conversationId: conversationId || sessionId
+                  };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(streamData)}\n\n`));
                 }
+              } catch (e) {
+                console.error('Error parsing SSE:', e);
               }
             }
           }
 
-          // Sauvegarder la réponse de l'assistant
-          await supabase.from('sarah_messages').insert({
-            conversation_id: currentConversationId,
-            role: 'assistant',
-            content: fullResponse
-          });
-
-          controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         } catch (error) {
+          console.error('Stream error:', error);
           controller.error(error);
         }
       },
@@ -201,14 +153,16 @@ Si tu ne connais pas une information, redis-le honnêtement et propose d'autres 
         'Connection': 'keep-alive',
       },
     });
-
   } catch (error) {
     console.error('Sarah chat error:', error);
-    return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Une erreur est survenue' 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      },
+    );
   }
 });

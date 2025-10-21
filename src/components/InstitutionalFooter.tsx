@@ -11,9 +11,9 @@ export const InstitutionalFooter = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
       {/* Bandeau ANSUT */}
-      <div className="bg-primary py-4">
+      <div className="bg-secondary py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center md:text-left">
             <div className="flex items-center gap-2">
@@ -40,14 +40,14 @@ export const InstitutionalFooter = () => {
               />
               <div>
                 <h3 className="font-bold text-lg">Mon Toit</h3>
-                <p className="text-xs text-gray-400">Le logement en toute confiance</p>
+                <p className="text-xs text-white/60">Le logement en toute confiance</p>
               </div>
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed">
+            <p className="text-sm text-white/80 leading-relaxed">
               Plateforme immobilière certifiée ANSUT pour la recherche et la publication de logements en Côte d'Ivoire.
             </p>
-            <div className="flex items-start gap-2 text-xs text-gray-400">
-              <Shield className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
+            <div className="flex items-start gap-2 text-xs text-white/60">
+              <Shield className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
               <span>
                 Propulsé par la Direction de la Transformation Digitale et de l'Innovation (DTDI) – ANSUT
               </span>
@@ -60,25 +60,25 @@ export const InstitutionalFooter = () => {
             <nav className="flex flex-col space-y-2">
               <Link 
                 to="/explorer" 
-                className="text-sm text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                className="text-sm text-white/70 hover:text-white transition-colors flex items-center gap-2"
               >
                 Rechercher un logement
               </Link>
               <Link 
                 to="/publier" 
-                className="text-sm text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                className="text-sm text-white/70 hover:text-white transition-colors flex items-center gap-2"
               >
                 Publier une annonce
               </Link>
               <Link 
                 to="/artisans" 
-                className="text-sm text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                className="text-sm text-white/70 hover:text-white transition-colors flex items-center gap-2"
               >
                 Artisans & Services
               </Link>
               <Link 
                 to="/aide" 
-                className="text-sm text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                className="text-sm text-white/70 hover:text-white transition-colors flex items-center gap-2"
               >
                 Aide & Support
               </Link>
@@ -91,31 +91,31 @@ export const InstitutionalFooter = () => {
             <nav className="flex flex-col space-y-2">
               <Link 
                 to="/mentions-legales" 
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Mentions légales
               </Link>
               <Link 
                 to="/confidentialite" 
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Politique de confidentialité
               </Link>
               <Link 
                 to="/conditions-utilisation" 
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Conditions d'utilisation
               </Link>
               <Link 
                 to="/protection-donnees" 
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Protection des données
               </Link>
               <Link 
                 to="/accessibilite" 
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Accessibilité
               </Link>
@@ -125,21 +125,21 @@ export const InstitutionalFooter = () => {
           {/* Colonne 4 : Contact */}
           <div className="space-y-4">
             <h4 className="font-bold text-base">Contact</h4>
-            <div className="space-y-3 text-sm text-gray-300">
+            <div className="space-y-3 text-sm text-white/80">
               <div className="flex items-start gap-2">
-                <Mail className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
+                <Mail className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
                 <a href="mailto:contact@montoit.ci" className="hover:text-white transition-colors">
                   contact@montoit.ci
                 </a>
               </div>
               <div className="flex items-start gap-2">
-                <Phone className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
+                <Phone className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
                 <a href="tel:+2250700000000" className="hover:text-white transition-colors">
                   +225 07 00 00 00 00
                 </a>
               </div>
               <div className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
+                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
                 <span>
                   Abidjan, Plateau<br />
                   Côte d'Ivoire
@@ -150,8 +150,8 @@ export const InstitutionalFooter = () => {
         </div>
 
         {/* Séparateur */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+        <div className="border-t border-white/10 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/60">
             
             {/* Copyright */}
             <div className="flex items-center gap-2">
@@ -162,8 +162,8 @@ export const InstitutionalFooter = () => {
 
             {/* Badges de confiance */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/20 border border-primary/30 rounded-lg">
-                <ShieldCheck className="h-4 w-4 text-primary" />
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary/30 border border-secondary/50 rounded-lg">
+                <ShieldCheck className="h-4 w-4 text-secondary" />
                 <span className="text-xs font-semibold text-white">ANSUT Certifié</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 bg-success/20 border border-success/30 rounded-lg">
@@ -177,7 +177,7 @@ export const InstitutionalFooter = () => {
               href="https://ansut.ci"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors"
+              className="flex items-center gap-1 text-white/60 hover:text-white transition-colors"
             >
               <span className="text-xs">En savoir plus sur ANSUT</span>
               <ExternalLink className="h-3 w-3" />
@@ -186,8 +186,8 @@ export const InstitutionalFooter = () => {
         </div>
 
         {/* Mention interopérabilité */}
-        <div className="mt-6 pt-6 border-t border-gray-800">
-          <p className="text-xs text-gray-500 text-center leading-relaxed">
+        <div className="mt-6 pt-6 border-t border-white/10">
+          <p className="text-xs text-white/50 text-center leading-relaxed">
             Cette plateforme s'inscrit dans le cadre de l'interopérabilité des services publics numériques
             de la République de Côte d'Ivoire, conformément aux standards ANSUT.
           </p>

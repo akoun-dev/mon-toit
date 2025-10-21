@@ -10,8 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { FormProgressIndicator, type Step } from '@/components/forms/FormProgressIndicator';
 import { FormStepper } from '@/components/forms/FormStepper';
@@ -191,18 +190,16 @@ const EditProperty = () => {
   const accessCheck = requireOwnerAccess();
   if (!accessCheck.hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-12">
+      <MainLayout>
+        <div className="container mx-auto px-4 py-12">
           <Card>
             <CardHeader>
               <CardTitle>Accès refusé</CardTitle>
               <CardDescription>{accessCheck.error}</CardDescription>
             </CardHeader>
           </Card>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </MainLayout>
     );
   }
 
@@ -215,9 +212,8 @@ const EditProperty = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-6 pt-24">
+    <MainLayout>
+      <div className="container mx-auto px-4 py-6">
         <div className="max-w-4xl mx-auto">
           <DynamicBreadcrumb />
           
@@ -344,9 +340,8 @@ const EditProperty = () => {
             </form>
           </Form>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, FileCheck, Home, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,9 +12,8 @@ const Testimonials = lazy(() => import("@/components/Testimonials"));
 
 const CommentCaMarche = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pt-24">
+    <MainLayout>
+      <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -129,8 +127,7 @@ const CommentCaMarche = () => {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 

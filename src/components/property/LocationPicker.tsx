@@ -12,6 +12,9 @@ interface LocationPickerProps {
   city?: string;
 }
 
+// Clé publique Mapbox préconfigurée
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicHNvbWV0IiwiYSI6ImNtYTgwZ2xmMzEzdWcyaXM2ZG45d3A4NmEifQ.MYXzdc5CREmcvtBLvfV0Lg';
+
 const CITY_COORDINATES: Record<string, [number, number]> = {
   'Abidjan': [-4.0083, 5.3600],
   'Yamoussoukro': [-5.2767, 6.8276],
@@ -38,7 +41,7 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     const initialCoords: [number, number] = 
       coordinates || cityCoords || CITY_COORDINATES['Abidjan'];
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoibG92YWJsZS1kZXYiLCJhIjoiY200N2lwbDJhMDBseTJrcHlnOTluZnN1biJ9.JLechweMLsxP7qlR6cT-Og';
+    mapboxgl.accessToken = MAPBOX_TOKEN;
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,

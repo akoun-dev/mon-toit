@@ -1,5 +1,4 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -28,9 +27,9 @@ const Guide = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
-      <Navbar />
-      <main className="flex-1 pt-24">
+    <MainLayout>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-10 mb-12 relative">
           <AkanPattern />
@@ -538,8 +537,8 @@ const Guide = () => {
           </Card>
         </div>
       </main>
-      <Footer />
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 
