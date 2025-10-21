@@ -11,9 +11,9 @@ export const InstitutionalFooter = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
+    <footer className="bg-gradient-to-br from-primary to-primary-700 text-white">
       {/* Bandeau ANSUT */}
-      <div className="bg-secondary py-4">
+      <div className="bg-primary-900 py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center md:text-left">
             <div className="flex items-center gap-2">
@@ -162,8 +162,8 @@ export const InstitutionalFooter = () => {
 
             {/* Badges de confiance */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary/30 border border-secondary/50 rounded-lg">
-                <ShieldCheck className="h-4 w-4 text-secondary" />
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-900/50 border border-primary-700 rounded-lg">
+                <ShieldCheck className="h-4 w-4 text-white" />
                 <span className="text-xs font-semibold text-white">ANSUT Certifié</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 bg-success/20 border border-success/30 rounded-lg">

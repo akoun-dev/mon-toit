@@ -4,7 +4,7 @@ import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 
 const Footer = () => {
   return (
-    <footer className="py-8 bg-gradient-to-br from-primary via-primary-700 to-primary-900 text-white">
+    <footer className="py-8 bg-gradient-to-br from-primary to-primary-700 text-white">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-sm">
           
@@ -12,8 +12,8 @@ const Footer = () => {
           <div className="flex items-center gap-4">
             <img src={monToitLogo} alt="Mon Toit" className="h-6 w-auto brightness-0 invert" />
             <span className="text-white/80">© 2025 Mon Toit</span>
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-secondary/30 border border-secondary/50 rounded">
-              <Shield className="h-3 w-3 text-secondary" />
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-primary-900/50 border border-primary-700 rounded">
+              <Shield className="h-3 w-3 text-white" />
               <span className="text-xs">ANSUT</span>
             </div>
           </div>
