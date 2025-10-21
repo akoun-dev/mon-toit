@@ -35,7 +35,7 @@ const Guide = () => {
           <AkanPattern />
           <div className="container mx-auto px-4 text-center relative z-10">
             <Badge variant="secondary" className="mb-4">Centre d'aide</Badge>
-            <h1 className="text-h1 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-h1 mb-4">
               Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -46,9 +46,9 @@ const Guide = () => {
 
         <div className="container mx-auto px-4 pb-16">
           {/* Quick Links */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             <Link to="/explorer">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-primary/20 hover:border-primary/40">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full w-full border-primary/20 hover:border-primary/40">
                 <CardHeader className="text-center">
                   <Search className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <CardTitle className="text-sm">Rechercher un bien</CardTitle>
@@ -56,7 +56,7 @@ const Guide = () => {
               </Card>
             </Link>
             <Link to="/publier">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-primary/20 hover:border-primary/40">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full w-full border-primary/20 hover:border-primary/40">
                 <CardHeader className="text-center">
                   <Home className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <CardTitle className="text-sm">Publier une annonce</CardTitle>
@@ -64,7 +64,7 @@ const Guide = () => {
               </Card>
             </Link>
             <Link to="/verification">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-primary/20 hover:border-primary/40">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full w-full border-primary/20 hover:border-primary/40">
                 <CardHeader className="text-center">
                   <Shield className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <CardTitle className="text-sm">Se faire certifier</CardTitle>
@@ -72,7 +72,7 @@ const Guide = () => {
               </Card>
             </Link>
             <Link to="/messages">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-primary/20 hover:border-primary/40">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full w-full border-primary/20 hover:border-primary/40">
                 <CardHeader className="text-center">
                   <MessageSquare className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <CardTitle className="text-sm">Contacter le support</CardTitle>
@@ -83,16 +83,17 @@ const Guide = () => {
 
           {/* Guides par rôle */}
           <Tabs defaultValue="locataire" className="w-full mb-16">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="locataire" className="gap-2">
+            {/* Make tabs responsive on mobile: stack vertically and auto-height */}
+            <TabsList className="w-full mb-8 !h-auto flex flex-col sm:flex-row flex-wrap sm:flex-nowrap items-stretch gap-2 sm:gap-0">
+              <TabsTrigger value="locataire" className="gap-2 w-full sm:flex-1">
                 <Users className="h-4 w-4" />
                 Locataire
               </TabsTrigger>
-              <TabsTrigger value="proprietaire" className="gap-2">
+              <TabsTrigger value="proprietaire" className="gap-2 w-full sm:flex-1">
                 <Home className="h-4 w-4" />
                 Propriétaire
               </TabsTrigger>
-              <TabsTrigger value="agence" className="gap-2">
+              <TabsTrigger value="agence" className="gap-2 w-full sm:flex-1">
                 <Building2 className="h-4 w-4" />
                 Agence
               </TabsTrigger>
@@ -100,40 +101,135 @@ const Guide = () => {
 
             {/* Locataire Guide */}
             <TabsContent value="locataire" className="space-y-6">
-              <Card>
+              {/* Hero Section Locataire */}
+              <div className="bg-gradient-to-r from-primary/10 via-white to-background/5 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 md:mb-8 text-center">
+                <div className="max-w-2xl mx-auto">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                    <div className="p-3 bg-primary/10 rounded-full">
+                      <UserCheck className="h-8 w-8 text-primary" />
+                    </div>
+                    <div className="text-center sm:text-left">
+                      <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                        Commencez votre recherche <span className="text-primary">100% gratuite</span>
+                      </h2>
+                      <p className="text-base md:text-lg text-muted-foreground">
+                        Accédez à des milliers de logements vérifiés ANSUT
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Avantages Locataire */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+                <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mb-4">
+                    <CheckCircle className="h-6 w-6 text-orange-600" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">Recherche avancée</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Filtres par prix, quartier, commodités et disponibilité
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-4">
+                    <Shield className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">Sécurité ANSUT</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Profils vérifiés et propriétaires certifiés
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-4">
+                    <MessageSquare className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">Messagerie intégrée</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Communication directe et sécurisée
+                  </p>
+                </div>
+              </div>
+
+              {/* Guide Étapes Détaillées */}
+              <Card className="border-orange-200 bg-orange-50/50 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <UserCheck className="h-5 w-5 text-primary" />
-                    Démarrer en tant que locataire
+                    <Users className="h-6 w-6 text-orange-600" />
+                    Comment trouver votre logement idéal en 4 étapes simples
                   </CardTitle>
-                  <CardDescription>
-                    Gratuit à 100% - Trouvez votre logement idéal
-                  </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <h3 className="font-semibold">Étape 1 : Créer votre compte</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Inscrivez-vous gratuitement avec votre email. Sélectionnez "Locataire" comme type de compte.
-                    </p>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
+                    {/* Étape 1 */}
+                    <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 bg-orange-500 text-white rounded-full font-bold text-lg">
+                          1
+                        </div>
+                        <h4 className="text-lg font-semibold text-foreground">Créer votre compte gratuit</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Inscrivez-vous en quelques minutes avec votre email. Choisissez le statut "Locataire" pour accéder à toutes les fonctionnalités.
+                      </p>
+                    </div>
+
+                    {/* Étape 2 */}
+                    <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 bg-orange-500 text-white rounded-full font-bold text-lg">
+                          2
+                        </div>
+                        <h4 className="text-lg font-semibold text-foreground">Utiliser les filtres intelligents</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Affinez votre recherche par prix, quartier, type de logement, commodités. Nos filtres avancés vous font gagner un temps précieux.
+                      </p>
+                    </div>
+
+                    {/* Étape 3 */}
+                    <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 bg-orange-500 text-white rounded-full font-bold text-lg">
+                          3
+                        </div>
+                        <h4 className="text-lg font-semibold text-foreground">Contacter les propriétaires</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Envoyez un message directement via notre messagerie sécurisée. Posez toutes vos questions et convenez d'une visite.
+                      </p>
+                    </div>
+
+                    {/* Étape 4 */}
+                    <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-md">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 bg-orange-500 text-white rounded-full font-bold text-lg">
+                          4
+                        </div>
+                        <h4 className="text-lg font-semibold text-foreground">Se faire vérifier ANSUT</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Obtenez votre badge de vérification et gagnez la confiance des propriétaires. Une vérification complète augmente vos chances de sélection.
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    <h3 className="font-semibold">Étape 2 : Rechercher un logement</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Utilisez la barre de recherche ou naviguez sur la carte interactive. Filtrez par prix, quartier, type de bien.
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="font-semibold">Étape 3 : Contacter le propriétaire</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Cliquez sur "Contacter" pour envoyer un message. Le propriétaire recevra une notification.
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="font-semibold">Étape 4 : Vérification ANSUT (Recommandé)</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Complétez votre vérification d'identité (ONECI/CNI) et obtenez votre badge certifié ANSUT pour augmenter vos chances.
-                    </p>
+
+                  {/* Call-to-action */}
+                  <div className="text-center mt-8">
+                    <h4 className="text-lg font-semibold text-foreground mb-4">Prêt à commencer votre recherche ?</h4>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg">
+                        <Link to="/auth?userType=locataire" className="text-white">
+                          Créer mon compte locataire
+                        </Link>
+                      </Button>
+                      <Button size="lg" variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+                        <Link to="/explorer">
+                          <Search className="h-5 w-5 mr-2" />
+                          Explorer les logements
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

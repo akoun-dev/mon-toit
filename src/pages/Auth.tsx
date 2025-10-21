@@ -19,7 +19,6 @@ import { logger } from '@/services/logger';
 import { PageTransition } from '@/components/animations/PageTransition';
 import { MainLayout } from "@/components/layout/MainLayout";
 import { BrandBar } from '@/components/ui/brand-bar';
-import { DynamicBreadcrumb } from "@/components/navigation/DynamicBreadcrumb";
 import { QuickNav } from "@/components/navigation/QuickNav";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
@@ -327,19 +326,17 @@ const Auth = () => {
     <MainLayout>
       <div className="relative">
         {/* Hero Section with Pattern */}
-        <section className="relative py-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
+        <section className="relative pt-12 pb-6 md:pt-16 md:pb-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
           <KentePattern />
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="text-center max-w-4xl mx-auto mb-8">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <div className="text-center max-w-4xl mx-auto mb-6 md:mb-8">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <DynamicBreadcrumb />
-
                 <motion.h1
-                  className="text-h1 mb-4 mt-6"
+                  className="text-3xl sm:text-4xl md:text-h1 mb-3 md:mb-4 mt-2 md:mt-6 px-4"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
@@ -347,7 +344,7 @@ const Auth = () => {
                   Bienvenue sur <span className="text-gradient-primary">Mon Toit</span>
                 </motion.h1>
                 <motion.p
-                  className="text-body-lg text-muted-foreground mb-8"
+                  className="text-sm sm:text-base md:text-body-lg text-muted-foreground mb-6 md:mb-8 px-4"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -360,8 +357,8 @@ const Auth = () => {
         </section>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 pb-12">
-          <div className="grid md:grid-cols-2 gap-8 items-start max-w-6xl mx-auto">
+        <div className="container mx-auto px-4 sm:px-6 pb-8 md:pb-12">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start max-w-6xl mx-auto">
             {/* Left Side - Benefits */}
             <motion.div
               className="space-y-6"
@@ -370,37 +367,37 @@ const Auth = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
 
-              <div className="space-y-6 bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border/50 shadow-lg">
-                <h2 className="text-2xl font-bold text-foreground mb-4">
+              <div className="space-y-6 bg-card/50 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-border/50 shadow-lg">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">
                   Pourquoi choisir Mon Toit ?
                 </h2>
-                <ul className="space-y-4">
+                <ul className="space-y-3 md:space-y-4">
                   <motion.li
-                    className="flex items-start gap-4"
+                    className="flex items-start gap-3 md:gap-4"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.5 }}
                   >
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Shield className="h-5 w-5 text-primary" />
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Shield className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground mb-1">Sécurité garantie</p>
-                      <p className="text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par l'ANSUT</p>
+                      <p className="font-semibold text-foreground mb-1 text-sm md:text-base">Sécurité garantie</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par l'ANSUT</p>
                     </div>
                   </motion.li>
                   <motion.li
-                    className="flex items-start gap-4"
+                    className="flex items-start gap-3 md:gap-4"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.6 }}
                   >
-                    <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Home className="h-5 w-5 text-secondary" />
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                      <Home className="h-4 w-4 md:h-5 md:w-5 text-secondary" />
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground mb-1">Biens certifiés</p>
-                      <p className="text-sm text-muted-foreground">Des logements vérifiés et conformes</p>
+                      <p className="font-semibold text-foreground mb-1 text-sm md:text-base">Biens certifiés</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">Des logements vérifiés et conformes</p>
                     </div>
                   </motion.li>
                 </ul>
@@ -417,9 +414,10 @@ const Auth = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 h-12">
-                  <TabsTrigger value="signin" className="text-sm font-medium">Connexion</TabsTrigger>
-                  <TabsTrigger value="signup" className="text-sm font-medium">Inscription</TabsTrigger>
+                {/* Responsive tabs: stack on mobile, auto height to avoid overlap */}
+                <TabsList className="w-full !h-auto flex flex-col sm:flex-row items-stretch gap-2">
+                  <TabsTrigger value="signin" className="w-full sm:flex-1 text-xs md:text-sm font-medium px-2 md:px-3">Connexion</TabsTrigger>
+                  <TabsTrigger value="signup" className="w-full sm:flex-1 text-xs md:text-sm font-medium px-2 md:px-3">Inscription</TabsTrigger>
                 </TabsList>
 
           {/* Sign In Tab */}
@@ -429,10 +427,10 @@ const Auth = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
-                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30">
-                        <CardTitle className="text-xl font-semibold text-center">Connexion</CardTitle>
-                        <CardDescription className="text-center">
+                    <Card className="shadow-lg md:shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
+                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30 px-4 py-4 md:px-6">
+                        <CardTitle className="text-lg md:text-xl font-semibold text-center">Connexion</CardTitle>
+                        <CardDescription className="text-center text-sm md:text-base">
                           Connectez-vous à votre compte Mon Toit
                         </CardDescription>
                         {userTypeFromUrl && (
@@ -447,18 +445,18 @@ const Auth = () => {
                         )}
                       </CardHeader>
               <form onSubmit={handleSignIn}>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 md:space-y-4 px-4 py-4 md:px-6">
                   {isBlocked && (
                     <Alert variant="destructive">
                       <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription>
+                      <AlertDescription className="text-sm">
                         {blockMessage}
                         {retryAfter && ` Réessayez dans ${retryAfter}.`}
                       </AlertDescription>
                     </Alert>
                   )}
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email" className="text-sm md:text-base">Email</Label>
                     <Input
                       id="signin-email"
                       type="email"
@@ -468,13 +466,14 @@ const Auth = () => {
                       value={signInEmail}
                       onChange={(e) => setSignInEmail(e.target.value)}
                       required
+                      className="h-10 md:h-11"
                     />
                     {signInErrors.email && (
-                      <p className="text-sm text-destructive">{signInErrors.email}</p>
+                      <p className="text-xs md:text-sm text-destructive">{signInErrors.email}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Mot de passe</Label>
+                    <Label htmlFor="signin-password" className="text-sm md:text-base">Mot de passe</Label>
                     <div className="relative">
                       <Input
                         id="signin-password"
@@ -484,6 +483,7 @@ const Auth = () => {
                         value={signInPassword}
                         onChange={(e) => setSignInPassword(e.target.value)}
                         required
+                        className="h-10 md:h-11"
                       />
                       <button
                         type="button"
@@ -495,21 +495,21 @@ const Auth = () => {
                       </button>
                     </div>
                     {signInErrors.password && (
-                      <p className="text-sm text-destructive">{signInErrors.password}</p>
+                      <p className="text-xs md:text-sm text-destructive">{signInErrors.password}</p>
                     )}
                   </div>
                   <div className="flex justify-end">
                     <button
                       type="button"
                       onClick={handleForgotPassword}
-                      className="text-sm text-primary hover:underline"
+                      className="text-xs md:text-sm text-primary hover:underline"
                     >
                       Mot de passe oublié ?
                     </button>
                   </div>
                 </CardContent>
-                <CardFooter className="flex-col gap-3">
-                  <Button type="submit" className="w-full" disabled={loading}>
+                <CardFooter className="flex-col gap-3 px-4 py-4 md:px-6">
+                  <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
                     {loading ? 'Connexion...' : 'Se connecter'}
                   </Button>
                   
@@ -524,10 +524,10 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full" 
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-10 md:h-11 text-sm md:text-base"
                     onClick={handleGoogleSignIn}
                   >
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -657,8 +657,8 @@ const Auth = () => {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter className="flex-col gap-2">
-                  <Button type="submit" className="w-full" disabled={loading}>
+                <CardFooter className="flex-col gap-2 px-4 py-4 md:px-6">
+                  <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
                     {loading ? 'Création...' : 'Créer mon compte'}
                   </Button>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">

@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 import NotificationBell from "@/components/NotificationBell";
 import CertificationNotificationBadge from "@/components/admin/CertificationNotificationBadge";
-import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
 import { CertificationBadge } from "@/components/shared/CertificationBadge";
 
@@ -38,8 +37,6 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
         <div className="flex items-center justify-between h-12 md:h-14">
           {/* Logo avec Sidebar Trigger */}
           <div className="flex items-center gap-3">
-            {showSidebarTrigger && <SidebarTrigger className="md:hidden" />}
-            
             <Link to="/" className="flex items-center gap-3 group">
             <picture>
               <img
@@ -82,11 +79,14 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <RoleBadge />
+                {/* Allège le header en mobile */}
+                <div className="hidden md:block">
+                  <RoleBadge />
+                </div>
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full">
+                    <Button aria-label="Ouvrir le menu utilisateur" variant="ghost" size="icon" className="rounded-full">
                       <Avatar>
                         <AvatarFallback className="bg-primary text-primary-foreground">
                           {profile?.full_name?.charAt(0).toUpperCase() || 'U'}
@@ -165,27 +165,24 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 </DropdownMenu>
               </>
             ) : (
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="default"
-                className="font-semibold" 
+                className="font-semibold h-10 md:h-9"
                 asChild
               >
-                <Link to="/auth">
+                <Link to="/auth" aria-label="Connexion">
                   <User className="h-4 w-4 md:mr-2" />
                   <span className="hidden md:inline">Connexion</span>
                 </Link>
               </Button>
             )}
-            
-            {/* Mobile Menu */}
-            <MobileMenu />
           </div>
         </div>
       </div>
     </nav>
     {/* Barre de couleurs identité */}
-    <div className="fixed top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-20" />
+    <div className="fixed top-12 md:top-14 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary z-20" />
   </>);
 };
 

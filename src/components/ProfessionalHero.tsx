@@ -252,9 +252,9 @@ export const ProfessionalHero = () => {
                 <Button
                   onClick={handleSearch}
                   size="lg"
-                  className="flex-1 h-14 text-lg font-bold bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all"
+                  className="flex-1 h-14 text-lg font-bold bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl transition-all"
                 >
-                  <Search className="h-5 w-5 mr-2" />
+                  <Search className="h-5 w-5 mr-2 text-white drop-shadow-sm" />
                   Rechercher
                 </Button>
                 <Button

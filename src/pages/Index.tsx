@@ -52,15 +52,15 @@ const Index = () => {
                 Explorez plus de biens ou découvrez pourquoi 10 000+ Ivoiriens nous font confiance
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button asChild size="lg" className="shadow-md min-w-[200px]">
-                  <Link to="/explorer">
-                    <Search className="h-4 w-4 mr-2" />
+                <Button asChild size="lg" className="shadow-md min-w-[200px] bg-orange-500 hover:bg-orange-600 text-white">
+                  <Link to="/explorer" className="text-white">
+                    <Search className="h-4 w-4 mr-2 text-white" />
                     Explorer plus de biens
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="shadow-sm min-w-[200px]">
-                  <Link to="/a-propos">
-                    <ShieldCheck className="h-4 w-4 mr-2" />
+                <Button asChild variant="outline" size="lg" className="shadow-sm min-w-[200px] border-orange-500 text-orange-600 hover:bg-orange-100">
+                  <Link to="/a-propos" className="text-orange-600">
+                    <ShieldCheck className="h-4 w-4 mr-2 text-orange-600" />
                     Pourquoi Mon Toit ?
                   </Link>
                 </Button>

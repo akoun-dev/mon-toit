@@ -1,4 +1,4 @@
-import { Home, Search, Heart, MessageSquare, User } from "lucide-react";
+import { Home, Search, Heart, MessageSquare, User, BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -114,41 +114,74 @@ const BottomNavigation = () => {
   const { unreadCount } = useNotifications();
   const newFavorites = useFavoriteCount();
 
-  // Configuration des items de navigation avec badges réels
-  const navItems: NavItem[] = useMemo(() => [
-    {
-      label: "Accueil",
-      icon: Home,
-      path: "/",
-      ariaLabel: "Aller à l'accueil",
-    },
-    {
-      label: "Recherche",
-      icon: Search,
-      path: "/explorer",
-      ariaLabel: "Rechercher des propriétés",
-    },
-    {
-      label: "Favoris",
-      icon: Heart,
-      path: "/favoris",
-      ariaLabel: "Voir mes favoris",
-      badge: newFavorites > 0 ? newFavorites : undefined,
-    },
-    {
-      label: "Messages",
-      icon: MessageSquare,
-      path: "/messages",
-      ariaLabel: "Messages",
-      badge: unreadCount > 0 ? unreadCount : undefined,
-    },
-    {
-      label: "Profil",
-      icon: User,
-      path: "/profil",
-      ariaLabel: "Voir mon profil",
-    },
-  ], [unreadCount, newFavorites]);
+  // Configuration des items de navigation selon le statut de connexion
+  const navItems: NavItem[] = useMemo(() => {
+    if (user) {
+      // Navigation pour utilisateurs connectés
+      return [
+        {
+          label: "Accueil",
+          icon: Home,
+          path: "/",
+          ariaLabel: "Aller à l'accueil",
+        },
+        {
+          label: "Recherche",
+          icon: Search,
+          path: "/explorer",
+          ariaLabel: "Rechercher des propriétés",
+        },
+        {
+          label: "Favoris",
+          icon: Heart,
+          path: "/favoris",
+          ariaLabel: "Voir mes favoris",
+          badge: newFavorites > 0 ? newFavorites : undefined,
+        },
+        {
+          label: "Messages",
+          icon: MessageSquare,
+          path: "/messages",
+          ariaLabel: "Messages",
+          badge: unreadCount > 0 ? unreadCount : undefined,
+        },
+        {
+          label: "Profil",
+          icon: User,
+          path: "/profil",
+          ariaLabel: "Voir mon profil",
+        },
+      ];
+    } else {
+      // Navigation pour les utilisateurs non connectés (pages publiques)
+      return [
+        {
+          label: "Accueil",
+          icon: Home,
+          path: "/",
+          ariaLabel: "Aller à l'accueil",
+        },
+        {
+          label: "Explorer",
+          icon: Search,
+          path: "/explorer",
+          ariaLabel: "Explorer les biens",
+        },
+        {
+          label: "Guide",
+          icon: BookOpen,
+          path: "/guide",
+          ariaLabel: "Guide d'utilisation",
+        },
+        {
+          label: "Connexion",
+          icon: User,
+          path: "/auth",
+          ariaLabel: "Se connecter",
+        },
+      ];
+    }
+  }, [user, unreadCount, newFavorites]);
 
   // Fonction pour déterminer si un item est actif
   const isActive = useMemo(() => {
@@ -158,8 +191,8 @@ const BottomNavigation = () => {
     };
   }, [location.pathname]);
 
-  // Ne pas afficher sur desktop ou si l'utilisateur n'est pas connecté
-  if (!isMobile || !user) return null;
+  // Ne pas afficher sur desktop uniquement
+  if (!isMobile) return null;
 
   return (
     <nav 
