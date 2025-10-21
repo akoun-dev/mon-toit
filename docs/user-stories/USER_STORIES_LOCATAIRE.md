@@ -15,8 +15,11 @@ Contexte: Un locataire recherche, visite et loue un logement en Côte d'Ivoire v
   - AC-1: Les filtres (ville, type, prix) se combinent et se réinitialisent.
   - AC-2: Le nombre de résultats affiché est exact.
 - En tant que locataire, je veux alterner vue grille/liste/carte afin de parcourir efficacement les résultats.
-  - AC-1: Le basculement garde mes filtres.
-  - AC-2: La carte n’affiche que les biens géolocalisés.
+  - AC-1: Le basculement garde mes filtres et les préférences de vue sont persistées dans localStorage.
+  - AC-2: La carte n'affiche que les biens géolocalisés avec clustering pour les zones denses.
+  - AC-3: Les changements de vue ne rechargent pas la page mais mettent à jour le DOM uniquement.
+  - AC-4: La vue grille affiche 12 biens par page avec lazy loading au scroll.
+  - AC-5: La vue liste affiche les informations clés (prix, superficie, ville) en format compact.
 
 ## Détail du bien & Confiance
 - En tant que locataire, je veux consulter le descriptif, médias (photos/vidéo/360), titre de propriété et statut de travaux afin d’évaluer la qualité du bien.

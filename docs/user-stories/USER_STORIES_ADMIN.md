@@ -21,8 +21,16 @@ Contexte: L’admin supervise la conformité (certifications ANSUT), la sécurit
   - AC-1: Notifications en cas d’anomalies (supabase/functions/alert-suspicious-activity).
 
 ## Politiques & Conformité
-- En tant qu’admin, je veux appliquer les RLS et policies afin de garantir l’isolement des données.
+- En tant qu'admin, je veux appliquer les RLS et policies afin de garantir l'isolement des données.
   - AC-1: Tests RLS passent (tests/security/rls-policies.test.ts).
-- En tant qu’admin, je veux publier des rapports mensuels afin de suivre la performance.
+  - AC-2: Matrice d'accès maintenue dans /docs/security/rls-matrix.md.
+  - AC-3: Validation des permissions par rôle (locataire, propriétaire, agence, admin).
+  - AC-4: Tests négatifs pour accès non autorisés avec erreurs 403.
+  - AC-5: CI/CD integration pour exécution automatique des tests RLS.
+- En tant qu'admin, je veux publier des rapports mensuels afin de suivre la performance.
   - AC-1: Génération PDF/email si activée.
+  - AC-2: Métriques clés : utilisateurs actifs, biens publiés, candidatures, conversions.
+  - AC-3: Comparaison mois vs mois précédent et année précédente.
+  - AC-4: Segmentation par type d'utilisateur et région géographique.
+  - AC-5: Export CSV pour analyse externe si nécessaire.
 
