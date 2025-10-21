@@ -21,6 +21,10 @@ const Index = () => {
         <link rel="canonical" href="https://montoit.ci" />
       </Helmet>
 
+      <header>
+        <h1 className="sr-only">Mon Toit - Location Immobilière Certifiée ANSUT en Côte d'Ivoire</h1>
+      </header>
+
       <main role="main">
         {/* Hero adaptatif : Mobile ou Desktop */}
         {useIsMobile() ? <MobileHero /> : <ProfessionalHero />}
@@ -32,10 +36,16 @@ const Index = () => {
         />
 
         {/* Mini CTA - Subtle, non-intrusive */}
-        <section className="py-6 md:py-8 bg-gradient-to-b from-primary/5 to-background border-t border-primary/10">
+        <section
+        className="py-6 md:py-8 bg-gradient-to-b from-primary/5 to-background border-t border-primary/10"
+        aria-labelledby="cta-heading"
+      >
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-foreground">
+              <h2
+                id="cta-heading"
+                className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-foreground"
+              >
                 Pas encore trouvé votre toit idéal ?
               </h2>
               <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">

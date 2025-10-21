@@ -157,7 +157,7 @@ export const PropertyCard = ({
               return (
                 <SimpleImage
                   src={validImages[0]}
-                  alt={`${property.title} - ${property.city}`}
+                  alt={`Photographie principale du bien : ${property.title}, ${property.property_type} situé à ${property.city}, ${property.bedrooms} chambres, ${property.surface_area}m²`}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               );
@@ -170,7 +170,7 @@ export const PropertyCard = ({
               <>
                 <SimpleImage
                   src={property.main_image}
-                  alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
+                  alt={`Vue extérieure du ${property.property_type} ${property.title} à ${property.city}, ${property.bedrooms} chambres, ${property.surface_area}m², loyer ${property.monthly_rent} FCFA/mois`}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
@@ -201,10 +201,11 @@ export const PropertyCard = ({
         
         {onFavoriteClick && (
           <motion.button
-            className="absolute top-3 right-3 rounded-lg shadow-md"
+            className="absolute top-3 right-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             whileTap={{ scale: 1.2 }}
             animate={isFavorite ? { scale: [1, 1.3, 1] } : {}}
             transition={{ duration: 0.3 }}
+            tabIndex={0}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -215,6 +216,22 @@ export const PropertyCard = ({
                 duration: 2000,
               });
             }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerHapticFeedback('heavy');
+                onFavoriteClick(property.id);
+                toast({
+                  description: isFavorite ? "❤️ Bien retiré des favoris" : "💙 Bien ajouté aux favoris !",
+                  duration: 2000,
+                });
+              }
+            }}
+            aria-label={isFavorite
+              ? `Retirer ${property.title} des favoris`
+              : `Ajouter ${property.title} aux favoris`
+            }
           >
             <Button
               size="icon"
@@ -332,7 +349,12 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Button asChild variant="default" className="w-full rounded-lg min-h-[40px] sm:min-h-[44px] text-sm sm:text-base font-semibold shadow-md active:scale-95">
+        <Button
+      asChild
+      variant="default"
+      className="w-full rounded-lg min-h-[40px] sm:min-h-[44px] text-sm sm:text-base font-semibold shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      aria-label={`Voir les détails de ${property.title}, ${property.property_type} à ${property.city}`}
+    >
           <Link to={`/property/${property.id}`}>Découvrir ce bien</Link>
         </Button>
       </CardContent>
