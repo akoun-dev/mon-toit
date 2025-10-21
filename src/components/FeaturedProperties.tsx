@@ -123,7 +123,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {Array.from({ length: limit }).map((_, i) => (
               <div key={i}>{SkeletonCard}</div>
             ))}
@@ -160,7 +160,7 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
   }
 
   return (
-    <div className="px-3 md:px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10">
+    <div className="px-3 sm:px-4 md:px-4 bg-gradient-to-b from-white via-primary/3 to-white border-t border-primary/10">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-6 animate-fade-in">
           <div>
@@ -202,8 +202,8 @@ const FeaturedProperties = ({ limit = 6 }: FeaturedPropertiesProps) => {
           ))}
         </div>
         
-        <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
           role="list"
           aria-label="Biens immobiliers en vedette"
         >

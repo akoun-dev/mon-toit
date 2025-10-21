@@ -306,7 +306,7 @@ export const PropertyCard = ({
           <span className="line-clamp-1 font-medium">{property.city}</span>
         </div>
 
-        <div className="flex items-center gap-4 text-sm bg-muted/50 p-3 rounded-lg">
+        <div className="flex items-center justify-between gap-2 text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 rounded-lg">
           <div className="flex items-center gap-1">
             <Bed className="h-4 w-4" />
             <span className="font-medium">{property.bedrooms}</span>
@@ -324,7 +324,7 @@ export const PropertyCard = ({
         </div>
 
         {variant === 'default' && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1 sm:gap-1.5">
             {property.is_furnished && <Badge variant="secondary" className="text-xs rounded-full">Meublé</Badge>}
             {property.has_ac && <Badge variant="secondary" className="text-xs rounded-full">Climatisation</Badge>}
             {property.has_parking && <Badge variant="secondary" className="text-xs rounded-full">Parking</Badge>}
@@ -332,7 +332,7 @@ export const PropertyCard = ({
           </div>
         )}
 
-        <Button asChild variant="default" className="w-full rounded-lg min-h-[44px] font-semibold shadow-md active:scale-95">
+        <Button asChild variant="default" className="w-full rounded-lg min-h-[40px] sm:min-h-[44px] text-sm sm:text-base font-semibold shadow-md active:scale-95">
           <Link to={`/property/${property.id}`}>Découvrir ce bien</Link>
         </Button>
       </CardContent>

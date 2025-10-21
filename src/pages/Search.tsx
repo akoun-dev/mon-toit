@@ -67,25 +67,25 @@ const Search = () => {
 
   return (
     <MainLayout>
-      <div className="page-background">
-        <div className="page-container section-spacing pt-8">
+      <div className="bg-background min-h-screen">
+        <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8">
           <DynamicBreadcrumb />
 
           {/* Header with improved typography */}
-          <div className="mb-8 md:mb-12 section-spacing">
+          <div className="mb-6 sm:mb-8 md:mb-12">
             <KentePattern />
             <div className="relative z-10">
               <h1 className="text-h1 mb-4">
                 <span className="text-gradient-primary">Rechercher</span> un bien
               </h1>
             </div>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl">
               Trouvez le logement idéal parmi {properties.length} annonces à Abidjan et environs
             </p>
           </div>
 
           {/* Filters with better spacing */}
-          <div className="mb-8 content-spacing">
+          <div className="mb-6 sm:mb-8">
             {isMobile ? (
               <MobileFilters
                 onFilterChange={handleFilterChange as any}
