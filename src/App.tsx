@@ -73,6 +73,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import SmartMap from "./pages/SmartMap";
 import SmartMapV2 from "./pages/SmartMapV2";
+import Aide from "./pages/Aide";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -369,6 +370,7 @@ const AppContent = () => {
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/certification-faq" element={<CertificationFAQ />} />
             <Route path="/tarifs" element={<Tarifs />} />
+            <Route path="/aide" element={<Aide />} />
             
             <Route 
               path="/populate-images" 

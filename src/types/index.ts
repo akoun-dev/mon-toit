@@ -47,6 +47,7 @@ export interface Property {
   work_estimated_duration?: string | null;
   work_start_date?: string | null;
   title_deed_url?: string | null;
+  is_new?: boolean;
 }
 
 export interface Profile {

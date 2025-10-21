@@ -101,8 +101,8 @@ export const InstitutionalFooter = () => {
               >
                 Politique de confidentialité
               </Link>
-              <Link 
-                to="/conditions-utilisation" 
+              <Link
+                to="/conditions"
                 className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 Conditions d'utilisation
