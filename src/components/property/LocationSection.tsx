@@ -47,8 +47,8 @@ export const LocationSection = ({
         <div className="flex items-start gap-2 mb-4">
           <MapPin className="h-5 w-5 text-primary mt-0.5" />
           <div>
-            <p className="font-medium">{city}</p>
-            <p className="text-sm text-muted-foreground mt-1">{address}</p>
+            <p className="font-medium">{city || 'Ville non spécifiée'}</p>
+            <p className="text-sm text-muted-foreground mt-1">{address || 'Adresse non spécifiée'}</p>
           </div>
         </div>
         <div className="aspect-video bg-muted rounded-lg overflow-hidden">
@@ -86,8 +86,10 @@ export const LocationSection = ({
         <div className="flex items-start gap-2 mb-3 pt-2">
           <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div>
-            <p className="font-medium text-foreground">{city}</p>
-            <p className="text-sm text-muted-foreground mt-1">Quartier: {address.split(',')[0]}</p>
+            <p className="font-medium text-foreground">{city || 'Ville non spécifiée'}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Quartier: {address ? address.split(',')[0] : 'Non spécifié'}
+            </p>
           </div>
         </div>
         {user ? (
