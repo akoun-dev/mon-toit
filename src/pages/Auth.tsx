@@ -170,15 +170,7 @@ const Auth = () => {
       }
 
       const { error } = await signIn(signInEmail, signInPassword);
-
-      // Log login attempt
-      await supabase.from('login_attempts').insert({
-        email: signInEmail,
-        ip_address: ipAddress,
-        user_agent: navigator.userAgent,
-        success: !error,
-        fingerprint: fingerprint
-      });
+      // Login attempts are logged centrally in useAuthEnhanced.tsx
 
       setLoading(false);
 

@@ -199,6 +199,17 @@ Le projet utilise une architecture multi-tenant avec 4 types d'utilisateurs :
 
 ## 🛠️ Commandes Utiles
 
+- Synchroniser la base Supabase (migrations locales -> prod):
+  - Installer Supabase CLI: https://supabase.com/docs/guides/cli
+  - Lier le projet: `supabase link --project-ref <project-ref>`
+  - Pousser les migrations: `supabase db push`
+
+- Variables d’environnement (client):
+  - `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` uniquement côté client
+  - Ne jamais exposer de `service_role`
+
+Consultez `docs/DEPLOYMENT_NETLIFY_SUPABASE.md` pour les détails Netlify/Supabase.
+
 ### Développement
 ```bash
 npm run dev              # Serveur de développement
@@ -237,4 +248,3 @@ echo $VITE_SUPABASE_URL
 ---
 
 **Fait avec ❤️ en Côte d'Ivoire 🇨🇮**
-
