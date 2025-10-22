@@ -182,24 +182,24 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl w-[95vw] sm:w-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle>Inviter une agence</DialogTitle>
-            <Button variant="ghost" size="sm" asChild>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <DialogTitle className="text-lg sm:text-xl">Inviter une agence</DialogTitle>
+            <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
               <Link to="/mandates/help" className="gap-2">
                 <HelpCircle className="h-4 w-4" />
                 Aide
               </Link>
             </Button>
           </div>
-          <DialogDescription>
+          <DialogDescription className="text-sm sm:text-base">
             Donnez à une agence immobilière l'accès à vos biens pour qu'elle les gère en votre nom
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
             {/* Sélection agence avec recherche */}
             <FormField
               control={form.control}
@@ -232,7 +232,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[400px] p-0">
+                    <PopoverContent className="w-[90vw] sm:w-[400px] max-w-md p-0">
                       <Command>
                         <CommandInput placeholder="Rechercher une agence..." />
                         <CommandEmpty>Aucune agence trouvée.</CommandEmpty>
@@ -571,7 +571,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
           
           {pendingSubmission && (
             <div className="space-y-2 py-4">
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <span className="text-muted-foreground">Type de mandat:</span>
                 <span className="font-medium">
                   {pendingSubmission.mandate_type === 'location' ? 'Location' : 

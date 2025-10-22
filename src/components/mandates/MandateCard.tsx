@@ -54,11 +54,11 @@ export function MandateCard({ mandate }: MandateCardProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
+      <CardHeader className="pb-3 sm:pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <CardTitle className="text-lg">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                  <CardTitle className="text-base sm:text-lg">
                     {getMandateTypeLabel(mandate.mandate_type)}
                   </CardTitle>
                   {getStatusBadge(mandate.status)}
@@ -84,11 +84,12 @@ export function MandateCard({ mandate }: MandateCardProps) {
 
           {/* Boutons pour l'agence (mandat en attente) */}
           {mandate.status === 'pending' && user?.id === mandate.agency_id && (
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                size="sm"
                 variant="default"
                 onClick={() => acceptMandate(mandate.id)}
+                className="w-full sm:w-auto"
               >
                 <CheckCircle className="h-4 w-4 mr-1" />
                 Accepter
@@ -96,7 +97,7 @@ export function MandateCard({ mandate }: MandateCardProps) {
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto">
                     <XCircle className="h-4 w-4 mr-1" />
                     Refuser
                   </Button>
@@ -190,7 +191,7 @@ export function MandateCard({ mandate }: MandateCardProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {mandate.commission_rate && (
             <div>
               <p className="text-sm text-muted-foreground">Commission</p>

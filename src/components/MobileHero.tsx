@@ -107,7 +107,7 @@ export const MobileHero = () => {
           </p>
 
           {/* Formulaire de recherche */}
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
+          <div className="w-full max-w-md bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl p-5 border border-white/20">
             
             {/* Titre du formulaire */}
             <div className="flex items-center gap-2 mb-4">
@@ -130,10 +130,10 @@ export const MobileHero = () => {
                   open={openSelect === 'city'}
                   onOpenChange={(open) => open ? handleSelectOpen('city') : handleSelectClose()}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-white">
+                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-white/70 backdrop-blur-md">
                     <SelectValue placeholder="Toutes les villes" />
                   </SelectTrigger>
-                  <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
+                  <SelectContent className="z-[60] bg-white/85 backdrop-blur-lg border-gray-200 shadow-lg">
                     <SelectItem value="all">Toutes les villes</SelectItem>
                     <SelectItem value="Abidjan">Abidjan</SelectItem>
                     <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
@@ -156,10 +156,10 @@ export const MobileHero = () => {
                   open={openSelect === 'propertyType'}
                   onOpenChange={(open) => open ? handleSelectOpen('propertyType') : handleSelectClose()}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-white">
+                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-white/70 backdrop-blur-md">
                     <SelectValue placeholder="Tous les types" />
                   </SelectTrigger>
-                  <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
+                  <SelectContent className="z-[60] bg-white/85 backdrop-blur-lg border-gray-200 shadow-lg">
                     <SelectItem value="all">Tous les types</SelectItem>
                     <SelectItem value="appartement">Appartement</SelectItem>
                     <SelectItem value="villa">Villa</SelectItem>

@@ -48,23 +48,23 @@ export default function MyMandates() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto py-8 space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 lg:py-8 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Mes mandats de gestion</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold">Mes mandats de gestion</h1>
+          <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
             Gérez les agences qui ont accès à vos biens
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild>
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+          <Button variant="ghost" size="sm" asChild className="w-full sm:w-auto">
             <Link to="/mandates/help" className="gap-2">
               <HelpCircle className="h-4 w-4" />
               Aide
             </Link>
           </Button>
-          <Button onClick={() => setInviteDialogOpen(true)} size="lg">
-            <Plus className="h-5 w-5 mr-2" />
+          <Button onClick={() => setInviteDialogOpen(true)} size="sm" className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
             Inviter une agence
           </Button>
         </div>

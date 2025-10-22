@@ -54,7 +54,7 @@ export default function MandatesHelp() {
           <CardDescription>Trois types de mandats sont disponibles selon vos besoins</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-3">
             <div className="border rounded-lg p-4 space-y-2">
               <Badge variant="default">Location</Badge>
               <h4 className="font-semibold">Mandat de location</h4>

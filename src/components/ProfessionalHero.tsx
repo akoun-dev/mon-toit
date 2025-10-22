@@ -163,7 +163,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="w-full max-w-4xl mx-auto"
           >
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-4 border border-gray-100">
+            <div className="bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl p-6 md:p-8 space-y-4 border border-white/20">
               
               {/* Titre du formulaire */}
               <div className="flex items-center justify-between mb-2">
@@ -189,10 +189,10 @@ export const ProfessionalHero = () => {
                     open={openSelect === 'city'}
                     onOpenChange={(open) => open ? handleSelectOpen('city') : handleSelectClose()}
                   >
-                    <SelectTrigger className="h-12 border-2 focus:border-primary bg-white">
+                    <SelectTrigger className="h-12 border-2 focus:border-primary bg-white/70 backdrop-blur-md">
                       <SelectValue placeholder="Toutes les villes" />
                     </SelectTrigger>
-                    <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
+                    <SelectContent className="z-[60] bg-white/85 backdrop-blur-lg border-gray-200 shadow-lg">
                       <SelectItem value="all">Toutes les villes</SelectItem>
                       <SelectItem value="Abidjan">Abidjan</SelectItem>
                       <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
@@ -215,10 +215,10 @@ export const ProfessionalHero = () => {
                     open={openSelect === 'propertyType'}
                     onOpenChange={(open) => open ? handleSelectOpen('propertyType') : handleSelectClose()}
                   >
-                    <SelectTrigger className="h-12 border-2 focus:border-primary bg-white">
+                    <SelectTrigger className="h-12 border-2 focus:border-primary bg-white/70 backdrop-blur-md">
                       <SelectValue placeholder="Tous les types" />
                     </SelectTrigger>
-                    <SelectContent className="z-[60] bg-white border-gray-200 shadow-lg">
+                    <SelectContent className="z-[60] bg-white/85 backdrop-blur-lg border-gray-200 shadow-lg">
                       <SelectItem value="all">Tous les types</SelectItem>
                       <SelectItem value="appartement">Appartement</SelectItem>
                       <SelectItem value="villa">Villa</SelectItem>
@@ -242,7 +242,7 @@ export const ProfessionalHero = () => {
                       const value = e.target.value.replace(/\D/g, '');
                       setBudget(value);
                     }}
-                    className="h-12 border-2 focus:border-primary bg-white"
+                    className="h-12 border-2 focus:border-primary bg-white/70 backdrop-blur-md"
                   />
                 </div>
               </div>

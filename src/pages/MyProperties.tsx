@@ -261,13 +261,15 @@ const MyProperties = () => {
 
           {/* Search and View Controls */}
           <StickyHeader>
-            <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center w-full">
-              <PropertySearchBar
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-              />
-              <ViewToggle 
-                view={view} 
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-start sm:items-center w-full">
+              <div className="w-full sm:flex-1">
+                <PropertySearchBar
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                />
+              </div>
+              <ViewToggle
+                view={view}
                 onViewChange={setView}
                 options={['grid', 'list', 'table']}
               />

@@ -76,7 +76,7 @@ export function AgencyPropertiesView({ properties, mandates }: AgencyPropertiesV
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {ownerProperties.map(property => (
                 <PropertyCard key={property.id} property={property} />
               ))}
@@ -87,21 +87,23 @@ export function AgencyPropertiesView({ properties, mandates }: AgencyPropertiesV
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
+        <div className="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4 mt-6">
           <Button
             variant="outline"
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
+            className="w-full sm:w-auto"
           >
             Précédent
           </Button>
-          <span className="flex items-center px-4">
+          <span className="flex items-center px-4 text-sm">
             Page {page} sur {totalPages}
           </span>
           <Button
             variant="outline"
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
+            className="w-full sm:w-auto"
           >
             Suivant
           </Button>
