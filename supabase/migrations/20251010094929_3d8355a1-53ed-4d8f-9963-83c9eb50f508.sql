@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION public.get_property_owner_public_info(property_id_par
 RETURNS TABLE (
   id uuid,
   full_name text,
-  user_type user_type,
+  user_type text,
   city text,
   avatar_url text,
   is_verified boolean,
@@ -31,7 +31,7 @@ AS $$
   SELECT 
     pp.id, 
     pp.full_name, 
-    pp.user_type, 
+    pp.user_type::text, 
     pp.city, 
     pp.avatar_url,
     pp.is_verified, 

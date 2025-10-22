@@ -176,7 +176,7 @@ ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
 -- ========================================
 -- 5. HELPER FUNCTIONS
 -- ========================================
-CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role public.app_role)
+CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role text)
 RETURNS BOOLEAN
 LANGUAGE SQL
 STABLE
@@ -187,7 +187,7 @@ AS $$
     SELECT 1
     FROM public.user_roles
     WHERE user_id = _user_id
-      AND role = _role
+      AND role::text = _role
   )
 $$;
 

@@ -2,8 +2,44 @@
 -- EPIC 9: Rate Limiting et Protection DDoS (corrigé)
 -- ================================================
 
--- 1. Étendre admin_login_attempts → login_attempts
-ALTER TABLE IF EXISTS public.admin_login_attempts RENAME TO login_attempts;
+-- 1. Gérer la table login_attempts (unifier admin_login_attempts et login_attempts)
+DO $$
+BEGIN
+  -- Vérifier si admin_login_attempts existe et login_attempts n'existe pas
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'admin_login_attempts'
+  ) AND NOT EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'login_attempts'
+  ) THEN
+    ALTER TABLE public.admin_login_attempts RENAME TO login_attempts;
+    RAISE NOTICE 'Table admin_login_attempts renommée en login_attempts';
+  ELSIF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'admin_login_attempts'
+  ) AND EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'login_attempts'
+  ) THEN
+    -- Les deux tables existent, fusionner les données sans conflit
+    INSERT INTO public.login_attempts (email, ip_address, success, created_at)
+    SELECT email, ip_address, success, created_at
+    FROM public.admin_login_attempts
+    WHERE NOT EXISTS (
+      SELECT 1 FROM public.login_attempts la
+      WHERE la.email = admin_login_attempts.email
+        AND la.ip_address = admin_login_attempts.ip_address
+        AND la.created_at = admin_login_attempts.created_at
+    );
+
+    -- Supprimer l'ancienne table
+    DROP TABLE IF EXISTS public.admin_login_attempts;
+    RAISE NOTICE 'Tables admin_login_attempts fusionnées dans login_attempts';
+  ELSE
+    RAISE NOTICE 'Table login_attempts déjà existante, aucune action nécessaire';
+  END IF;
+END $$;
 
 -- Ajouter colonnes pour le rate limiting
 ALTER TABLE public.login_attempts 

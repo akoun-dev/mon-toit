@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION public.get_public_profile_safe(target_user_id uuid)
 RETURNS TABLE(
   id uuid, 
   full_name text, 
-  user_type user_type, 
+  user_type text, 
   city text, 
   bio text, 
   avatar_url text,
@@ -30,7 +30,7 @@ AS $$
   SELECT 
     p.id,
     p.full_name,
-    p.user_type,
+    p.user_type::text,
     p.city,
     p.bio,
     p.avatar_url,

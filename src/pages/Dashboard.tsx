@@ -81,6 +81,36 @@ const Dashboard = () => {
 
   const content = dashboardContent[profile.user_type];
 
+  // Fallback content for unhandled user types
+  if (!content) {
+    return (
+      <MainLayout>
+        <main className="container mx-auto px-2 py-3">
+          <div className="max-w-7xl mx-auto space-y-4">
+            <DynamicBreadcrumb />
+
+            <WelcomeBanner />
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Tableau de bord</CardTitle>
+                <CardDescription>
+                  Bienvenue, {profile.full_name}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Votre type d'utilisateur ({profile.user_type}) n'a pas de tableau de bord personnalisé.
+                  Veuillez contacter l'administrateur pour configurer votre accès.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <main className="container mx-auto px-2 py-3">

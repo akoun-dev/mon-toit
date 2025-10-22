@@ -266,7 +266,7 @@ BEGIN
       gen_random_uuid(),
       'staging@locataire.ci',
       NOW(),
-      '+2250707070707',
+      '+2250717171717',
       '{"full_name": "Staging Locataire", "user_type": "locataire"}',
       NOW(),
       NOW()
@@ -292,7 +292,7 @@ BEGIN
       gen_random_uuid(),
       'staging@proprietaire.ci',
       NOW(),
-      '+2250808080808',
+      '+2250818181818',
       '{"full_name": "Staging Propriétaire", "user_type": "proprietaire"}',
       NOW(),
       NOW()
@@ -318,7 +318,7 @@ BEGIN
       gen_random_uuid(),
       'staging@agence.ci',
       NOW(),
-      '+2250909090909',
+      '+2250919191919',
       '{"full_name": "Staging Agence", "user_type": "agence"}',
       NOW(),
       NOW()
@@ -696,9 +696,9 @@ SELECT '- demo@proprietaire.ci (Demo2025!) - Demo Propriétaire' as user;
 SELECT '- demo@agence.ci (Demo2025!) - Demo Agence' as user;
 SELECT '' as info;
 SELECT 'Staging (3 comptes):' as category;
-SELECT '- staging@locataire.ci (Staging2025!) - Staging Locataire' as user;
-SELECT '- staging@proprietaire.ci (Staging2025!) - Staging Propriétaire' as user;
-SELECT '- staging@agence.ci (Staging2025!) - Staging Agence' as user;
+SELECT '- staging@locataire.ci (Staging2025!) - Staging Locataire (+2250717171717)' as user;
+SELECT '- staging@proprietaire.ci (Staging2025!) - Staging Propriétaire (+2250818181818)' as user;
+SELECT '- staging@agence.ci (Staging2025!) - Staging Agence (+2250919191919)' as user;
 SELECT '' as info;
 SELECT 'Total comptes créés: 11' as info;
 SELECT 'Total propriétés créées: 8' as info;

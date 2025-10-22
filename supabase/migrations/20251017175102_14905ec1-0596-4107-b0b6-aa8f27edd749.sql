@@ -72,7 +72,7 @@ CREATE OR REPLACE FUNCTION public.get_public_profile(target_user_id uuid)
 RETURNS TABLE(
   id uuid,
   full_name text,
-  user_type user_type,
+  user_type text,
   city text,
   bio text,
   avatar_url text,
@@ -86,7 +86,7 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $function$
-  SELECT p.id, p.full_name, p.user_type, p.city, p.bio, p.avatar_url,
+  SELECT p.id, p.full_name, p.user_type::text, p.city, p.bio, p.avatar_url,
     p.oneci_verified, p.cnam_verified, p.face_verified, p.is_verified
   FROM public.profiles p WHERE p.id = target_user_id;
 $function$;
@@ -133,10 +133,10 @@ COMMENT ON FUNCTION public.get_user_phone(uuid) IS
 SÉCURITÉ: Log tous les accès dans sensitive_data_access_log. 
 Accès limité à: propriétaire du profil, propriétaires/locataires liés, admins.';
 
-COMMENT ON FUNCTION public.require_admin_mfa() IS
-'Fonction SECURITY DEFINER pour enforcer MFA sur les comptes admin.
-SÉCURITÉ: Bloque l''accès si MFA non configuré après la période de grâce.
-Période de grâce: 7 jours par défaut (configurable via mfa_policies).';
+-- COMMENT ON FUNCTION public.require_admin_mfa() IS
+-- 'Fonction SECURITY DEFINER pour enforcer MFA sur les comptes admin.
+-- SÉCURITÉ: Bloque l''accès si MFA non configuré après la période de grâce.
+-- Période de grâce: 7 jours par défaut (configurable via mfa_policies).';
 
 COMMENT ON TABLE public.user_roles IS
 'Table des rôles utilisateurs avec RLS strict.

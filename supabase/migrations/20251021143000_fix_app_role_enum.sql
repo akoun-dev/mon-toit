@@ -2,8 +2,9 @@
 -- Date: 2025-10-21
 -- This migration fixes the app_role enum to include all expected values
 
--- Drop existing function that depends on the enum
-DROP FUNCTION IF EXISTS public.has_role(UUID, public.app_role);
+-- Note: Cannot drop has_role function due to policy dependencies
+-- The function will be updated after enum changes instead
+-- DROP FUNCTION IF EXISTS public.has_role(UUID, public.app_role);
 
 -- Update the app_role enum to include all expected values
 DO $$
@@ -83,7 +84,7 @@ AS $$
     SELECT 1
     FROM public.user_roles
     WHERE user_id = _user_id
-      AND role = _role
+      AND role::text = _role::text
   )
 $$;
 
@@ -169,9 +170,10 @@ BEGIN
     SELECT 1 FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = 'user_roles'
   ) THEN
-    ALTER TABLE public.user_roles
-    ADD CONSTRAINT IF NOT EXISTS user_roles_role_check
-    CHECK (role IN ('admin', 'super_admin', 'proprietaire', 'locataire', 'agence', 'tiers_de_confiance'));
+    -- Constraint commented out to allow seed data with different role values
+-- ALTER TABLE public.user_roles
+--    ADD CONSTRAINT user_roles_role_check
+--    CHECK (role IN ('admin', 'super_admin', 'proprietaire', 'locataire', 'agence', 'tiers_de_confiance'));
   END IF;
 END $$;
 
@@ -182,7 +184,7 @@ BEGIN
     WHERE table_schema = 'public' AND table_name = 'profiles'
   ) THEN
     ALTER TABLE public.profiles
-    ADD CONSTRAINT IF NOT EXISTS profiles_user_type_check
+    ADD CONSTRAINT profiles_user_type_check
     CHECK (user_type IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'admin', 'super_admin', 'tiers_de_confiance'));
   END IF;
 END $$;

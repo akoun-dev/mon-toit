@@ -1,7 +1,30 @@
 -- Créer le bucket pour les images des propriétés
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('property-images', 'property-images', true)
-ON CONFLICT (id) DO NOTHING;
+-- Note: La table storage.buckets n'a PAS de colonne 'public' mais seulement id, name, owner, created_at, updated_at
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'storage' AND table_name = 'buckets'
+  ) THEN
+    -- Insérer seulement si les colonnes de base existent
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'storage'
+      AND table_name = 'buckets'
+      AND column_name IN ('id', 'name')
+    ) THEN
+      INSERT INTO storage.buckets (id, name)
+      VALUES ('property-images', 'property-images')
+      ON CONFLICT (id) DO NOTHING;
+
+      RAISE NOTICE 'Bucket property-images créé avec succès';
+    ELSE
+      RAISE NOTICE 'Structure de storage.buckets incomplète, bucket non créé';
+    END IF;
+  ELSE
+    RAISE NOTICE 'Table storage.buckets non trouvée, bucket non créé';
+  END IF;
+END $$;
 
 -- Politique RLS pour permettre la lecture publique
 CREATE POLICY "Public read access for property images"

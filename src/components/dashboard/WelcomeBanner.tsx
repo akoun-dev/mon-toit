@@ -23,7 +23,7 @@ export const WelcomeBanner = () => {
     }
   };
 
-  const config = roleConfig[profile.user_type || "locataire"];
+  const config = roleConfig[profile.user_type] || roleConfig["locataire"];
   const illustrationPath = getIllustrationPath(config.illustration);
 
   return (

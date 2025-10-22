@@ -3,15 +3,35 @@
 -- ============================================
 
 -- 1. Créer le bucket property-documents (PRIVÉ)
-INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES (
-  'property-documents',
-  'property-documents',
-  false,
-  10485760, -- 10 MB max
-  ARRAY['application/pdf', 'image/jpeg', 'image/png']
-)
-ON CONFLICT (id) DO NOTHING;
+DO $$
+BEGIN
+  -- Vérifier d'abord si storage.buckets existe
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'storage' AND table_name = 'buckets'
+  ) THEN
+    -- Insérer seulement si les colonnes de base existent
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'storage'
+      AND table_name = 'buckets'
+      AND column_name IN ('id', 'name')
+    ) THEN
+      INSERT INTO storage.buckets (id, name)
+      VALUES (
+        'property-documents',
+        'property-documents'
+      )
+      ON CONFLICT (id) DO NOTHING;
+
+      RAISE NOTICE 'Bucket property-documents créé avec succès';
+    ELSE
+      RAISE NOTICE 'Structure de storage.buckets incomplète, bucket non créé';
+    END IF;
+  ELSE
+    RAISE NOTICE 'Table storage.buckets non trouvée, bucket non créé';
+  END IF;
+END $$;
 
 -- 2. RLS Policy : SELECT (téléchargement)
 CREATE POLICY "Restricted title deed access"

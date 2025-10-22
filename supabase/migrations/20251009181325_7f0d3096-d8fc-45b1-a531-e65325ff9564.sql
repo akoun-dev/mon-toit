@@ -4,8 +4,20 @@
 
 -- 1. Vue publique des profils SANS téléphone
 DROP VIEW IF EXISTS public.profiles_public CASCADE;
+
+-- Ajouter la colonne bio si elle n'existe pas
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'bio'
+  ) THEN
+    ALTER TABLE public.profiles ADD COLUMN bio TEXT;
+  END IF;
+END $$;
+
 CREATE VIEW public.profiles_public AS
-SELECT 
+SELECT
   id, full_name, user_type, city, bio, avatar_url,
   oneci_verified, cnam_verified, face_verified, is_verified,
   created_at, updated_at
@@ -65,12 +77,12 @@ $$;
 DROP FUNCTION IF EXISTS public.get_public_profile(uuid);
 CREATE FUNCTION public.get_public_profile(target_user_id uuid)
 RETURNS TABLE(
-  id uuid, full_name text, user_type user_type, city text, bio text, avatar_url text,
+  id uuid, full_name text, user_type text, city text, bio text, avatar_url text,
   oneci_verified boolean, cnam_verified boolean, face_verified boolean, is_verified boolean
 )
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
 AS $$
-  SELECT p.id, p.full_name, p.user_type, p.city, p.bio, p.avatar_url,
+  SELECT p.id, p.full_name, p.user_type::text, p.city, p.bio, p.avatar_url,
     p.oneci_verified, p.cnam_verified, p.face_verified, p.is_verified
   FROM public.profiles p WHERE p.id = target_user_id;
 $$;
