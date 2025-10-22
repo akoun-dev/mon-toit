@@ -89,7 +89,7 @@ export async function safePluginCall<T>(
   }
 
   try {
-    const module = await import(`@capacitor/${pluginName.toLowerCase()}`);
+    const module = await import(/* @vite-ignore */ `@capacitor/${pluginName.toLowerCase()}`);
     const plugin = module[pluginName];
     
     if (plugin && typeof plugin[methodName] === 'function') {

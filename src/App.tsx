@@ -49,6 +49,7 @@ const ScheduleVisit = lazy(() => import("./pages/ScheduleVisit"));
 // Load other pages normally
 import Certification from "./pages/Certification";
 import ResetPassword from "./pages/ResetPassword";
+import AuthCallback from "./pages/AuthCallback";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
 import PropertyApplications from "./pages/PropertyApplications";
@@ -62,6 +63,9 @@ import Conditions from "./pages/Conditions";
 import Confidentialite from "./pages/Confidentialite";
 import MentionsLegales from "./pages/MentionsLegales";
 import TiersDeConfianceDashboard from "./pages/TiersDeConfianceDashboard";
+const TiersVerifications = lazy(() => import("./pages/tiers-verifications"));
+const TiersDocuments = lazy(() => import("./pages/tiers-documents"));
+const TiersRapports = lazy(() => import("./pages/tiers-rapports"));
 import CertificationFAQ from "./pages/CertificationFAQ";
 import Tarifs from "./pages/Tarifs";
 import PopulateImages from "./pages/PopulateImages";
@@ -137,6 +141,7 @@ const AppContent = () => {
             } />
             <Route path="/certification" element={<Certification />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/guide" element={<Guide />} />
             <Route
@@ -197,15 +202,45 @@ const AppContent = () => {
                 </ProtectedRoute>
               } 
             />
-          <Route 
-            path="/tiers-dashboard" 
+          <Route
+            path="/tiers-dashboard"
             element={
               <ProtectedRoute requiredRoles={['tiers_de_confiance']}>
                 <TiersDeConfianceDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
+          <Route
+            path="/tiers-verifications"
+            element={
+              <ProtectedRoute requiredRoles={['tiers_de_confiance']}>
+                <Suspense fallback={<PageSkeleton />}>
+                  <TiersVerifications />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tiers-documents"
+            element={
+              <ProtectedRoute requiredRoles={['tiers_de_confiance']}>
+                <Suspense fallback={<PageSkeleton />}>
+                  <TiersDocuments />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tiers-rapports"
+            element={
+              <ProtectedRoute requiredRoles={['tiers_de_confiance']}>
+                <Suspense fallback={<PageSkeleton />}>
+                  <TiersRapports />
+                </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard/agence" 
             element={
               <ProtectedRoute allowedUserTypes={['agence']}>

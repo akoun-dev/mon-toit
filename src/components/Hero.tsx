@@ -4,38 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle2, Mic, MicOff } from "lucide-react";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
-import heroFamilyHome from "@/assets/hero/hero-family-home.jpg";
-import heroSlide1 from "@/assets/hero/hero-slide-1.jpg";
-import heroSlide2 from "@/assets/hero/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero/hero-slide-3.jpg";
-import heroSlide4 from "@/assets/hero/hero-slide-4.jpg";
-import heroImage from "@/assets/hero/image.png";
+import abidjanIllustration from "/images/hero/abidjan-illustration.png";
 
 const Hero = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const { isListening, transcript, isSupported, startListening, stopListening } = useVoiceSearch();
-
-  // Slideshow images
-  const heroImages = [
-    heroImage,
-    heroFamilyHome,
-    heroSlide1,
-    heroSlide2,
-    heroSlide3,
-    heroSlide4
-  ];
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Auto-advance slideshow every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -65,53 +39,28 @@ const Hero = () => {
   });
 
   return (
-    <section className="hero-section relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-hero-warm">
-      {/* Slideshow Background Images - Right Side */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:block">
-        {heroImages.map((image, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <img
-              src={image}
-              alt={`Vue logement ${index + 1}`}
-              className="w-full h-full object-cover"
-              loading={index === 0 ? "eager" : "lazy"}
-            />
-          </div>
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent" />
-
-        {/* Slideshow indicators */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentImageIndex
-                  ? 'bg-white w-8'
-                  : 'bg-white/50 hover:bg-white/75'
-              }`}
-              aria-label={`Aller à l'image ${index + 1}`}
-            />
-          ))}
-        </div>
+    <section className="hero-section relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+      {/* Background Image - Full Width */}
+      <div className="absolute inset-0">
+        <img
+          src={abidjanIllustration}
+          alt="Vue d'Abidjan"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
       </div>
 
       {/* Content */}
       <div className="relative container mx-auto px-6 sm:px-8 md:px-4 py-4 md:py-10 max-w-7xl z-10 animate-fade-in">
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
           {/* Main Title - Bold and Large */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-foreground leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-white leading-tight tracking-tight">
             Trouvez votre logement idéal en{" "}
             <span className="text-[#E67E22]">48h</span>
           </h1>
-          
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 max-w-xl font-medium">
+
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 max-w-xl font-medium">
             La première plateforme immobilière certifiée ANSUT en Côte d'Ivoire. 100% gratuit, 100% sécurisé.
           </p>
 
@@ -154,9 +103,9 @@ const Hero = () => {
               Rechercher un logement
             </Button>
             
-            <Link 
-              to="/auth?type=proprietaire" 
-              className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 transition-colors text-sm"
+            <Link
+              to="/auth?type=proprietaire"
+              className="text-white hover:text-white/80 font-medium underline underline-offset-4 transition-colors text-sm"
             >
               Je suis propriétaire
             </Link>
@@ -164,12 +113,12 @@ const Hero = () => {
 
           {/* Quick search chips - discreet */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">Populaire :</span>
+            <span className="text-xs font-medium text-white/80">Populaire :</span>
             {['Cocody', 'Yopougon', 'Marcory'].map((location) => (
               <button
                 key={location}
                 onClick={() => handleQuickSearch(location)}
-                className="text-xs px-3 py-2 min-h-[36px] rounded-full bg-muted hover:bg-primary/10 text-foreground hover:text-primary transition-colors"
+                className="text-xs px-3 py-2 min-h-[36px] rounded-full bg-white/20 hover:bg-white/30 text-white hover:text-white transition-colors backdrop-blur-sm"
               >
                 {location}
               </button>

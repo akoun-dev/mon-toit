@@ -87,11 +87,11 @@ const TiersDeConfianceDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
-        <h1 className="text-4xl font-bold mb-8">Espace Tiers de Confiance</h1>
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">Espace Tiers de Confiance</h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card className="border-destructive">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">🔴 Urgents</CardTitle>
@@ -137,10 +137,16 @@ const TiersDeConfianceDashboard = () => {
 
         {/* Validation Queue */}
         <Tabs defaultValue="verifications" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="verifications">Vérifications d'identité</TabsTrigger>
-            <TabsTrigger value="dossiers">Dossiers de location</TabsTrigger>
-            <TabsTrigger value="history">Historique</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="verifications" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
+              Vérifications d'identité
+            </TabsTrigger>
+            <TabsTrigger value="dossiers" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
+              Dossiers de location
+            </TabsTrigger>
+            <TabsTrigger value="history" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
+              Historique
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="verifications">

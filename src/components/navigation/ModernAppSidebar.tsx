@@ -98,6 +98,13 @@ export function ModernAppSidebar() {
   const ownerLinks = (profile?.user_type === "proprietaire" || profile?.user_type === "agence") ? [
     { to: "/mes-biens", icon: Building2, label: "Mes Biens", color: "text-cyan-500" },
     { to: "/my-mandates", icon: FileText, label: "Mes Mandats", color: "text-amber-500" },
+    { to: "/publier", icon: PlusCircle, label: "Publier un bien", color: "text-green-500" },
+  ] : [];
+
+  // Navigation spécifique pour les agences
+  const agencyLinks = profile?.user_type === "agence" ? [
+    { to: "/dashboard/agence", icon: LayoutDashboard, label: "Tableau de bord Agence", color: "text-purple-500", highlight: true },
+    { to: "/my-mandates", icon: FileText, label: "Gestion des Mandats", color: "text-blue-500" },
   ] : [];
 
   // Navigation admin (masquée sur l'accueil pour les non-admins)
@@ -318,6 +325,23 @@ export function ModernAppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {renderMenuItems(tenantLinks)}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {/* Section Agence */}
+        {agencyLinks.length > 0 && (
+          <SidebarGroup className="mt-3">
+            {open && (
+              <SidebarGroupLabel className="text-xs font-semibold text-purple-600 uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
+                <div className="w-1 h-1 bg-purple-500 rounded-full animate-pulse" />
+                Espace Agence
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {renderMenuItems(agencyLinks)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

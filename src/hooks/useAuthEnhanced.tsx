@@ -14,6 +14,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, fullName: string, userType: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signInWithOAuth: (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   hasRole: (role: string) => boolean;
@@ -189,7 +190,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string, userType: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/dashboard`;
     
     try {
       const { error } = await supabase.auth.signUp({
@@ -267,6 +268,55 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithOAuth = async (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType: string = 'proprietaire') => {
+    const redirectUrl = `${window.location.origin}/auth/callback?userType=${userType}`;
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: provider === 'google'
+            ? 'email profile'
+            : provider === 'facebook'
+            ? 'email public_profile'
+            : provider === 'apple'
+            ? 'email name'
+            : 'email profile'
+        }
+      });
+
+      if (error) {
+        logger.error('OAuth sign in error', { provider, error: error.message });
+        toast({
+          title: "Erreur de connexion OAuth",
+          description: `Impossible de se connecter avec ${provider}: ${error.message}`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Redirection vers l'authentification",
+          description: `Redirection vers ${provider}...`,
+        });
+      }
+
+      return { error };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+      logger.error('Unexpected OAuth error', { provider, error: errorMessage });
+      toast({
+        title: "Erreur de connexion OAuth",
+        description: `Une erreur inattendue est survenue avec ${provider}: ${errorMessage}`,
+        variant: "destructive",
+      });
+      return { error: error as AuthError };
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -294,7 +344,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, roles, loading, signUp, signIn, signOut, refreshProfile, hasRole }}>
+    <AuthContext.Provider value={{ user, session, profile, roles, loading, signUp, signIn, signInWithOAuth, signOut, refreshProfile, hasRole }}>
       {children}
     </AuthContext.Provider>
   );

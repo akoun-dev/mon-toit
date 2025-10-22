@@ -2,8 +2,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
 import { useQuery } from '@tanstack/react-query';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { ApplicationsStatusWidget } from '@/components/dashboard/tenant/ApplicationsStatusWidget';
 import { ActiveLeaseWidget } from '@/components/dashboard/tenant/ActiveLeaseWidget';
 import { PaymentHistoryWidget } from '@/components/dashboard/tenant/PaymentHistoryWidget';
@@ -63,32 +62,28 @@ const TenantDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto px-2 py-4 pt-24">
-        <div className="mb-10">
+    <MainLayout>
+      <main className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
+        <div className="mb-6 sm:mb-10">
           <DynamicBreadcrumb />
-          
-          <h1 className="text-4xl font-bold mb-3 mt-6 flex items-center gap-3">
-            <LayoutDashboard className="h-8 w-8 text-primary" />
+
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 mt-4 sm:mt-6 flex items-center gap-2 sm:gap-3">
+            <LayoutDashboard className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             Tableau de bord Locataire
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground">
             Vue d'ensemble de vos candidatures, baux et paiements
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
           <ApplicationsStatusWidget data={dashboardData?.applications} />
           <ActiveLeaseWidget data={dashboardData?.leases} />
           <PaymentHistoryWidget data={dashboardData?.payments} />
           <MaintenanceRequestsWidget data={dashboardData?.maintenance} />
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </MainLayout>
   );
 };
 

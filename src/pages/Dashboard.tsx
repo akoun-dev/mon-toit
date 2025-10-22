@@ -25,10 +25,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [preferencesOpen, setPreferencesOpen] = useState(false);
 
-  // Redirection intelligente pour les agences
+  // Redirection intelligente pour les agences et tiers de confiance
   useEffect(() => {
-    if (profile?.user_type === 'agence' && !loading) {
-      navigate('/dashboard/agence');
+    if (!loading) {
+      if (profile?.user_type === 'agence') {
+        navigate('/dashboard/agence');
+      } else if (profile?.user_type === 'tiers_de_confiance') {
+        navigate('/tiers-dashboard');
+      }
     }
   }, [profile?.user_type, loading, navigate]);
 
@@ -75,6 +79,14 @@ const Dashboard = () => {
         { title: 'Utilisateurs', icon: Users, description: 'Gestion des utilisateurs', link: '/admin/users' },
         { title: 'Propriétés', icon: Building2, description: 'Toutes les propriétés', link: '/admin/properties' },
         { title: 'Rapports', icon: BarChart3, description: 'Statistiques globales', link: '/admin/reports' },
+      ],
+    },
+    tiers_de_confiance: {
+      title: 'Tableau de bord Tiers de Confiance',
+      cards: [
+        { title: 'Vérifications', icon: Settings, description: 'Demandes en attente', link: '/tiers-verifications' },
+        { title: 'Documents', icon: Building2, description: 'Documents à valider', link: '/tiers-documents' },
+        { title: 'Rapports', icon: BarChart3, description: 'Rapports de conformité', link: '/tiers-rapports' },
       ],
     },
   };

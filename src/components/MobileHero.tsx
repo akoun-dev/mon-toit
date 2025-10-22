@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Home, ShieldCheck, Building2, PlusCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import abidjanIllustration from "/images/hero/abidjan-illustration.png";
 
 export const MobileHero = () => {
   const [city, setCity] = useState('all');
@@ -38,24 +39,16 @@ export const MobileHero = () => {
   return (
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Dégradé mobile */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-        {/* Motifs mobiles */}
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="w-full h-full" style={{
-            backgroundImage: `repeating-linear-gradient(
-              60deg,
-              transparent,
-              transparent 15px,
-              #E67E22 15px,
-              #E67E22 16px
-            )`
-          }} />
-        </div>
+      {/* Image de fond - Abidjan */}
+      <div className="absolute inset-0">
+        <img
+          src={abidjanIllustration}
+          alt="Vue d'Abidjan"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60" />
       </div>
-      
-      {/* Overlay crème pour lisibilité */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background-sand/75 to-background-light/80" />
       
       {/* Motifs Kente subtils */}
       <div className="absolute inset-0 opacity-[0.04]">
@@ -82,18 +75,18 @@ export const MobileHero = () => {
           transition={{ duration: 0.5 }}
         >
           {/* Badge ANSUT discret */}
-          <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-3 py-1.5 text-xs font-medium shadow-sm border border-gray-200">
+          <Badge className="bg-white/90 text-gray-700 hover:bg-white px-3 py-1.5 text-xs font-medium shadow-sm border border-gray-200 backdrop-blur-sm">
             <ShieldCheck className="h-3 w-3 mr-1.5" style={{ color: '#2256A3' }} />
             Certifié ANSUT
           </Badge>
 
           {/* Titre */}
-          <h1 className="text-3xl font-extrabold text-gray-900 leading-tight px-2">
+          <h1 className="text-3xl font-extrabold text-white leading-tight px-2">
             Trouvez votre{' '}
-            <span className="text-primary relative inline-block">
+            <span className="text-[#E67E22] relative inline-block">
               Toit Idéal
               <svg
-                className="absolute -bottom-1 left-0 w-full h-2 text-primary/30"
+                className="absolute -bottom-1 left-0 w-full h-2 text-[#E67E22]/30"
                 viewBox="0 0 200 8"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +102,7 @@ export const MobileHero = () => {
           </h1>
 
           {/* Sous-titre */}
-          <p className="text-sm text-gray-600 max-w-sm font-medium px-2">
+          <p className="text-sm text-white/90 max-w-sm font-medium px-2">
             Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
           </p>
 
@@ -207,21 +200,21 @@ export const MobileHero = () => {
 
           {/* Statistiques - 2x2 pour mobile */}
           <div className="grid grid-cols-2 gap-4 w-full max-w-sm pt-4">
-            <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-3">
-              <div className="text-2xl font-extrabold text-primary">3500+</div>
-              <div className="text-xs text-gray-600 mt-0.5">Biens</div>
+            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl p-3 border border-white/30">
+              <div className="text-2xl font-extrabold text-white">3500+</div>
+              <div className="text-xs text-white/80 mt-0.5">Biens</div>
             </div>
-            <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-3">
-              <div className="text-2xl font-extrabold text-primary">10000+</div>
-              <div className="text-xs text-gray-600 mt-0.5">Utilisateurs</div>
+            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl p-3 border border-white/30">
+              <div className="text-2xl font-extrabold text-white">10000+</div>
+              <div className="text-xs text-white/80 mt-0.5">Utilisateurs</div>
             </div>
-            <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-3">
-              <div className="text-2xl font-extrabold text-primary">98%</div>
-              <div className="text-xs text-gray-600 mt-0.5">Satisfaction</div>
+            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl p-3 border border-white/30">
+              <div className="text-2xl font-extrabold text-white">98%</div>
+              <div className="text-xs text-white/80 mt-0.5">Satisfaction</div>
             </div>
-            <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-3">
-              <div className="text-2xl font-extrabold text-primary">24h</div>
-              <div className="text-xs text-gray-600 mt-0.5">Support</div>
+            <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl p-3 border border-white/30">
+              <div className="text-2xl font-extrabold text-white">24h</div>
+              <div className="text-xs text-white/80 mt-0.5">Support</div>
             </div>
           </div>
         </motion.div>

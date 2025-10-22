@@ -232,15 +232,15 @@ const MyProperties = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto space-y-4">
           <DynamicBreadcrumb />
-          
+
           {/* Header */}
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold">Mes Biens Immobiliers</h1>
-              <p className="text-muted-foreground mt-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Mes Biens Immobiliers</h1>
+              <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
                 {properties.length} {properties.length > 1 ? 'biens' : 'bien'} au total
               </p>
             </div>
@@ -305,7 +305,7 @@ const MyProperties = () => {
           ) : (
             <div className={
               view === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
                 : 'space-y-4'
             }>
               {filteredAndSortedProperties.map((property) => (

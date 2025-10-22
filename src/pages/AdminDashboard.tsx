@@ -29,6 +29,7 @@ import { ProcessingAnalytics } from '@/components/admin/ProcessingAnalytics';
 import { SeedDemoDataButton } from '@/components/admin/SeedDemoDataButton';
 import { ElectronicSignaturesDashboard } from '@/components/admin/ElectronicSignaturesDashboard';
 import { CertificateManager } from '@/components/admin/CertificateManager';
+import { AdminSecurityDashboard } from '@/components/admin/AdminSecurityDashboard';
 import { PropertyAlertsMonitor } from '@/components/admin/PropertyAlertsMonitor';
 import { ReportGenerator } from '@/components/admin/ReportGenerator';
 import { IllustrationGenerator } from '@/components/admin/IllustrationGenerator';
@@ -141,10 +142,10 @@ const AdminDashboard = () => {
         />
       }
     >
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
         <StickyHeader>
-          <h1 className="text-2xl font-bold">Administration ANSUT</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold">Administration ANSUT</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Gestion et validation de la plateforme Mon Toit
           </p>
         </StickyHeader>
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
 
         {/* Traitement */}
         {activeTab === 'processing' && (
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-1 lg:grid-cols-2">
             <ProcessingConfigPanel />
             <ProcessingAnalytics />
           </div>
@@ -183,6 +184,11 @@ const AdminDashboard = () => {
         {/* Sécurité 2FA */}
         {activeTab === 'mfa' && (
           <EnhancedMfaSecurityMonitor />
+        )}
+
+        {/* Dashboard Sécurité Complet */}
+        {activeTab === 'security-dashboard' && (
+          <AdminSecurityDashboard />
         )}
 
         {/* Audit */}

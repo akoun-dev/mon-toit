@@ -272,17 +272,17 @@ const OwnerDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto space-y-4">
           <DynamicBreadcrumb />
-          <StickyHeader className="flex items-center justify-between">
+          <StickyHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">Tableau de Bord</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-2xl sm:text-3xl font-bold">Tableau de Bord</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Analysez les performances de vos biens
               </p>
             </div>
-            <Button onClick={fetchDashboardData} variant="outline" size="sm">
+            <Button onClick={fetchDashboardData} variant="outline" size="sm" className="w-full sm:w-auto">
               <RefreshCw className="h-4 w-4 mr-2" />
               Actualiser
             </Button>

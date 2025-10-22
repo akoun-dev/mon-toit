@@ -8,6 +8,7 @@ import { Building2, Users, TrendingUp, FileCheck, AlertCircle, AlertTriangle, He
 import { Navigate, Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { MainLayout } from '@/components/layout/MainLayout';
 import { AgencyMandatesList } from '@/components/agency/AgencyMandatesList';
 import { AgencyPropertiesView } from '@/components/agency/AgencyPropertiesView';
 import { AgencyFinancialStats } from '@/components/agency/AgencyFinancialStats';
@@ -30,11 +31,12 @@ export default function AgencyDashboard() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-4">
-      <div className="flex items-center justify-between">
+    <MainLayout>
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Tableau de bord Agence</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold">Tableau de bord Agence</h1>
+          <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
             Gérez vos mandats et propriétés confiées
           </p>
         </div>
@@ -78,7 +80,7 @@ export default function AgencyDashboard() {
       </div>
 
       {/* Stats globales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Mandats actifs</CardTitle>
@@ -138,14 +140,14 @@ export default function AgencyDashboard() {
 
       {/* Tabs principales */}
       <Tabs defaultValue="mandates" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="mandates">
+        <TabsList className="grid w-full grid-cols-3 h-auto">
+          <TabsTrigger value="mandates" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
             Mes mandats ({asAgency.length})
           </TabsTrigger>
-          <TabsTrigger value="properties">
+          <TabsTrigger value="properties" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
             Biens gérés ({stats.totalProperties})
           </TabsTrigger>
-          <TabsTrigger value="financials">
+          <TabsTrigger value="financials" className="text-xs sm:text-sm py-2 px-2 sm:px-4">
             Financier
           </TabsTrigger>
         </TabsList>
@@ -171,6 +173,7 @@ export default function AgencyDashboard() {
           />
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </MainLayout>
   );
 }

@@ -74,10 +74,18 @@ export function AppSidebar() {
     { to: "/my-mandates", icon: FileText, label: "Mes Mandats" },
   ] : [];
 
+  // Navigation pour tiers de confiance
+  const tiersLinks = profile?.user_type === "tiers_de_confiance" ? [
+    { to: "/tiers-dashboard", icon: ShieldCheck, label: "Dashboard Tiers" },
+    { to: "/tiers-verifications", icon: FileText, label: "Vérifications" },
+    { to: "/tiers-documents", icon: LayoutDashboard, label: "Documents" },
+    { to: "/tiers-rapports", icon: FileText, label: "Rapports" },
+  ] : [];
+
   // Navigation admin
   const adminLinks = canAccessAdminDashboard ? [
-    { to: "/admin", icon: Shield, label: "Admin Dashboard" },
-    { to: "/admin/certifications", icon: ShieldCheck, label: "Certifications" },
+    { to: "/admin", icon: Shield, label: "🛡️ Admin Dashboard" },
+    { to: "/admin/certifications", icon: ShieldCheck, label: "📜 Certifications" },
   ] : [];
 
   // Autres liens
@@ -200,12 +208,36 @@ export function AppSidebar() {
           </>
         )}
 
+        {/* Section Tiers de Confiance */}
+        {tiersLinks.length > 0 && (
+          <>
+            <Separator className="my-2" />
+            <SidebarGroup>
+              <SidebarGroupLabel>Tiers de Confiance</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {tiersLinks.map((link) => (
+                    <SidebarMenuItem key={link.to}>
+                      <SidebarMenuButton asChild isActive={isActive(link.to)}>
+                        <Link to={link.to}>
+                          <link.icon className="h-4 w-4" />
+                          <span>{link.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
+
         {/* Section Admin */}
         {adminLinks.length > 0 && (
           <>
             <Separator className="my-2" />
             <SidebarGroup>
-              <SidebarGroupLabel>Administration</SidebarGroupLabel>
+              <SidebarGroupLabel>🛡️ Administration</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {adminLinks.map((link) => (
@@ -268,9 +300,20 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-2">
-        <SidebarTrigger className="w-full" />
-      </SidebarFooter>
+      <SidebarFooter className="border-t p-2 space-y-2">
+          {canAccessAdminDashboard && (
+            <div className="flex items-center gap-2 px-2 py-1 bg-red-50 dark:bg-red-950 rounded-md">
+              <Shield className="h-4 w-4 text-red-600" />
+              <span className="text-xs font-medium text-red-700 dark:text-red-300 hidden sm:inline">
+                Admin
+              </span>
+              <span className="text-xs font-medium text-red-700 dark:text-red-300 sm:hidden">
+                A
+              </span>
+            </div>
+          )}
+          <SidebarTrigger className="w-full" />
+        </SidebarFooter>
     </Sidebar>
   );
 }

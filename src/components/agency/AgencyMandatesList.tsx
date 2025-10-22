@@ -128,7 +128,7 @@ export function AgencyMandatesList({ mandates, isLoading }: AgencyMandatesListPr
           </CardHeader>
           
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               {mandate.commission_rate && (
                 <div>
                   <p className="text-sm text-muted-foreground">Commission</p>
@@ -160,7 +160,7 @@ export function AgencyMandatesList({ mandates, isLoading }: AgencyMandatesListPr
             {/* Permissions with icons */}
             <div className="mt-4 pt-4 border-t">
               <p className="text-sm font-medium mb-3">Permissions accordées :</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Propriétés */}
                 <div>
                   <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">

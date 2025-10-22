@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import abidjanIllustration from "/images/hero/abidjan-illustration.png";
 
 export const ProfessionalHero = () => {
   const navigate = useNavigate();
@@ -51,30 +52,16 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Dégradé avec motif */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-        {/* Motifs géométriques subtils */}
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="w-full h-full" style={{
-            backgroundImage: `repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 20px,
-              #E67E22 20px,
-              #E67E22 21px
-            ), repeating-linear-gradient(
-              -45deg,
-              transparent,
-              transparent 20px,
-              #3498DB 20px,
-              #3498DB 21px
-            )`
-          }} />
-        </div>
+      {/* Image de fond - Abidjan */}
+      <div className="absolute inset-0">
+        <img
+          src={abidjanIllustration}
+          alt="Vue d'Abidjan"
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60" />
       </div>
-      
-      {/* Overlay crème pour lisibilité (75% opacité) */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/75 via-background-sand/70 to-background-light/75" />
       
       {/* Motifs géométriques Kente - subtils mais visibles */}
       <div className="absolute inset-0 opacity-[0.06]">
@@ -131,7 +118,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.5 }}
             className="flex justify-center"
           >
-            <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium shadow-sm border border-gray-200">
+            <Badge className="bg-white/90 text-gray-700 hover:bg-white px-4 py-2 text-sm font-medium shadow-sm border border-gray-200 backdrop-blur-sm">
               <ShieldCheck className="h-4 w-4 mr-2" style={{ color: '#2256A3' }} />
               Certifié ANSUT
             </Badge>
@@ -144,12 +131,12 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-4"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight px-4 sm:px-0">
               Trouvez votre{' '}
-              <span className="text-primary relative">
+              <span className="text-[#E67E22] relative">
                 Toit Idéal
                 <svg
-                  className="absolute -bottom-2 left-0 w-full h-3 text-primary/30"
+                  className="absolute -bottom-2 left-0 w-full h-3 text-[#E67E22]/30"
                   viewBox="0 0 200 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -163,8 +150,8 @@ export const ProfessionalHero = () => {
                 </svg>
               </span>
             </h1>
-            
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium px-4 sm:px-0">
+
+            <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-3xl mx-auto font-medium px-4 sm:px-0">
               Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
             </p>
           </motion.div>
@@ -297,20 +284,20 @@ export const ProfessionalHero = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 md:gap-8 max-w-4xl mx-auto pt-8 px-4"
           >
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">3500+</div>
+              <div className="text-xs sm:text-sm md:text-base text-white/80 mt-1">Biens</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">10000+</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Utilisateurs</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">10000+</div>
+              <div className="text-xs sm:text-sm md:text-base text-white/80 mt-1">Utilisateurs</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">98%</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Satisfaction</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">98%</div>
+              <div className="text-xs sm:text-sm md:text-base text-white/80 mt-1">Satisfaction</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">24h</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Support</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">24h</div>
+              <div className="text-xs sm:text-sm md:text-base text-white/80 mt-1">Support</div>
             </div>
           </motion.div>
         </div>
