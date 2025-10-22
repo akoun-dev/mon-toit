@@ -1,6 +1,0 @@
-Comptes utilisateurs fonctionnels :
-
-  - LOCATAIRE: locataire@mon-toit.ci / locataire123
-  - PROPRIÉTAIRE: proprietaire@mon-toit.ci / proprietaire123
-  - AGENCE: agence@mon-toit.ci / agence123
-  - ADMIN: admin@mon-toit.ci / admin123

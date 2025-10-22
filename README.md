@@ -60,13 +60,30 @@ npm install
 
 ### 2. Configuration
 
-Créez `.env.local` (les valeurs Supabase sont déjà en fallback dans le code) :
+Copiez `.env.production` vers `.env.local` et configurez vos variables :
+
+```bash
+cp .env.production .env.local
+```
+
+Variables requises dans `.env.local` :
 
 ```env
-VITE_SUPABASE_URL=https://votre-projet.supabase.co
-VITE_SUPABASE_ANON_KEY=votre_clé_anon
-VITE_MAPBOX_PUBLIC_TOKEN=votre_token_mapbox
+# Supabase Configuration
+VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_ANON_JWT
+
+# Mapbox Configuration (requis pour les cartes)
+VITE_MAPBOX_PUBLIC_TOKEN=pk.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# Optionnel: Analytics
+VITE_VERCEL_ANALYTICS_ID=
+
+# Optionnel: Sentry (suivi d'erreurs)
+VITE_SENTRY_DSN=
 ```
+
+**Important** : Les valeurs Supabase sont déjà en fallback dans le code pour le développement local.
 
 ### 3. Démarrer le développement
 
@@ -102,6 +119,10 @@ npx cap open ios
 # Tester sur device/emulator
 npx cap run android
 npx cap run ios
+
+# Build spécifique pour mobile
+CAPACITOR=true npm run build
+npx cap sync
 ```
 
 ### 5. Déploiement
@@ -118,9 +139,12 @@ Ou directement via https://vercel.com/new
 **Capacitor (Production Mobile) :**
 ```bash
 # Build pour mobile
-npm run build
 CAPACITOR=true npm run build
 npx cap sync
+
+# Déployer sur les stores
+# Android : générer l'APK via Android Studio
+# iOS : générer l'IPA via Xcode
 ```
 
 ---
@@ -199,20 +223,24 @@ Le projet utilise une architecture multi-tenant avec 4 types d'utilisateurs :
 
 ## 🛠️ Commandes Utiles
 
-- Synchroniser la base Supabase (migrations locales -> prod):
-  - Installer Supabase CLI: https://supabase.com/docs/guides/cli
-  - Lier le projet: `supabase link --project-ref <project-ref>`
-  - Pousser les migrations: `supabase db push`
+### Base de données Supabase
+```bash
+# Installer Supabase CLI
+npm install -g supabase
 
-- Variables d’environnement (client):
-  - `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` uniquement côté client
-  - Ne jamais exposer de `service_role`
+# Lier le projet (remplacer <project-ref>)
+supabase link --project-ref <project-ref>
 
-Consultez `docs/DEPLOYMENT_NETLIFY_SUPABASE.md` pour les détails Netlify/Supabase.
+# Pousser les migrations locales vers prod
+supabase db push
+
+# Types TypeScript générés
+supabase gen types typescript --local > src/integrations/supabase/types.ts
+```
 
 ### Développement
 ```bash
-npm run dev              # Serveur de développement
+npm run dev              # Serveur de développement (port 8080)
 npm run build            # Build production optimisé
 npm run build:dev        # Build développement rapide
 npm run lint             # Vérification du code
@@ -221,21 +249,47 @@ npm run preview          # Prévisualisation du build
 
 ### Mobile (Capacitor)
 ```bash
-npx cap sync             # Synchroniser les assets
+npx cap sync             # Synchroniser les assets web vers natif
 npx cap open android     # Ouvrir Android Studio
 npx cap open ios         # Ouvrir Xcode
 npx cap run android      # Tester sur Android
 npx cap run ios          # Tester sur iOS
 ```
 
-### Debug
+### Debug et Maintenance
 ```bash
-# Vider le cache local
+# Vider le cache local forcer rebuild
 npm run build -- --force
 
-# Variables d'environnement
+# Vérifier les variables d'environnement
 echo $VITE_SUPABASE_URL
+echo $VITE_MAPBOX_PUBLIC_TOKEN
+
+# Nettoyer les dépendances
+npm ci
 ```
+
+### Sécurité - Variables d'environnement
+- ✅ `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` : côté client uniquement
+- ❌ Jamais exposer de `service_role` ou clés secrètes côté client
+- ✅ Utiliser `.env.local` pour le développement
+- ✅ Configurer les variables d'environnement dans Vercel pour la production
+
+---
+
+## 📚 Documentation Complémentaire
+
+Pour le développement, consultez également :
+- `CLAUDE.md` : Guide détaillé pour l'architecture et les patterns de développement
+- `.env.production` : Template des variables d'environnement requises
+- `capacitor.config.ts` : Configuration native de l'application
+- `vite.config.ts` : Configuration du build avec optimisations PWA
+
+### Bonnes Pratiques
+- Toujours tester avec `npm run build` avant de déployer
+- Utiliser les hooks personnalisés dans `src/hooks/` pour la logique métier
+- Respecter les permissions RLS de Supabase dans toutes les opérations
+- Tester les fonctionnalités offline avec les outils de développement Chrome/Firefox
 
 ---
 
