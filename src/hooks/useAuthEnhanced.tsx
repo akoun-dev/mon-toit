@@ -23,7 +23,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Helper function to log login attempts
-const logLoginAttempt = async (email: string, success: boolean, errorMessage?: string) => {
+// Note: keep payload aligned with the login_attempts table schema in production
+const logLoginAttempt = async (email: string, success: boolean, _errorMessage?: string) => {
   try {
     // Direct table insert instead of RPC call to avoid type issues
     const { error } = await supabase
@@ -31,7 +32,6 @@ const logLoginAttempt = async (email: string, success: boolean, errorMessage?: s
       .insert({
         email,
         success,
-        error_message: errorMessage || null,
         ip_address: null, // You can get this from a service if needed
         user_agent: navigator.userAgent
       });
