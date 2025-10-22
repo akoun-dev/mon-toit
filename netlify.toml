@@ -4,6 +4,10 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  VITE_SUPABASE_URL = "https://haffcubwactwjpngcpdf.supabase.co"
+  VITE_API_URL = "https://haffcubwactwjpngcpdf.supabase.co"
+  VITE_GRAPHQL_URL = "https://haffcubwactwjpngcpdf.supabase.co/graphql/v1"
+  VITE_SUPABASE_STORAGE_URL = "https://haffcubwactwjpngcpdf.supabase.co/storage/v1"
 
 [[headers]]
   for = "/*"
