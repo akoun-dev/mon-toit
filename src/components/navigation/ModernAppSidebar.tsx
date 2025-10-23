@@ -113,8 +113,8 @@ export function ModernAppSidebar() {
     { to: "/my-mandates", icon: FileText, label: "Gestion des Mandats", color: "text-blue-500" },
   ] : [];
 
-  // Navigation admin (visible uniquement pour les admins)
-  const adminLinks = profile?.user_type === "admin" ? [
+  // Navigation admin (visible pour les profils ayant accès admin)
+  const adminLinks = canAccessAdminDashboard ? [
     { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord", color: "text-red-500", highlight: true },
     { to: "/admin/users", icon: User, label: "Utilisateurs", color: "text-blue-600" },
     { to: "/admin/properties", icon: Building2, label: "Validation biens", color: "text-emerald-600" },

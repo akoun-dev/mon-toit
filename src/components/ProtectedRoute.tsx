@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedUserTypes?: ('locataire' | 'proprietaire' | 'agence' | 'admin_ansut')[];
+  allowedUserTypes?: ('locataire' | 'proprietaire' | 'agence' | 'admin_ansut' | 'admin')[];
   requiredRoles?: string[];
   requireAll?: boolean;
 }
@@ -69,9 +69,19 @@ const ProtectedRoute = ({
 
   // Vérification des rôles
   if (requiredRoles && requiredRoles.length > 0) {
-    const hasAccess = requireAll
+    // Base: check explicit roles returned by backend
+    let hasAccess = requireAll
       ? requiredRoles.every(role => hasRole(role))
       : requiredRoles.some(role => hasRole(role));
+
+    // Compatibility: allow admin user_type to satisfy admin role checks
+    // Many seeds/accounts set profile.user_type to 'admin' or 'admin_ansut' without user_roles rows
+    const adminTypes = ['admin', 'admin_ansut'];
+    const adminRoles = ['admin', 'super_admin'];
+    const requiresAdmin = requiredRoles.some(r => adminRoles.includes(r));
+    if (!hasAccess && requiresAdmin && profile && adminTypes.includes(profile.user_type)) {
+      hasAccess = true;
+    }
 
     if (!hasAccess) {
       return (

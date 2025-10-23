@@ -7,14 +7,15 @@ import { useAuth } from './useAuth';
 export const usePermissions = () => {
   const { user, profile, roles, hasRole } = useAuth();
 
+  const isAdminType = profile?.user_type === 'admin' || profile?.user_type === 'admin_ansut';
   const permissions = {
     // Permissions admin
-    canAccessAdminDashboard: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
-    canManageUsers: hasRole('super_admin') || profile?.user_type === 'admin',
-    canModerateProperties: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
-    canCertifyLeases: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
-    canResolveDisputes: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
-    canViewAuditLogs: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
+    canAccessAdminDashboard: hasRole('admin') || hasRole('super_admin') || isAdminType,
+    canManageUsers: hasRole('super_admin') || isAdminType,
+    canModerateProperties: hasRole('admin') || hasRole('super_admin') || isAdminType,
+    canCertifyLeases: hasRole('admin') || hasRole('super_admin') || isAdminType,
+    canResolveDisputes: hasRole('admin') || hasRole('super_admin') || isAdminType,
+    canViewAuditLogs: hasRole('admin') || hasRole('super_admin') || isAdminType,
     canPromoteToSuperAdmin: hasRole('super_admin'),
     
     // Permissions tiers de confiance
