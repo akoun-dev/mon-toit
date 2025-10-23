@@ -8,6 +8,15 @@ import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
+// Debug: Afficher les variables d'environnement au démarrage
+console.log('🔍 [DEBUG] Variables d\'environnement:', {
+  VITE_MAILPIT_URL: import.meta.env.VITE_MAILPIT_URL,
+  DEV: import.meta.env.DEV,
+  MODE: import.meta.env.MODE,
+  NODE_ENV: import.meta.env.NODE_ENV,
+  allKeys: Object.keys(import.meta.env).filter(k => k.startsWith('VITE_'))
+});
 import ErrorBoundary from "@/components/ui/error-boundary";
 import { initializeSentry } from "@/lib/sentry-enhanced";
 import { SUTAChatbot } from "@/components/SUTAChatbot";

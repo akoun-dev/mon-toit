@@ -192,14 +192,16 @@ class OTPService {
         mailpitUrl,
         nodeEnv: import.meta.env.NODE_ENV,
         isDevelopment,
+        hasImportMeta: !!import.meta.env,
+        envKeys: Object.keys(import.meta.env),
         email,
         type,
         code: code.replace(/./g, '*'),
         codeLength: code.length
       });
 
-      // En développement, envoyer directement via l'API Mailpit
-      if (isDevelopment && mailpitUrl) {
+      // Envoyer via l'API Mailpit si disponible
+      if (mailpitUrl) {
         logger.info('📤 [OTP] Envoi direct via API Mailpit', { email, mailpitUrl });
 
         // Créer un email simple pour le développement
@@ -213,8 +215,14 @@ class OTPService {
             email: email
           }],
           subject: `🔐 Code OTP - Mon Toit (${type})`,
-          html: this.generateOTPEmailHTML(code, type, email, mailpitUrl),
-          text: `Votre code OTP est : ${code}`
+          html: `<div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2>Code de vérification</h2>
+            <p>Votre code OTP est : <strong style="font-size: 24px; color: #667eea;">${this.formatOTPCode(code)}</strong></p>
+            <p>Ce code expire dans 24 heures.</p>
+            <hr>
+            <p><small>Pour le développement : vérifiez dans <a href="${mailpitUrl}">Mailpit</a></small></p>
+          </div>`,
+          text: `Votre code OTP est : ${this.formatOTPCode(code)}`
         };
 
         logger.info('📤 [OTP] Données email préparées', {
@@ -225,8 +233,11 @@ class OTPService {
         });
 
         try {
-          // Envoyer directement via l'API Mailpit
-          const mailpitResponse = await fetch(`${mailpitUrl}/api/v1/send`, {
+          // Utiliser le proxy Vite pour éviter les problèmes CORS
+          const apiUrl = `/api/mailpit/send`;
+          logger.info('📤 [OTP] Envoi via proxy', { apiUrl, originalUrl: `${mailpitUrl}/api/v1/send` });
+
+          const mailpitResponse = await fetch(apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -270,8 +281,17 @@ class OTPService {
         } catch (fetchError) {
           logger.error('💥 [OTP] Erreur fetch Mailpit', {
             error: fetchError instanceof Error ? fetchError.message : 'Unknown error',
+            errorType: fetchError instanceof Error ? fetchError.constructor.name : 'Unknown',
             email,
-            stack: fetchError instanceof Error ? fetchError.stack : undefined
+            mailpitUrl,
+            stack: fetchError instanceof Error ? fetchError.stack : undefined,
+            isNetworkError: fetchError instanceof TypeError,
+            errorMessage: fetchError.message,
+            errorDetails: {
+              name: fetchError.name,
+              message: fetchError.message,
+              cause: fetchError.cause
+            }
           });
           return {
             success: false,
@@ -279,28 +299,16 @@ class OTPService {
           };
         }
       } else {
-        // En production, utiliser le resend standard de Supabase
-        logger.info('📤 [OTP] Envoi via Supabase (production)', { email, type });
-
-        const { error, data } = await supabase.auth.resend({
-          type: type === 'reset_password' ? 'recovery' : 'signup',
-          email: email
+        // Pas de Mailpit configuré
+        logger.error('❌ [OTP] Aucune configuration Mailpit trouvée', {
+          mailpitUrl,
+          email,
+          type,
+          envMailpitUrl: import.meta.env.VITE_MAILPIT_URL
         });
-
-        if (error) {
-          logger.error('❌ [OTP] Erreur envoi Supabase', {
-            error: error.message,
-            email
-          });
-          return {
-            success: false,
-            error: error.message
-          };
-        }
-
-        logger.info('✅ [OTP] Email envoyé via Supabase', { email, type });
         return {
-          success: true
+          success: false,
+          error: 'Configuration Mailpit manquante'
         };
       }
 

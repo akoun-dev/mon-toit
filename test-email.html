@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Email</title>
+</head>
+<body>
+    <h1>Test Email OTP</h1>
+    <div id="env-info"></div>
+    <button onclick="testEmail()">Tester l'envoi d'email</button>
+    <div id="result"></div>
+
+    <script type="module">
+        // Afficher les variables d'environnement
+        const envInfo = document.getElementById('env-info');
+        envInfo.innerHTML = `
+            <h2>Variables d'environnement:</h2>
+            <p>VITE_MAILPIT_URL: ${import.meta.env.VITE_MAILPIT_URL || 'NON DÉFINI'}</p>
+            <p>DEV: ${import.meta.env.DEV}</p>
+            <p>MODE: ${import.meta.env.MODE}</p>
+            <p>NODE_ENV: ${import.meta.env.NODE_ENV}</p>
+        `;
+
+        // Fonction de test d'email
+        window.testEmail = async function() {
+            const result = document.getElementById('result');
+            const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
+
+            if (!mailpitUrl) {
+                result.innerHTML = '<p style="color: red;">❌ VITE_MAILPIT_URL non défini</p>';
+                return;
+            }
+
+            const emailData = {
+                from: {
+                    name: 'Mon Toit Test',
+                    email: 'test@mon-toit.ci'
+                },
+                to: [{
+                    name: 'Test User',
+                    email: 'test@example.com'
+                }],
+                subject: '🧪 Test Email OTP',
+                html: '<h2>Code de test: 123456</h2><p>Ceci est un test.</p>',
+                text: 'Votre code de test est: 123456'
+            };
+
+            try {
+                const response = await fetch(`${mailpitUrl}/api/v1/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(emailData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<p style="color: green;">✅ Email envoyé! ID: ${data.ID}</p>`;
+                } else {
+                    const errorText = await response.text();
+                    result.innerHTML = `<p style="color: red;">❌ Erreur: ${response.status} - ${errorText}</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">❌ Erreur réseau: ${error.message}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>

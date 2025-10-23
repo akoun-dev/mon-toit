@@ -235,8 +235,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const isDevelopment = import.meta.env.DEV;
       const forceOTP = true; // Forcer OTP pour tous les nouveaux utilisateurs
 
-      // En développement, toujours forcer le processus OTP
-      if (isDevelopment && data.user) {
+      // Toujours forcer le processus OTP (temporairement pour le debug)
+      if (data.user) {
         logger.info('🎯 [AUTH] User created - forcing OTP process', {
           userId: data.user.id,
           email,
