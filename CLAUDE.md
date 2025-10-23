@@ -11,6 +11,7 @@ npm run build            # Production build
 npm run build:dev        # Development build (faster, less optimized)
 npm run lint             # ESLint code checking
 npm run preview          # Preview production build locally
+npm run seed:auth        # Seed authentication data
 ```
 
 ### Mobile Development (Capacitor)
@@ -29,7 +30,10 @@ Create `.env.local` with:
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
 VITE_MAPBOX_PUBLIC_TOKEN=your_mapbox_token
+VITE_SENTRY_DSN=your_sentry_dsn  # Optional for error tracking
 ```
+
+**Important**: Supabase keys have secure fallbacks for local development in `src/lib/supabase.ts`
 
 ## Architecture Overview
 
@@ -102,6 +106,8 @@ The application supports 4 distinct user roles with separate dashboards:
 - **ESLint**: Code quality with React and TypeScript rules
 - **SonarJS**: Additional security and quality checks
 - **TypeScript**: Full type safety with extended Supabase types
+- **Vitest**: Available for unit testing (package.json includes Vitest dependencies)
+- **JSCPD**: Duplicate code detection (configured in .jscpd.json)
 
 ## Development Notes
 
@@ -109,6 +115,8 @@ The application supports 4 distinct user roles with separate dashboards:
 - Uses environment variables with secure fallbacks for local development
 - Only ANON keys are exposed to the client - never use service_role keys
 - All database operations should go through the configured Supabase client in `src/lib/supabase.ts`
+- TypeScript types are auto-generated in `src/integrations/supabase/types.ts`
+- Secure storage integration for auth tokens via `src/lib/secureStorage.ts`
 
 ### Mapbox Configuration
 - Mapbox tokens should be set in environment variables
@@ -139,3 +147,21 @@ The PWA includes sophisticated offline capabilities:
 - Sensitive operations require appropriate RLS policies
 - Form inputs are sanitized using DOMPurify
 - Error messages are sanitized to prevent information leakage
+- Native app security configured in `capacitor.config.ts` with restricted navigation
+- PWA security with service worker caching strategies in `vite.config.ts`
+- Sentry integration available for production error tracking
+
+### Testing Commands
+```bash
+# Run tests (when test files are added)
+npm run test             # Run Vitest tests
+npm run test:ui          # Run tests with Vitest UI
+npm run test:coverage    # Run tests with coverage report
+```
+
+### Build Configuration
+- **PWA Manifest**: Auto-generated in `vite.config.ts` with caching strategies
+- **Capacitor Build**: Excludes Capacitor modules from web builds
+- **Code Splitting**: Automatic with custom chunk and asset naming
+- **Source Maps**: Enabled in production for Sentry integration
+- **Bundle Analysis**: Available via Next.js bundle analyzer integration
