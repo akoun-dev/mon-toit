@@ -235,7 +235,7 @@ BEGIN
     AND code = p_code
     AND type = p_type
     AND used_at IS NULL
-    AND expires_at > now
+    AND expires_at > now()
   ORDER BY created_at DESC
   LIMIT 1;
 
