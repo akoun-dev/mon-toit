@@ -9,12 +9,12 @@ export const usePermissions = () => {
 
   const permissions = {
     // Permissions admin
-    canAccessAdminDashboard: hasRole('admin') || hasRole('super_admin'),
-    canManageUsers: hasRole('super_admin'),
-    canModerateProperties: hasRole('admin') || hasRole('super_admin'),
-    canCertifyLeases: hasRole('admin') || hasRole('super_admin'),
-    canResolveDisputes: hasRole('admin') || hasRole('super_admin'),
-    canViewAuditLogs: hasRole('admin') || hasRole('super_admin'),
+    canAccessAdminDashboard: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
+    canManageUsers: hasRole('super_admin') || profile?.user_type === 'admin',
+    canModerateProperties: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
+    canCertifyLeases: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
+    canResolveDisputes: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
+    canViewAuditLogs: hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin',
     canPromoteToSuperAdmin: hasRole('super_admin'),
     
     // Permissions tiers de confiance

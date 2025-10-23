@@ -49,6 +49,12 @@ export function ModernAppSidebar() {
   const location = useLocation();
   const { open } = useSidebar();
 
+  // DEBUG LOGS
+  console.log('🔍 ModernAppSidebar - Profile:', profile);
+  console.log('🔍 ModernAppSidebar - User:', user);
+  console.log('🔍 ModernAppSidebar - User Type:', profile?.user_type);
+  console.log('🔍 ModernAppSidebar - Can Access Admin:', canAccessAdminDashboard);
+
   const isActive = (path: string) => location.pathname === path;
 
   // Get user initials
@@ -107,8 +113,17 @@ export function ModernAppSidebar() {
     { to: "/my-mandates", icon: FileText, label: "Gestion des Mandats", color: "text-blue-500" },
   ] : [];
 
-  // Navigation admin (masquée sur l'accueil pour les non-admins)
-  const adminLinks = [] as any[]; // Admin links gérés uniquement dans le header
+  // Navigation admin (visible uniquement pour les admins)
+  const adminLinks = profile?.user_type === "admin" ? [
+    { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord Admin", color: "text-red-500", highlight: true },
+    { to: "/admin/users", icon: User, label: "Gestion Utilisateurs", color: "text-blue-600" },
+    { to: "/admin/properties", icon: Building2, label: "Validation Biens", color: "text-emerald-600" },
+    { to: "/admin/verifications", icon: ShieldCheck, label: "Vérifications ANSUT", color: "text-purple-600" },
+    { to: "/admin/settings", icon: Settings, label: "Paramètres Système", color: "text-gray-600" },
+  ] : [];
+
+  console.log('🔍 ModernAppSidebar - Admin links length:', adminLinks.length);
+  console.log('🔍 ModernAppSidebar - Profile user_type check:', profile?.user_type === "admin");
 
   // Navigation utilitaire (réduite sur l'accueil)
   const utilityLinks = [] as any[]; // Utilitaires gérés dans le header

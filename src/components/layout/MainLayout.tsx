@@ -32,7 +32,7 @@ export const MainLayout = ({ children, showSidebar = true, customSidebar }: Main
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full">
-        {!isMobile && sidebarComponent}
+        {sidebarComponent}
         <SidebarInset className="flex flex-col flex-1">
           <Navbar showSidebarTrigger={true} />
           <div className="flex-1 pt-[3.25rem] md:pt-[3.75rem] pb-20 md:pb-0">
