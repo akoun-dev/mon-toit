@@ -95,7 +95,8 @@ const Auth = () => {
         });
         navigate('/profil', { replace: true });
       } else {
-        navigate('/dashboard', { replace: true });
+        // Rediriger vers la page de confirmation OTP plutôt que dashboard
+        navigate('/auth/confirmation', { replace: true });
       }
     }
   }, [user, session, navigate, userTypeFromUrl]);

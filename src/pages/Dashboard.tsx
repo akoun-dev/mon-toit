@@ -5,7 +5,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Home, Building2, Users, BarChart3, Plus, Settings } from 'lucide-react';
+import { Home, Building2, Users, BarChart3, Plus, Settings, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { RecommendationsCarousel } from '@/components/recommendations/RecommendationsCarousel';
 import { PreferencesModal } from '@/components/recommendations/PreferencesModal';
@@ -98,6 +98,40 @@ const Dashboard = () => {
       ],
     },
   };
+
+  // Vérifier si le profil existe avant d'accéder à ses propriétés
+  if (!profile) {
+    return (
+      <MainLayout>
+        <main className="px-4 md:px-6 py-3 w-full">
+          <div className="w-full space-y-4">
+            <DynamicBreadcrumb />
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Profil en cours de configuration</CardTitle>
+                <CardDescription>
+                  Veuillez vérifier votre email pour finaliser votre inscription.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center space-y-4">
+                  <Mail className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    Un code de vérification a été envoyé à votre adresse email.<br/>
+                    Veuillez vérifier votre boîte de réception (y compris les spams) et utiliser le code pour finaliser votre inscription.
+                  </p>
+                  <Button onClick={() => navigate('/auth')}>
+                    Retour à la connexion
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </MainLayout>
+    );
+  }
 
   const content = dashboardContent[profile.user_type];
 
