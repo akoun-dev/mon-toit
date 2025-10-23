@@ -47,7 +47,7 @@ export const MobileHero = () => {
           className="w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-black/15 to-black/30" />
       </div>
       
       {/* Motifs Kente subtils */}
