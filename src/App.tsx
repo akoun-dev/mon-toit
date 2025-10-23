@@ -36,6 +36,14 @@ const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
 const AdminPropertiesPage = lazy(() => import("./pages/AdminPropertiesPage"));
 const AdminVerificationsPage = lazy(() => import("./pages/AdminVerificationsPage"));
 const AdminSettingsPage = lazy(() => import("./pages/AdminSettingsPage"));
+const AdminProcessingPage = lazy(() => import("./pages/AdminProcessingPage"));
+const AdminAnalyticsPage = lazy(() => import("./pages/AdminAnalyticsPage"));
+const AdminAlertsPage = lazy(() => import("./pages/AdminAlertsPage"));
+const AdminDisputesPage = lazy(() => import("./pages/AdminDisputesPage"));
+const AdminModerationPage = lazy(() => import("./pages/AdminModerationPage"));
+const AdminReportsPage = lazy(() => import("./pages/AdminReportsPage"));
+const AdminSignaturesPage = lazy(() => import("./pages/AdminSignaturesPage"));
+const AdminIllustrationsPage = lazy(() => import("./pages/AdminIllustrationsPage"));
 const TenantDashboard = lazy(() => import("./pages/TenantDashboard"));
 const AgencyDashboard = lazy(() => import("./pages/AgencyDashboard"));
 const MyMandates = lazy(() => import("./pages/MyMandates"));
@@ -220,16 +228,156 @@ const AppContent = () => {
               } 
             />
             <Route 
-              path="/admin/certifications" 
+              path="/admin/processing" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminProcessingPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/analytics" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminAnalyticsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/alerts" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminAlertsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/disputes" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminDisputesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/moderation" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminModerationPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/reports" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminReportsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/signatures" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminSignaturesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/illustrations" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminIllustrationsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route
+              path="/admin/certifications"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
                   <Suspense fallback={<PageSkeleton />}>
                     <AdminCertifications />
                   </Suspense>
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
+            <Route
+              path="/admin/processing"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminProcessingPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminAnalyticsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/alerts"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminAlertsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/disputes"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminDisputesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/moderation"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminModerationPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/illustrations"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminIllustrationsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/analytics" 
               element={
                 <ProtectedRoute allowedUserTypes={['proprietaire', 'agence']}>

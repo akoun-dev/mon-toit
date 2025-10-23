@@ -23,6 +23,12 @@ import {
   LogOut,
   Bell,
   Star,
+  BarChart3,
+  AlertTriangle,
+  FileBarChart,
+  Image,
+  Clock,
+  Flag,
 } from "lucide-react";
 import {
   Sidebar,
@@ -67,16 +73,16 @@ export function ModernAppSidebar() {
   // Vérifier si on est sur la page d'accueil
   const isHomePage = isActive("/");
 
-  // Navigation principale simplifiée pour l'accueil
-  const primaryLinks = [
+  // Navigation principale simplifiée pour l'accueil (masquée pour les admins)
+  const primaryLinks = !canAccessAdminDashboard ? [
     { to: "/", icon: Home, label: "Accueil", color: "text-primary", priority: true },
-  ];
+  ] : [];
 
-  // Navigation globale accessible à tous
-  const globalLinks = [
+  // Navigation globale accessible à tous (masquée pour les admins)
+  const globalLinks = !canAccessAdminDashboard ? [
     { to: "/explorer", icon: Search, label: "Explorer", color: "text-blue-500" },
     { to: "/carte-intelligente", icon: Map, label: "Carte Intelligente", color: "text-emerald-500" },
-  ];
+  ] : [];
 
   // Navigation rapide (visible sur l'accueil même pour non-connectés)
   const quickActions = !profile ? [
@@ -87,38 +93,56 @@ export function ModernAppSidebar() {
   // Action supplémentaire pour l'accueil (visible uniquement sur la page d'accueil)
   const homeActions = [] as any[]; // Les actions principales sont dans le header
 
-  // Navigation pour utilisateurs connectés
-  const userLinks = profile ? [
+  // Navigation pour utilisateurs connectés (masquée pour les admins)
+  const userLinks = (profile && !canAccessAdminDashboard) ? [
     { to: "/favoris", icon: Heart, label: "Mes Favoris", color: "text-red-500", badge: null },
     { to: "/messages", icon: MessageSquare, label: "Messages", color: "text-blue-500", badge: 3 },
   ] : [];
 
-  // Navigation pour locataires
-  const tenantLinks = profile?.user_type === "locataire" ? [
+  // Navigation pour locataires (masquée pour les admins)
+  const tenantLinks = (profile?.user_type === "locataire" && !canAccessAdminDashboard) ? [
     { to: "/candidatures", icon: FileText, label: "Mes Candidatures", color: "text-indigo-500" },
     { to: "/baux", icon: FileText, label: "Mes Baux", color: "text-teal-500" },
     { to: "/payments", icon: CreditCard, label: "Paiements", color: "text-emerald-500" },
   ] : [];
 
-  // Navigation pour propriétaires et agences
-  const ownerLinks = (profile?.user_type === "proprietaire" || profile?.user_type === "agence") ? [
+  // Navigation pour propriétaires et agences (masquée pour les admins)
+  const ownerLinks = ((profile?.user_type === "proprietaire" || profile?.user_type === "agence") && !canAccessAdminDashboard) ? [
     { to: "/mes-biens", icon: Building2, label: "Mes Biens", color: "text-cyan-500" },
     { to: "/my-mandates", icon: FileText, label: "Mes Mandats", color: "text-amber-500" },
     { to: "/publier", icon: PlusCircle, label: "Publier un bien", color: "text-green-500" },
   ] : [];
 
-  // Navigation spécifique pour les agences
-  const agencyLinks = profile?.user_type === "agence" ? [
+  // Navigation spécifique pour les agences (masquée pour les admins)
+  const agencyLinks = (profile?.user_type === "agence" && !canAccessAdminDashboard) ? [
     { to: "/dashboard/agence", icon: LayoutDashboard, label: "Tableau de bord", color: "text-purple-500", highlight: true },
     { to: "/my-mandates", icon: FileText, label: "Gestion des Mandats", color: "text-blue-500" },
   ] : [];
 
   // Navigation admin (visible pour les profils ayant accès admin)
   const adminLinks = canAccessAdminDashboard ? [
+    // Tableau de bord principal
     { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord", color: "text-red-500", highlight: true },
-    { to: "/admin/users", icon: User, label: "Utilisateurs", color: "text-blue-600" },
-    { to: "/admin/properties", icon: Building2, label: "Validation biens", color: "text-emerald-600" },
+
+    // Sécurité / Vérifications
+    { to: "/admin/certifications", icon: ShieldCheck, label: "Certifications", color: "text-orange-600" },
     { to: "/admin/verifications", icon: ShieldCheck, label: "Vérifications", color: "text-purple-600" },
+
+    // Gestion
+    { to: "/admin/properties", icon: Building2, label: "Biens", color: "text-emerald-600" },
+    { to: "/admin/users", icon: User, label: "Utilisateurs", color: "text-blue-600" },
+
+    // Outils
+    { to: "/admin/processing", icon: Clock, label: "Traitement", color: "text-amber-600" },
+    { to: "/admin/analytics", icon: BarChart3, label: "Analytics", color: "text-cyan-600" },
+    { to: "/admin/alerts", icon: Bell, label: "Alertes Propriétés", color: "text-yellow-600" },
+    { to: "/admin/disputes", icon: AlertTriangle, label: "Litiges", color: "text-red-700" },
+    { to: "/admin/moderation", icon: Flag, label: "Modération", color: "text-orange-700" },
+    { to: "/admin/reports", icon: FileBarChart, label: "Rapports", color: "text-blue-700" },
+    { to: "/admin/signatures", icon: FileText, label: "Signatures Élec.", color: "text-purple-700" },
+    { to: "/admin/illustrations", icon: Image, label: "Illustrations", color: "text-green-700" },
+
+    // Paramètres système
     { to: "/admin/settings", icon: Settings, label: "Paramètres", color: "text-gray-600" },
   ] : [];
 
@@ -127,7 +151,7 @@ export function ModernAppSidebar() {
   // Navigation utilitaire (réduite sur l'accueil)
   const utilityLinks = [] as any[]; // Utilitaires gérés dans le header
 
-  const settingsLinks = profile ? [
+  const settingsLinks = (profile && !canAccessAdminDashboard) ? [
     { to: "/verification", icon: ShieldCheck, label: "Vérification ANSUT", color: "text-primary" },
   ] : [];
 
@@ -247,34 +271,38 @@ export function ModernAppSidebar() {
         )}
 
         {/* Navigation Principale */}
-        <SidebarGroup>
-          {open && (
-            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
-              <div className="w-1 h-1 bg-primary rounded-full" />
-              Navigation
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {renderMenuItems(primaryLinks)}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {primaryLinks.length > 0 && (
+          <SidebarGroup>
+            {open && (
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
+                <div className="w-1 h-1 bg-primary rounded-full" />
+                Navigation
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {renderMenuItems(primaryLinks)}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Navigation Globale */}
-        <SidebarGroup className="mt-3">
-          {open && (
-            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
-              <div className="w-1 h-1 bg-emerald-500 rounded-full" />
-              Découvrir
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {renderMenuItems(globalLinks)}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {globalLinks.length > 0 && (
+          <SidebarGroup className="mt-3">
+            {open && (
+              <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2 flex items-center gap-2">
+                <div className="w-1 h-1 bg-emerald-500 rounded-full" />
+                Découvrir
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {renderMenuItems(globalLinks)}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Actions Rapides (pour non-connectés) */}
         {quickActions.length > 0 && (

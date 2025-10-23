@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { StickyHeader } from '@/components/ui/sticky-header';
 import { Shield } from 'lucide-react';
 import AdminStats from '@/components/admin/AdminStats';
@@ -36,7 +35,7 @@ import { IllustrationGenerator } from '@/components/admin/IllustrationGenerator'
 import { supabase } from '@/lib/supabase';
 
 const AdminDashboard = () => {
-  const { hasRole, loading } = useAuth();
+  const { hasRole, loading, profile } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [pendingCertifications, setPendingCertifications] = useState(0);
   const [openDisputes, setOpenDisputes] = useState(0);
@@ -123,26 +122,15 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!hasRole('admin')) {
+  const isAdmin = hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin' || profile?.user_type === 'admin_ansut';
+
+  if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
 
   return (
-    <MainLayout 
-      customSidebar={
-        <AdminSidebar 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          badges={{
-            certifications: pendingCertifications,
-            disputes: openDisputes,
-            properties: pendingProperties,
-            overdueApplications: overdueApplications,
-          }}
-        />
-      }
-    >
-      <div className="container mx-auto px-3 sm:px-4 md:px-4 py-4 sm:py-6">
+    <MainLayout>
+      <div className="px-4 md:px-6 py-4 w-full">
         <StickyHeader>
           <h1 className="text-xl sm:text-2xl font-bold">Administration ANSUT</h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
