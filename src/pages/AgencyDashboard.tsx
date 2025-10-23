@@ -32,10 +32,10 @@ export default function AgencyDashboard() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-3 sm:px-4 md:px-4 py-4 sm:py-6 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="px-4 md:px-6 py-4 sm:py-6 space-y-4 w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Tableau de bord Agence</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Tableau de bord</h1>
           <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
             Gérez vos mandats et propriétés confiées
           </p>

@@ -78,6 +78,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      property_id: 'all',
       mandate_type: 'location',
       start_date: new Date(),
       permissions: {
@@ -124,12 +125,12 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
   useEffect(() => {
     const agencyId = form.watch('agency_id');
     const propertyId = form.watch('property_id');
-    
+
     if (agencyId) {
       const hasDuplicate = asOwner.some(
-        m => m.agency_id === agencyId && 
+        m => m.agency_id === agencyId &&
         m.status === 'active' &&
-        (m.property_id === propertyId || (!propertyId && !m.property_id))
+        (m.property_id === propertyId || (propertyId === 'all' && !m.property_id))
       );
       setDuplicateWarning(hasDuplicate);
     }
@@ -143,7 +144,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
     // Préparer la soumission pour confirmation
     const submissionData: MandateSubmission = {
       agency_id: values.agency_id,
-      property_id: values.property_id || null,
+      property_id: values.property_id === 'all' ? null : values.property_id || null,
       mandate_type: values.mandate_type,
       commission_rate: values.commission_rate,
       fixed_fee: values.fixed_fee,
@@ -176,7 +177,24 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
       setConfirmDialogOpen(false);
       setPendingSubmission(null);
       onOpenChange(false);
-      form.reset();
+      form.reset({
+        property_id: 'all',
+        mandate_type: 'location',
+        start_date: new Date(),
+        permissions: {
+          can_view_properties: true,
+          can_edit_properties: false,
+          can_create_properties: false,
+          can_delete_properties: false,
+          can_view_applications: true,
+          can_manage_applications: false,
+          can_create_leases: false,
+          can_view_financials: false,
+          can_manage_maintenance: false,
+          can_communicate_tenants: true,
+          can_manage_documents: false,
+        },
+      });
     }
   };
 
@@ -323,7 +341,7 @@ export function InviteAgencyDialog({ open, onOpenChange }: InviteAgencyDialogPro
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Tous mes biens</SelectItem>
+                      <SelectItem value="all">Tous mes biens</SelectItem>
                       {properties.map(property => (
                         <SelectItem key={property.id} value={property.id}>
                           {property.title}

@@ -66,7 +66,7 @@ const Dashboard = () => {
       ],
     },
     agence: {
-      title: 'Tableau de bord Agence',
+      title: 'Tableau de bord',
       cards: [
         { title: 'Portfolio', icon: Building2, description: 'Tous les biens', link: '/portfolio' },
         { title: 'Équipe', icon: Users, description: 'Gestion de l\'équipe', link: '/equipe' },

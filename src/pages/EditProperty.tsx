@@ -191,7 +191,7 @@ const EditProperty = () => {
   if (!accessCheck.hasAccess) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-2 py-6">
+        <div className="px-4 md:px-6 py-6 w-full">
           <Card>
             <CardHeader>
               <CardTitle>Accès refusé</CardTitle>
@@ -213,8 +213,8 @@ const EditProperty = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-3">
-        <div className="max-w-4xl mx-auto">
+      <div className="px-4 md:px-6 py-3 w-full">
+        <div className="w-full">
           <DynamicBreadcrumb />
           
           <div className="flex justify-between items-center mb-6">

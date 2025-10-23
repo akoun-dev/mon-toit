@@ -127,7 +127,7 @@ const AddProperty = () => {
   if (!accessCheck.hasAccess) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-2 py-6">
+        <div className="px-4 md:px-6 py-6 w-full">
           <Card>
             <CardHeader>
               <CardTitle>Accès refusé</CardTitle>
@@ -176,8 +176,8 @@ const AddProperty = () => {
         </StickyHeader>
       )}
       
-      <div className="container mx-auto px-2 py-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="px-4 md:px-6 py-4 w-full">
+        <div className="w-full">
           <DynamicBreadcrumb />
           
           <div className="mb-6 mt-4">

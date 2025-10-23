@@ -272,8 +272,8 @@ const OwnerDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 sm:px-4 md:px-4 py-4 sm:py-6">
-        <div className="max-w-7xl mx-auto space-y-4">
+      <div className="px-4 md:px-6 py-4 sm:py-6 w-full">
+        <div className="w-full space-y-4">
           <DynamicBreadcrumb />
           <StickyHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

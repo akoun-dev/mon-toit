@@ -103,7 +103,7 @@ export function ModernAppSidebar() {
 
   // Navigation spécifique pour les agences
   const agencyLinks = profile?.user_type === "agence" ? [
-    { to: "/dashboard/agence", icon: LayoutDashboard, label: "Tableau de bord Agence", color: "text-purple-500", highlight: true },
+    { to: "/dashboard/agence", icon: LayoutDashboard, label: "Tableau de bord", color: "text-purple-500", highlight: true },
     { to: "/my-mandates", icon: FileText, label: "Gestion des Mandats", color: "text-blue-500" },
   ] : [];
 
