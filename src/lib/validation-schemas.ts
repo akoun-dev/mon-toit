@@ -275,7 +275,7 @@ export const adminSchemas = {
   createUser: z.object({
     email: secureString.email(),
     full_name: secureString.name(2, 100),
-    user_type: z.enum(['proprietaire', 'locataire', 'agence', 'tiers_de_confiance', 'admin']),
+    user_type: z.enum(['proprietaire', 'locataire', 'agence', 'tiers_de_confiance', 'admin_ansut']),
     role: z.enum(['user', 'moderator', 'admin']).optional(),
     is_active: z.boolean().default(true)
   }),
@@ -327,6 +327,37 @@ export const supportSchemas = {
       size: z.number().max(10485760)
     })).max(5).optional(),
     is_internal: z.boolean().default(false)
+  })
+};
+
+/**
+ * Schémas de validation pour l'authentification OTP
+ */
+export const otpSchemas = {
+  // Vérification de code OTP
+  verify: z.object({
+    email: secureString.email(),
+    code: z.string()
+      .regex(/^\d{6}$/, 'Le code doit contenir exactement 6 chiffres')
+      .refine(val => !val.startsWith('000000'), {
+        message: 'Code invalide'
+      }),
+    type: z.enum(['signup', 'reset_password', 'email_change']).default('signup')
+  }),
+
+  // Création de code OTP
+  create: z.object({
+    user_id: z.string().uuid('ID utilisateur invalide'),
+    email: secureString.email(),
+    type: z.enum(['signup', 'reset_password', 'email_change']).default('signup'),
+    ip_address: z.string().ip().optional(),
+    user_agent: z.string().max(500, 'User agent trop long').optional()
+  }),
+
+  // Demande de renvoi de code OTP
+  resend: z.object({
+    email: secureString.email(),
+    type: z.enum(['signup', 'reset_password', 'email_change']).default('signup')
   })
 };
 

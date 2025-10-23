@@ -36,7 +36,7 @@ const signUpSchema = z.object({
     .regex(/[0-9]/, { message: "Le mot de passe doit contenir au moins un chiffre" })
     .regex(/[^A-Za-z0-9]/, { message: "Le mot de passe doit contenir au moins un caractère spécial" }),
   fullName: z.string().min(2, { message: "Le nom complet doit contenir au moins 2 caractères" }),
-  userType: z.enum(['locataire', 'proprietaire', 'agence']),
+  userType: z.enum(['locataire', 'proprietaire', 'agence', 'tiers_de_confiance']),
 });
 
 const signInSchema = z.object({
@@ -47,18 +47,18 @@ const signInSchema = z.object({
 type ValidationErrors = Partial<Record<'email' | 'password' | 'fullName' | 'userType', string>>;
 
 const Auth = () => {
-  const { signUp, signIn, user, hasRole } = useAuth();
+  const { signUp, signIn, user, session, hasRole } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   // Lire le type depuis l'URL
-  const userTypeFromUrl = searchParams.get('type') as 'locataire' | 'proprietaire' | 'agence' | null;
+  const userTypeFromUrl = searchParams.get('type') as 'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance' | null;
 
   // Sign Up form
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [userType, setUserType] = useState<'locataire' | 'proprietaire' | 'agence'>(userTypeFromUrl || 'locataire');
+  const [userType, setUserType] = useState<'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance'>(userTypeFromUrl || 'locataire');
   const [signUpErrors, setSignUpErrors] = useState<ValidationErrors>({});
 
   // Sign In form
@@ -69,7 +69,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [show2FA, setShow2FA] = useState(false);
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
-  
+
   // Password visibility toggles
   const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
@@ -79,9 +79,13 @@ const Auth = () => {
   const [blockMessage, setBlockMessage] = useState('');
   const [retryAfter, setRetryAfter] = useState<string | null>(null);
 
-  // Redirect if already authenticated
+  // Email confirmation state
+  
+  // Redirect if already authenticated and has active session
   useEffect(() => {
-    if (user) {
+    // Si l'utilisateur est déjà connecté avec une session active et un email confirmé
+    // rediriger selon le type d'utilisateur
+    if (user && session && user.email_confirmed_at) {
       // Si l'utilisateur est déjà connecté et essaie d'accéder à /auth avec un type
       // (ex: /auth?type=agence), on le redirige vers son profil pour gérer ses rôles
       if (userTypeFromUrl && userTypeFromUrl !== user.user_metadata?.user_type) {
@@ -94,12 +98,12 @@ const Auth = () => {
         navigate('/dashboard', { replace: true });
       }
     }
-  }, [user, navigate, userTypeFromUrl]);
+  }, [user, session, navigate, userTypeFromUrl]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignUpErrors({});
-    
+
     const validation = signUpSchema.safeParse({
       email: signUpEmail,
       password: signUpPassword,
@@ -118,14 +122,24 @@ const Auth = () => {
     }
 
     setLoading(true);
-    const { error } = await signUp(signUpEmail, signUpPassword, fullName, userType);
+    const { error, data } = await signUp(signUpEmail, signUpPassword, fullName, userType);
     setLoading(false);
 
     if (!error) {
-      navigate('/dashboard');
+      // Rediriger vers la page de confirmation avec l'email
+      const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}`;
+      navigate(confirmationUrl, { replace: true });
+
+      // Réinitialiser le formulaire
+      setSignUpEmail('');
+      setSignUpPassword('');
+      setFullName('');
+      setUserType('locataire');
+      setSignUpErrors({});
     }
   };
 
+  
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignInErrors({});
@@ -566,7 +580,7 @@ const Auth = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="usertype">Type de compte</Label>
-                    <Select value={userType} onValueChange={(value: 'locataire' | 'proprietaire' | 'agence') => setUserType(value)}>
+                    <Select value={userType} onValueChange={(value: 'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance') => setUserType(value)}>
                       <SelectTrigger id="usertype">
                         <SelectValue />
                       </SelectTrigger>
@@ -574,6 +588,7 @@ const Auth = () => {
                         <SelectItem value="locataire">🏠 Locataire - Je cherche un logement</SelectItem>
                         <SelectItem value="proprietaire">🏢 Propriétaire - Je loue mes biens</SelectItem>
                         <SelectItem value="agence">🏪 Agence - Je gère un portfolio</SelectItem>
+                        <SelectItem value="tiers_de_confiance">🤝 Tiers de confiance - Intermédiaire certifié</SelectItem>
                       </SelectContent>
                     </Select>
                     {signUpErrors.userType && (

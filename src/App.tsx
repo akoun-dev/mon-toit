@@ -62,6 +62,7 @@ const ScheduleVisit = lazy(() => import("./pages/ScheduleVisit"));
 import Certification from "./pages/Certification";
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
+import AuthConfirmation from "./pages/AuthConfirmation";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
 import PropertyApplications from "./pages/PropertyApplications";
@@ -155,6 +156,7 @@ const AppContent = () => {
             <Route path="/certification" element={<Certification />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/auth/confirmation" element={<AuthConfirmation />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/guide" element={<Guide />} />
             <Route

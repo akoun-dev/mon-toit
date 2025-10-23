@@ -1113,7 +1113,7 @@ export type Database = {
           grace_period_days: number | null
           id: string
           mfa_required: boolean
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_type"]
           updated_at: string
         }
         Insert: {
@@ -1121,7 +1121,7 @@ export type Database = {
           grace_period_days?: number | null
           id?: string
           mfa_required?: boolean
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_type"]
           updated_at?: string
         }
         Update: {
@@ -1129,7 +1129,7 @@ export type Database = {
           grace_period_days?: number | null
           id?: string
           mfa_required?: boolean
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["user_type"]
           updated_at?: string
         }
         Relationships: []
@@ -2764,19 +2764,19 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_type"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_type"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          role?: Database["public"]["Enums"]["user_type"]
           user_id?: string
         }
         Relationships: []
@@ -3134,7 +3134,7 @@ export type Database = {
           grace_period_expires_at: string
           has_mfa: boolean
           is_compliant: boolean
-          role: Database["public"]["Enums"]["app_role"]
+          role: Database["public"]["Enums"]["user_type"]
           user_id: string
         }[]
       }
@@ -3607,7 +3607,7 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"]
+          _role: Database["public"]["Enums"]["user_type"]
           _user_id: string
         }
         Returns: boolean
@@ -3673,7 +3673,7 @@ export type Database = {
         Returns: boolean
       }
       verify_user_role: {
-        Args: { _role: Database["public"]["Enums"]["app_role"] }
+        Args: { _role: Database["public"]["Enums"]["user_type"] }
         Returns: boolean
       }
       view_user_verification: {
@@ -3691,13 +3691,6 @@ export type Database = {
       }
     }
     Enums: {
-      app_role:
-        | "admin"
-        | "user"
-        | "agent"
-        | "moderator"
-        | "super_admin"
-        | "tiers_de_confiance"
       certification_status:
         | "not_requested"
         | "pending"
@@ -3833,15 +3826,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: [
-        "admin",
-        "user",
-        "agent",
-        "moderator",
-        "super_admin",
-        "tiers_de_confiance",
-      ],
-      certification_status: [
+            certification_status: [
         "not_requested",
         "pending",
         "in_review",

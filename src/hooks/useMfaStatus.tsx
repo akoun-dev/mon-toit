@@ -70,9 +70,9 @@ export const useMfaStatus = () => {
         let graceDays = 0;
 
         if (roles.length > 0) {
-          // Filter valid app_role values
-          const validRoles = roles.filter(role => 
-            ['admin', 'super_admin', 'tiers_de_confiance', 'user'].includes(role)
+          // Filter valid user_type values
+          const validRoles = roles.filter(role =>
+            ['admin_ansut', 'tiers_de_confiance', 'proprietaire', 'agence'].includes(role)
           );
 
           if (validRoles.length > 0) {

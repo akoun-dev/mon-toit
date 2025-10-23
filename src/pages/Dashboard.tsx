@@ -21,20 +21,28 @@ import { StickyHeader } from '@/components/ui/sticky-header';
 import { WelcomeBanner } from '@/components/dashboard/WelcomeBanner';
 
 const Dashboard = () => {
-  const { profile, loading, user } = useAuth();
+  const { profile, loading, user, hasRole } = useAuth();
   const navigate = useNavigate();
   const [preferencesOpen, setPreferencesOpen] = useState(false);
 
   // Redirection intelligente pour les agences et tiers de confiance
   useEffect(() => {
     if (!loading) {
+      // Redirections prioritaires selon rôles/typages
+      if (hasRole?.('admin') || hasRole?.('super_admin')) {
+        navigate('/admin');
+        return;
+      }
       if (profile?.user_type === 'agence') {
         navigate('/dashboard/agence');
-      } else if (profile?.user_type === 'tiers_de_confiance') {
+        return;
+      }
+      if (profile?.user_type === 'tiers_de_confiance') {
         navigate('/tiers-dashboard');
+        return;
       }
     }
-  }, [profile?.user_type, loading, navigate]);
+  }, [profile?.user_type, loading, navigate, hasRole]);
 
   if (loading) {
     return (

@@ -19,7 +19,7 @@ const AuthCallback = () => {
 
         // Get the auth code and state from URL
         const code = searchParams.get('code');
-        const userType = searchParams.get('userType') || 'proprietaire';
+        const userType = searchParams.get('userType') || 'proprietaire' as any;
 
         logger.info('Processing OAuth callback', { hasCode: !!code, userType });
 
@@ -76,10 +76,9 @@ const AuthCallback = () => {
             .insert({
               id: user.id,
               full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Utilisateur',
-              user_type: userType,
+              user_type: userType as any, // Cast pour éviter l'erreur de type
               avatar_url: user.user_metadata?.avatar_url || null,
               email: user.email,
-              created_at: new Date().toISOString(),
             });
 
           if (profileError) {
@@ -88,22 +87,41 @@ const AuthCallback = () => {
           }
         }
 
-        // Assign default role if not exists
+        // Assigner un rôle par défaut si absent (respecte user_type enum)
         const { data: existingRoles } = await supabase
           .from('user_roles')
-          .select('*')
+          .select('role')
           .eq('user_id', user.id);
 
-        if (!existingRoles || existingRoles.length === 0) {
+        const rolesSet = new Set((existingRoles || []).map(r => r.role));
+
+        // Toujours s'assurer que le rôle "locataire" est présent
+        if (!rolesSet.has('locataire')) {
           const { error: roleError } = await supabase
             .from('user_roles')
-            .insert({
-              user_id: user.id,
-              role: userType === 'proprietaire' ? 'proprietaire' : 'user',
-            });
-
+            .insert({ user_id: user.id, role: 'locataire' as any });
           if (roleError) {
-            logger.error('Error assigning role', { error: roleError });
+            logger.error('Error assigning default user role', { error: roleError });
+          }
+        }
+
+        // Si l'utilisateur est un tiers de confiance, ajouter le rôle correspondant
+        if (userType === 'tiers_de_confiance' && !rolesSet.has('tiers_de_confiance')) {
+          const { error: tdcError } = await supabase
+            .from('user_roles')
+            .insert({ user_id: user.id, role: 'tiers_de_confiance' as any });
+          if (tdcError) {
+            logger.error('Error assigning tiers_de_confiance role', { error: tdcError });
+          }
+        }
+
+        // Si type admin_ansut, ajouter le rôle admin_ansut
+        if (userType === 'admin_ansut' && !rolesSet.has('admin_ansut')) {
+          const { error: adminRoleErr } = await supabase
+            .from('user_roles')
+            .insert({ user_id: user.id, role: 'admin_ansut' as any });
+          if (adminRoleErr) {
+            logger.error('Error assigning admin_ansut role', { error: adminRoleErr });
           }
         }
 

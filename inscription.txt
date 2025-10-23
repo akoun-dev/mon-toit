@@ -1,0 +1,149 @@
+# Workflow d'inscription - Plateforme Mon Toit
+
+## Vue d'ensemble
+
+La plateforme Mon Toit utilise un système d'inscription sécurisé avec vérification par email (OTP) et authentification multi-facteurs pour les administrateurs. Le workflow est conçu pour garantir la sécurité tout en offrant une expérience utilisateur fluide.
+
+## 📋 Étapes du workflow d'inscription
+
+### 1. Page d'authentification ([`Auth.tsx`](src/pages/Auth.tsx:1))
+
+L'utilisateur accède à la page d'authentification qui propose deux onglets :
+- **Connexion** : Pour les utilisateurs existants
+- **Inscription** : Pour les nouveaux utilisateurs
+
+#### Formulaire d'inscription
+L'utilisateur doit fournir :
+- **Nom complet** (validation : minimum 2 caractères)
+- **Email** (validation : format email valide)
+- **Mot de passe** (validation : 8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial)
+- **Type de compte** : Locataire, Propriétaire, Agence, ou Tiers de confiance
+
+### 2. Processus d'inscription ([`useAuthEnhanced.tsx`](src/hooks/useAuthEnhanced.tsx:208))
+
+Lors de la soumission du formulaire :
+
+1. **Validation des données** avec schéma Zod
+2. **Création du compte utilisateur** dans Supabase Auth
+3. **Génération automatique d'un code OTP** à 6 chiffres
+4. **Envoi du code par email** via le service OTP
+
+#### Méthodes d'inscription disponibles
+- **Email/Mot de passe** : Flux standard avec OTP
+- **OAuth** : Google, Facebook, Apple, Microsoft ([`OAuthButtons.tsx`](src/components/auth/OAuthButtons.tsx:1))
+
+### 3. Système de vérification OTP
+
+#### Génération et stockage du code
+- Le code est généré via la fonction PostgreSQL [`create_otp_code()`](src/services/otpService.ts:67)
+- Stocké dans la table `otp_codes` avec :
+  - Validité de 24 heures
+  - Maximum 5 tentatives de vérification
+  - Suivi des adresses IP et user agents
+
+#### Envoi de l'email
+- **Développement** : Utilise Mailpit ([`otpService.ts`](src/services/otpService.ts:202))
+- **Production** : Utilise le service email de Supabase
+
+L'email contient :
+- Le code à 6 chiffres formaté (XXX-XXX)
+- Instructions claires
+- Lien vers Mailpit en développement
+
+### 4. Page de confirmation ([`AuthConfirmation.tsx`](src/pages/AuthConfirmation.tsx:1))
+
+Après l'inscription, l'utilisateur est redirigé vers `/auth/confirmation?email=...`
+
+#### Interface de vérification
+- Champ pour saisir le code à 6 chiffres
+- Compteur de tentatives (maximum 5)
+- Bouton de renvoi du code
+- Instructions détaillées pour le développement
+
+#### Validation du code
+1. Vérification du format (6 chiffres)
+2. Appel à [`verifyOTP()`](src/hooks/useAuthEnhanced.tsx:481)
+3. Confirmation de l'email dans Supabase
+4. Redirection automatique vers le dashboard
+
+### 5. Gestion des rôles et profils
+
+#### Création automatique du profil
+Via le trigger PostgreSQL [`handle_new_user()`](supabase/migrations/20251023153000_create_profile_trigger.sql:7) :
+- Création du profil dans la table `profiles`
+- Assignation du rôle par défaut dans `user_roles`
+- Stockage des métadonnées utilisateur
+
+#### Types de rôles disponibles
+- `locataire` : Recherche de logement
+- `proprietaire` : Mise en location de biens
+- `agence` : Gestion de portefeuille
+- `tiers_de_confiance` : Intermédiaire certifié
+- `admin_ansut` : Administration plateforme
+
+### 6. Sécurité renforcée
+
+#### Authentification multi-facteurs (2FA)
+- **Obligatoire pour les administrateurs** ([`Auth.tsx`](src/pages/Auth.tsx:203))
+- Utilise TOTP (Time-based One-Time Password)
+- Codes de récupération disponibles
+- Rate limiting des tentatives
+
+#### Rate limiting
+- **Login** : Maximum 5 tentatives par 15 minutes
+- **OTP** : Maximum 5 tentatives de vérification
+- **2FA** : Limitation après échecs répétés
+
+### 7. Flux OAuth (optionnel)
+
+Pour les utilisateurs choisissant l'authentification via providers tiers :
+
+1. **Redirection vers le provider** ([`AuthCallback.tsx`](src/pages/AuthCallback.tsx:1))
+2. **Callback et traitement** des données
+3. **Création automatique du profil** si inexistant
+4. **Assignation des rôles** appropriés
+5. **Redirection vers le dashboard**
+
+## 🔧 Points techniques importants
+
+### Développement vs Production
+- **Développement** : Force systématiquement le processus OTP même pour les comptes locaux
+- **Production** : Utilise le flux standard de Supabase avec confirmation email
+
+### Base de données
+- Tables principales : `profiles`, `user_roles`, `otp_codes`, `otp_notifications`
+- Row Level Security (RLS) activé sur toutes les tables
+- Triggers automatiques pour la création de profils
+
+### Logging et monitoring
+- Toutes les tentatives d'authentification sont loggées
+- Suivi des adresses IP et fingerprints
+- Métriques de succès/échec disponibles
+
+## 📱 Expérience utilisateur
+
+### Messages d'instruction clairs
+- Guides étape par étape
+- Indicateurs visuels de progression
+- Messages d'erreur explicites
+
+### Support du développement
+- Instructions Mailpit intégrées
+- Codes de test disponibles
+- Debug mode activable
+
+### Accessibilité
+- Formulaires correctement étiquetés
+- Retours d'erreur clairs
+- Navigation au clavier supportée
+
+Ce workflow d'inscription garantit un équilibre optimal entre sécurité nécessaire pour une plateforme immobilière certifiée et expérience utilisateur fluide pour les différents types d'utilisateurs (locataires, propriétaires, agences et tiers de confiance).
+
+
+
+  ☒ Vérifier la configuration de l'API locale
+     ☒ Créer un compte test avec curl
+     ☐ Corriger le problème de récursion RLS
+     ☐ Créer un compte via l'interface web
+     ☐ Vérifier la génération et envoi du code OTP
+     ☐ Tester la validation du code OTP
