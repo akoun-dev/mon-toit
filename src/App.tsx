@@ -32,6 +32,10 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminCertifications = lazy(() => import("./pages/AdminCertifications"));
 const OwnerDashboard = lazy(() => import("./pages/OwnerDashboard"));
+const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
+const AdminPropertiesPage = lazy(() => import("./pages/AdminPropertiesPage"));
+const AdminVerificationsPage = lazy(() => import("./pages/AdminVerificationsPage"));
+const AdminSettingsPage = lazy(() => import("./pages/AdminSettingsPage"));
 const TenantDashboard = lazy(() => import("./pages/TenantDashboard"));
 const AgencyDashboard = lazy(() => import("./pages/AgencyDashboard"));
 const MyMandates = lazy(() => import("./pages/MyMandates"));
@@ -169,6 +173,48 @@ const AppContent = () => {
                 <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
                   <Suspense fallback={<PageSkeleton />}>
                     <AdminDashboard />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            {/* Redirect legacy admin path used in sidebar */}
+            <Route path="/dashboard/admin" element={<Navigate to="/admin" replace />} />
+            <Route 
+              path="/admin/users" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminUsersPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/properties" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminPropertiesPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/verifications" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminVerificationsPage />
+                  </Suspense>
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/settings" 
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <Suspense fallback={<PageSkeleton />}>
+                    <AdminSettingsPage />
                   </Suspense>
                 </ProtectedRoute>
               } 

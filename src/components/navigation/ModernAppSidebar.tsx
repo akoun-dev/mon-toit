@@ -115,15 +115,14 @@ export function ModernAppSidebar() {
 
   // Navigation admin (visible uniquement pour les admins)
   const adminLinks = profile?.user_type === "admin" ? [
-    { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord Admin", color: "text-red-500", highlight: true },
-    { to: "/admin/users", icon: User, label: "Gestion Utilisateurs", color: "text-blue-600" },
-    { to: "/admin/properties", icon: Building2, label: "Validation Biens", color: "text-emerald-600" },
-    { to: "/admin/verifications", icon: ShieldCheck, label: "Vérifications ANSUT", color: "text-purple-600" },
-    { to: "/admin/settings", icon: Settings, label: "Paramètres Système", color: "text-gray-600" },
+    { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord", color: "text-red-500", highlight: true },
+    { to: "/admin/users", icon: User, label: "Utilisateurs", color: "text-blue-600" },
+    { to: "/admin/properties", icon: Building2, label: "Validation biens", color: "text-emerald-600" },
+    { to: "/admin/verifications", icon: ShieldCheck, label: "Vérifications", color: "text-purple-600" },
+    { to: "/admin/settings", icon: Settings, label: "Paramètres", color: "text-gray-600" },
   ] : [];
 
-  console.log('🔍 ModernAppSidebar - Admin links length:', adminLinks.length);
-  console.log('🔍 ModernAppSidebar - Profile user_type check:', profile?.user_type === "admin");
+  // Avoid noisy logs in production
 
   // Navigation utilitaire (réduite sur l'accueil)
   const utilityLinks = [] as any[]; // Utilitaires gérés dans le header
@@ -142,11 +141,11 @@ export function ModernAppSidebar() {
               <motion.div
                 className={cn(
                   "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 transition-all duration-200 relative overflow-hidden",
-                  active 
-                    ? "bg-gradient-to-r from-primary/10 to-secondary/10 border-l-[3px] border-primary shadow-sm" 
+                  active
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground border-l-[3px] border-sidebar-ring shadow-sm"
                     : link?.highlight
-                    ? "bg-gradient-to-r from-orange-500/10 to-orange-500/5 border border-orange-500/20 hover:from-orange-500/15 hover:to-orange-500/10"
-                    : "hover:bg-gradient-to-r hover:from-primary/5 hover:to-transparent"
+                    ? "bg-orange-50 dark:bg-orange-950/20 border border-orange-500/20 hover:bg-orange-100/40 dark:hover:bg-orange-900/30"
+                    : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
@@ -161,14 +160,14 @@ export function ModernAppSidebar() {
                 
                 <link.icon className={cn(
                   "h-5 w-5 transition-colors duration-200",
-                  active ? "text-primary" : link?.highlight ? "text-orange-500" : link.color
+                  active ? "text-sidebar-ring" : link?.highlight ? "text-orange-500" : link.color
                 )} />
                 
                 {open && (
                   <>
                     <span className={cn(
-                      "flex-1 font-medium text-sm transition-colors duration-200",
-                      active ? "text-primary" : link?.highlight ? "text-orange-600 font-semibold" : "text-foreground"
+                      "flex-1 font-medium text-sm transition-colors duration-200 whitespace-nowrap overflow-hidden text-ellipsis",
+                      active ? "" : link?.highlight ? "text-orange-600 font-semibold" : ""
                     )}>
                       {link.label}
                     </span>
@@ -195,9 +194,9 @@ export function ModernAppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border/50 bg-gradient-to-b from-background via-background to-muted/20">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border text-sidebar-foreground">
       {/* Header avec logo et badge ANSUT */}
-      <SidebarHeader className="border-b border-border/50 px-4 py-3 bg-gradient-to-r from-primary/5 to-secondary/5">
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-3 bg-sidebar">
         <Link to="/" className="flex items-center gap-3">
           <motion.img 
             src={monToitLogo} 
@@ -219,7 +218,7 @@ export function ModernAppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
+      <SidebarContent className="px-3 py-4 text-sidebar-foreground">
         {/* User Profile Card */}
         {profile && open && (
           <motion.div 
@@ -235,7 +234,7 @@ export function ModernAppSidebar() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">
+                <p className="text-sm font-semibold truncate">
                   {profile.full_name || "Utilisateur"}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
@@ -432,9 +431,9 @@ export function ModernAppSidebar() {
       </SidebarContent>
 
       {/* Footer moderne */}
-      <SidebarFooter className="border-t border-border/50 p-3 bg-gradient-to-r from-muted/30 to-transparent">
+      <SidebarFooter className="border-t border-sidebar-border p-3 bg-sidebar">
         {open ? (
-          <div className="flex items-center justify-between text-xs text-muted-foreground px-2">
+          <div className="flex items-center justify-between text-xs text-sidebar-foreground/70 px-2">
             <span>© 2025 Mon Toit</span>
             <Star className="h-3 w-3 text-kente-gold fill-kente-gold" />
           </div>
