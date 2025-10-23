@@ -81,6 +81,7 @@ import Aide from "./pages/Aide";
 import Artisans from "./pages/Artisans";
 import ProtectionDonnees from "./pages/ProtectionDonnees";
 import Accessibilite from "./pages/Accessibilite";
+import BecomeProprietaire from "./pages/BecomeProprietaire";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -392,13 +393,21 @@ const AppContent = () => {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/verification" 
+            <Route
+              path="/verification"
               element={
                 <ProtectedRoute>
                   <Verification />
                 </ProtectedRoute>
-              } 
+              }
+            />
+            <Route
+              path="/devenir-proprietaire"
+              element={
+                <ProtectedRoute>
+                  <BecomeProprietaire />
+                </ProtectedRoute>
+              }
             />
             <Route path="/user/:userId/reviews" element={<UserReviews />} />
             <Route path="/publier" element={<Publier />} />

@@ -171,9 +171,51 @@ BEGIN
 END $$;
 
 -- ===================================================================
--- 4. RÉCAPITULATIF
+-- 4. RÉCAPITULATIF ET COMPTES SUPPLÉMENTAIRES
 -- ===================================================================
 
+-- Ajout des comptes créés via l'API Supabase (ceux qui fonctionnent)
+-- Ces comptes ont été créés avec l'API d'authentification
+-- et utilisent le hashing correct de Supabase
+--
+-- Comptes recommandés pour les tests :
+-- test@mon-toit.ci / test123456 (Locataire)
+-- demo@mon-toit.ci / demo123 (Propriétaire)
+-- agence.immobiliere@mon-toit.ci / agence123 (Agence)
+-- admin@ansut.ci / admin123 (Admin ANSUT)
+--
+-- NOTE : Les comptes créés dans la section 1 utilisent crypt()
+--        qui est incompatible avec l'authentification Supabase
+--        Utiliser plutôt les comptes ci-dessus pour les tests
+
+RAISE NOTICE '=== COMPTES CRÉÉS ===';
+RAISE NOTICE '';
+RAISE NOTICE '🎯 COMPTES FONCTIONNELS (API Supabase):';
+RAISE NOTICE '';
+RAISE NOTICE 'LOCATAIRE :';
+RAISE NOTICE '- Email: test@mon-toit.ci';
+RAISE NOTICE '- Mot de passe: test123456';
+RAISE NOTICE '';
+RAISE NOTICE 'PROPRIÉTAIRE :';
+RAISE NOTICE '- Email: demo@mon-toit.ci';
+RAISE NOTICE '- Mot de passe: demo123';
+RAISE NOTICE '';
+RAISE NOTICE 'AGENCE :';
+RAISE NOTICE '- Email: agence.immobiliere@mon-toit.ci';
+RAISE NOTICE '- Mot de passe: agence123';
+RAISE NOTICE '';
+RAISE NOTICE 'ADMIN ANSUT :';
+RAISE NOTICE '- Email: admin@ansut.ci';
+RAISE NOTICE '- Mot de passe: admin123';
+RAISE NOTICE '';
+RAISE NOTICE '⚠️  COMPTES MIGRATION (non fonctionnels) :';
+RAISE NOTICE '';
+RAISE NOTICE 'LOCATAIRE : locataire@mon-toit.ci / locataire123';
+RAISE NOTICE 'PROPRIÉTAIRE : proprietaire@mon-toit.ci / proprietaire123';
+RAISE NOTICE 'AGENCE : agence@mon-toit.ci / agence123';
+RAISE NOTICE 'ADMIN : admin@mon-toit.ci / admin123';
+RAISE NOTICE '';
+RAISE NOTICE '=== SEED TERMINÉ AVEC SUCCÈS ===';
 DO $$
 BEGIN
   RAISE NOTICE '=== COMPTES UTILISATEURS CRÉÉS ===';

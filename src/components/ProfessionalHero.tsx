@@ -69,22 +69,22 @@ export const ProfessionalHero = () => {
           <defs>
             <pattern id="kente-subtle" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
               {/* Lignes verticales */}
-              <line x1="10" y1="0" x2="10" y2="100" stroke="#E07A5F" strokeWidth="2" />
-              <line x1="30" y1="0" x2="30" y2="100" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="50" y1="0" x2="50" y2="100" stroke="#FF6B35" strokeWidth="3" />
-              <line x1="70" y1="0" x2="70" y2="100" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="90" y1="0" x2="90" y2="100" stroke="#E07A5F" strokeWidth="2" />
-              
+              <line x1="10" y1="0" x2="10" y2="100" stroke="#2563eb" strokeWidth="2" />
+              <line x1="30" y1="0" x2="30" y2="100" stroke="#2563eb" strokeWidth="1" />
+              <line x1="50" y1="0" x2="50" y2="100" stroke="#3b82f6" strokeWidth="3" />
+              <line x1="70" y1="0" x2="70" y2="100" stroke="#2563eb" strokeWidth="1" />
+              <line x1="90" y1="0" x2="90" y2="100" stroke="#2563eb" strokeWidth="2" />
+
               {/* Lignes horizontales */}
-              <line x1="0" y1="10" x2="100" y2="10" stroke="#E07A5F" strokeWidth="2" />
-              <line x1="0" y1="30" x2="100" y2="30" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="0" y1="50" x2="100" y2="50" stroke="#FF6B35" strokeWidth="3" />
-              <line x1="0" y1="70" x2="100" y2="70" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="0" y1="90" x2="100" y2="90" stroke="#E07A5F" strokeWidth="2" />
-              
+              <line x1="0" y1="10" x2="100" y2="10" stroke="#2563eb" strokeWidth="2" />
+              <line x1="0" y1="30" x2="100" y2="30" stroke="#2563eb" strokeWidth="1" />
+              <line x1="0" y1="50" x2="100" y2="50" stroke="#3b82f6" strokeWidth="3" />
+              <line x1="0" y1="70" x2="100" y2="70" stroke="#2563eb" strokeWidth="1" />
+              <line x1="0" y1="90" x2="100" y2="90" stroke="#2563eb" strokeWidth="2" />
+
               {/* Motifs en losange */}
-              <polygon points="50,20 60,30 50,40 40,30" fill="#E07A5F" opacity="0.4" />
-              <polygon points="50,60 60,70 50,80 40,70" fill="#FF6B35" opacity="0.4" />
+              <polygon points="50,20 60,30 50,40 40,30" fill="#2563eb" opacity="0.4" />
+              <polygon points="50,60 60,70 50,80 40,70" fill="#3b82f6" opacity="0.4" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#kente-subtle)" />
@@ -94,16 +94,16 @@ export const ProfessionalHero = () => {
       {/* Symboles Adinkra flottants - très discrets */}
       <div className="hidden md:block absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#E07A5F" strokeWidth="3" />
-          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#E07A5F" strokeWidth="3" />
-          <circle cx="50" cy="50" r="15" fill="#E07A5F" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#2563eb" strokeWidth="3" />
+          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#2563eb" strokeWidth="3" />
+          <circle cx="50" cy="50" r="15" fill="#2563eb" />
         </svg>
       </div>
       
       <div className="hidden md:block absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#FF6B35" strokeWidth="3" />
-          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#FF6B35" />
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#3b82f6" strokeWidth="3" />
+          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#3b82f6" />
         </svg>
       </div>
 
@@ -133,10 +133,10 @@ export const ProfessionalHero = () => {
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight px-4 sm:px-0">
               Trouvez votre{' '}
-              <span className="text-[#E67E22] relative">
+              <span className="text-blue-600 relative">
                 Toit Idéal
                 <svg
-                  className="absolute -bottom-2 left-0 w-full h-3 text-[#E67E22]/30"
+                  className="absolute -bottom-2 left-0 w-full h-3 text-blue-500/70"
                   viewBox="0 0 200 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +163,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="w-full max-w-4xl mx-auto"
           >
-            <div className="bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl p-6 md:p-8 space-y-4 border border-white/20">
+            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-4 border border-gray-200">
               
               {/* Titre du formulaire */}
               <div className="flex items-center justify-between mb-2">

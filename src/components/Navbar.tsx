@@ -19,6 +19,8 @@ import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 import NotificationBell from "@/components/NotificationBell";
 import CertificationNotificationBadge from "@/components/admin/CertificationNotificationBadge";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
+import RoleSwitcherV2 from "@/components/RoleSwitcherV2";
+import RoleSwitchWrapper from "@/components/RoleSwitchWrapper";
 import { CertificationBadge } from "@/components/shared/CertificationBadge";
 import { HeaderSearch } from "@/components/search/HeaderSearch";
 
@@ -115,9 +117,9 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
 
             {user ? (
               <>
-                {/* Allège le header en mobile */}
+                {/* Role Switcher avec transition V1→V2 - Masqué en mobile pour alléger le header */}
                 <div className="hidden md:block">
-                  <RoleBadge />
+                  <RoleSwitchWrapper variant="compact" className="shrink-0" />
                 </div>
                 <NotificationBell />
                 <DropdownMenu>
@@ -161,6 +163,12 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                         <Link to="/profil" className="cursor-pointer flex items-center">
                           <User className="mr-3 h-4 w-4 text-primary" />
                           <span>Mon profil</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/devenir-proprietaire" className="cursor-pointer flex items-center">
+                          <ShieldCheck className="mr-3 h-4 w-4 text-primary" />
+                          <span>Devenir propriétaire</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>

@@ -83,10 +83,10 @@ export const MobileHero = () => {
           {/* Titre */}
           <h1 className="text-3xl font-extrabold text-white leading-tight px-2">
             Trouvez votre{' '}
-            <span className="text-[#E67E22] relative inline-block">
+            <span className="text-blue-600 relative inline-block">
               Toit Idéal
               <svg
-                className="absolute -bottom-1 left-0 w-full h-2 text-[#E67E22]/30"
+                className="absolute -bottom-1 left-0 w-full h-2 text-blue-500/70"
                 viewBox="0 0 200 8"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@ export const MobileHero = () => {
           </p>
 
           {/* Formulaire de recherche */}
-          <div className="w-full max-w-md bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl p-5 border border-white/20">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-5 border border-gray-200">
             
             {/* Titre du formulaire */}
             <div className="flex items-center gap-2 mb-4">
