@@ -10,10 +10,7 @@ DECLARE
   v_user_type public.user_type;
   v_full_name text;
 BEGIN
-  -- Valider que l'email est présent et valide
-  IF NEW.email IS NULL OR NEW.email = '' OR NEW.email !~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN
-    RAISE EXCEPTION 'Email invalide requis';
-  END IF;
+  -- L'email est déjà validé par Supabase Auth
   
   -- Extraire et valider le type d'utilisateur depuis les métadonnées
   v_user_type := COALESCE(NEW.raw_user_meta_data->>'user_type', 'locataire')::public.user_type;
@@ -61,14 +58,14 @@ EXCEPTION
     RAISE LOG 'Erreur dans handle_new_user: %, utilisateur: %', SQLERRM, NEW.id;
     RAISE;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY INVOKER;
 
--- Créer le trigger qui s'exécute après l'insertion dans auth.users
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION public.handle_new_user();
+-- NOTE: Trigger désactivé - la création du profil est maintenant gérée par verify_otp_code
+-- DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+-- CREATE TRIGGER on_auth_user_created
+--   AFTER INSERT ON auth.users
+--   FOR EACH ROW
+--   EXECUTE FUNCTION public.handle_new_user();
 
 -- Donner les permissions nécessaires
-GRANT EXECUTE ON FUNCTION public.handle_new_user() TO authenticated;
+-- GRANT EXECUTE ON FUNCTION public.handle_new_user() TO authenticated;

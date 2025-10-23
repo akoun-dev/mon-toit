@@ -1,3 +1,4 @@
+
 -- ============================================================
 -- Mon Toit — Migration OTP: tables et fonctions pour la vérification par code
 -- Date: 2025-10-23
@@ -250,17 +251,19 @@ BEGIN
     RETURN;
   END IF;
 
-  -- Incrémenter le nombre de tentatives
+  -- Incrémenter le compteur de tentatives
   UPDATE public.otp_codes
   SET attempts = attempts + 1,
       updated_at = now()
   WHERE id = v_otp_record.id;
 
-  -- Marquer le code comme utilisé
-  UPDATE public.otp_codes
-  SET used_at = now(),
-      updated_at = now()
-  WHERE id = v_otp_record.id;
+  -- Si le code est correct, le marquer comme utilisé
+  IF v_otp_record.code = p_code THEN
+    UPDATE public.otp_codes
+    SET used_at = now(),
+        updated_at = now()
+    WHERE id = v_otp_record.id;
+  END IF;
 
   -- Mettre à jour la notification
   UPDATE public.otp_notifications
@@ -269,9 +272,48 @@ BEGIN
       updated_at = now()
   WHERE otp_code_id = v_otp_record.id;
 
+  -- NOUVEAU: Créer le profil utilisateur si c'est une inscription (signup)
+  IF p_type = 'signup' THEN
+    DECLARE
+      v_user_metadata jsonb;
+    BEGIN
+      -- Récupérer les métadonnées utilisateur depuis auth.users
+      SELECT raw_user_meta_data INTO v_user_metadata
+      FROM auth.users
+      WHERE id = v_otp_record.user_id AND email = p_email;
+
+      IF v_user_metadata IS NOT NULL THEN
+        -- Insérer le profil utilisateur
+        INSERT INTO public.profiles (id, full_name, user_type, email, created_at, updated_at)
+        VALUES (
+          v_otp_record.user_id,
+          COALESCE(v_user_metadata->>'full_name', 'Utilisateur'),
+          COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
+          p_email,
+          now(),
+          now()
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          full_name = EXCLUDED.full_name,
+          user_type = EXCLUDED.user_type,
+          email = EXCLUDED.email,
+          updated_at = now();
+
+        -- Créer le rôle utilisateur
+        INSERT INTO public.user_roles (user_id, role, created_at)
+        VALUES (
+          v_otp_record.user_id,
+          COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
+          now()
+        )
+        ON CONFLICT (user_id, role) DO NOTHING;
+      END IF;
+    END;
+  END IF;
+
   v_user_id := v_otp_record.user_id;
 
-  RETURN QUERY SELECT true, 'Code vérifié avec succès'::text, v_user_id;
+  RETURN QUERY SELECT true, 'Code vérifié avec succès - Profil créé'::text, v_user_id;
 END;
 $$;
 
@@ -318,5 +360,3 @@ GRANT EXECUTE ON FUNCTION public.verify_otp_code(text, text, text) TO authentica
 
 REVOKE ALL ON FUNCTION public.cleanup_old_otp_notifications(integer) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.cleanup_old_otp_notifications(integer) TO authenticated;
-
--- Fin de migration OTP

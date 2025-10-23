@@ -240,4 +240,3 @@ CREATE INDEX IF NOT EXISTS idx_login_attempts_email_created ON public.login_atte
 -- Créer un profil automatiquement via trigger côté application, pas ici.
 
 -- Fin de migration
-

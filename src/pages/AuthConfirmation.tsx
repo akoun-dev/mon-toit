@@ -19,6 +19,14 @@ const AuthConfirmation = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { verifyOTP } = useAuth();
+
+  // Debug: Vérifier si la page se charge correctement
+  console.log('🔍 [DEBUG] AuthConfirmation page loaded', {
+    emailParam: searchParams.get('email'),
+    currentPath: window.location.pathname,
+    searchParams: window.location.search
+  });
+
   const [email, setEmail] = useState(searchParams.get('email') || '');
   const [otpCode, setOtpCode] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -81,9 +89,9 @@ const AuthConfirmation = () => {
       if (!error) {
         console.log('✅ [DEBUG] Vérification réussie');
         setIsVerified(true);
-        // Rediriger vers le dashboard après un court délai
+        // Rediriger vers la page de connexion pour se connecter normalement
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/auth');
         }, 2000);
       } else {
         console.log('❌ [DEBUG] Erreur de vérification', { error: error.message, status: error.status });
@@ -128,50 +136,89 @@ const AuthConfirmation = () => {
     try {
       // Importer le service OTP pour le renvoi
       const { otpService } = await import('@/services/otpService');
+      
+      // Récupérer l'utilisateur depuis l'email pour obtenir l'ID
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user || user.email !== email) {
+        // Si l'utilisateur n'est pas connecté ou l'email ne correspond pas,
+        // essayer de récupérer l'utilisateur depuis la base de données
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .single() as { data: { id: string } | null; error: any };
+          
+        if (!profile) {
+          throw new Error('Aucun compte trouvé pour cet email');
+        }
+        
+        // Générer un nouveau code OTP avec l'ID du profil
+        const otpResult = await otpService.createOTPCode(
+          profile.id,
+          email,
+          'signup'
+        );
+        
+        if (otpResult.success && otpResult.code) {
+          const emailResult = await otpService.sendOTPByEmail(email, otpResult.code, 'signup');
+          
+          if (emailResult.success) {
+            console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
+            
+            const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
+            const description = mailpitUrl
+              ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
+              : "Un nouveau code de vérification a été envoyé à votre email.";
 
-      console.log('📡 [DEBUG] Appel à otpService.sendOTPByEmail pour renvoi', { email });
+            toast({
+              title: "Code OTP renvoyé",
+              description: description,
+            });
 
-      // En développement, on peut utiliser resend standard (qui génère un nouveau code)
-      // ou envoyer un code personnalisé si nous avons l'userID
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email,
-      });
-
-      console.log('📡 [DEBUG] Réponse de resend', { error: error ? { message: error.message, status: error.status } : null });
-
-      if (error) {
-        console.log('❌ [DEBUG] Erreur lors du renvoi', { error: error.message });
-        toast({
-          title: "Erreur d'envoi",
-          description: error.message,
-          variant: "destructive",
-        });
+            // Réinitialiser le champ OTP et les tentatives
+            setOtpCode('');
+            setAttempts(0);
+            setLastError(null);
+          } else {
+            throw new Error(emailResult.error || 'Erreur lors de l\'envoi de l\'email');
+          }
+        } else {
+          throw new Error(otpResult.message || 'Erreur lors de la génération du code');
+        }
       } else {
-        console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
+        // Utilisateur connecté avec le bon email
+        const otpResult = await otpService.createOTPCode(
+          user.id,
+          email,
+          'signup'
+        );
+        
+        if (otpResult.success && otpResult.code) {
+          const emailResult = await otpService.sendOTPByEmail(email, otpResult.code, 'signup');
+          
+          if (emailResult.success) {
+            console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
+            
+            const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
+            const description = mailpitUrl
+              ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
+              : "Un nouveau code de vérification a été envoyé à votre email.";
 
-        // Message de succès avec instructions pour Mailpit
-        const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
-        const description = mailpitUrl
-          ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
-          : "Un nouveau code de vérification a été envoyé à votre email.";
+            toast({
+              title: "Code OTP renvoyé",
+              description: description,
+            });
 
-        toast({
-          title: "Code OTP renvoyé",
-          description: description,
-        });
-
-        // Réinitialiser le champ OTP et les tentatives
-        setOtpCode('');
-        setAttempts(0);
-        setLastError(null);
-
-        // Instructions détaillées pour le développement
-        if (mailpitUrl) {
-          console.log('🔍 [DEBUG] Instructions Mailpit pour le renvoi', {
-            message: `Consultez le nouvel email dans Mailpit: ${mailpitUrl}`,
-            email
-          });
+            // Réinitialiser le champ OTP et les tentatives
+            setOtpCode('');
+            setAttempts(0);
+            setLastError(null);
+          } else {
+            throw new Error(emailResult.error || 'Erreur lors de l\'envoi de l\'email');
+          }
+        } else {
+          throw new Error(otpResult.message || 'Erreur lors de la génération du code');
         }
       }
     } catch (error) {
@@ -192,7 +239,7 @@ const AuthConfirmation = () => {
   };
 
   const handleGoToDashboard = () => {
-    navigate('/dashboard');
+    navigate('/auth');
   };
 
   if (loading) {
@@ -233,14 +280,14 @@ const AuthConfirmation = () => {
                 </CardHeader>
                 <CardContent className="text-center px-4 sm:px-6">
                   <p className="text-gray-600 mb-6 text-sm sm:text-base">
-                    Vous pouvez maintenant vous connecter et accéder à votre tableau de bord.
+                    Votre compte a été confirmé avec succès. Vous allez être redirigé vers la page de connexion pour vous identifier.
                   </p>
                   <Button
                     onClick={handleGoToDashboard}
                     className="w-full h-11 sm:h-12 text-sm sm:text-base font-medium bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                     size="lg"
                   >
-                    Accéder au tableau de bord
+                    Aller à la connexion
                   </Button>
                 </CardContent>
               </Card>

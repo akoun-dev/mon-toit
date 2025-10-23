@@ -13,7 +13,7 @@ interface AuthContextType {
   profile: Profile | null;
   roles: string[];
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string, userType: string) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string, fullName: string, userType: string) => Promise<{ error: AuthError | null; data?: any }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithOAuth: (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => Promise<{ error: AuthError | null }>;
   verifyOTP: (email: string, token: string) => Promise<{ error: AuthError | null }>;
@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [forceSigningOut, setForceSigningOut] = useState(false);
 
   const fetchProfile = async (userId: string) => {
     logger.info('Fetching profile for user', { userId });
@@ -162,10 +163,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        logger.info('Auth state changed', { event, hasSession: !!session });
+        logger.info('Auth state changed', { event, hasSession: !!session, forceSigningOut });
+
+        // Si on est en train de forcer la déconnexion, ignorer les réactivations
+        if (forceSigningOut && event === 'SIGNED_IN' && session?.user) {
+          logger.info('🚫 [AUTH] Ignoring sign-in during forced sign-out', { userId: session.user.id });
+          await supabase.auth.signOut();
+          return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
           // Defer profile fetching to avoid deadlock
           setTimeout(async () => {
@@ -343,20 +352,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else if (data.session) {
         // Utilisateur connecté automatiquement - ignorer en développement, forcer OTP
         if (isDevelopment) {
+          console.log('⚠️ [DEBUG] User auto-signed in, forcing OTP in development', {
+            userId: data.user.id,
+            email
+          });
+
           logger.warn('⚠️ [AUTH] User auto-signed in, forcing OTP in development', {
             userId: data.user.id,
             email
           });
 
+          // Activer le flag de déconnexion forcée pour éviter les réactivations
+          setForceSigningOut(true);
+
           // Sign out l'utilisateur pour forcer le processus OTP
+          logger.info('🔒 [AUTH] Signing out user to force OTP process', { userId: data.user.id });
+          console.log('🔒 [DEBUG] Starting sign out process');
+
           await supabase.auth.signOut();
+          console.log('✅ [DEBUG] Sign out completed');
+
+          // Attendre un peu pour s'assurer que le signOut est bien effectué
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          // Forcer la mise à jour de l'état local
+          setUser(null);
+          setSession(null);
+          setProfile(null);
+          setRoles([]);
+
+          // Désactiver le flag après un délai pour permettre les futures connexions normales
+          setTimeout(() => {
+            setForceSigningOut(false);
+            logger.info('🔓 [AUTH] Force sign-out flag cleared', { email });
+            console.log('🔓 [DEBUG] Force sign-out flag cleared');
+          }, 2000);
 
           toast({
-            title: "Redirection pour vérification",
-            description: "Veuillez vous inscrire à nouveau pour recevoir le code de vérification.",
+            title: "Compte créé !",
+            description: "Un code de vérification a été envoyé à votre email.",
           });
 
-          return { error: { message: "Veuillez vous inscrire à nouveau" }, data: null };
+          logger.info('✅ [AUTH] User signed out, ready for OTP verification', { email });
+          console.log('✅ [DEBUG] Returning success for OTP flow');
+
+          // Ne pas retourner d'erreur pour permettre la redirection vers la page OTP
+          return { error: null, data: { user: data.user } };
         } else {
           logger.info('✅ [AUTH] User automatically signed in - production mode', {
             userId: data.user.id,
@@ -435,7 +476,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+        provider: provider as any, // Cast to any to handle Microsoft provider
         options: {
           redirectTo: redirectUrl,
           queryParams: {
@@ -508,33 +549,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email
         });
 
-        // Marquer l'email comme confirmé dans Supabase
-        const { error: confirmError } = await supabase.auth.updateUser({
-          email_confirm: true
-        });
+        // Supabase gère la confirmation d'email via l'URL de vérification ou un flux de vérification OTP
+        // La ligne `email_confirm: true` n'est pas supportée par Supabase.auth.updateUser
+        // On suppose que l'étape de vérification OTP valide le processus.
+        // On passe à la connexion automatique.
 
-        if (confirmError) {
-          logger.error('Error confirming email in Supabase', {
-            error: confirmError,
-            userId: otpResult.user_id
-          });
-
-          toast({
-            title: "Erreur de confirmation",
-            description: "Le code est valide mais la confirmation du compte a échoué. Veuillez contacter le support.",
-            variant: "destructive",
-          });
-          return { error: confirmError };
-        }
-
-        // Étape 3: Connecter l'utilisateur automatiquement
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password: '', // Nous n'avons pas le mot de passe ici
-        });
-
-        // Si nous ne pouvons pas connecter automatiquement, c'est normal
-        // L'utilisateur devra se connecter manuellement
+        // Étape 3: Informer l'utilisateur de se connecter manuellement
+        // Nous n'avons pas le mot de passe pour la connexion automatique.
 
         await logLoginAttempt(email, true);
         toast({

@@ -47,7 +47,7 @@ const signInSchema = z.object({
 type ValidationErrors = Partial<Record<'email' | 'password' | 'fullName' | 'userType', string>>;
 
 const Auth = () => {
-  const { signUp, signIn, user, session, hasRole } = useAuth();
+  const { signUp, signIn, user, session, hasRole, profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
@@ -83,9 +83,35 @@ const Auth = () => {
   
   // Redirect if already authenticated and has active session
   useEffect(() => {
+    console.log('🔍 [DEBUG] Auth.tsx useEffect checking user state', {
+      hasUser: !!user,
+      hasSession: !!session,
+      emailConfirmed: user?.email_confirmed_at,
+      currentPath: window.location.pathname
+    });
+
     // Si l'utilisateur est déjà connecté avec une session active et un email confirmé
     // rediriger selon le type d'utilisateur
     if (user && session && user.email_confirmed_at) {
+      // NE PAS rediriger si l'utilisateur vient de s'inscrire (flux OTP)
+      // Vérifier si l'utilisateur a un profil créé dans la table profiles
+      // Si profile existe, c'est une vraie connexion. Si profile null, c'est le flux OTP.
+      const hasProfile = !!profile;
+
+      console.log('🔍 [DEBUG] User auth check', {
+        userId: user.id,
+        email: user.email,
+        hasProfile,
+        profile: profile ? 'exists' : 'null',
+        userTypeFromUrl
+      });
+
+      // Si le profil n'existe pas encore, c'est probablement le flux OTP -> ne pas rediriger
+      if (!hasProfile) {
+        console.log('🚫 [DEBUG] Skipping redirect - user in OTP flow (no profile yet)');
+        return;
+      }
+
       // Si l'utilisateur est déjà connecté et essaie d'accéder à /auth avec un type
       // (ex: /auth?type=agence), on le redirige vers son profil pour gérer ses rôles
       if (userTypeFromUrl && userTypeFromUrl !== user.user_metadata?.user_type) {
@@ -95,11 +121,12 @@ const Auth = () => {
         });
         navigate('/profil', { replace: true });
       } else {
-        // Rediriger vers la page de confirmation OTP plutôt que dashboard
-        navigate('/auth/confirmation', { replace: true });
+        // Rediriger vers le dashboard pour les utilisateurs déjà connectés
+        console.log('✅ [DEBUG] Redirecting existing user to dashboard');
+        navigate('/dashboard', { replace: true });
       }
     }
-  }, [user, session, navigate, userTypeFromUrl]);
+  }, [user, session, profile, navigate, userTypeFromUrl]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,13 +150,23 @@ const Auth = () => {
     }
 
     setLoading(true);
+    console.log('🚀 [DEBUG] Starting signup', { email: signUpEmail, userType });
+
     const { error, data } = await signUp(signUpEmail, signUpPassword, fullName, userType);
+
+    console.log('📡 [DEBUG] Signup result', {
+      error: error ? { message: error.message } : null,
+      data: data ? 'has_data' : null
+    });
+
     setLoading(false);
 
     if (!error) {
       // Rediriger vers la page de confirmation avec l'email
       const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}`;
+      console.log('🔀 [DEBUG] Redirecting to:', confirmationUrl);
       navigate(confirmationUrl, { replace: true });
+      console.log('✅ [DEBUG] Navigation executed');
 
       // Réinitialiser le formulaire
       setSignUpEmail('');
