@@ -142,7 +142,7 @@ const AdminDashboard = () => {
         />
       }
     >
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
+      <div className="container mx-auto px-3 sm:px-4 md:px-4 py-4 sm:py-6">
         <StickyHeader>
           <h1 className="text-xl sm:text-2xl font-bold">Administration ANSUT</h1>
           <p className="text-xs sm:text-sm text-muted-foreground">

@@ -97,8 +97,8 @@ const Dashboard = () => {
   if (!content) {
     return (
       <MainLayout>
-        <main className="container mx-auto px-2 py-3">
-          <div className="max-w-7xl mx-auto space-y-4">
+        <main className="px-4 md:px-6 py-3 w-full">
+          <div className="w-full space-y-4">
             <DynamicBreadcrumb />
 
             <WelcomeBanner />
@@ -125,8 +125,8 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <main className="container mx-auto px-2 py-3">
-        <div className="max-w-7xl mx-auto space-y-4">
+      <main className="px-4 md:px-6 py-3 w-full">
+        <div className="w-full space-y-4">
           <DynamicBreadcrumb />
           
           <WelcomeBanner />

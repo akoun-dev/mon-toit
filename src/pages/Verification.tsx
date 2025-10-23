@@ -29,12 +29,12 @@ const Verification = () => {
   return (
     <ErrorBoundary>
       <MainLayout>
-        <main className="container mx-auto px-2 py-4">
-          <div className="max-w-4xl mx-auto">
+        <main className="px-4 md:px-6 py-4 w-full">
+          <div className="w-full">
             <DynamicBreadcrumb />
 
-            <div className="mb-8 text-center">
-              <div className="inline-flex items-center gap-3 mb-4">
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-10 w-10 text-secondary" />
                 <h1 className="text-3xl font-bold">Vérification d'Identité</h1>
               </div>

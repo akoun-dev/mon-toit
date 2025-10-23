@@ -182,7 +182,7 @@ export default function Payments() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
+      <div className="px-4 md:px-6 py-4 w-full">
         <DynamicBreadcrumb />
         
         <div className="mb-8">

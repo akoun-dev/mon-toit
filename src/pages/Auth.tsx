@@ -283,7 +283,7 @@ const Auth = () => {
         {/* Hero Section with Pattern */}
         <section className="relative pt-12 pb-6 md:pt-16 md:pb-8 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10">
           <KentePattern />
-          <div className="container mx-auto px-2 sm:px-6 relative z-10">
+          <div className="container mx-auto px-2 sm:px-4 relative z-10">
             <div className="text-center max-w-4xl mx-auto mb-3 md:mb-4">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -312,7 +312,7 @@ const Auth = () => {
         </section>
 
         {/* Main Content */}
-        <div className="container mx-auto px-2 sm:px-6 pb-8 md:pb-12">
+        <div className="container mx-auto px-2 sm:px-4 pb-8 md:pb-12">
           <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-start max-w-6xl mx-auto">
             {/* Left Side - Benefits */}
             <motion.div
@@ -383,7 +383,7 @@ const Auth = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <Card className="shadow-lg md:shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
-                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30 px-4 py-4 md:px-6">
+                      <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30 px-4 py-4 md:px-4">
                         <CardTitle className="text-lg md:text-xl font-semibold text-center">Connexion</CardTitle>
                         <CardDescription className="text-center text-sm md:text-base">
                           Connectez-vous à votre compte Mon Toit
@@ -400,7 +400,7 @@ const Auth = () => {
                         )}
                       </CardHeader>
               <form onSubmit={handleSignIn}>
-                <CardContent className="space-y-3 md:space-y-4 px-4 py-4 md:px-6">
+                <CardContent className="space-y-3 md:space-y-4 px-4 py-4 md:px-4">
                   {isBlocked && (
                     <Alert variant="destructive">
                       <AlertTriangle className="h-4 w-4" />
@@ -463,7 +463,7 @@ const Auth = () => {
                     </button>
                   </div>
                 </CardContent>
-                <CardFooter className="flex-col gap-3 px-4 py-4 md:px-6">
+                <CardFooter className="flex-col gap-3 px-4 py-4 md:px-4">
                   <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
                     {loading ? 'Connexion...' : 'Se connecter'}
                   </Button>
@@ -581,7 +581,7 @@ const Auth = () => {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter className="flex-col gap-2 px-4 py-4 md:px-6">
+                <CardFooter className="flex-col gap-2 px-4 py-4 md:px-4">
                   <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
                     {loading ? 'Création...' : 'Créer mon compte'}
                   </Button>

@@ -63,7 +63,7 @@ const TenantDashboard = () => {
 
   return (
     <MainLayout>
-      <main className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6">
+      <main className="px-4 md:px-6 py-4 sm:py-6 w-full">
         <div className="mb-6 sm:mb-10">
           <DynamicBreadcrumb />
 

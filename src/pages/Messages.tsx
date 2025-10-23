@@ -425,8 +425,8 @@ const Messages = () => {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
-        <div className="max-w-7xl mx-auto">
+      <div className="px-4 md:px-6 py-4 w-full">
+        <div className="w-full">
           <DynamicBreadcrumb />
           <h1 className="text-3xl font-bold mb-6">Messages</h1>
 
