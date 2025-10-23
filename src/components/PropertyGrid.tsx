@@ -48,7 +48,24 @@ export const PropertyGrid = ({
 
   // Apply filters avec useMemo pour éviter les recalculs
   const filteredProperties = useMemo(() => {
-    return properties.filter(property => {
+    if (properties.length === 0) {
+      console.log('🔍 No properties available to filter');
+      return [];
+    }
+
+    console.log('🔍 Debugging filters:', {
+      totalProperties: properties.length,
+      activeFilters: Object.keys(filters).length > 0 ? filters : 'none',
+      properties: properties.map(p => ({
+        id: p.id,
+        title: p.title,
+        status: p.status,
+        city: p.city,
+        rent: p.monthly_rent
+      }))
+    });
+
+    const result = properties.filter(property => {
       if (filters.city && property.city !== filters.city) return false;
       if (filters.propertyType && property.property_type !== filters.propertyType) return false;
       if (filters.minPrice && property.monthly_rent < filters.minPrice) return false;
@@ -64,6 +81,14 @@ export const PropertyGrid = ({
       if (filters.status && property.status !== filters.status) return false;
       return true;
     });
+
+    console.log('🔍 Filter result:', {
+      total: properties.length,
+      filtered: result.length,
+      hasActiveFilters: Object.keys(filters).length > 0
+    });
+
+    return result;
   }, [properties, filters]);
 
   // Sorting avec useMemo pour éviter les recalculs
@@ -138,11 +163,20 @@ export const PropertyGrid = ({
             </Alert>
           ) : filteredProperties.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-xl text-muted-foreground mb-4">
-                Aucun bien ne correspond à vos critères
+              <p className="text-xl text-muted-foreground mb-2">
+                {Object.keys(filters).length > 0
+                  ? "Aucun bien ne correspond à vos critères"
+                  : "Aucun bien disponible pour le moment"}
+              </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                {Object.keys(filters).length > 0
+                  ? `Trouvé ${properties.length} bien${properties.length > 1 ? 's' : ''} au total, mais aucun ne correspond aux filtres actuels`
+                  : properties.length === 0
+                    ? "Essayez de rafraîchir la page ou revenez plus tard"
+                    : "Essayez d'élargir vos critères de recherche"}
               </p>
               <Button onClick={handleReset} variant="outline">
-                Réinitialiser les filtres
+                {Object.keys(filters).length > 0 ? "Réinitialiser les filtres" : "Rafraîchir"}
               </Button>
             </div>
           ) : (

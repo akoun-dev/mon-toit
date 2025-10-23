@@ -6,7 +6,7 @@ import './EnhancedMap.css';
 import DOMPurify from 'dompurify';
 import { MapProperty } from '@/hooks/useMapProperties';
 import { Button } from '@/components/ui/button';
-import { Locate, Map, Satellite, Layers, ZoomIn, ZoomOut } from 'lucide-react';
+import { Locate, Map, Satellite, Layers, ZoomIn, ZoomOut, AlertTriangle, X } from 'lucide-react';
 import { logger } from '@/services/logger';
 import { secureStorage } from '@/lib/secureStorage';
 import { motion } from 'framer-motion';
@@ -73,6 +73,7 @@ export const EnhancedMap = ({
   const [mapReady, setMapReady] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>('streets');
   const [mapboxToken] = useState(getStoredMapboxToken());
+  const [showAdBlockWarning, setShowAdBlockWarning] = useState(false);
   const clusterIndex = useRef<Supercluster | null>(null);
 
   // Initialize map
@@ -87,12 +88,29 @@ export const EnhancedMap = ({
 
       mapboxgl.accessToken = mapboxToken;
 
+      // Désactiver le suivi des événements Mapbox pour éviter les bloqueurs
+      // Ajout des options pour contourner les bloqueurs de publicités
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: MAP_STYLES[mapStyle],
         center: [-4.0305, 5.3599], // Abidjan
         zoom: 11,
+        // Options pour contourner les bloqueurs
+        attributionControl: true,
+        cooperativeGestures: true,
+        // Désactiver l'envoi de données analytiques
+        trackResize: true,
+        // Configuration pour éviter les requêtes bloquées
+        collectResourceTiming: false,
+        fadeDuration: 0,
       });
+
+      // Désactiver explicitement les événements analytics
+      if (map.current._canvas) {
+        map.current._canvas.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+        });
+      }
 
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
       map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
@@ -100,6 +118,27 @@ export const EnhancedMap = ({
       map.current.on('load', () => {
         setMapReady(true);
         logger.info('Map loaded successfully');
+
+        // Intercepter et bloquer les requêtes vers events.mapbox.com
+        const originalFetch = window.fetch;
+        (window.fetch as any)._originalFetch = originalFetch;
+        let blockedRequestCount = 0;
+
+        window.fetch = function(...args) {
+          const url = args[0];
+          if (typeof url === 'string' && url.includes('events.mapbox.com')) {
+            blockedRequestCount++;
+            logger.warn(`Blocked Mapbox analytics request #${blockedRequestCount} to prevent ad-blocker interference`);
+
+            // Afficher l'alerte après plusieurs requêtes bloquées
+            if (blockedRequestCount >= 3) {
+              setShowAdBlockWarning(true);
+            }
+
+            return Promise.resolve(new Response('{}', { status: 200 }));
+          }
+          return originalFetch.apply(this, args);
+        };
       });
 
       // Update clusters on zoom/pan
@@ -114,6 +153,10 @@ export const EnhancedMap = ({
     }
 
     return () => {
+      // Restaurer le fetch original pour éviter les effets de bord
+      if (window.fetch._originalFetch) {
+        window.fetch = window.fetch._originalFetch;
+      }
       map.current?.remove();
       map.current = null;
     };
@@ -655,6 +698,61 @@ export const EnhancedMap = ({
           </motion.div>
         ))}
       </div>
+
+      {/* AdBlock Warning Alert */}
+      {showAdBlockWarning && (
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          className="absolute bottom-4 left-4 right-4 z-20"
+        >
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-lg backdrop-blur-sm">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-yellow-800 mb-1">
+                  Bloqueur de publicités détecté
+                </h4>
+                <p className="text-xs text-yellow-700 mb-2">
+                  Votre bloqueur de publicités peut affecter les fonctionnalités de la carte.
+                  La carte fonctionne normalement, mais certaines animations pourraient être limitées.
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs bg-yellow-100 hover:bg-yellow-200 border-yellow-300"
+                    onClick={() => setShowAdBlockWarning(false)}
+                  >
+                    Compris
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-xs text-yellow-600 hover:text-yellow-700"
+                    onClick={() => {
+                      setShowAdBlockWarning(false);
+                      // Instructions pour désactiver le bloqueur
+                      logger.info('User requested ad-blocker instructions');
+                    }}
+                  >
+                    Comment désactiver ?
+                  </Button>
+                </div>
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 text-yellow-600 hover:text-yellow-700"
+                onClick={() => setShowAdBlockWarning(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

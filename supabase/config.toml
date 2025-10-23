@@ -304,9 +304,6 @@ enabled = false
 # Obtain from https://clerk.com/setup/supabase
 # domain = "example.clerk.accounts.dev"
 
-# OAuth server configuration has been moved to a different section in newer versions
-# Previous oauth_server configuration is no longer supported in this version
-
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.
