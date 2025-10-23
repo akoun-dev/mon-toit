@@ -1,0 +1,21 @@
+  ✅ COMPTES FONCTIONNELS (CRÉÉS ET TESTÉS)
+
+  1. LOCATAIRE
+  - Email: test@mon-toit.ci
+  - Mot de passe: test123456
+  - Statut: ✅ FONCTIONNEL (Connexion réussie)
+
+  2. PROPRIÉTAIRE
+  - Email: demo@mon-toit.ci
+  - Mot de passe: demo123
+  - Statut: ✅ FONCTIONNEL (Connexion réussie)
+
+  3. AGENCE
+  - Email: agence.immobiliere@mon-toit.ci
+  - Mot de passe: agence123
+  - Statut: ✅ FONCTIONNEL (Connexion réussie)
+
+  4. ADMIN ANSUT
+  - Email: admin@ansut.ci
+  - Mot de passe: admin123
+  - Statut: ✅ FONCTIONNEL (Connexion réussie)

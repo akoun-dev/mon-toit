@@ -23,23 +23,17 @@ END $$;
 -- This function checks if a user has a specific role
 CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role app_role)
 RETURNS boolean
-LANGUAGE plpgsql
+LANGUAGE sql
+STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-DECLARE
-  role_exists boolean;
-BEGIN
-  -- Check if user has the specified role in user_roles table
-  SELECT EXISTS(
-    SELECT 1 FROM public.user_roles
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.user_roles
     WHERE user_id = _user_id
-    AND role = _role::text
-    AND is_active = true
-  ) INTO role_exists;
-
-  RETURN role_exists;
-END;
+      AND role::text = _role::text
+  );
 $$;
 
 -- Create an overload for text input for backward compatibility
@@ -67,4 +61,3 @@ GRANT EXECUTE ON FUNCTION public.has_role(uuid, text) TO anon, authenticated;
 COMMENT ON FUNCTION public.has_role(uuid, app_role) IS 'Checks if a user has a specific role. Returns true if the user has the role and it is active.';
 COMMENT ON FUNCTION public.has_role(uuid, text) IS 'Overload for backward compatibility. Converts text role to app_role enum.';
 
-COMMIT;

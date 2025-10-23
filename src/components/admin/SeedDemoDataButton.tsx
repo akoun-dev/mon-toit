@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { logger } from '@/services/logger';
+import { generateUUID } from '@/lib/utils';
 
 type SeedStatus = 'idle' | 'seeding' | 'success' | 'error';
 
@@ -104,7 +105,7 @@ export const SeedDemoDataButton = () => {
     const { data, error: functionError } = await supabase.functions.invoke<SeedFunctionResponse>(
       'seed-demo-data',
       {
-        body: { idempotencyKey: crypto.randomUUID() },
+        body: { idempotencyKey: generateUUID() },
         signal: abortRef.current.signal,
       }
     );

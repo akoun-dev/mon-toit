@@ -14,3 +14,21 @@ export function cn(...inputs: ClassValue[]) {
 export function getIllustrationPath(name: IllustrationKey): string | undefined {
   return illustrationPaths[name];
 }
+
+/**
+ * Generate a UUID v4 with fallback for browsers that don't support crypto.randomUUID()
+ * @returns A UUID v4 string
+ */
+export function generateUUID(): string {
+  // Check if crypto.randomUUID is available
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+
+  // Fallback implementation for older browsers or non-secure contexts
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}

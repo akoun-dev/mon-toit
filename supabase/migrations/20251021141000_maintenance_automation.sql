@@ -556,4 +556,3 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Run verification
 SELECT * FROM verify_automation_systems();
 
-COMMIT;

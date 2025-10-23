@@ -25,7 +25,49 @@ DECLARE
   migration_count integer := 0;
   error_count integer := 0;
   migration_log jsonb := '[]'::jsonb;
+  -- Statistiques de migration
+  v_total_users integer;
+  v_users_with_roles integer;
+  v_users_multiple_roles integer;
+  v_role_distribution jsonb;
 BEGIN
+  -- Vérifier si la table security_audit_logs existe
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'security_audit_logs'
+    AND table_schema = 'public'
+  ) THEN
+    RAISE NOTICE 'Table security_audit_logs non trouvée, création en cours...';
+
+    -- Créer la table security_audit_logs si elle n'existe pas
+    CREATE TABLE IF NOT EXISTS public.security_audit_logs (
+      id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+      event_type text NOT NULL,
+      severity text NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+      user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+      ip_address inet,
+      user_agent text,
+      endpoint text,
+      method text,
+      request_id text,
+      status_code integer,
+      error_message text,
+      details jsonb DEFAULT '{}',
+      created_at timestamptz DEFAULT now(),
+      metadata jsonb DEFAULT '{}'
+    );
+
+    -- Indexes pour les requêtes d'audit
+    CREATE INDEX IF NOT EXISTS idx_security_audit_logs_user_id ON public.security_audit_logs(user_id);
+    CREATE INDEX IF NOT EXISTS idx_security_audit_logs_event_type ON public.security_audit_logs(event_type);
+    CREATE INDEX IF NOT EXISTS idx_security_audit_logs_severity ON public.security_audit_logs(severity);
+    CREATE INDEX IF NOT EXISTS idx_security_audit_logs_created_at ON public.security_audit_logs(created_at);
+
+    -- Activer RLS
+    ALTER TABLE public.security_audit_logs ENABLE ROW LEVEL SECURITY;
+
+    RAISE NOTICE 'Table security_audit_logs créée avec succès';
+  END IF;
   -- Logger le début de la migration
   INSERT INTO public.security_audit_logs (
     event_type, severity, details, metadata
@@ -47,22 +89,22 @@ BEGIN
     -- Insérer les données depuis user_active_roles
     INSERT INTO public.user_roles_v2 (
       user_id,
-      current_role,
+      active_role,
       roles,
       available_switches_today,
       metadata
     )
     SELECT
       user_id,
-      current_role,
+      "current_role" as active_role,
       jsonb_build_object(
-        'role', current_role,
+        'role', "current_role",
         'added_at', created_at,
         'source', 'user_active_roles_migration'
       )::jsonb || COALESCE(
         (SELECT jsonb_agg(jsonb_build_object(
           'role', unnest
-        )) FROM unnest(available_roles)) WHERE unnest != current_role,
+        )) FROM unnest(available_roles) WHERE unnest != "current_role"),
         '[]'::jsonb
       ),
       3, -- 3 changements disponibles par défaut
@@ -91,23 +133,23 @@ BEGIN
 
   INSERT INTO public.user_roles_v2 (
     user_id,
-    current_role,
+    active_role,
     roles,
     available_switches_today,
     metadata
   )
   SELECT
     p.id,
-    COALESCE(p.user_type, 'locataire')::text,
+    COALESCE(p.user_type::text, 'locataire'),
     jsonb_build_array(jsonb_build_object(
-      'role', COALESCE(p.user_type, 'locataire')::text,
+      'role', COALESCE(p.user_type::text, 'locataire'),
       'added_at', now(),
       'source', 'profiles_migration'
     )),
     3,
     jsonb_build_object(
       'created_from', 'profiles',
-      'original_user_type', p.user_type,
+      'original_user_type', p.user_type::text,
       'migration_date', now()
     )
   FROM public.profiles p
@@ -132,7 +174,7 @@ BEGIN
   -- Corriger les rôles invalides
   UPDATE public.user_roles_v2
   SET
-    current_role = 'locataire',
+    active_role = 'locataire',
     roles = jsonb_build_array(jsonb_build_object(
       'role', 'locataire',
       'added_at', now(),
@@ -142,7 +184,7 @@ BEGIN
       'corrected_invalid_role', true,
       'correction_date', now()
     )
-  WHERE current_role NOT IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance');
+  WHERE active_role NOT IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance');
 
   GET DIAGNOSTICS migration_count = ROW_COUNT;
   IF migration_count > 0 THEN
@@ -159,60 +201,52 @@ BEGIN
   -- Étape 4: Résumé de migration
   RAISE NOTICE 'Génération du résumé de migration...';
 
-  -- Statistiques de migration
-  DECLARE
-    v_total_users integer;
-    v_users_with_roles integer;
-    v_users_multiple_roles integer;
-    v_role_distribution jsonb;
-  BEGIN
-    -- Nombre total d'utilisateurs dans user_roles_v2
-    SELECT COUNT(*) INTO v_total_users FROM public.user_roles_v2;
+  -- Nombre total d'utilisateurs dans user_roles_v2
+  SELECT COUNT(*) INTO v_total_users FROM public.user_roles_v2;
 
-    -- Utilisateurs avec au moins un rôle
-    SELECT COUNT(*) INTO v_users_with_roles
+  -- Utilisateurs avec au moins un rôle
+  SELECT COUNT(*) INTO v_users_with_roles
+  FROM public.user_roles_v2
+  WHERE jsonb_array_length(roles) > 0;
+
+  -- Utilisateurs avec plusieurs rôles
+  SELECT COUNT(*) INTO v_users_multiple_roles
+  FROM public.user_roles_v2
+  WHERE jsonb_array_length(roles) > 1;
+
+  -- Distribution des rôles actifs
+  SELECT jsonb_object_agg(active_role, role_count) INTO v_role_distribution
+  FROM (
+    SELECT active_role, COUNT(*) as role_count
     FROM public.user_roles_v2
-    WHERE jsonb_array_length(roles) > 0;
+    GROUP BY active_role
+  ) role_stats;
 
-    -- Utilisateurs avec plusieurs rôles
-    SELECT COUNT(*) INTO v_users_multiple_roles
-    FROM public.user_roles_v2
-    WHERE jsonb_array_length(roles) > 1;
+  -- Afficher le résumé
+  RAISE NOTICE '';
+  RAISE NOTICE '=== RÉSUMÉ DE MIGRATION USER_ROLES_V2 ===';
+  RAISE NOTICE 'Total utilisateurs migrés: %', v_total_users;
+  RAISE NOTICE 'Utilisateurs avec rôles: %', v_users_with_roles;
+  RAISE NOTICE 'Utilisateurs avec plusieurs rôles: %', v_users_multiple_roles;
+  RAISE NOTICE 'Distribution des rôles actuels: %', v_role_distribution;
+  RAISE NOTICE '';
 
-    -- Distribution des rôles actuels
-    SELECT jsonb_object_agg(current_role, role_count) INTO v_role_distribution
-    FROM (
-      SELECT current_role, COUNT(*) as role_count
-      FROM public.user_roles_v2
-      GROUP BY current_role
-    ) role_stats;
-
-    -- Afficher le résumé
-    RAISE NOTICE '';
-    RAISE NOTICE '=== RÉSUMÉ DE MIGRATION USER_ROLES_V2 ===';
-    RAISE NOTICE 'Total utilisateurs migrés: %', v_total_users;
-    RAISE NOTICE 'Utilisateurs avec rôles: %', v_users_with_roles;
-    RAISE NOTICE 'Utilisateurs avec plusieurs rôles: %', v_users_multiple_roles;
-    RAISE NOTICE 'Distribution des rôles actuels: %', v_role_distribution;
-    RAISE NOTICE '';
-
-    -- Logger le résumé
-    INSERT INTO public.security_audit_logs (
-      event_type, severity, details, metadata
-    ) VALUES (
-      'ROLE_V2_MIGRATION_COMPLETE', 'medium',
-      jsonb_build_object(
-        'total_users', v_total_users,
-        'users_with_roles', v_users_with_roles,
-        'users_multiple_roles', v_users_multiple_roles,
-        'role_distribution', v_role_distribution
-      ),
-      jsonb_build_object(
-        'migration_log', migration_log,
-        'timestamp', now()
-      )
-    );
-  END;
+  -- Logger le résumé
+  INSERT INTO public.security_audit_logs (
+    event_type, severity, details, metadata
+  ) VALUES (
+    'ROLE_V2_MIGRATION_COMPLETE', 'medium',
+    jsonb_build_object(
+      'total_users', v_total_users,
+      'users_with_roles', v_users_with_roles,
+      'users_multiple_roles', v_users_multiple_roles,
+      'role_distribution', v_role_distribution
+    ),
+    jsonb_build_object(
+      'migration_log', migration_log,
+      'timestamp', now()
+    )
+  );
 
 EXCEPTION WHEN OTHERS THEN
   -- Logger l'erreur
@@ -252,11 +286,11 @@ BEGIN
     );
   END IF;
 
-  -- Validation 2: Vérifier que tous les current_role sont valides
-  IF EXISTS (SELECT 1 FROM public.user_roles_v2 WHERE current_role NOT IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance')) THEN
+  -- Validation 2: Vérifier que tous les active_role sont valides
+  IF EXISTS (SELECT 1 FROM public.user_roles_v2 WHERE active_role NOT IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance')) THEN
     v_validation_errors := v_validation_errors + 1;
     v_validation_messages := v_validation_messages || jsonb_build_object(
-      'error', 'Invalid current_role found',
+      'error', 'Invalid active_role found',
       'severity', 'medium'
     );
   END IF;

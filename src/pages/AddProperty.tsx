@@ -24,7 +24,7 @@ import { LocationPicker } from '@/components/property/LocationPicker';
 import { TitleDeedUploader } from '@/components/property/TitleDeedUploader';
 import { NavigationHelp } from '@/components/navigation/NavigationHelp';
 import { LazyIllustration } from '@/components/illustrations/LazyIllustration';
-import { getIllustrationPath } from '@/lib/utils';
+import { getIllustrationPath, generateUUID } from '@/lib/utils';
 
 const propertyFormSteps: Step[] = [
   { id: 'basic', label: 'Type de bien' },
@@ -56,7 +56,7 @@ const AddProperty = () => {
   });
 
   const [selectedLocation, setSelectedLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [propertyId] = useState<string>(() => crypto.randomUUID());
+  const [propertyId] = useState<string>(() => generateUUID());
 
   // Track scroll position to update current step and sticky header
   useEffect(() => {

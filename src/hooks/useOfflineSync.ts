@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';
+import { generateUUID } from '@/lib/utils';
 
 interface QueuedAction {
   id: string;
@@ -43,7 +44,7 @@ export const useOfflineSync = () => {
   const addToQueue = (action: Omit<QueuedAction, 'id' | 'timestamp'>) => {
     const newAction: QueuedAction = {
       ...action,
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       timestamp: Date.now(),
     };
     setQueue(prev => [...prev, newAction]);

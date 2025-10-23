@@ -174,4 +174,3 @@ GRANT EXECUTE ON FUNCTION public.check_login_rate_limit(text, text) TO anon, aut
 GRANT EXECUTE ON FUNCTION public.log_login_attempt(text, inet, text, boolean, integer) TO anon, authenticated;
 GRANT SELECT ON public.login_attempts TO authenticated;
 
-COMMIT;

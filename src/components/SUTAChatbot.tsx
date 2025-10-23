@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { logger } from "@/services/logger";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { generateUUID } from "@/lib/utils";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -33,7 +34,7 @@ export const SUTAChatbot = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId] = useState(() => generateUUID());
   const scrollRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { speak, stop, isPlaying } = useTextToSpeech();

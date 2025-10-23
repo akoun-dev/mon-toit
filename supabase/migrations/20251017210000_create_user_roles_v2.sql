@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS public.user_roles_v2 (
 
   -- Structure JSONB flexible pour stocker les rôles et métadonnées
   roles jsonb NOT NULL DEFAULT '[]'::jsonb, -- Array de rôles avec métadonnées
-  current_role text NOT NULL DEFAULT 'locataire',
+  active_role text NOT NULL DEFAULT 'locataire',
 
   -- Limites et cooldowns
   daily_switch_count integer NOT NULL DEFAULT 0,
@@ -45,14 +45,14 @@ CREATE TABLE IF NOT EXISTS public.user_roles_v2 (
 
   -- Contraintes
   CONSTRAINT user_roles_v2_user_id_unique UNIQUE (user_id),
-  CONSTRAINT user_roles_v2_current_role_check CHECK (current_role IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance')),
+  CONSTRAINT user_roles_v2_active_role_check CHECK (active_role IN ('locataire', 'proprietaire', 'agence', 'admin_ansut', 'tiers_de_confiance')),
   CONSTRAINT user_roles_v2_daily_switch_count_check CHECK (daily_switch_count >= 0 AND daily_switch_count <= 3),
   CONSTRAINT user_roles_v2_available_switches_check CHECK (available_switches_today >= 0 AND available_switches_today <= 3)
 );
 
 -- Index pour la performance
 CREATE INDEX IF NOT EXISTS idx_user_roles_v2_user_id ON public.user_roles_v2(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_roles_v2_current_role ON public.user_roles_v2(current_role);
+CREATE INDEX IF NOT EXISTS idx_user_roles_v2_active_role ON public.user_roles_v2(active_role);
 CREATE INDEX IF NOT EXISTS idx_user_roles_v2_last_switch ON public.user_roles_v2(last_switch_at);
 CREATE INDEX IF NOT EXISTS idx_user_roles_v2_roles_gin ON public.user_roles_v2 USING gin (roles);
 
@@ -78,7 +78,7 @@ CREATE POLICY "Admins can view all roles v2"
     EXISTS (
       SELECT 1 FROM public.user_roles ur
       WHERE ur.user_id = auth.uid()
-      AND ur.role IN ('admin', 'super_admin')
+      AND ur.role IN ('admin', 'moderator')
     )
   );
 
@@ -103,7 +103,7 @@ DECLARE
   v_current_role text;
 BEGIN
   -- Obtenir les rôles actuels de l'utilisateur
-  SELECT roles, current_role INTO v_user_roles, v_current_role
+  SELECT roles, active_role INTO v_user_roles, v_current_role
   FROM public.user_roles_v2
   WHERE user_id = p_user_id;
 
@@ -152,6 +152,8 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+  v_reset_count integer;
 BEGIN
   UPDATE public.user_roles_v2
   SET
@@ -160,12 +162,14 @@ BEGIN
     last_role_change_date = CURRENT_DATE
   WHERE last_role_change_date < CURRENT_DATE;
 
+  GET DIAGNOSTICS v_reset_count = ROW_COUNT;
+
   -- Logger la réinitialisation
   INSERT INTO public.security_audit_logs (
     event_type, severity, details, metadata
   ) VALUES (
     'DAILY_SWITCH_COUNT_RESET', 'low',
-    jsonb_build_object('reset_count', row_count),
+    jsonb_build_object('reset_count', v_reset_count),
     jsonb_build_object('source', 'scheduled_reset', 'timestamp', now())
   );
 END;
@@ -187,6 +191,9 @@ DECLARE
   v_missing_prerequisites jsonb := '[]'::jsonb;
   v_completion_count integer := 0;
   v_total_requirements integer := 4;
+  v_email_confirmed_at timestamptz;
+  v_phone_confirmed_at timestamptz;
+  v_profile_completion integer := 0;
 BEGIN
   -- Récupérer le profil de l'utilisateur
   SELECT * INTO v_profile
@@ -206,8 +213,10 @@ BEGIN
     );
   END IF;
 
-  -- 2. Téléphone vérifié (OTP)
-  IF v_profile.phone_verified IS TRUE THEN
+  -- 2. Téléphone vérifié (OTP) via auth.users.phone_confirmed_at
+  SELECT phone_confirmed_at INTO v_phone_confirmed_at
+  FROM auth.users WHERE id = p_user_id;
+  IF v_phone_confirmed_at IS NOT NULL THEN
     v_completion_count := v_completion_count + 1;
   ELSE
     v_missing_prerequisites := v_missing_prerequisites || jsonb_build_object(
@@ -217,8 +226,10 @@ BEGIN
     );
   END IF;
 
-  -- 3. Email vérifié
-  IF v_profile.email_confirmed_at IS NOT NULL THEN
+  -- 3. Email vérifié via auth.users.email_confirmed_at
+  SELECT email_confirmed_at INTO v_email_confirmed_at
+  FROM auth.users WHERE id = p_user_id;
+  IF v_email_confirmed_at IS NOT NULL THEN
     v_completion_count := v_completion_count + 1;
   ELSE
     v_missing_prerequisites := v_missing_prerequisites || jsonb_build_object(
@@ -228,32 +239,25 @@ BEGIN
     );
   END IF;
 
-  -- 4. Profil complété à 80%
-  DECLARE
-    v_profile_completion integer := 0;
-  BEGIN
-    -- Calculer le pourcentage de complétion du profil
-    SELECT CASE
-      WHEN first_name IS NOT NULL AND last_name IS NOT NULL AND
-           phone IS NOT NULL AND address IS NOT NULL THEN 80
-      WHEN first_name IS NOT NULL AND last_name IS NOT NULL THEN 60
-      WHEN first_name IS NOT NULL OR last_name IS NOT NULL THEN 40
-      ELSE 20
-    END INTO v_profile_completion
-    FROM public.profiles
-    WHERE id = p_user_id;
+  -- 4. Profil complété à 80% (basé sur les colonnes existantes)
+  -- Critères: full_name, phone, city, (avatar_url ou bio)
+  v_profile_completion := (
+    (CASE WHEN coalesce(nullif(trim(v_profile.full_name), ''), NULL) IS NOT NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN coalesce(nullif(trim(v_profile.phone), ''), NULL) IS NOT NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN coalesce(nullif(trim(v_profile.city), ''), NULL) IS NOT NULL THEN 1 ELSE 0 END) +
+    (CASE WHEN coalesce(nullif(trim(v_profile.avatar_url), ''), NULL) IS NOT NULL OR coalesce(nullif(trim(v_profile.bio), ''), NULL) IS NOT NULL THEN 1 ELSE 0 END)
+  ) * 100 / 4;
 
-    IF v_profile_completion >= 80 THEN
-      v_completion_count := v_completion_count + 1;
-    ELSE
-      v_missing_prerequisites := v_missing_prerequisites || jsonb_build_object(
-        'requirement', 'profile_completion',
-        'label', 'Profil complété à 80%',
-        'completed', false,
-        'current_percentage', v_profile_completion
-      );
-    END IF;
-  END;
+  IF v_profile_completion >= 80 THEN
+    v_completion_count := v_completion_count + 1;
+  ELSE
+    v_missing_prerequisites := v_missing_prerequisites || jsonb_build_object(
+      'requirement', 'profile_completion',
+      'label', 'Profil complété à 80%',
+      'completed', false,
+      'current_percentage', v_profile_completion
+    );
+  END IF;
 
   -- Retourner les résultats
   RETURN QUERY
@@ -272,7 +276,7 @@ $$;
 CREATE OR REPLACE VIEW public.user_roles_summary AS
 SELECT
   user_id,
-  current_role,
+  active_role,
   roles,
   daily_switch_count,
   available_switches_today,
