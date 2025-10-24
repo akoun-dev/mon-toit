@@ -22,19 +22,24 @@ const badgeVariants = cva(
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
-  const isHighContrast = useContrastMode();
-  
-  return (
-    <div 
-      className={cn(
-        badgeVariants({ variant }), 
-        isHighContrast && "border-2 font-bold",
-        className
-      )} 
-      {...props} 
-    />
-  );
-}
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
+  ({ className, variant, ...props }, ref) => {
+    const isHighContrast = useContrastMode();
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          badgeVariants({ variant }),
+          isHighContrast && "border-2 font-bold",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+Badge.displayName = "Badge";
 
 export { Badge, badgeVariants };

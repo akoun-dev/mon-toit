@@ -39,14 +39,24 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
         setLoading(true);
         setError(null);
 
-        const { data, error: functionError } = await supabase.functions.invoke(
-          'analyze-market-trends',
-          {
-            body: {},
-          }
-        );
+        // Try RPC function first, fallback to Edge Function
+        let { data, error: rpcError } = await supabase.rpc('analyze_market_trends');
 
-        if (functionError) throw functionError;
+        if (rpcError) {
+          logger.warn('RPC function failed, trying Edge Function fallback', { error: rpcError, userId: user?.id });
+
+          const { data: edgeData, error: functionError } = await supabase.functions.invoke(
+            'analyze-market-trends',
+            {
+              body: {},
+            }
+          );
+
+          if (functionError) throw functionError;
+          data = edgeData;
+        }
+
+        if (!data) throw new Error('No data received');
 
         setInsights(data);
       } catch (err: any) {
