@@ -123,10 +123,13 @@ const Auth = () => {
           description: "Vous êtes déjà connecté. Rendez-vous dans votre profil pour gérer vos rôles.",
         });
         navigate('/profil', { replace: true });
-      } else {
+      } else if (!window.location.pathname.startsWith('/dashboard')) {
         // Rediriger vers le dashboard pour les utilisateurs déjà connectés
+        // Uniquement si on n'est pas déjà sur une page dashboard
         console.log('✅ [DEBUG] Redirecting existing user to dashboard');
         navigate('/dashboard', { replace: true });
+      } else {
+        console.log('🔄 [DEBUG] User already on dashboard, avoiding redirect loop');
       }
     }
   }, [user, session, profile, navigate, userTypeFromUrl]);

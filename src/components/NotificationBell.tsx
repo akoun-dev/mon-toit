@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useNotifications, type Notification } from '@/hooks/useNotifications';
 import { useAgencyMandates } from '@/hooks/useAgencyMandates';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,18 +18,10 @@ import { fr } from 'date-fns/locale';
 import { useEffect, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Local type matching useNotifications hook
-interface NotificationItem {
-  id: string;
-  type: string;
-  title: string;
-  message: string | null;
-  link: string | null;
-  action_url: string | null;
-  category: string;
-  is_read: boolean;
-  created_at: string;
-}
+// Type alias for compatibility
+type NotificationItem = Notification & {
+  link?: string | null; // For backward compatibility
+};
 
 const getNotificationIcon = (type: string, category: string) => {
   // Mandate-specific icons
@@ -72,12 +64,12 @@ const getCategoryLabel = (category: string) => {
 };
 
 const NotificationBell = () => {
-  const { notifications, unreadCount, markAsRead, markAllAsRead, requestPermission } = useNotifications();
+  const { notifications, unreadCount, markAsRead, markAllAsRead, requestNotificationPermission } = useNotifications();
   const { acceptMandate, refuseMandate } = useAgencyMandates();
   const navigate = useNavigate();
 
   useEffect(() => {
-    requestPermission();
+    requestNotificationPermission();
   }, []);
 
   const handleNotificationClick = (notification: NotificationItem) => {

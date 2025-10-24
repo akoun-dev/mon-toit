@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
 
