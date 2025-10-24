@@ -18,8 +18,30 @@ interface MarketTrend {
 }
 
 interface MarketInsightsData {
-  trends: MarketTrend[];
-  generated_at: string;
+  summary?: {
+    average_rent: number;
+    properties_count: number;
+    popular_neighborhoods: string[];
+    price_trend: string;
+    demand_level: string;
+  };
+  monthly_trends?: Array<{
+    month: string;
+    average_rent: number;
+    properties_count: number;
+  }>;
+  neighborhood_stats?: Array<{
+    neighborhood: string;
+    average_rent: number;
+    properties_count: number;
+    price_trend: string;
+  }>;
+  recommendations?: Array<{
+    type: string;
+    area: string;
+    reason: string;
+  }>;
+  generated_at?: string;
   message?: string;
 }
 
@@ -107,7 +129,7 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
     );
   }
 
-  if (!insights || insights.trends.length === 0) {
+  if (!insights || (!insights.summary && !insights.monthly_trends && !insights.neighborhood_stats)) {
     return (
       <Card className={className}>
         <CardHeader>
@@ -116,7 +138,7 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
             Marché immobilier
           </CardTitle>
           <CardDescription>
-            {insights?.message || 'Commencez à rechercher des biens pour voir les tendances du marché'}
+            {insights?.message || 'Chargement des insights du marché...'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -135,93 +157,71 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {insights.trends.map((trend) => (
-          <div key={trend.city} className="space-y-3 pb-6 border-b last:border-b-0 last:pb-0">
-            {/* City Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                <h3 className="font-semibold text-lg">{trend.city}</h3>
-              </div>
-              <Badge variant={trend.trend_percentage >= 0 ? 'default' : 'secondary'}>
-                {trend.trend_percentage >= 0 ? (
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 mr-1" />
-                )}
-                {Math.abs(trend.trend_percentage)}%
-              </Badge>
-            </div>
-
-            {/* Stats Grid */}
+        {/* Summary Section */}
+        {insights.summary && (
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
+            <h3 className="font-semibold text-lg mb-3">Vue d'ensemble</h3>
             <div className="grid grid-cols-2 gap-4">
-              {/* Prix moyen */}
-              <div className="bg-muted/50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
-                  <DollarSign className="h-3 w-3" />
-                  <span>Prix moyen</span>
-                </div>
-                <p className="text-lg font-bold">
-                  {trend.avg_rent.toLocaleString()} FCFA
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">
+                  {(insights.summary.average_rent / 1000).toFixed(0)}k
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  {trend.avg_price_per_sqm.toLocaleString()} FCFA/m²
-                </p>
+                <p className="text-xs text-muted-foreground">Loyer moyen</p>
               </div>
-
-              {/* Délai moyen */}
-              <div className="bg-muted/50 p-3 rounded-lg">
-                <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
-                  <Clock className="h-3 w-3" />
-                  <span>Délai moyen</span>
-                </div>
-                <p className="text-lg font-bold">{trend.avg_rental_days} jours</p>
-                <p className="text-xs text-muted-foreground">
-                  Temps de location
+              <div className="text-center">
+                <p className="text-2xl font-bold text-purple-600">
+                  {insights.summary.properties_count}
                 </p>
-              </div>
-
-              {/* Nombre de biens */}
-              <div className="bg-muted/50 p-3 rounded-lg col-span-2">
-                <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
-                  <Home className="h-3 w-3" />
-                  <span>Offre disponible</span>
-                </div>
-                <p className="text-lg font-bold">{trend.total_properties} biens</p>
+                <p className="text-xs text-muted-foreground">Biens disponibles</p>
               </div>
             </div>
-
-            {/* Quartiers similaires moins chers */}
-            {trend.similar_cheaper_cities.length > 0 && (
-              <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-900">
-                <p className="text-xs font-medium text-blue-900 dark:text-blue-100 mb-2">
-                  💡 Quartiers similaires moins chers :
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {trend.similar_cheaper_cities.map((city) => (
-                    <Badge key={city} variant="outline" className="text-xs">
-                      {city}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Tendance */}
-            <div className="text-xs text-muted-foreground">
-              {trend.trend_percentage > 0 ? (
-                <p>📈 Hausse de {trend.trend_percentage}% ce trimestre</p>
-              ) : trend.trend_percentage < 0 ? (
-                <p>📉 Baisse de {Math.abs(trend.trend_percentage)}% ce trimestre</p>
-              ) : (
-                <p>➡️ Marché stable ce trimestre</p>
-              )}
+            <div className="mt-3 flex flex-wrap gap-1">
+              {insights.summary.popular_neighborhoods?.slice(0, 3).map((neighborhood) => (
+                <Badge key={neighborhood} variant="secondary" className="text-xs">
+                  {neighborhood}
+                </Badge>
+              ))}
             </div>
           </div>
-        ))}
+        )}
+
+        {/* Neighborhood Stats */}
+        {insights.neighborhood_stats && insights.neighborhood_stats.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="font-semibold text-lg">Quartiers populaires</h3>
+            {insights.neighborhood_stats.slice(0, 3).map((neighborhood) => (
+              <div key={neighborhood.neighborhood} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span className="font-medium">{neighborhood.neighborhood}</span>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold">{(neighborhood.average_rent / 1000).toFixed(0)}k F</p>
+                  <p className="text-xs text-muted-foreground">{neighborhood.properties_count} biens</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Recommendations */}
+        {insights.recommendations && insights.recommendations.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="font-semibold text-lg">Recommandations</h3>
+            {insights.recommendations.map((rec, index) => (
+              <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5"></div>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{rec.area}</p>
+                  <p className="text-xs text-muted-foreground">{rec.reason}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <p className="text-xs text-muted-foreground text-center pt-2">
-          Mis à jour : {new Date(insights.generated_at).toLocaleDateString('fr-FR')}
+          Mis à jour : {new Date().toLocaleDateString('fr-FR')}
         </p>
       </CardContent>
     </Card>
