@@ -29,18 +29,7 @@ END $$;
 CREATE INDEX IF NOT EXISTS leases_landlord_id_idx ON public.leases(landlord_id);
 CREATE INDEX IF NOT EXISTS leases_tenant_id_idx ON public.leases(tenant_id);
 
--- Add sample data for testing
-DO $$
-BEGIN
-  -- Add sample leases if table is empty and columns exist
-  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'leases' AND column_name = 'landlord_id') THEN
-    IF (SELECT COUNT(*) FROM public.leases) = 0 THEN
-      INSERT INTO public.leases (id, property_id, tenant_id, owner_id, landlord_id, status, start_date, end_date, monthly_rent, created_at, updated_at) VALUES
-      (gen_random_uuid(), '00000000-0000-0000-0000-000000000101', '0ecda2a5-0479-483c-98af-c502607f459f', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', 'active', CURRENT_DATE, CURRENT_DATE + INTERVAL '1 year', 350000, now(), now()),
-      (gen_random_uuid(), '00000000-0000-0000-0000-000000000102', '0ecda2a5-0479-483c-98af-c502607f459f', '00000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000006', 'draft', CURRENT_DATE + INTERVAL '1 month', CURRENT_DATE + INTERVAL '13 months', 80000, now(), now());
-    END IF;
-  END IF;
-END $$;
+-- Note: Sample data is now handled in seed.sql to avoid UUID conflicts
 
 -- Add comment
 COMMENT ON TABLE public.leases IS 'Table des contrats de location (bails)';
