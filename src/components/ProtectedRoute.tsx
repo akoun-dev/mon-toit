@@ -75,8 +75,8 @@ const ProtectedRoute = ({
       : requiredRoles.some(role => hasRole(role));
 
     // Compatibility: allow admin user_type to satisfy admin role checks
-    // Many seeds/accounts set profile.user_type to 'admin' or 'admin_ansut' without user_roles rows
-    const adminTypes = ['admin', 'admin_ansut'];
+    // Many seeds/accounts set profile.user_type to 'admin_ansut' without user_roles rows
+    const adminTypes = ['admin_ansut'];
     const adminRoles = ['admin', 'super_admin'];
     const requiresAdmin = requiredRoles.some(r => adminRoles.includes(r));
     if (!hasAccess && requiresAdmin && profile && adminTypes.includes(profile.user_type)) {

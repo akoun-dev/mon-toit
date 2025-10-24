@@ -445,7 +445,7 @@ async function checkMigrations() {
   // Vérifier la fonction RPC
   try {
     const { data, error } = await supabase
-      .rpc('get_public_properties', { p_limit: 1 });
+      .rpc('get_public_properties');
 
     if (error) {
       console.error(`❌ Fonction RPC get_public_properties non accessible: ${error.message}`);

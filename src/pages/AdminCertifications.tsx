@@ -150,7 +150,7 @@ const AdminCertifications = () => {
     );
   }
 
-  const isAdmin = hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin';
+  const isAdmin = hasRole('admin') || hasRole('super_admin') || profile?.user_type === 'admin_ansut';
 
   if (!isAdmin) {
     return <Navigate to="/" replace />;

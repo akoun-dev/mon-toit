@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
 import { motion } from "framer-motion";
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, useCallback } from "react";
 import {
   Home,
   Search,
@@ -74,8 +74,8 @@ export function ModernAppSidebar() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  // Get user initials - memoized
-  const getUserInitials = useMemo(() => {
+  // Get user initials - optimized function
+  const getUserInitials = useCallback(() => {
     if (!profile?.full_name) return "U";
     const names = profile.full_name.split(" ");
     return names.map(n => n[0]).join("").toUpperCase().slice(0, 2);
@@ -127,7 +127,7 @@ export function ModernAppSidebar() {
 
       admin: canAccessAdminDashboard ? [
         // Tableau de bord principal
-        { to: "/dashboard/admin", icon: LayoutDashboard, label: "Tableau de bord", color: "text-red-500", highlight: true },
+        { to: "/admin", icon: LayoutDashboard, label: "Tableau de bord", color: "text-red-500", highlight: true },
 
         // Sécurité / Vérifications
         { to: "/admin/certifications", icon: ShieldCheck, label: "Certifications", color: "text-orange-600" },

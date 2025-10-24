@@ -7,7 +7,7 @@ import { useAuth } from './useAuth';
 export const usePermissions = () => {
   const { user, profile, roles, hasRole } = useAuth();
 
-  const isAdminType = profile?.user_type === 'admin' || profile?.user_type === 'admin_ansut';
+  const isAdminType = profile?.user_type === 'admin_ansut';
   const permissions = {
     // Permissions admin
     canAccessAdminDashboard: hasRole('admin') || hasRole('super_admin') || isAdminType,

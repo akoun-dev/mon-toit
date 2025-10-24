@@ -278,7 +278,7 @@ const AdminDashboard = () => {
       title: "Gestion",
       icon: Database,
       items: [
-        { name: "Tableau de bord", path: "/dashboard/admin", icon: Home },
+        { name: "Tableau de bord", path: "/admin", icon: Home },
         { name: "Biens immobiliers", path: "/admin/properties", icon: Building2 },
         { name: "Utilisateurs", path: "/admin/users", icon: Users },
         { name: "Certifications", path: "/admin/certifications", icon: Shield },
