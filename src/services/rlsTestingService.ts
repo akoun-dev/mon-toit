@@ -3,7 +3,7 @@
  * Gère l'exécution et le reporting des tests de sécurité Row Level Security
  */
 
-interface RLS TestResult {
+interface RLSTestResult {
   id: string;
   testName: string;
   testType: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE';
@@ -17,7 +17,7 @@ interface RLS TestResult {
   executionTimeMs: number;
 }
 
-interface RLS TestSuite {
+interface RLSTestSuite {
   id: string;
   suiteName: string;
   totalTests: number;
@@ -37,10 +37,10 @@ interface TestConfiguration {
   retryAttempts: number;
 }
 
-class RLS TestingService {
+class RLSTestingService {
   private baseUrl: string;
   private config: TestConfiguration;
-  private testResults: RLS TestResult[] = [];
+  private testResults: RLSTestResult[] = [];
   private isTestRunning = false;
 
   constructor(baseUrl: string = '/api', config: Partial<TestConfiguration> = {}) {
@@ -58,7 +58,7 @@ class RLS TestingService {
   /**
    * Exécute la suite complète de tests RLS
    */
-  async runFullTestSuite(): Promise<RLS TestSuite> {
+  async runFullTestSuite(): Promise<RLSTestSuite> {
     if (this.isTestRunning) {
       throw new Error('Tests already running');
     }
@@ -87,7 +87,7 @@ class RLS TestingService {
       this.testResults = allResults;
 
       // 4. Calcul des statistiques
-      const suite: RLS TestSuite = this.calculateTestStatistics(
+      const suite: RLSTestSuite = this.calculateTestStatistics(
         `RLS_TEST_SUITE_${new Date().toISOString()}`,
         allResults,
         Date.now() - startTime
@@ -114,8 +114,8 @@ class RLS TestingService {
   /**
    * Exécute les tests pour une table spécifique
    */
-  private async runTestsForTable(tableName: string): Promise<RLS TestResult[]> {
-    const results: RLS TestResult[] = [];
+  private async runTestsForTable(tableName: string): Promise<RLSTestResult[]> {
+    const results: RLSTestResult[] = [];
 
     try {
       // Test pour chaque rôle
@@ -154,8 +154,8 @@ class RLS TestingService {
   private async runTestsForTableAndRole(
     tableName: string,
     userRole: 'tenant' | 'owner' | 'agency' | 'trust' | 'admin'
-  ): Promise<RLS TestResult[]> {
-    const results: RLS TestResult[] = [];
+  ): Promise<RLSTestResult[]> {
+    const results: RLSTestResult[] = [];
 
     // Définir les tests basés sur la table et le rôle
     const tests = this.getTestsForTableAndRole(tableName, userRole);
@@ -336,7 +336,7 @@ class RLS TestingService {
     query: string;
     expectedCount?: number;
     expectedError?: string;
-  }): Promise<RLS TestResult> {
+  }): Promise<RLSTestResult> {
     const startTime = Date.now();
 
     try {
@@ -435,9 +435,9 @@ class RLS TestingService {
    */
   private calculateTestStatistics(
     suiteName: string,
-    results: RLS TestResult[],
+    results: RLSTestResult[],
     executionTimeMs: number
-  ): RLS TestSuite {
+  ): RLSTestSuite {
     const totalTests = results.length;
     const passedTests = results.filter(r => r.testStatus === 'PASS').length;
     const failedTests = results.filter(r => r.testStatus === 'FAIL').length;
@@ -460,7 +460,7 @@ class RLS TestingService {
   /**
    * Sauvegarde les résultats des tests
    */
-  private async saveTestResults(results: RLS TestResult[], suite: RLS TestSuite): Promise<void> {
+  private async saveTestResults(results: RLSTestResult[], suite: RLSTestSuite): Promise<void> {
     try {
       await Promise.all([
         fetch(`${this.baseUrl}/test/rls/results`, {
@@ -489,7 +489,7 @@ class RLS TestingService {
   /**
    * Envoie une notification en cas d'échec des tests
    */
-  private async sendTestFailureNotification(suite: RLS TestSuite): Promise<void> {
+  private async sendTestFailureNotification(suite: RLSTestSuite): Promise<void> {
     try {
       await fetch(`${this.baseUrl}/notifications/security`, {
         method: 'POST',
@@ -544,7 +544,7 @@ class RLS TestingService {
   /**
    * Récupère les résultats des tests récents
    */
-  async getRecentTestResults(days: number = 7): Promise<RLS TestResult[]> {
+  async getRecentTestResults(days: number = 7): Promise<RLSTestResult[]> {
     try {
       const response = await fetch(`${this.baseUrl}/test/rls/results?days=${days}`, {
         headers: {
@@ -659,5 +659,5 @@ class RLS TestingService {
 }
 
 // Export du service
-export default RLS TestingService;
-export type { RLS TestResult, RLS TestSuite, TestConfiguration };
+export default RLSTestingService;
+export type { RLSTestResult, RLSTestSuite, TestConfiguration };

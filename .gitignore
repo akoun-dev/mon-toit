@@ -22,4 +22,75 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
 .env
+.env.*
+!.env.example
+!.env.template
+
+# Security - sensitive files
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+*.p8
+secrets/
+credentials/
+*.credentials
+*.secret
+*.token
+
+# Database
+*.sqlite
+*.db
+*.sqlite3
+backup.sql
+*.backup
+
+# Supabase
+supabase/functions/.env
+supabase/.env
+supabase/config.toml.local
+
+# Capacitor
+android/app/build/
+ios/App/build/
+ capacitor.config.ts.local
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Package manager lock files (keep only production)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+build/
+out/
+.next/
+.cache/
+
+# IDE specific
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json.local
+
+# Local development
+.local/
+local/

@@ -10,14 +10,69 @@
 import { logger } from '@/services/logger';
 
 export const getClientIP = async (): Promise<string> => {
-  try {
-    const response = await fetch('https://api.ipify.org?format=json');
-    const data = await response.json();
-    return data.ip || '0.0.0.0';
-  } catch (error) {
-    logger.logError(error, { context: 'ipUtils', action: 'getClientIP' });
-    return '0.0.0.0';
+  // Pour le développement local, retourner directement une IP locale
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return '127.0.0.1';
   }
+
+  // Services de détection d'IP multiples avec fallback
+  const ipServices = [
+    { name: 'ipify', url: 'https://api.ipify.org?format=json', key: 'ip' },
+    { name: 'ip-api', url: 'https://ipapi.co/json/', key: 'ip' },
+    { name: 'jsonip', url: 'https://jsonip.com/', key: 'ip' },
+    { name: 'ipgeolocation', url: 'https://api.ipgeolocation.io/ipjson', key: 'ip' }
+  ];
+
+  for (const service of ipServices) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
+
+      const response = await fetch(service.url, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const ip = data[service.key];
+
+      if (ip && typeof ip === 'string' && ip.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)) {
+        logger.logInfo('IP detected successfully', {
+          context: 'ipUtils',
+          service: service.name,
+          ip: ip.substring(0, ip.lastIndexOf('.')) + '.***' // Masquer l'IP complète dans les logs
+        });
+        return ip;
+      }
+    } catch (error) {
+      logger.logWarning(`IP service ${service.name} failed`, {
+        context: 'ipUtils',
+        service: service.name,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      continue;
+    }
+  }
+
+  // Fallback ultime pour le développement
+  if (process.env.NODE_ENV === 'development') {
+    return '127.0.0.1';
+  }
+
+  logger.logError('All IP detection services failed', {
+    context: 'ipUtils',
+    action: 'getClientIP'
+  });
+  return '0.0.0.0';
 };
 
 /**
