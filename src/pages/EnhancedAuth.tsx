@@ -1,3 +1,8 @@
+/**
+ * Enhanced Authentication Page
+ * Page d'authentification améliorée avec gestion OTP et support multi-rôles
+ */
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuthEnhanced';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -7,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Home, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Shield, Home, Eye, EyeOff, AlertTriangle, Mail, Lock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
@@ -46,11 +51,11 @@ const signInSchema = z.object({
 
 type ValidationErrors = Partial<Record<'email' | 'password' | 'fullName' | 'userType', string>>;
 
-const Auth = () => {
+const EnhancedAuth = () => {
   const { signUp, signIn, user, session, hasRole, profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   // Lire le type depuis l'URL
   const userTypeFromUrl = searchParams.get('type') as 'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance' | null;
 
@@ -79,11 +84,9 @@ const Auth = () => {
   const [blockMessage, setBlockMessage] = useState('');
   const [retryAfter, setRetryAfter] = useState<string | null>(null);
 
-  // Email confirmation state
-  
   // Redirect if already authenticated and has active session
   useEffect(() => {
-    console.log('🔍 [DEBUG] Auth.tsx useEffect checking user state', {
+    console.log('🔍 [DEBUG] EnhancedAuth useEffect checking user state', {
       hasUser: !!user,
       hasSession: !!session,
       emailConfirmed: user?.email_confirmed_at,
@@ -93,7 +96,9 @@ const Auth = () => {
     // Si l'utilisateur est déjà connecté avec une session active et un email confirmé
     // rediriger selon le type d'utilisateur
     if (user && session && user.email_confirmed_at) {
+      // NE PAS rediriger si l'utilisateur vient de s'inscrire (flux OTP)
       // Vérifier si l'utilisateur a un profil créé dans la table profiles
+      // Si profile existe, c'est une vraie connexion. Si profile null, c'est le flux OTP.
       const hasProfile = !!profile;
 
       console.log('🔍 [DEBUG] User auth check', {
@@ -101,17 +106,12 @@ const Auth = () => {
         email: user.email,
         hasProfile,
         profile: profile ? 'exists' : 'null',
-        userTypeFromUrl,
-        emailJustConfirmed: user.email_confirmed_at
+        userTypeFromUrl
       });
 
-      // Si le profil n'existe pas ET que l'email vient d'être confirmé (moins de 30 secondes),
-      // c'est probablement le flux OTP -> ne pas rediriger
-      const justConfirmed = user.email_confirmed_at ?
-        (new Date().getTime() - new Date(user.email_confirmed_at).getTime() < 30000) : false;
-
-      if (!hasProfile && justConfirmed) {
-        console.log('🚫 [DEBUG] Skipping redirect - user in OTP flow (no profile yet, just confirmed)');
+      // Si le profil n'existe pas encore, c'est probablement le flux OTP -> ne pas rediriger
+      if (!hasProfile) {
+        console.log('🚫 [DEBUG] Skipping redirect - user in OTP flow (no profile yet)');
         return;
       }
 
@@ -153,11 +153,11 @@ const Auth = () => {
     }
 
     setLoading(true);
-    console.log('🚀 [DEBUG] Starting signup', { email: signUpEmail, userType });
+    console.log('🚀 [DEBUG] Starting EnhancedAuth signup', { email: signUpEmail, userType });
 
     const { error, data } = await signUp(signUpEmail, signUpPassword, fullName, userType);
 
-    console.log('📡 [DEBUG] Signup result', {
+    console.log('📡 [DEBUG] EnhancedAuth signup result', {
       error: error ? { message: error.message } : null,
       data: data ? 'has_data' : null
     });
@@ -180,7 +180,6 @@ const Auth = () => {
     }
   };
 
-  
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignInErrors({});
@@ -225,21 +224,20 @@ const Auth = () => {
       }
 
       const { error } = await signIn(signInEmail, signInPassword);
-      // Login attempts are logged centrally in useAuthEnhanced.tsx
 
       setLoading(false);
 
       if (!error) {
         // Check if user is admin and requires 2FA
         const { data: { user: currentUser } } = await supabase.auth.getUser();
-        
+
         if (currentUser) {
           const { data: roles } = await supabase
             .from('user_roles')
             .select('role')
             .eq('user_id', currentUser.id);
 
-          const isAdmin = roles?.some(r => r.role === 'admin');
+          const isAdmin = roles?.some(r => r.role === 'admin_ansut');
 
           if (isAdmin) {
             // Check if 2FA is enabled - MFA is now MANDATORY for all admins
@@ -267,7 +265,7 @@ const Auth = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      logger.logError(err, { context: 'Auth', action: 'signIn', email: signInEmail });
+      logger.logError(err, { context: 'EnhancedAuth', action: 'signIn', email: signInEmail });
       setLoading(false);
     }
   };
@@ -312,7 +310,6 @@ const Auth = () => {
     }
   };
 
-  
   if (show2FA) {
     return (
       <MainLayout>
@@ -424,13 +421,12 @@ const Auth = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <Tabs defaultValue="signin" className="w-full">
-                {/* Responsive tabs: stack on mobile, auto height to avoid overlap */}
                 <TabsList className="w-full !h-auto flex flex-col sm:flex-row items-stretch gap-2">
                   <TabsTrigger value="signin" className="w-full sm:flex-1 text-xs md:text-sm font-medium px-2 md:px-3">Connexion</TabsTrigger>
                   <TabsTrigger value="signup" className="w-full sm:flex-1 text-xs md:text-sm font-medium px-2 md:px-3">Inscription</TabsTrigger>
                 </TabsList>
 
-          {/* Sign In Tab */}
+                {/* Sign In Tab */}
                 <TabsContent value="signin">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -439,7 +435,10 @@ const Auth = () => {
                   >
                     <Card className="shadow-lg md:shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
                       <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/30 px-4 py-4 md:px-4">
-                        <CardTitle className="text-lg md:text-xl font-semibold text-center">Connexion</CardTitle>
+                        <CardTitle className="text-lg md:text-xl font-semibold text-center flex items-center justify-center gap-2">
+                          <Lock className="h-5 w-5" />
+                          Connexion
+                        </CardTitle>
                         <CardDescription className="text-center text-sm md:text-base">
                           Connectez-vous à votre compte Mon Toit
                         </CardDescription>
@@ -454,84 +453,90 @@ const Auth = () => {
                           </motion.p>
                         )}
                       </CardHeader>
-              <form onSubmit={handleSignIn}>
-                <CardContent className="space-y-3 md:space-y-4 px-4 py-4 md:px-4">
-                  {isBlocked && (
-                    <Alert variant="destructive">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription className="text-sm">
-                        {blockMessage}
-                        {retryAfter && ` Réessayez dans ${retryAfter}.`}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="text-sm md:text-base">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      placeholder="votre@email.com"
-                      value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
-                      required
-                      className="h-10 md:h-11"
-                    />
-                    {signInErrors.email && (
-                      <p className="text-xs md:text-sm text-destructive">{signInErrors.email}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password" className="text-sm md:text-base">Mot de passe</Label>
-                    <div className="relative">
-                      <Input
-                        id="signin-password"
-                        type={showSignInPassword ? "text" : "password"}
-                        autoComplete="current-password"
-                        placeholder="••••••••"
-                        value={signInPassword}
-                        onChange={(e) => setSignInPassword(e.target.value)}
-                        required
-                        className="h-10 md:h-11"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSignInPassword(!showSignInPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showSignInPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-                      >
-                        {showSignInPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                    {signInErrors.password && (
-                      <p className="text-xs md:text-sm text-destructive">{signInErrors.password}</p>
-                    )}
-                  </div>
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={handleForgotPassword}
-                      className="text-xs md:text-sm text-primary hover:underline"
-                    >
-                      Mot de passe oublié ?
-                    </button>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex-col gap-3 px-4 py-4 md:px-4">
-                  <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
-                    {loading ? 'Connexion...' : 'Se connecter'}
-                  </Button>
+                      <form onSubmit={handleSignIn}>
+                        <CardContent className="space-y-3 md:space-y-4 px-4 py-4 md:px-4">
+                          {isBlocked && (
+                            <Alert variant="destructive">
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription className="text-sm">
+                                {blockMessage}
+                                {retryAfter && ` Réessayez dans ${retryAfter}.`}
+                              </AlertDescription>
+                            </Alert>
+                          )}
+                          <div className="space-y-2">
+                            <Label htmlFor="signin-email" className="text-sm md:text-base flex items-center gap-2">
+                              <Mail className="h-4 w-4" />
+                              Email
+                            </Label>
+                            <Input
+                              id="signin-email"
+                              type="email"
+                              inputMode="email"
+                              autoComplete="email"
+                              placeholder="votre@email.com"
+                              value={signInEmail}
+                              onChange={(e) => setSignInEmail(e.target.value)}
+                              required
+                              className="h-10 md:h-11"
+                            />
+                            {signInErrors.email && (
+                              <p className="text-xs md:text-sm text-destructive">{signInErrors.email}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="signin-password" className="text-sm md:text-base flex items-center gap-2">
+                              <Lock className="h-4 w-4" />
+                              Mot de passe
+                            </Label>
+                            <div className="relative">
+                              <Input
+                                id="signin-password"
+                                type={showSignInPassword ? "text" : "password"}
+                                autoComplete="current-password"
+                                placeholder="••••••••"
+                                value={signInPassword}
+                                onChange={(e) => setSignInPassword(e.target.value)}
+                                required
+                                className="h-10 md:h-11"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignInPassword(!showSignInPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                aria-label={showSignInPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                              >
+                                {showSignInPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                            {signInErrors.password && (
+                              <p className="text-xs md:text-sm text-destructive">{signInErrors.password}</p>
+                            )}
+                          </div>
+                          <div className="flex justify-end">
+                            <button
+                              type="button"
+                              onClick={handleForgotPassword}
+                              className="text-xs md:text-sm text-primary hover:underline"
+                            >
+                              Mot de passe oublié ?
+                            </button>
+                          </div>
+                        </CardContent>
+                        <CardFooter className="flex-col gap-3 px-4 py-4 md:px-4">
+                          <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
+                            {loading ? 'Connexion...' : 'Se connecter'}
+                          </Button>
 
-                  <OAuthButtons
-                    userType={userType}
-                    className="mt-4"
-                    variant="outline"
-                    size="default"
-                  />
-                </CardFooter>
-              </form>
-            </Card>
+                          <OAuthButtons
+                            userType={userType}
+                            className="mt-4"
+                            variant="outline"
+                            size="default"
+                          />
+                        </CardFooter>
+                      </form>
+                    </Card>
                   </motion.div>
                 </TabsContent>
 
@@ -544,7 +549,10 @@ const Auth = () => {
                   >
                     <Card className="shadow-xl border-border/50 bg-gradient-to-br from-card via-card to-muted/20">
                       <CardHeader className="bg-gradient-to-r from-secondary/5 to-primary/5 border-b border-border/30">
-                        <CardTitle className="text-xl font-semibold text-center">Inscription</CardTitle>
+                        <CardTitle className="text-xl font-semibold text-center flex items-center justify-center gap-2">
+                          <User className="h-5 w-5" />
+                          Inscription
+                        </CardTitle>
                         <CardDescription className="text-center">
                           {userTypeFromUrl === 'agence' && 'Créez votre compte Agence immobilière'}
                           {userTypeFromUrl === 'proprietaire' && 'Créez votre compte Propriétaire'}
@@ -562,122 +570,134 @@ const Auth = () => {
                           </motion.p>
                         )}
                       </CardHeader>
-              <form onSubmit={handleSignUp}>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullname">Nom complet</Label>
-                    <Input
-                      id="fullname"
-                      type="text"
-                      placeholder="Jean Kouamé"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      required
-                    />
-                    {signUpErrors.fullName && (
-                      <p className="text-sm text-destructive">{signUpErrors.fullName}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      placeholder="votre@email.com"
-                      value={signUpEmail}
-                      onChange={(e) => setSignUpEmail(e.target.value)}
-                      required
-                    />
-                    {signUpErrors.email && (
-                      <p className="text-sm text-destructive">{signUpErrors.email}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Mot de passe</Label>
-                    <div className="relative">
-                      <Input
-                        id="signup-password"
-                        type={showSignUpPassword ? "text" : "password"}
-                        autoComplete="new-password"
-                        placeholder="••••••••"
-                        value={signUpPassword}
-                        onChange={(e) => setSignUpPassword(e.target.value)}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSignUpPassword(!showSignUpPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showSignUpPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
-                      >
-                        {showSignUpPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                    {signUpErrors.password && (
-                      <p className="text-sm text-destructive">{signUpErrors.password}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="usertype">Type de compte</Label>
-                    <Select value={userType} onValueChange={(value: 'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance') => setUserType(value)}>
-                      <SelectTrigger id="usertype">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="locataire">🏠 Locataire - Je cherche un logement</SelectItem>
-                        <SelectItem value="proprietaire">🏢 Propriétaire - Je loue mes biens</SelectItem>
-                        <SelectItem value="agence">🏪 Agence - Je gère un portfolio</SelectItem>
-                        <SelectItem value="tiers_de_confiance">🤝 Tiers de confiance - Intermédiaire certifié</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {signUpErrors.userType && (
-                      <p className="text-sm text-destructive">{signUpErrors.userType}</p>
-                    )}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex-col gap-2 px-4 py-4 md:px-4">
-                  <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
-                    {loading ? 'Création...' : 'Créer mon compte'}
-                  </Button>
+                      <form onSubmit={handleSignUp}>
+                        <CardContent className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="fullname" className="flex items-center gap-2">
+                              <User className="h-4 w-4" />
+                              Nom complet
+                            </Label>
+                            <Input
+                              id="fullname"
+                              type="text"
+                              placeholder="Jean Kouamé"
+                              value={fullName}
+                              onChange={(e) => setFullName(e.target.value)}
+                              required
+                            />
+                            {signUpErrors.fullName && (
+                              <p className="text-sm text-destructive">{signUpErrors.fullName}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="signup-email" className="flex items-center gap-2">
+                              <Mail className="h-4 w-4" />
+                              Email
+                            </Label>
+                            <Input
+                              id="signup-email"
+                              type="email"
+                              inputMode="email"
+                              autoComplete="email"
+                              placeholder="votre@email.com"
+                              value={signUpEmail}
+                              onChange={(e) => setSignUpEmail(e.target.value)}
+                              required
+                            />
+                            {signUpErrors.email && (
+                              <p className="text-sm text-destructive">{signUpErrors.email}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="signup-password" className="flex items-center gap-2">
+                              <Lock className="h-4 w-4" />
+                              Mot de passe
+                            </Label>
+                            <div className="relative">
+                              <Input
+                                id="signup-password"
+                                type={showSignUpPassword ? "text" : "password"}
+                                autoComplete="new-password"
+                                placeholder="••••••••"
+                                value={signUpPassword}
+                                onChange={(e) => setSignUpPassword(e.target.value)}
+                                required
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                aria-label={showSignUpPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                              >
+                                {showSignUpPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                            {signUpErrors.password && (
+                              <p className="text-sm text-destructive">{signUpErrors.password}</p>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="usertype" className="flex items-center gap-2">
+                              <Shield className="h-4 w-4" />
+                              Type de compte
+                            </Label>
+                            <Select value={userType} onValueChange={(value: 'locataire' | 'proprietaire' | 'agence' | 'tiers_de_confiance') => setUserType(value)}>
+                              <SelectTrigger id="usertype">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="locataire">🏠 Locataire - Je cherche un logement</SelectItem>
+                                <SelectItem value="proprietaire">🏢 Propriétaire - Je loue mes biens</SelectItem>
+                                <SelectItem value="agence">🏪 Agence - Je gère un portfolio</SelectItem>
+                                <SelectItem value="tiers_de_confiance">🤝 Tiers de confiance - Intermédiaire certifié</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {signUpErrors.userType && (
+                              <p className="text-sm text-destructive">{signUpErrors.userType}</p>
+                            )}
+                          </div>
+                        </CardContent>
+                        <CardFooter className="flex-col gap-2 px-4 py-4 md:px-4">
+                          <Button type="submit" className="w-full h-10 md:h-11 text-sm md:text-base" disabled={loading}>
+                            {loading ? 'Création...' : 'Créer mon compte'}
+                          </Button>
 
-                  <OAuthButtons
-                    userType={userType}
-                    className="mt-4"
-                    variant="outline"
-                    size="default"
-                  />
+                          <OAuthButtons
+                            userType={userType}
+                            className="mt-4"
+                            variant="outline"
+                            size="default"
+                          />
 
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Shield className="h-3 w-3" />
-                    <span>Plateforme certifiée ANSUT</span>
-                  </div>
-                </CardFooter>
-              </form>
-            </Card>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Shield className="h-3 w-3" />
+                            <span>Plateforme certifiée ANSUT</span>
+                          </div>
+                        </CardFooter>
+                      </form>
+                    </Card>
                   </motion.div>
                 </TabsContent>
               </Tabs>
 
-            {/* Footer */}
-            <motion.p
-              className="text-center text-sm text-muted-foreground mt-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-            >
-              En créant un compte, vous acceptez nos{' '}
-              <Link to="/conditions" className="text-primary hover:underline font-medium">
-                conditions d'utilisation
-              </Link>
-            </motion.p>
-          </motion.div>
+              {/* Footer */}
+              <motion.p
+                className="text-center text-sm text-muted-foreground mt-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+              >
+                En créant un compte, vous acceptez nos{' '}
+                <Link to="/conditions" className="text-primary hover:underline font-medium">
+                  conditions d'utilisation
+                </Link>
+              </motion.p>
+            </motion.div>
+          </div>
         </div>
-      </div>
       </div>
     </MainLayout>
   );
 };
 
-export default Auth;
+export default EnhancedAuth;

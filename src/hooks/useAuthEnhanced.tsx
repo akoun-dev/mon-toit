@@ -40,6 +40,18 @@ const getClientIP = async (): Promise<string | null> => {
 // Helper function to log login attempts
 const logLoginAttempt = async (email: string, success: boolean, errorMessage?: string) => {
   try {
+    // Éviter de logger en double pour les mêmes tentatives
+    const now = Date.now();
+    const lastLogKey = `login_log_${email}_${now}`;
+    const lastLogTime = parseInt(sessionStorage.getItem(lastLogKey) || '0');
+
+    // Si on a déjà loggé cette tentative il y a moins de 5 secondes, ignorer
+    if (now - lastLogTime < 5000) {
+      return;
+    }
+
+    sessionStorage.setItem(lastLogKey, now.toString());
+
     // Direct table insert instead of RPC call to avoid type issues
     const { error } = await supabase
       .from('login_attempts')
@@ -51,12 +63,14 @@ const logLoginAttempt = async (email: string, success: boolean, errorMessage?: s
         fingerprint: null, // You can get this from device fingerprinting
         user_agent: navigator.userAgent
       });
-    
+
     if (error) {
-      logger.warn('Failed to log login attempt', { error, email, success });
+      // Ne pas logger l'erreur de logging pour éviter les boucles
+      console.warn('Failed to log login attempt', error.message);
     }
   } catch (error) {
-    logger.warn('Error logging login attempt', { error, email, success });
+    // Ne pas logger l'erreur de logging pour éviter les boucles
+    console.warn('Error logging login attempt', error);
   }
 };
 
@@ -70,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchProfile = async (userId: string) => {
     logger.info('Fetching profile for user', { userId });
-    
+
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -80,30 +94,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         logger.error('Error fetching profile', { error, userId });
-        
-        // If profile doesn't exist, create it
+
+        // If profile doesn't exist, try to create it
         if (error.code === 'PGRST116') {
           logger.info('Profile not found, creating new one', { userId });
-          const { data: userData } = await supabase.auth.getUser();
-          if (userData.user?.user_metadata) {
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert({
-                id: userId,
-                full_name: userData.user.user_metadata.full_name || userData.user.email,
-                user_type: userData.user.user_metadata.user_type || 'locataire'
-              });
-            
-            if (!insertError) {
-              // Retry fetching the profile
-              return await fetchProfile(userId);
+          try {
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData.user?.user_metadata) {
+              const { error: insertError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: userId,
+                  full_name: userData.user.user_metadata.full_name || userData.user.email,
+                  user_type: userData.user.user_metadata.user_type || 'locataire',
+                  email: userData.user.email
+                });
+
+              if (!insertError) {
+                // Retry fetching the profile
+                return await fetchProfile(userId);
+              }
             }
+          } catch (createError) {
+            logger.error('Error creating profile', { error: createError, userId });
+            // Ne pas bloquer - retourner null pour continuer
+            return null;
           }
         }
-        return null;
+        // Pour d'autres erreurs (permissions, etc), essayer de récupérer malgré tout
+        else {
+          logger.warn('Profile fetch error, returning null but continuing', { error, userId });
+          return null;
+        }
       }
-      
-      logger.info('Profile fetched successfully', { userId });
+
+      logger.info('Profile fetched successfully', { userId, profile: data ? 'exists' : 'null' });
       return data;
     } catch (error) {
       logger.error('Unexpected error fetching profile', { error, userId });

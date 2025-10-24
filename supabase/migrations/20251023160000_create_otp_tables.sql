@@ -272,41 +272,46 @@ BEGIN
       updated_at = now()
   WHERE otp_code_id = v_otp_record.id;
 
-  -- NOUVEAU: Créer le profil utilisateur si c'est une inscription (signup)
+  -- AMÉLIORÉ: Créer le profil utilisateur si c'est une inscription (signup) seulement si pas déjà existant
   IF p_type = 'signup' THEN
     DECLARE
       v_user_metadata jsonb;
+      v_profile_exists boolean;
     BEGIN
-      -- Récupérer les métadonnées utilisateur depuis auth.users
-      SELECT raw_user_meta_data INTO v_user_metadata
-      FROM auth.users
-      WHERE id = v_otp_record.user_id AND email = p_email;
+      -- Vérifier si le profil existe déjà
+      SELECT EXISTS(SELECT 1 FROM public.profiles WHERE id = v_otp_record.user_id) INTO v_profile_exists;
 
-      IF v_user_metadata IS NOT NULL THEN
-        -- Insérer le profil utilisateur
-        INSERT INTO public.profiles (id, full_name, user_type, email, created_at, updated_at)
-        VALUES (
-          v_otp_record.user_id,
-          COALESCE(v_user_metadata->>'full_name', 'Utilisateur'),
-          COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
-          p_email,
-          now(),
-          now()
-        )
-        ON CONFLICT (id) DO UPDATE SET
-          full_name = EXCLUDED.full_name,
-          user_type = EXCLUDED.user_type,
-          email = EXCLUDED.email,
-          updated_at = now();
+      IF NOT v_profile_exists THEN
+        -- Récupérer les métadonnées utilisateur depuis auth.users
+        SELECT raw_user_meta_data INTO v_user_metadata
+        FROM auth.users
+        WHERE id = v_otp_record.user_id AND email = p_email;
 
-        -- Créer le rôle utilisateur
-        INSERT INTO public.user_roles (user_id, role, created_at)
-        VALUES (
-          v_otp_record.user_id,
-          COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
-          now()
-        )
-        ON CONFLICT (user_id, role) DO NOTHING;
+        IF v_user_metadata IS NOT NULL THEN
+          -- Insérer le profil utilisateur seulement s'il n'existe pas
+          INSERT INTO public.profiles (id, full_name, user_type, email, created_at, updated_at)
+          VALUES (
+            v_otp_record.user_id,
+            COALESCE(v_user_metadata->>'full_name', 'Utilisateur'),
+            COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
+            p_email,
+            now(),
+            now()
+          )
+          ON CONFLICT (id) DO NOTHING;
+
+          -- Créer le rôle utilisateur seulement s'il n'existe pas
+          INSERT INTO public.user_roles (user_id, role, created_at)
+          VALUES (
+            v_otp_record.user_id,
+            COALESCE(v_user_metadata->>'user_type', 'locataire')::public.user_type,
+            now()
+          )
+          ON CONFLICT (user_id, role) DO NOTHING;
+        END IF;
+      ELSE
+        -- Le profil existe déjà, journaliser mais ne rien faire
+        RAISE LOG 'Profil déjà existant lors de la vérification OTP: userId=%, email=%', v_otp_record.user_id, p_email;
       END IF;
     END;
   END IF;
