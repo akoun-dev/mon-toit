@@ -37,6 +37,22 @@ export const useMapProperties = (options: UseMapPropertiesOptions = {}) => {
     queryKey: ['map-properties', filters],
     queryFn: async () => {
       try {
+        // Try RPC function first as it's more reliable
+        const { data: rpcData, error: rpcError } = await supabase.rpc('get_public_properties', {
+          p_city: filters?.city || null,
+          p_property_type: filters?.propertyType || null,
+          p_min_price: filters?.minPrice || null,
+          p_max_price: filters?.maxPrice || null,
+          p_bedrooms: filters?.minBedrooms || null,
+          p_limit: 100,
+          p_offset: 0,
+        });
+
+        if (!rpcError && rpcData) {
+          return rpcData as MapProperty[];
+        }
+
+        // Fallback to direct query with better error handling
         let query = supabase
           .from('properties')
           .select(`

@@ -135,10 +135,11 @@ export const propertyService = {
     let { data, error } = await supabase.rpc('get_public_properties', {
       p_city: filters?.city || null,
       p_property_type: filters?.propertyType?.[0] || null,
-      p_min_rent: filters?.minPrice || null,
-      p_max_rent: filters?.maxPrice || null,
-      p_min_bedrooms: filters?.minBedrooms || null,
-      p_status: null, // RPC handles filtering
+      p_min_price: filters?.minPrice || null,
+      p_max_price: filters?.maxPrice || null,
+      p_bedrooms: filters?.minBedrooms || null,
+      p_limit: 50, // Ajout des paramètres requis
+      p_offset: 0,
     });
 
     // Fallback: if RPC is missing (404) or fails, try a safe direct query
