@@ -57,7 +57,9 @@ export const useRecommendations = ({
 
       if (functionError) throw functionError;
 
-      setRecommendations(data || []);
+      // Les recommandations peuvent être directement dans data ou dans data.data
+      const recommendationsData = data?.data || data || [];
+      setRecommendations(Array.isArray(recommendationsData) ? recommendationsData : []);
     } catch (err) {
       const errorObj = err instanceof Error ? err : new Error('Failed to fetch recommendations');
       setError(errorObj);
@@ -90,7 +92,8 @@ export const useRecommendations = ({
       if (functionError) throw functionError;
 
       if (data?.recommendations) {
-        setRecommendations(data.recommendations);
+        const recommendationsData = Array.isArray(data.recommendations) ? data.recommendations : [];
+        setRecommendations(recommendationsData);
       }
 
       toast({

@@ -42,7 +42,7 @@ export const RecommendationsSection = ({
     );
   }
 
-  if (!recommendations.length) {
+  if (!recommendations || !Array.isArray(recommendations) || recommendations.length === 0) {
     return null;
   }
 

@@ -95,16 +95,26 @@ const PropertyDetail = () => {
   }, [id, isOwner]);
 
   const fetchAgencyMandate = async () => {
-    if (!id) return;
-    
-    const { data } = await supabase
-      .from('agency_mandates')
-      .select('*, profiles!agency_mandates_agency_id_fkey(full_name, phone)')
-      .eq('property_id', id)
-      .eq('status', 'active')
-      .maybeSingle();
-    
-    setAgencyMandate(data);
+    if (!id || !user) return; // Only fetch if user is authenticated
+
+    try {
+      const { data, error } = await supabase
+        .from('agency_mandates')
+        .select('*, profiles!agency_mandates_agency_id_fkey(full_name, phone)')
+        .eq('property_id', id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (error) {
+        // Log the error but don't show toast to user - this is expected if user doesn't have permissions
+        logger.warn('Failed to fetch agency mandate (possibly due to RLS)', { error, propertyId: id });
+        return;
+      }
+
+      setAgencyMandate(data);
+    } catch (error) {
+      logger.warn('Exception in fetchAgencyMandate', { error, propertyId: id });
+    }
   };
 
   const fetchPropertyDetails = async () => {
@@ -183,7 +193,7 @@ const PropertyDetail = () => {
           status,
           created_at,
           application_score,
-          profiles:applicant_id(full_name, phone)
+          profiles!rental_applications_applicant_id_fkey(full_name, phone)
         `)
         .eq('property_id', id)
         .order('created_at', { ascending: false });
@@ -198,7 +208,7 @@ const PropertyDetail = () => {
               .from('user_verifications')
               .select('tenant_score, oneci_status, cnam_status')
               .eq('user_id', app.applicant_id)
-              .single();
+              .maybeSingle();
 
             return {
               ...app,
@@ -215,36 +225,55 @@ const PropertyDetail = () => {
 
   const fetchStats = async () => {
     try {
-      // Get favorites count
-      const { count: favCount } = await supabase
-        .from('user_favorites')
-        .select('*', { count: 'exact', head: true })
-        .eq('property_id', id);
+      let favCount = 0;
+      let appCount = 0;
+      let viewCount = 0;
 
-      // Get applications count
-      const { count: appCount } = await supabase
-        .from('rental_applications')
-        .select('*', { count: 'exact', head: true })
-        .eq('property_id', id);
+      // Get favorites count (may fail due to RLS if user is not authenticated)
+      try {
+        const { count } = await supabase
+          .from('user_favorites')
+          .select('*', { count: 'exact', head: true })
+          .eq('property_id', id);
+        favCount = count || 0;
+      } catch (error) {
+        logger.warn('Failed to fetch favorites count (possibly due to RLS)', { error, propertyId: id });
+      }
 
-      // Get property view count
-      const { data: propertyData } = await supabase
-        .from('properties')
-        .select('view_count')
-        .eq('id', id)
-        .single();
+      // Get applications count (may fail due to RLS if user is not owner)
+      try {
+        const { count } = await supabase
+          .from('rental_applications')
+          .select('*', { count: 'exact', head: true })
+          .eq('property_id', id);
+        appCount = count || 0;
+      } catch (error) {
+        logger.warn('Failed to fetch applications count (possibly due to RLS)', { error, propertyId: id });
+      }
+
+      // Get property view count (should work for public users)
+      try {
+        const { data: propertyData } = await supabase
+          .from('properties')
+          .select('view_count')
+          .eq('id', id)
+          .maybeSingle();
+        viewCount = propertyData?.view_count || 0;
+      } catch (error) {
+        logger.warn('Failed to fetch property view count', { error, propertyId: id });
+      }
 
       setStats({
-        views: propertyData?.view_count || 0,
-        favorites: favCount || 0,
-        applications: appCount || 0,
+        views: viewCount,
+        favorites: favCount,
+        applications: appCount,
         conversionRate: 0,
-        view_count: propertyData?.view_count || 0,
-        favorites_count: favCount || 0,
-        applications_count: appCount || 0,
+        view_count: viewCount,
+        favorites_count: favCount,
+        applications_count: appCount,
       });
     } catch (error) {
-      logger.error('Error fetching property stats', { error, propertyId: id });
+      logger.error('Error in fetchStats', { error, propertyId: id });
     }
   };
 

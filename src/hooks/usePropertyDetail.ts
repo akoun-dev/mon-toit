@@ -101,9 +101,6 @@ export const usePropertyDetail = (propertyId: string | undefined) => {
             full_name,
             avatar_url,
             is_verified
-          ),
-          verification:user_verifications!user_verifications_user_id_fkey(
-            tenant_score
           )
         `)
         .eq('property_id', propertyId)
