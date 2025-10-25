@@ -1,6 +1,9 @@
 -- Add performance indexes for frequently queried columns
 -- This migration adds composite indexes to optimize common query patterns
 
+-- Enable PostGIS extension for geographic indexes
+CREATE EXTENSION IF NOT EXISTS "postgis";
+
 -- Login attempts indexes for rate limiting and security monitoring
 CREATE INDEX IF NOT EXISTS idx_login_attempts_email_success_attempted_at
 ON public.login_attempts(email, success, attempted_at DESC);
@@ -9,22 +12,20 @@ CREATE INDEX IF NOT EXISTS idx_login_attempts_ip_success_attempted_at
 ON public.login_attempts(ip_address, success, attempted_at DESC)
 WHERE ip_address IS NOT NULL;
 
-CREATE INDEX IF NOT EXISTS idx_login_attempts_recent_failures
-ON public.login_attempts(email, attempted_at DESC)
-WHERE success = false AND attempted_at > NOW() - INTERVAL '1 hour';
+-- Note: Partial indexes with volatile functions like NOW() are not supported
+-- Using a regular index instead and filtering in queries
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email_attempted_at
+ON public.login_attempts(email, attempted_at DESC);
 
 -- Properties indexes for search and filtering
 CREATE INDEX IF NOT EXISTS idx_properties_status_city
-ON public.properties(status, city)
-WHERE status = 'disponible'::public.property_status;
+ON public.properties(status, city);
 
 CREATE INDEX IF NOT EXISTS idx_properties_owner_status
-ON public.properties(owner_id, status)
-WHERE status IN ('disponible'::public.property_status, 'en_attente'::public.property_status);
+ON public.properties(owner_id, status);
 
 CREATE INDEX IF NOT EXISTS idx_properties_monthly_rent
-ON public.properties(monthly_rent)
-WHERE status = 'disponible'::public.property_status AND monthly_rent IS NOT NULL;
+ON public.properties(monthly_rent);
 
 CREATE INDEX IF NOT EXISTS idx_properties_location
 ON public.properties USING GIST(ST_Point(longitude, latitude))
@@ -38,8 +39,7 @@ CREATE INDEX IF NOT EXISTS idx_rental_applications_applicant_status_created
 ON public.rental_applications(applicant_id, status, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_rental_applications_processing
-ON public.rental_applications(processing_deadline, status, priority_score DESC)
-WHERE status IN ('pending'::public.application_status, 'processing'::public.application_status);
+ON public.rental_applications(processing_deadline, status, priority_score DESC);
 
 -- User favorites indexes
 CREATE INDEX IF NOT EXISTS idx_user_favorites_user_property
@@ -51,12 +51,10 @@ ON public.user_favorites(property_id, created_at DESC);
 
 -- Agency mandates indexes
 CREATE INDEX IF NOT EXISTS idx_agency_mandates_agency_status
-ON public.agency_mandates(agency_id, status)
-WHERE status = 'active'::public.mandate_status;
+ON public.agency_mandates(agency_id, status);
 
 CREATE INDEX IF NOT EXISTS idx_agency_mandates_owner_status
-ON public.agency_mandates(owner_id, status)
-WHERE status = 'active'::public.mandate_status;
+ON public.agency_mandates(owner_id, status);
 
 CREATE INDEX IF NOT EXISTS idx_agency_mandates_property
 ON public.agency_mandates(property_id)
@@ -74,8 +72,7 @@ ON public.user_verifications(face_status, updated_at DESC);
 
 -- OTP verifications indexes for cleanup and security
 CREATE INDEX IF NOT EXISTS idx_otp_verifications_expires_token
-ON public.otp_verifications(expires_at, token)
-WHERE expires_at > NOW();
+ON public.otp_verifications(expires_at, token);
 
 CREATE INDEX IF NOT EXISTS idx_otp_verifications_email_expires
 ON public.otp_verifications(email, expires_at DESC);
@@ -85,29 +82,28 @@ ON public.otp_verifications(used_at, created_at)
 WHERE used_at IS NOT NULL;
 
 -- Messages tables indexes for conversation performance
-CREATE INDEX IF NOT EXISTS idx_messages_conversation_created
-ON public.messages(conversation_id, created_at DESC);
-
 CREATE INDEX IF NOT EXISTS idx_messages_sender_created
 ON public.messages(sender_id, created_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_conversations_participants
-ON public.conversations(user1_id, user2_id, updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_receiver_created
+ON public.messages(receiver_id, created_at DESC);
+
+-- Note: conversations table is created in a later migration (20251025020001_fix_remaining_issues.sql)
+-- Index for conversations is created there instead
 
 -- User sessions indexes for session management
 CREATE INDEX IF NOT EXISTS idx_user_sessions_user_active_expires
 ON public.user_sessions(user_id, is_active, expires_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_user_sessions_token_expires
-ON public.user_sessions(session_token, expires_at)
-WHERE is_active = true;
+ON public.user_sessions(session_token, expires_at);
 
 -- Electronic signature and certificates indexes
 CREATE INDEX IF NOT EXISTS idx_electronic_signature_logs_user_created
 ON public.electronic_signature_logs(user_id, created_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_digital_certificates_user_status
-ON public.digital_certificates(user_id, status, issued_at DESC);
+-- Note: digital_certificates table is created in migration 202501024000038_create_digital_certificates.sql
+-- Index for digital_certificates is created there instead
 
 -- Processing config indexes for admin functions
 CREATE INDEX IF NOT EXISTS idx_processing_config_key
@@ -115,8 +111,11 @@ ON public.processing_config(key)
 WHERE key IS NOT NULL;
 
 -- Payments indexes for financial queries
-CREATE INDEX IF NOT EXISTS idx_payments_user_status_created
-ON public.payments(user_id, status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_payments_payer_status_created
+ON public.payments(payer_id, status, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_payments_recipient_status_created
+ON public.payments(recipient_id, status, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_payments_lease_status_created
 ON public.payments(lease_id, status, due_date)
@@ -134,13 +133,8 @@ CREATE INDEX IF NOT EXISTS idx_leases_owner_status
 ON public.leases(owner_id, status)
 WHERE owner_id IS NOT NULL;
 
--- Property visits indexes for scheduling
-CREATE INDEX IF NOT EXISTS idx_property_visits_property_scheduled
-ON public.property_visits(property_id, scheduled_date, status);
-
-CREATE INDEX IF NOT EXISTS idx_property_visits_visitor_scheduled
-ON public.property_visits(visitor_id, scheduled_date DESC)
-WHERE visitor_id IS NOT NULL;
+-- Note: property_visits table is created in migration 20251025020001_fix_remaining_issues.sql
+-- Indexes for property_visits are created there instead
 
 -- Security audit logs indexes for monitoring
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_table_action_created
@@ -150,33 +144,21 @@ CREATE INDEX IF NOT EXISTS idx_security_audit_logs_user_created
 ON public.security_audit_logs(user_id, created_at DESC)
 WHERE user_id IS NOT NULL;
 
--- Property view counts for analytics
-CREATE INDEX IF NOT EXISTS idx_property_analytics_property_date
-ON public.property_analytics(property_id, view_date DESC);
+-- Note: property_analytics table is created in migration 20251025020001_fix_remaining_issues.sql
+-- Indexes for property_analytics are created there instead
 
-CREATE INDEX IF NOT EXISTS idx_property_analytics_date_views
-ON public.property_analytics(view_date, total_views DESC);
-
--- User roles summary indexes
-CREATE INDEX IF NOT EXISTS idx_user_roles_summary_user_role
-ON public.user_roles_summary(user_id, role, updated_at DESC);
+-- Note: user_roles_summary table is created in migration 202501024000032_create_user_roles_summary.sql
+-- Index for user_roles_summary is created there instead
 
 -- Create partial indexes for common query patterns
 CREATE INDEX IF NOT EXISTS idx_properties_search_active
-ON public.properties(city, neighborhood, monthly_rent, bedrooms)
-WHERE status = 'disponible'::public.property_status AND monthly_rent > 0;
+ON public.properties(city, neighborhood, monthly_rent, bedrooms);
 
 CREATE INDEX IF NOT EXISTS idx_rental_applications_recent
-ON public.rental_applications(created_at DESC)
-WHERE status = 'pending'::public.application_status AND created_at > NOW() - INTERVAL '7 days';
+ON public.rental_applications(created_at DESC);
 
--- Add index statistics suggestions (PostgreSQL 13+)
--- These help the query planner make better decisions
-ALTER INDEX idx_properties_status_city ALTER COLUMN 1 SET STATISTICS 100;
-ALTER INDEX idx_properties_status_city ALTER COLUMN 2 SET STATISTICS 100;
-
-ALTER INDEX idx_rental_applications_property_status_created ALTER COLUMN 1 SET STATISTICS 100;
-ALTER INDEX idx_rental_applications_property_status_created ALTER COLUMN 2 SET STATISTICS 100;
+-- Note: Index statistics are optional and can cause issues with certain column types
+-- Skipping ALTER INDEX STATISTICS for now
 
 -- Create maintenance function to update index statistics
 CREATE OR REPLACE FUNCTION public.update_table_statistics()
@@ -206,4 +188,7 @@ COMMENT ON INDEX idx_properties_status_city IS 'Optimizes property search by sta
 COMMENT ON INDEX idx_rental_applications_property_status_created IS 'Optimizes application queries for property owners';
 COMMENT ON FUNCTION public.update_table_statistics IS 'Updates table statistics for query optimizer';
 
-RAISE NOTICE '✓ Performance indexes added successfully';
+DO $$
+BEGIN
+  RAISE NOTICE '✓ Performance indexes added successfully';
+END $$;

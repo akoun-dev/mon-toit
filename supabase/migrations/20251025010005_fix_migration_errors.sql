@@ -386,16 +386,19 @@ COMMENT ON TYPE public.certificate_type IS 'Type de certificat numérique';
 COMMENT ON TYPE public.certificate_status IS 'Statut d''un certificat numérique';
 
 -- Add comments for constraints
-COMMENT ON CONSTRAINT properties_monthly_rent_positive IS 'Le loyer mensuel doit être positif et raisonnable';
-COMMENT ON CONSTRAINT properties_surface_area_positive IS 'La surface doit être positive et raisonnable';
-COMMENT ON CONSTRAINT properties_bedrooms_reasonable IS 'Le nombre de chambres doit être raisonnable';
-COMMENT ON CONSTRAINT properties_bathrooms_reasonable IS 'Le nombre de salles de bain doit être raisonnable';
+COMMENT ON CONSTRAINT properties_monthly_rent_positive ON public.properties IS 'Le loyer mensuel doit être positif et raisonnable';
+COMMENT ON CONSTRAINT properties_surface_area_positive ON public.properties IS 'La surface doit être positive et raisonnable';
+COMMENT ON CONSTRAINT properties_bedrooms_reasonable ON public.properties IS 'Le nombre de chambres doit être raisonnable';
+COMMENT ON CONSTRAINT properties_bathrooms_reasonable ON public.properties IS 'Le nombre de salles de bain doit être raisonnable';
 
-RAISE NOTICE '✅ Migration errors fixed successfully';
-RAISE NOTICE '📊 Summary of fixes:';
-RAISE NOTICE '  - Fixed status columns to use proper enums (5 tables)';
-RAISE NOTICE '  - Removed redundant landlord_id column from leases';
-RAISE NOTICE '  - Removed redundant user_id column from rental_applications';
-RAISE NOTICE '  - Added data integrity constraints';
-RAISE NOTICE '  - Created missing enums and fixed message_type';
-RAISE NOTICE '  - Added indexes for improved query performance';
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Migration errors fixed successfully';
+  RAISE NOTICE '📊 Summary of fixes:';
+  RAISE NOTICE '  - Fixed status columns to use proper enums (5 tables)';
+  RAISE NOTICE '  - Removed redundant landlord_id column from leases';
+  RAISE NOTICE '  - Removed redundant user_id column from rental_applications';
+  RAISE NOTICE '  - Added data integrity constraints';
+  RAISE NOTICE '  - Created missing enums and fixed message_type';
+  RAISE NOTICE '  - Added indexes for improved query performance';
+END $$;

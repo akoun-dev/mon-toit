@@ -153,4 +153,7 @@ GRANT EXECUTE ON FUNCTION validate_proprietaire_prerequisites(UUID) TO authentic
 -- Add comprehensive comment
 COMMENT ON FUNCTION validate_proprietaire_prerequisites IS 'Validates if a user meets requirements to become a proprietaire (property owner). Returns detailed progress information and recommendations.';
 
-RAISE NOTICE '✓ validate_proprietaire_prerequisites function fixed successfully';
+DO $$
+BEGIN
+  RAISE NOTICE '✓ validate_proprietaire_prerequisites function fixed successfully';
+END $$;

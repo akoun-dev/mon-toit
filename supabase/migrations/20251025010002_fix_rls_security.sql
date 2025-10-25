@@ -5,6 +5,7 @@
 DROP POLICY IF EXISTS "Profiles are publicly viewable" ON public.profiles;
 
 -- Create a more restrictive profiles policy that only exposes public information
+DROP POLICY IF EXISTS "Public profiles are viewable" ON public.profiles;
 CREATE POLICY "Public profiles are viewable" ON public.profiles
   FOR SELECT
   USING (
@@ -15,6 +16,7 @@ CREATE POLICY "Public profiles are viewable" ON public.profiles
   );
 
 -- Update profiles policy for authenticated users to see more detailed information
+DROP POLICY IF EXISTS "Users can view full profiles of verified users" ON public.profiles;
 CREATE POLICY "Users can view full profiles of verified users" ON public.profiles
   FOR SELECT
   USING (
@@ -39,8 +41,8 @@ CREATE POLICY "Users can view own OTP records" ON public.otp_verifications
     email = current_setting('app.current_email', true) OR
     (auth.uid() IS NOT NULL AND
      EXISTS (
-       SELECT 1 FROM public.profiles p
-       WHERE p.id = auth.uid() AND p.email = public.otp_verifications.email
+       SELECT 1 FROM auth.users u
+       WHERE u.id = auth.uid() AND u.email = public.otp_verifications.email
      ))
   );
 
@@ -52,6 +54,7 @@ CREATE POLICY "Users can insert own OTP records" ON public.otp_verifications
 
 -- Enhanced security for user_verifications table
 -- Ensure only the user themselves and admins can access verification data
+DROP POLICY IF EXISTS "Users can view own verifications" ON public.user_verifications;
 CREATE POLICY "Users can view own verifications" ON public.user_verifications
   FOR SELECT
   USING (
@@ -79,9 +82,10 @@ DROP POLICY IF EXISTS "Properties are publicly viewable" ON public.properties;
 CREATE POLICY "Properties are publicly viewable" ON public.properties
   FOR SELECT
   USING (
-    status = 'disponible'::public.property_status
+    status = 'disponible'
   );
 
+DROP POLICY IF EXISTS "Owners can view own properties" ON public.properties;
 CREATE POLICY "Owners can view own properties" ON public.properties
   FOR SELECT
   USING (
@@ -100,6 +104,7 @@ CREATE POLICY "Admins can view all properties" ON public.properties
   );
 
 -- Add security constraints for OTP table to prevent timing attacks
+DROP POLICY IF EXISTS "OTP records expire quickly" ON public.otp_verifications;
 CREATE POLICY "OTP records expire quickly" ON public.otp_verifications
   FOR DELETE
   USING (
@@ -144,6 +149,7 @@ CREATE TABLE IF NOT EXISTS public.security_audit_logs (
 ALTER TABLE public.security_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- Only admins can view security audit logs
+DROP POLICY IF EXISTS "Admins can view security logs" ON public.security_audit_logs;
 CREATE POLICY "Admins can view security logs" ON public.security_audit_logs
   FOR SELECT
   USING (
@@ -160,4 +166,7 @@ GRANT EXECUTE ON FUNCTION public.log_security_access TO authenticated;
 COMMENT ON TABLE public.security_audit_logs IS 'Journal d''audit pour les événements de sécurité';
 COMMENT ON FUNCTION public.log_security_access IS 'Enregistre les événements d''accès pour la sécurité';
 
-RAISE NOTICE '✓ RLS security fixes applied successfully';
+DO $$
+BEGIN
+  RAISE NOTICE '✓ RLS security fixes applied successfully';
+END $$;

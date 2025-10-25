@@ -13,8 +13,11 @@ RETURNS void AS $$
 DECLARE
   user_record public.profiles%ROWTYPE;
 BEGIN
-  -- Try to find user profile
-  SELECT * INTO user_record FROM public.profiles WHERE email = p_email;
+  -- Try to find user profile by joining with auth.users
+  SELECT p.* INTO user_record
+  FROM public.profiles p
+  JOIN auth.users u ON p.id = u.id
+  WHERE u.email = p_email;
 
   -- Insert login attempt
   INSERT INTO public.login_attempts (
@@ -23,14 +26,16 @@ BEGIN
     user_id,
     ip_address,
     fingerprint,
-    user_agent
+    user_agent,
+    attempted_at
   ) VALUES (
     p_email,
     p_success,
     COALESCE(user_record.id, NULL),
     p_ip_address,
     p_fingerprint,
-    p_user_agent
+    p_user_agent,
+    now()
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

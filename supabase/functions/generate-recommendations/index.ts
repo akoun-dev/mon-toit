@@ -1,11 +1,10 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS'
-}
+import { handleCors, createCorsResponse, createErrorResponse } from '../shared/cors.ts'
+import { requireAuth, createSupabaseClient, AuthUser } from '../shared/auth.ts'
+import { validateRecommendationRequest } from '../shared/validation.ts'
+import { getCachedData, CacheKeys, CacheTTL, invalidateUserCache } from '../shared/cache.ts'
+import { createLogger, handleApiError, createSuccessResponse, ErrorCode, rateLimiters, checkRateLimit } from '../shared/errors.ts'
 
 interface RecommendationRequest {
   userId: string
@@ -24,109 +23,175 @@ interface RecommendationRequest {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
-
+  const logger = createLogger(req)
+  
   try {
+    // Handle CORS preflight requests
+    const corsResponse = handleCors(req)
+    if (corsResponse) return corsResponse
+
     // Only allow POST requests
     if (req.method !== 'POST') {
-      return new Response(
-        JSON.stringify({ error: 'Method not allowed' }),
-        { status: 405, headers: corsHeaders }
-      )
+      return createErrorResponse('Method not allowed', 405)
     }
 
     // Parse request body
     const body: RecommendationRequest = await req.json()
-    const { userId, type, propertyId, limit = 5, preferences = {} } = body
-
-    if (!userId || !type) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: userId, type' }),
-        { status: 400, headers: corsHeaders }
+    const validation = validateRecommendationRequest(body)
+    
+    if (!validation.isValid) {
+      logger.warn('Invalid request data', { errors: validation.errors })
+      return createErrorResponse(
+        `Validation failed: ${validation.errors.join(', ')}`,
+        400
       )
     }
 
-    // Create Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
-    let recommendations = []
-
-    switch (type) {
-      case 'properties':
-        recommendations = await generatePropertyRecommendations(supabase, userId, preferences, limit)
-        break
-      case 'areas':
-        recommendations = await generateAreaRecommendations(supabase, userId, preferences, limit)
-        break
-      case 'users':
-        recommendations = await generateUserRecommendations(supabase, userId, preferences, limit)
-        break
-      default:
-        return new Response(
-          JSON.stringify({ error: 'Invalid recommendation type' }),
-          { status: 400, headers: corsHeaders }
-        )
+    // Authenticate user
+    const authResult = await requireAuth(req)
+    if (authResult.response) {
+      return authResult.response
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: recommendations,
-        type,
-        userId,
+    const user = authResult.user
+
+    // Check rate limiting
+    const rateLimitResult = checkRateLimit(user.id, rateLimiters.recommendations)
+    if (!rateLimitResult.allowed) {
+      logger.warn('Rate limit exceeded', { userId: user.id })
+      return createCorsResponse(
+        { success: false, error: rateLimitResult.error },
+        429
+      )
+    }
+
+    // Create cache key based on user and preferences
+    const cacheKey = CacheKeys.propertyRecommendations(user.id, body.preferences)
+    
+    // Try to get from cache first
+    const cachedData = await getCachedData(
+      cacheKey,
+      () => generateRecommendations(body, user, logger),
+      CacheTTL.MEDIUM // 5 minutes cache for recommendations
+    )
+
+    logger.info('Recommendations generated successfully', {
+      userId: user.id,
+      type: body.type,
+      preferences: body.preferences
+    })
+
+    return createCorsResponse(
+      createSuccessResponse(cachedData, 'Recommendations generated successfully', {
+        type: body.type,
+        userId: user.id,
         generated_at: new Date().toISOString()
-      }),
-      { headers: corsHeaders }
+      })
     )
 
   } catch (error) {
-    console.error('Error in recommendations function:', error)
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message,
-        recommendations: []
-      }),
-      { status: 500, headers: corsHeaders }
+    logger.error('Error in recommendations function', error)
+    
+    const apiError = handleApiError(error, logger)
+    return createCorsResponse(
+      { success: false, error: apiError },
+      apiError.code === ErrorCode.INTERNAL_ERROR ? 500 : 400
     )
   }
 })
 
-async function generatePropertyRecommendations(supabase: any, userId: string, preferences: any, limit: number) {
+async function generateRecommendations(
+  request: RecommendationRequest,
+  user: AuthUser,
+  logger: any
+): Promise<any[]> {
+  const { userId, type, limit = 5, preferences = {} } = request
+  const supabase = createSupabaseClient()
+
+  try {
+    let recommendations = []
+
+    switch (type) {
+      case 'properties':
+        recommendations = await generatePropertyRecommendations(supabase, userId, preferences, limit, logger)
+        break
+      case 'areas':
+        recommendations = await generateAreaRecommendations(supabase, userId, preferences, limit, logger)
+        break
+      case 'users':
+        recommendations = await generateUserRecommendations(supabase, userId, preferences, limit, logger)
+        break
+      default:
+        throw new Error('Invalid recommendation type')
+    }
+
+    return recommendations
+
+  } catch (error) {
+    logger.error('Error generating recommendations', error)
+    throw error
+  }
+}
+
+async function generatePropertyRecommendations(
+  supabase: any, 
+  userId: string, 
+  preferences: any, 
+  limit: number,
+  logger: any
+): Promise<any[]> {
   try {
     // Get user profile to understand preferences
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('user_type, city, preferred_areas')
+      .select('user_type, city')
       .eq('id', userId)
       .single()
 
+    if (profileError) {
+      logger.error('Error fetching user profile', profileError)
+      throw profileError
+    }
+
     // Get user favorites to understand preferences
-    const { data: favorites } = await supabase
+    const { data: favorites, error: favoritesError } = await supabase
       .from('user_favorites')
       .select('property_id')
       .eq('user_id', userId)
 
+    if (favoritesError) {
+      logger.error('Error fetching user favorites', favoritesError)
+      throw favoritesError
+    }
+
     const favoritePropertyIds = favorites?.map((f: any) => f.property_id) || []
 
-    // Build query
+    // Build query with proper column names
     let query = supabase
       .from('properties')
       .select(`
-        *,
-        profiles!owner_profile(
+        id,
+        title,
+        description,
+        property_type,
+        city,
+        neighborhood,
+        address,
+        monthly_rent,
+        surface_area,
+        bedrooms,
+        bathrooms,
+        owner_id,
+        status,
+        created_at,
+        updated_at,
+        profiles!owner_id_fkey(
           full_name,
           avatar_url,
           user_type
         )
       `)
-      .eq('is_active', true)
-      .eq('is_verified', true)
+      .eq('status', 'disponible')
       .order('created_at', { ascending: false })
       .limit(limit * 2) // Get more to filter from
 
@@ -145,11 +210,17 @@ async function generatePropertyRecommendations(supabase: any, userId: string, pr
     }
 
     // Exclude user's own properties and already favorited properties
+    query = query.not('owner_id', userId)
     if (favoritePropertyIds.length > 0) {
-      query = query.not('id', 'in', favoritePropertyIds)
+      query = query.not('id', 'in', `(${favoritePropertyIds.join(',')})`)
     }
 
-    const { data: properties } = await query
+    const { data: properties, error: propertiesError } = await query
+
+    if (propertiesError) {
+      logger.error('Error fetching properties', propertiesError)
+      throw propertiesError
+    }
 
     if (!properties || properties.length === 0) {
       return []
@@ -159,7 +230,7 @@ async function generatePropertyRecommendations(supabase: any, userId: string, pr
     const scoredProperties = properties.map((property: any) => {
       let score = 0
 
-      // Base score for being verified and active
+      // Base score for being available
       score += 10
 
       // Bonus for recent properties
@@ -167,19 +238,14 @@ async function generatePropertyRecommendations(supabase: any, userId: string, pr
       if (daysSinceCreated < 7) score += 5
       else if (daysSinceCreated < 30) score += 3
 
-      // Bonus for good photos
-      if (property.photos && property.photos.length > 0) {
-        score += Math.min(property.photos.length, 5)
-      }
-
       // Bonus for complete description
       if (property.description && property.description.length > 100) {
         score += 3
       }
 
-      // Bonus for amenities
-      if (property.amenities && property.amenities.length > 0) {
-        score += Math.min(property.amenities.length, 3)
+      // Bonus for good surface area
+      if (property.surface_area && property.surface_area > 50) {
+        score += 2
       }
 
       // Match with user preferences
@@ -205,30 +271,40 @@ async function generatePropertyRecommendations(supabase: any, userId: string, pr
 
     // Sort by score and return top recommendations
     return scoredProperties
-      .sort((a, b) => b.recommendation_score - a.recommendation_score)
+      .sort((a: any, b: any) => b.recommendation_score - a.recommendation_score)
       .slice(0, limit)
 
   } catch (error) {
-    console.error('Error generating property recommendations:', error)
+    logger.error('Error generating property recommendations:', error)
     return []
   }
 }
 
-async function generateAreaRecommendations(supabase: any, userId: string, preferences: any, limit: number) {
+async function generateAreaRecommendations(
+  supabase: any, 
+  userId: string, 
+  preferences: any, 
+  limit: number,
+  logger: any
+): Promise<any[]> {
   try {
     // Get popular areas based on property density
-    const { data: properties } = await supabase
+    const { data: properties, error } = await supabase
       .from('properties')
       .select('city, monthly_rent, property_type')
-      .eq('is_active', true)
-      .eq('is_verified', true)
+      .eq('status', 'disponible')
+
+    if (error) {
+      logger.error('Error fetching properties for area recommendations', error)
+      throw error
+    }
 
     if (!properties || properties.length === 0) {
       return []
     }
 
     // Group by city and calculate metrics
-    const areaStats = properties.reduce((acc: any, property: any) => {
+    const areaStats: Record<string, any> = properties.reduce((acc: any, property: any) => {
       if (!acc[property.city]) {
         acc[property.city] = {
           name: property.city,
@@ -260,19 +336,30 @@ async function generateAreaRecommendations(supabase: any, userId: string, prefer
     return recommendations
 
   } catch (error) {
-    console.error('Error generating area recommendations:', error)
+    logger.error('Error generating area recommendations:', error)
     return []
   }
 }
 
-async function generateUserRecommendations(supabase: any, userId: string, preferences: any, limit: number) {
+async function generateUserRecommendations(
+  supabase: any, 
+  userId: string, 
+  preferences: any, 
+  limit: number,
+  logger: any
+): Promise<any[]> {
   try {
     // Get user's profile to suggest similar users
-    const { data: userProfile } = await supabase
+    const { data: userProfile, error: profileError } = await supabase
       .from('profiles')
-      .select('user_type, city, interests')
+      .select('user_type, city')
       .eq('id', userId)
       .single()
+
+    if (profileError) {
+      logger.error('Error fetching user profile for user recommendations', profileError)
+      throw profileError
+    }
 
     if (!userProfile) {
       return []
@@ -291,7 +378,12 @@ async function generateUserRecommendations(supabase: any, userId: string, prefer
       query = query.eq('city', userProfile.city)
     }
 
-    const { data: users } = await query
+    const { data: users, error: usersError } = await query
+
+    if (usersError) {
+      logger.error('Error fetching users for recommendations', usersError)
+      throw usersError
+    }
 
     if (!users || users.length === 0) {
       return []
@@ -324,11 +416,11 @@ async function generateUserRecommendations(supabase: any, userId: string, prefer
     })
 
     return scoredUsers
-      .sort((a, b) => b.recommendation_score - a.recommendation_score)
+      .sort((a: any, b: any) => b.recommendation_score - a.recommendation_score)
       .slice(0, limit)
 
   } catch (error) {
-    console.error('Error generating user recommendations:', error)
+    logger.error('Error generating user recommendations:', error)
     return []
   }
 }
@@ -347,12 +439,8 @@ function generateRecommendationReasons(property: any, profile: any, preferences:
     }
   }
 
-  if (property.photos && property.photos.length > 0) {
-    reasons.push('Has photos available')
-  }
-
-  if (property.amenities && property.amenities.length > 0) {
-    reasons.push(`${property.amenities.length} amenities`)
+  if (property.surface_area && property.surface_area > 50) {
+    reasons.push('Spacious property')
   }
 
   if (property.description && property.description.length > 200) {

@@ -25,7 +25,7 @@ CREATE POLICY "Property media is viewable by property owners and public" ON publ
     EXISTS (
       SELECT 1 FROM public.properties p
       WHERE p.id = public.property_media.property_id
-      AND (p.owner_id = auth.uid() OR p.status = 'disponible'::public.property_status)
+      AND (p.owner_id = auth.uid() OR p.status::text = 'disponible')
     )
   );
 
@@ -69,7 +69,7 @@ CREATE POLICY "Property work is viewable by property owners and admins" ON publi
       SELECT 1 FROM public.properties p
       WHERE p.id = public.property_work.property_id
       AND (p.owner_id = auth.uid() OR
-            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type = 'admin_ansut'::public.user_type))
+            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type::text = 'admin_ansut'))
     )
   );
 
@@ -112,7 +112,7 @@ CREATE POLICY "Utility costs are viewable by property owners and renters" ON pub
             EXISTS (SELECT 1 FROM public.leases l
                    WHERE l.property_id = p.id
                    AND l.tenant_id = auth.uid()
-                   AND l.status = 'active'::public.lease_status))
+                   AND l.status::text = 'active'))
     )
   );
 
@@ -211,7 +211,7 @@ CREATE POLICY "Lease terms are viewable by lease parties" ON public.lease_terms
       SELECT 1 FROM public.leases l
       WHERE l.id = public.lease_terms.lease_id
       AND (l.tenant_id = auth.uid() OR l.owner_id = auth.uid() OR
-            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type = 'admin_ansut'::public.user_type))
+            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type::text = 'admin_ansut'))
     )
   );
 
@@ -221,7 +221,7 @@ CREATE POLICY "Property owners can manage lease terms" ON public.lease_terms
       SELECT 1 FROM public.leases l
       WHERE l.id = public.lease_terms.lease_id
       AND (l.owner_id = auth.uid() OR
-            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type = 'admin_ansut'::public.user_type))
+            EXISTS (SELECT 1 FROM public.profiles pr WHERE pr.id = auth.uid() AND pr.user_type::text = 'admin_ansut'))
     )
   );
 
@@ -429,12 +429,15 @@ CREATE TRIGGER handle_lease_terms_updated_at
   BEFORE UPDATE ON public.lease_terms
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
-RAISE NOTICE '✅ Table normalization completed successfully';
-RAISE NOTICE '📊 Summary of normalization:';
-RAISE NOTICE '  - Created property_media table (414 columns reduced)';
-RAISE NOTICE '  - Created property_work table (7 columns reduced)';
-RAISE NOTICE '  - Created property_utility_costs table (1 column reduced)';
-RAISE NOTICE '  - Created application_documents table (15 columns reduced)';
-RAISE NOTICE '  - Created lease_terms table (11 columns reduced)';
-RAISE NOTICE '  - Total columns removed from main tables: ~448';
-RAISE NOTICE '  - Improved maintainability and normalized structure';
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Table normalization completed successfully';
+  RAISE NOTICE '📊 Summary of normalization:';
+  RAISE NOTICE '  - Created property_media table (414 columns reduced)';
+  RAISE NOTICE '  - Created property_work table (7 columns reduced)';
+  RAISE NOTICE '  - Created property_utility_costs table (1 column reduced)';
+  RAISE NOTICE '  - Created application_documents table (15 columns reduced)';
+  RAISE NOTICE '  - Created lease_terms table (11 columns reduced)';
+  RAISE NOTICE '  - Total columns removed from main tables: ~448';
+  RAISE NOTICE '  - Improved maintainability and normalized structure';
+END $$;

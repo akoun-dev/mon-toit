@@ -118,4 +118,7 @@ CREATE INDEX IF NOT EXISTS idx_properties_status ON public.properties(status);
 CREATE INDEX IF NOT EXISTS idx_agency_mandates_status ON public.agency_mandates(status);
 CREATE INDEX IF NOT EXISTS idx_rental_applications_status ON public.rental_applications(status);
 
-RAISE NOTICE '✓ Data types consistency migration completed successfully';
+DO $$
+BEGIN
+  RAISE NOTICE '✓ Data types consistency migration completed successfully';
+END $$;

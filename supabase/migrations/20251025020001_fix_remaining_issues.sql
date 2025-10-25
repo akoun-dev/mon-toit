@@ -64,32 +64,67 @@ CREATE TABLE IF NOT EXISTS public.user_active_roles (
 ALTER TABLE public.user_active_roles ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for user_active_roles
-CREATE POLICY "Users can view own active roles" ON public.user_active_roles
-  FOR SELECT USING (user_id = auth.uid());
+DO $$ BEGIN
+  -- Create policies only if they don't exist
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_active_roles'
+    AND policyname = 'Users can view own active roles'
+  ) THEN
+    CREATE POLICY "Users can view own active roles" ON public.user_active_roles
+      FOR SELECT USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Users can update own active roles" ON public.user_active_roles
-  FOR UPDATE USING (user_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_active_roles'
+    AND policyname = 'Users can update own active roles'
+  ) THEN
+    CREATE POLICY "Users can update own active roles" ON public.user_active_roles
+      FOR UPDATE USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Admins can view all active roles" ON public.user_active_roles
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_active_roles'
+    AND policyname = 'Admins can view all active roles'
+  ) THEN
+    CREATE POLICY "Admins can view all active roles" ON public.user_active_roles
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
 
-CREATE POLICY "Admins can manage all active roles" ON public.user_active_roles
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_active_roles'
+    AND policyname = 'Admins can manage all active roles'
+  ) THEN
+    CREATE POLICY "Admins can manage all active roles" ON public.user_active_roles
+      FOR ALL USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_user_active_roles_updated_at
-  BEFORE UPDATE ON public.user_active_roles
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_user_active_roles_updated_at'
+    AND tgrelid = 'public.user_active_roles'::regclass
+  ) THEN
+    CREATE TRIGGER handle_user_active_roles_updated_at
+      BEFORE UPDATE ON public.user_active_roles
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- 3. Fix missing user_verifications table
 CREATE TABLE IF NOT EXISTS public.user_verifications (
@@ -116,39 +151,75 @@ CREATE TABLE IF NOT EXISTS public.user_verifications (
 ALTER TABLE public.user_verifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for user_verifications
-CREATE POLICY "Users can view own verifications" ON public.user_verifications
-  FOR SELECT USING (user_id = auth.uid());
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verifications'
+    AND policyname = 'Users can view own verifications'
+  ) THEN
+    CREATE POLICY "Users can view own verifications" ON public.user_verifications
+      FOR SELECT USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Users can update own verifications" ON public.user_verifications
-  FOR UPDATE USING (user_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verifications'
+    AND policyname = 'Users can update own verifications'
+  ) THEN
+    CREATE POLICY "Users can update own verifications" ON public.user_verifications
+      FOR UPDATE USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Admins can view all verifications" ON public.user_verifications
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verifications'
+    AND policyname = 'Admins can view all verifications'
+  ) THEN
+    CREATE POLICY "Admins can view all verifications" ON public.user_verifications
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
 
-CREATE POLICY "Admins can manage all verifications" ON public.user_verifications
-  FOR ALL USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verifications'
+    AND policyname = 'Admins can manage all verifications'
+  ) THEN
+    CREATE POLICY "Admins can manage all verifications" ON public.user_verifications
+      FOR ALL USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_user_verifications_updated_at
-  BEFORE UPDATE ON public.user_verifications
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_user_verifications_updated_at'
+    AND tgrelid = 'public.user_verifications'::regclass
+  ) THEN
+    CREATE TRIGGER handle_user_verifications_updated_at
+      BEFORE UPDATE ON public.user_verifications
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- 4. Fix missing login_attempts table
 CREATE TABLE IF NOT EXISTS public.login_attempts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
   success BOOLEAN NOT NULL,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   ip_address INET,
+  fingerprint TEXT,
   user_agent TEXT,
   attempted_at TIMESTAMPTZ DEFAULT now(),
   failure_reason TEXT
@@ -163,6 +234,7 @@ CREATE TABLE IF NOT EXISTS public.otp_verifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
   token TEXT NOT NULL,
+  type TEXT NOT NULL DEFAULT 'signup',
   expires_at TIMESTAMPTZ NOT NULL,
   used_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -173,25 +245,47 @@ CREATE TABLE IF NOT EXISTS public.otp_verifications (
 ALTER TABLE public.otp_verifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for otp_verifications
-CREATE POLICY "Users can view own OTP records" ON public.otp_verifications
-  FOR SELECT USING (
-    email = current_setting('app.current_email', true) OR
-    (auth.uid() IS NOT NULL AND
-     EXISTS (
-       SELECT 1 FROM public.profiles p
-       WHERE p.id = auth.uid() AND p.email = public.otp_verifications.email
-     ))
-  );
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'otp_verifications'
+    AND policyname = 'Users can view own OTP records'
+  ) THEN
+    CREATE POLICY "Users can view own OTP records" ON public.otp_verifications
+      FOR SELECT USING (
+        email = current_setting('app.current_email', true) OR
+        (auth.uid() IS NOT NULL AND
+         EXISTS (
+           SELECT 1 FROM auth.users u
+           WHERE u.id = auth.uid() AND u.email = public.otp_verifications.email
+         ))
+      );
+  END IF;
 
-CREATE POLICY "Users can insert own OTP records" ON public.otp_verifications
-  FOR INSERT WITH CHECK (
-    email = current_setting('app.current_email', true)
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'otp_verifications'
+    AND policyname = 'Users can insert own OTP records'
+  ) THEN
+    CREATE POLICY "Users can insert own OTP records" ON public.otp_verifications
+      FOR INSERT WITH CHECK (
+        email = current_setting('app.current_email', true)
+      );
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_otp_verifications_updated_at
-  BEFORE UPDATE ON public.otp_verifications
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_otp_verifications_updated_at'
+    AND tgrelid = 'public.otp_verifications'::regclass
+  ) THEN
+    CREATE TRIGGER handle_otp_verifications_updated_at
+      BEFORE UPDATE ON public.otp_verifications
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- 6. Fix missing user_sessions table
 CREATE TABLE IF NOT EXISTS public.user_sessions (
@@ -211,24 +305,52 @@ CREATE TABLE IF NOT EXISTS public.user_sessions (
 ALTER TABLE public.user_sessions ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for user_sessions
-CREATE POLICY "Users can view own sessions" ON public.user_sessions
-  FOR SELECT USING (user_id = auth.uid());
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_sessions'
+    AND policyname = 'Users can view own sessions'
+  ) THEN
+    CREATE POLICY "Users can view own sessions" ON public.user_sessions
+      FOR SELECT USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Users can manage own sessions" ON public.user_sessions
-  FOR ALL USING (user_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_sessions'
+    AND policyname = 'Users can manage own sessions'
+  ) THEN
+    CREATE POLICY "Users can manage own sessions" ON public.user_sessions
+      FOR ALL USING (user_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Admins can view all sessions" ON public.user_sessions
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_sessions'
+    AND policyname = 'Admins can view all sessions'
+  ) THEN
+    CREATE POLICY "Admins can view all sessions" ON public.user_sessions
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_user_sessions_updated_at
-  BEFORE UPDATE ON public.user_sessions
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_user_sessions_updated_at'
+    AND tgrelid = 'public.user_sessions'::regclass
+  ) THEN
+    CREATE TRIGGER handle_user_sessions_updated_at
+      BEFORE UPDATE ON public.user_sessions
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- 7. Fix missing conversations table for messages
 CREATE TABLE IF NOT EXISTS public.conversations (
@@ -246,16 +368,38 @@ CREATE TABLE IF NOT EXISTS public.conversations (
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for conversations
-CREATE POLICY "Users can view own conversations" ON public.conversations
-  FOR SELECT USING (user1_id = auth.uid() OR user2_id = auth.uid());
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'conversations'
+    AND policyname = 'Users can view own conversations'
+  ) THEN
+    CREATE POLICY "Users can view own conversations" ON public.conversations
+      FOR SELECT USING (user1_id = auth.uid() OR user2_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Users can create conversations" ON public.conversations
-  FOR INSERT WITH CHECK (user1_id = auth.uid() OR user2_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'conversations'
+    AND policyname = 'Users can create conversations'
+  ) THEN
+    CREATE POLICY "Users can create conversations" ON public.conversations
+      FOR INSERT WITH CHECK (user1_id = auth.uid() OR user2_id = auth.uid());
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_conversations_updated_at
-  BEFORE UPDATE ON public.conversations
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_conversations_updated_at'
+    AND tgrelid = 'public.conversations'::regclass
+  ) THEN
+    CREATE TRIGGER handle_conversations_updated_at
+      BEFORE UPDATE ON public.conversations
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- 8. Add missing indexes for performance
 CREATE INDEX IF NOT EXISTS idx_user_active_roles_user_id ON public.user_active_roles(user_id);
@@ -283,21 +427,35 @@ CREATE TABLE IF NOT EXISTS public.property_analytics (
 ALTER TABLE public.property_analytics ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for property_analytics
-CREATE POLICY "Property owners can view own analytics" ON public.property_analytics
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.properties p
-      WHERE p.id = property_id AND p.owner_id = auth.uid()
-    )
-  );
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'property_analytics'
+    AND policyname = 'Property owners can view own analytics'
+  ) THEN
+    CREATE POLICY "Property owners can view own analytics" ON public.property_analytics
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.properties p
+          WHERE p.id = property_id AND p.owner_id = auth.uid()
+        )
+      );
+  END IF;
 
-CREATE POLICY "Admins can view all analytics" ON public.property_analytics
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND user_type = 'admin_ansut'
-    )
-  );
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'property_analytics'
+    AND policyname = 'Admins can view all analytics'
+  ) THEN
+    CREATE POLICY "Admins can view all analytics" ON public.property_analytics
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE id = auth.uid() AND user_type = 'admin_ansut'
+        )
+      );
+  END IF;
+END $$;
 
 -- Create indexes for property_analytics
 CREATE INDEX IF NOT EXISTS idx_property_analytics_property_date ON public.property_analytics(property_id, view_date DESC);
@@ -319,24 +477,52 @@ CREATE TABLE IF NOT EXISTS public.property_visits (
 ALTER TABLE public.property_visits ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for property_visits
-CREATE POLICY "Property owners can view own property visits" ON public.property_visits
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.properties p
-      WHERE p.id = property_id AND p.owner_id = auth.uid()
-    )
-  );
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'property_visits'
+    AND policyname = 'Property owners can view own property visits'
+  ) THEN
+    CREATE POLICY "Property owners can view own property visits" ON public.property_visits
+      FOR SELECT USING (
+        EXISTS (
+          SELECT 1 FROM public.properties p
+          WHERE p.id = property_id AND p.owner_id = auth.uid()
+        )
+      );
+  END IF;
 
-CREATE POLICY "Visitors can view own visits" ON public.property_visits
-  FOR SELECT USING (visitor_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'property_visits'
+    AND policyname = 'Visitors can view own visits'
+  ) THEN
+    CREATE POLICY "Visitors can view own visits" ON public.property_visits
+      FOR SELECT USING (visitor_id = auth.uid());
+  END IF;
 
-CREATE POLICY "Users can schedule visits" ON public.property_visits
-  FOR INSERT WITH CHECK (visitor_id = auth.uid());
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'property_visits'
+    AND policyname = 'Users can schedule visits'
+  ) THEN
+    CREATE POLICY "Users can schedule visits" ON public.property_visits
+      FOR INSERT WITH CHECK (visitor_id = auth.uid());
+  END IF;
+END $$;
 
 -- Trigger for updated_at
-CREATE TRIGGER handle_property_visits_updated_at
-  BEFORE UPDATE ON public.property_visits
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'handle_property_visits_updated_at'
+    AND tgrelid = 'public.property_visits'::regclass
+  ) THEN
+    CREATE TRIGGER handle_property_visits_updated_at
+      BEFORE UPDATE ON public.property_visits
+      FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  END IF;
+END $$;
 
 -- Create indexes for property_visits
 CREATE INDEX IF NOT EXISTS idx_property_visits_property_scheduled ON public.property_visits(property_id, scheduled_date, status);
@@ -352,15 +538,18 @@ COMMENT ON TABLE public.conversations IS 'Conversations entre utilisateurs';
 COMMENT ON TABLE public.property_analytics IS 'Analytiques des vues des propriétés';
 COMMENT ON TABLE public.property_visits IS 'Visites programmées des propriétés';
 
-RAISE NOTICE '✅ Remaining issues fixed successfully';
-RAISE NOTICE '📊 Summary of fixes:';
-RAISE NOTICE '  - Fixed agency_mandates.mandate_type enum';
-RAISE NOTICE '  - Created missing user_active_roles table';
-RAISE NOTICE '  - Created missing user_verifications table';
-RAISE NOTICE '  - Created missing login_attempts table';
-RAISE NOTICE '  - Created missing otp_verifications table';
-RAISE NOTICE '  - Created missing user_sessions table';
-RAISE NOTICE '  - Created missing conversations table';
-RAISE NOTICE '  - Created missing property_analytics table';
-RAISE NOTICE '  - Created missing property_visits table';
-RAISE NOTICE '  - Added performance indexes for all new tables';
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Remaining issues fixed successfully';
+  RAISE NOTICE '📊 Summary of fixes:';
+  RAISE NOTICE '  - Fixed agency_mandates.mandate_type enum';
+  RAISE NOTICE '  - Created missing user_active_roles table';
+  RAISE NOTICE '  - Created missing user_verifications table';
+  RAISE NOTICE '  - Created missing login_attempts table';
+  RAISE NOTICE '  - Created missing otp_verifications table';
+  RAISE NOTICE '  - Created missing user_sessions table';
+  RAISE NOTICE '  - Created missing conversations table';
+  RAISE NOTICE '  - Created missing property_analytics table';
+  RAISE NOTICE '  - Created missing property_visits table';
+  RAISE NOTICE '  - Added performance indexes for all new tables';
+END $$;
