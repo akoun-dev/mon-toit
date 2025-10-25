@@ -122,7 +122,7 @@ export const useSEO = (config: SEOConfig = {}) => {
     }
 
     // Check for dynamic routes
-    if (path.startsWith('/properties/')) {
+    if (path.startsWith('/property/')) {
       return {
         title: 'Détail du Bien',
         description: 'Découvrez toutes les caractéristiques de ce bien immobilier.',
@@ -179,7 +179,7 @@ export const useRealEstateSEO = (property: any) => {
       "@type": ["RealEstateListing", "Product"],
       "name": property.title,
       "description": property.description,
-      "url": `${siteUrl}/properties/${property.id}`,
+      "url": `${siteUrl}/property/${property.id}`,
       "image": property.images?.[0] || property.main_image,
       "offers": {
         "@type": "Offer",

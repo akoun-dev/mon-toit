@@ -84,7 +84,7 @@ const Sitemap: React.FC = () => {
 
         if (properties) {
           propertyPages = properties.map(property => ({
-            url: `/properties/${property.id}`,
+            url: `/property/${property.id}`,
             lastmod: property.updated_at || currentDate,
             changefreq: 'weekly' as const,
             priority: 0.8

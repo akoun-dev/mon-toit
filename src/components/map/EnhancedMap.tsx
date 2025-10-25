@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import Supercluster from 'supercluster';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -57,8 +57,8 @@ const MAP_STYLES: Record<MapStyle, string> = {
   hybrid: 'mapbox://styles/mapbox/satellite-streets-v12',
 };
 
-export const EnhancedMap = ({ 
-  properties, 
+export const EnhancedMap = ({
+  properties,
   onPropertyClick,
   showHeatmap = false,
   showClusters = true,
@@ -66,6 +66,17 @@ export const EnhancedMap = ({
   showNeighborhoods = false,
   onNeighborhoodClick
 }: EnhancedMapProps) => {
+  // Debug log to see what properties are received
+  console.log('🗺️ EnhancedMap - Properties received:', {
+    count: properties.length,
+    properties: properties.map(p => ({
+      id: p.id,
+      title: p.title,
+      neighborhood: p.neighborhood,
+      coordinates: `${p.latitude}, ${p.longitude}`
+    }))
+  });
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
@@ -116,30 +127,55 @@ export const EnhancedMap = ({
       map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
 
       map.current.on('load', () => {
-        setMapReady(true);
-        logger.info('Map loaded successfully');
-
-        // Intercepter et bloquer les requêtes vers events.mapbox.com
-        const originalFetch = window.fetch;
-        (window.fetch as any)._originalFetch = originalFetch;
-        let blockedRequestCount = 0;
-
-        window.fetch = function(...args) {
-          const url = args[0];
-          if (typeof url === 'string' && url.includes('events.mapbox.com')) {
-            blockedRequestCount++;
-            logger.warn(`Blocked Mapbox analytics request #${blockedRequestCount} to prevent ad-blocker interference`);
-
-            // Afficher l'alerte après plusieurs requêtes bloquées
-            if (blockedRequestCount >= 3) {
-              setShowAdBlockWarning(true);
-            }
-
-            return Promise.resolve(new Response('{}', { status: 200 }));
-          }
-          return originalFetch.apply(this, args);
-        };
+        logger.info('Map loaded, waiting for style...');
       });
+
+      // Écouter l'événement de chargement du style
+      map.current.on('styledata', () => {
+        if (map.current!.isStyleLoaded() && !mapReady) {
+          setMapReady(true);
+          logger.info('Map style loaded successfully');
+        }
+      });
+
+      // Vérification périodique au cas où l'événement styledata ne se déclenche pas
+      const styleCheckInterval = setInterval(() => {
+        if (map.current!.isStyleLoaded() && !mapReady) {
+          setMapReady(true);
+          logger.info('Map style loaded successfully (interval check)');
+          clearInterval(styleCheckInterval);
+        }
+      }, 500);
+
+      // Nettoyer l'intervalle après 10 secondes maximum
+      setTimeout(() => {
+        clearInterval(styleCheckInterval);
+        if (!mapReady) {
+          logger.warn('Map style loading timeout, proceeding anyway');
+          setMapReady(true);
+        }
+      }, 10000);
+
+      // Intercepter et bloquer les requêtes vers events.mapbox.com
+      const originalFetch = window.fetch;
+      (window.fetch as any)._originalFetch = originalFetch;
+      let blockedRequestCount = 0;
+
+      window.fetch = function(...args) {
+        const url = args[0];
+        if (typeof url === 'string' && url.includes('events.mapbox.com')) {
+          blockedRequestCount++;
+          logger.warn(`Blocked Mapbox analytics request #${blockedRequestCount} to prevent ad-blocker interference`);
+
+          // Afficher l'alerte après plusieurs requêtes bloquées
+          if (blockedRequestCount >= 3) {
+            setShowAdBlockWarning(true);
+          }
+
+          return Promise.resolve(new Response('{}', { status: 200 }));
+        }
+        return originalFetch.apply(this, args);
+      };
 
       // Update clusters on zoom/pan
       map.current.on('moveend', () => {
@@ -197,6 +233,8 @@ export const EnhancedMap = ({
     if (!map.current || !clusterIndex.current || !mapReady) return;
 
     const bounds = map.current.getBounds();
+    if (!bounds) return;
+    
     const zoom = Math.floor(map.current.getZoom());
 
     const clusters = clusterIndex.current.getClusters(
@@ -393,6 +431,12 @@ export const EnhancedMap = ({
   useEffect(() => {
     if (!map.current || !mapReady || !showHeatmap) return;
 
+    // Vérifier si le style est complètement chargé
+    if (!map.current.isStyleLoaded()) {
+      console.warn('Map style not loaded yet, skipping heatmap layer addition');
+      return;
+    }
+
     const sourceId = 'properties-heatmap';
     const layerId = 'price-heatmap';
 
@@ -403,7 +447,8 @@ export const EnhancedMap = ({
       map.current.removeSource(sourceId);
     }
 
-    map.current.addSource(sourceId, {
+    try {
+      map.current.addSource(sourceId, {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
@@ -438,6 +483,10 @@ export const EnhancedMap = ({
         'heatmap-opacity': 0.6,
       },
     });
+    } catch (error) {
+      console.error('Error adding heatmap layer:', error);
+      logger.logError(error, { context: 'Heatmap layer addition' });
+    }
   }, [properties, showHeatmap, mapReady]);
 
   // Add POI markers
@@ -509,6 +558,12 @@ export const EnhancedMap = ({
   useEffect(() => {
     if (!map.current || !mapReady) return;
 
+    // Vérifier si le style est complètement chargé
+    if (!map.current.isStyleLoaded()) {
+      console.warn('Map style not loaded yet, skipping neighborhood layers addition');
+      return;
+    }
+
     // Cleanup function to remove all neighborhood layers and sources
     const cleanupNeighborhoods = () => {
       ABIDJAN_NEIGHBORHOODS.forEach((neighborhood) => {
@@ -537,98 +592,106 @@ export const EnhancedMap = ({
       return;
     }
 
-    // Add neighborhoods
+    // Add neighborhoods with error handling
     ABIDJAN_NEIGHBORHOODS.forEach((neighborhood, index) => {
       const sourceId = `neighborhood-${neighborhood.id}`;
       const layerId = `neighborhood-layer-${neighborhood.id}`;
       const labelLayerId = `neighborhood-label-${neighborhood.id}`;
 
-      // Check if source already exists to prevent duplication
-      if (map.current!.getSource(sourceId)) {
-        console.warn(`Source ${sourceId} already exists, skipping`);
-        return;
-      }
-
-      // Create polygon from bounds
-      const polygon = {
-        type: 'Feature' as const,
-        geometry: {
-          type: 'Polygon' as const,
-          coordinates: [[
-            [neighborhood.bounds.west, neighborhood.bounds.north],
-            [neighborhood.bounds.east, neighborhood.bounds.north],
-            [neighborhood.bounds.east, neighborhood.bounds.south],
-            [neighborhood.bounds.west, neighborhood.bounds.south],
-            [neighborhood.bounds.west, neighborhood.bounds.north],
-          ]],
-        },
-        properties: {
-          name: neighborhood.name,
-          avgPrice: neighborhood.priceRange.average,
-        },
-      };
-
-      map.current!.addSource(sourceId, {
-        type: 'geojson',
-        data: polygon,
-      });
-
-      const color = getPriceColor(neighborhood.priceRange.average);
-
-      // Add fill layer
-      map.current!.addLayer({
-        id: layerId,
-        type: 'fill',
-        source: sourceId,
-        paint: {
-          'fill-color': color,
-          'fill-opacity': 0.15,
-        },
-      });
-
-      // Add border
-      map.current!.addLayer({
-        id: `${layerId}-outline`,
-        type: 'line',
-        source: sourceId,
-        paint: {
-          'line-color': color,
-          'line-width': 2,
-          'line-opacity': 0.5,
-        },
-      });
-
-      // Add label
-      map.current!.addLayer({
-        id: labelLayerId,
-        type: 'symbol',
-        source: sourceId,
-        layout: {
-          'text-field': neighborhood.name,
-          'text-size': 14,
-          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-        },
-        paint: {
-          'text-color': color,
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 2,
-        },
-      });
-
-      // Click handler
-      map.current!.on('click', layerId, () => {
-        if (onNeighborhoodClick) {
-          onNeighborhoodClick(neighborhood);
+      try {
+        // Check if source already exists to prevent duplication
+        if (map.current!.getSource(sourceId)) {
+          console.warn(`Source ${sourceId} already exists, skipping`);
+          return;
         }
-      });
 
-      // Cursor pointer
-      map.current!.on('mouseenter', layerId, () => {
-        map.current!.getCanvas().style.cursor = 'pointer';
-      });
-      map.current!.on('mouseleave', layerId, () => {
-        map.current!.getCanvas().style.cursor = '';
-      });
+        // Create polygon from bounds
+        const polygon = {
+          type: 'Feature' as const,
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [[
+              [neighborhood.bounds.west, neighborhood.bounds.north],
+              [neighborhood.bounds.east, neighborhood.bounds.north],
+              [neighborhood.bounds.east, neighborhood.bounds.south],
+              [neighborhood.bounds.west, neighborhood.bounds.south],
+              [neighborhood.bounds.west, neighborhood.bounds.north],
+            ]],
+          },
+          properties: {
+            name: neighborhood.name,
+            avgPrice: neighborhood.priceRange.average,
+          },
+        };
+
+        map.current!.addSource(sourceId, {
+          type: 'geojson',
+          data: polygon,
+        });
+
+        const color = getPriceColor(neighborhood.priceRange.average);
+
+        // Add fill layer
+        map.current!.addLayer({
+          id: layerId,
+          type: 'fill',
+          source: sourceId,
+          paint: {
+            'fill-color': color,
+            'fill-opacity': 0.15,
+          },
+        });
+
+        // Add border
+        map.current!.addLayer({
+          id: `${layerId}-outline`,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': color,
+            'line-width': 2,
+            'line-opacity': 0.5,
+          },
+        });
+
+        // Add label
+        map.current!.addLayer({
+          id: labelLayerId,
+          type: 'symbol',
+          source: sourceId,
+          layout: {
+            'text-field': neighborhood.name,
+            'text-size': 14,
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          },
+          paint: {
+            'text-color': color,
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 2,
+          },
+        });
+
+        // Click handler
+        map.current!.on('click', layerId, () => {
+          if (onNeighborhoodClick) {
+            onNeighborhoodClick(neighborhood);
+          }
+        });
+
+        // Cursor pointer
+        map.current!.on('mouseenter', layerId, () => {
+          map.current!.getCanvas().style.cursor = 'pointer';
+        });
+        map.current!.on('mouseleave', layerId, () => {
+          map.current!.getCanvas().style.cursor = '';
+        });
+      } catch (error) {
+        console.error(`Error adding neighborhood ${neighborhood.id}:`, error);
+        logger.logError(error, {
+          context: 'Neighborhood layer addition',
+          neighborhoodId: neighborhood.id
+        });
+      }
     });
 
     // Cleanup function when useEffect unmounts or dependencies change

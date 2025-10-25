@@ -1,35 +1,23 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { EnhancedMap } from '@/components/map/EnhancedMap';
+import PropertyMap from '@/components/PropertyMap';
 import { MapFilters, MapFiltersState } from '@/components/map/MapFilters';
-import { POILayer, POIType } from '@/components/map/POILayer';
-import { NeighborhoodCard } from '@/components/map/NeighborhoodCard';
-import { useMapProperties, useMapStats } from '@/hooks/useMapProperties';
+import { propertyService } from '@/services/propertyService';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import {
   Map,
   TrendingUp,
-  Activity,
-  Layers,
-  Eye,
-  EyeOff,
-  MapPinned
+  Layers
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { HeroHeader } from '@/components/shared/HeroHeader';
-import type { Neighborhood } from '@/data/abidjanNeighborhoods';
 
 const SmartMapV2 = () => {
   const navigate = useNavigate();
-  const [showHeatmap, setShowHeatmap] = useState(false);
-  const [showNeighborhoods, setShowNeighborhoods] = useState(true);
-  const [activePOILayers, setActivePOILayers] = useState<POIType[]>([]);
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<Neighborhood | null>(null);
   
   const [filters, setFilters] = useState<MapFiltersState>({
     minPrice: 0,
@@ -40,36 +28,88 @@ const SmartMapV2 = () => {
     amenities: [],
   });
 
-  const queryFilters = {
-    minPrice: filters.minPrice,
-    maxPrice: filters.maxPrice,
-    propertyType: filters.propertyType === 'all' ? undefined : filters.propertyType,
-    minBedrooms: filters.minBedrooms,
-    maxBedrooms: filters.maxBedrooms,
-    amenities: filters.amenities.length > 0 ? filters.amenities : undefined,
-  };
-
-  const { data: properties = [], isLoading, error } = useMapProperties({
-    filters: queryFilters,
-    refetchInterval: 30000,
+  // Fetch real properties from database like /explorer page
+  const { data: allProperties = [], isLoading, error } = useQuery({
+    queryKey: ['properties-smartmap'],
+    queryFn: async () => {
+      console.log('🗺️ SmartMapV2 - Fetching properties from propertyService.fetchAll()');
+      const data = await propertyService.fetchAll();
+      console.log('🗺️ SmartMapV2 - Raw data from fetchAll():', {
+        count: data.length,
+        data: data.map(p => ({
+          id: p.id,
+          title: p.title,
+          latitude: p.latitude,
+          longitude: p.longitude,
+          coordinates: `${p.latitude}, ${p.longitude}`
+        }))
+      });
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const stats = useMapStats(properties);
+  // Filter properties with valid coordinates for map display
+  const properties = allProperties.filter(property =>
+    property.latitude &&
+    property.longitude &&
+    !isNaN(property.latitude) &&
+    !isNaN(property.longitude)
+  );
+
+  console.log('🗺️ SmartMapV2 - Properties with valid coordinates:', {
+    total: allProperties.length,
+    withValidCoords: properties.length,
+    filtered: properties.map(p => ({
+      id: p.id,
+      title: p.title,
+      coordinates: `${p.latitude}, ${p.longitude}`
+    }))
+  });
+
+  // Apply filters to properties
+  const filteredProperties = properties.filter(property => {
+    if (filters.minPrice && property.monthly_rent < filters.minPrice) return false;
+    if (filters.maxPrice && property.monthly_rent > filters.maxPrice) return false;
+    if (filters.propertyType !== 'all' && property.property_type !== filters.propertyType) return false;
+    if (filters.minBedrooms && property.bedrooms < filters.minBedrooms) return false;
+    if (filters.maxBedrooms && property.bedrooms > filters.maxBedrooms) return false;
+    return true;
+  });
+
+  // Debug log to see what properties are received
+  console.log('🗺️ SmartMapV2 - Final filtered properties:', {
+    count: filteredProperties.length,
+    filters: filters,
+    properties: filteredProperties.map(p => ({
+      id: p.id,
+      title: p.title,
+      neighborhood: p.neighborhood,
+      coordinates: `${p.latitude}, ${p.longitude}`,
+      rent: p.monthly_rent,
+      status: p.status
+    }))
+  });
+
+  // Calculate stats manually
+  const stats = {
+    totalProperties: filteredProperties.length,
+    avgPrice: filteredProperties.length > 0
+      ? Math.round(filteredProperties.reduce((sum, p) => sum + p.monthly_rent, 0) / filteredProperties.length)
+      : 0,
+    minPrice: filteredProperties.length > 0
+      ? Math.min(...filteredProperties.map(p => p.monthly_rent))
+      : 0,
+    maxPrice: filteredProperties.length > 0
+      ? Math.max(...filteredProperties.map(p => p.monthly_rent))
+      : 0,
+    neighborhoods: [...new Set(filteredProperties.map(p => p.neighborhood).filter(Boolean))].length,
+    cities: [...new Set(filteredProperties.map(p => p.city))].length,
+    propertyTypes: [...new Set(filteredProperties.map(p => p.property_type))].length,
+  };
 
   const handlePropertyClick = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
-  };
-
-  const handlePOILayerToggle = (layer: POIType) => {
-    setActivePOILayers(prev =>
-      prev.includes(layer)
-        ? prev.filter(l => l !== layer)
-        : [...prev, layer]
-    );
-  };
-
-  const handleNeighborhoodClick = (neighborhood: Neighborhood) => {
-    setSelectedNeighborhood(neighborhood);
+    navigate(`/property/${propertyId}`);
   };
 
   return (
@@ -108,51 +148,16 @@ const SmartMapV2 = () => {
                       stats={stats}
                     />
 
-                    {/* Heatmap Toggle */}
-                    <Card className="p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <Activity className="h-4 w-4 text-secondary" />
-                          <span className="text-sm font-semibold">Heatmap des prix</span>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant={showHeatmap ? 'default' : 'outline'}
-                          onClick={() => setShowHeatmap(!showHeatmap)}
-                        >
-                          {showHeatmap ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                        </Button>
+                    {/* Note about simplified map */}
+                    <Card className="p-4 bg-gradient-to-br from-muted/10 to-muted/5 border-muted/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Map className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-semibold">Carte interactive</span>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Visualisez les zones de prix sur la carte
+                        Carte simplifiée avec clustering intelligent des propriétés
                       </p>
                     </Card>
-
-                    {/* Neighborhoods Toggle */}
-                    <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <MapPinned className="h-4 w-4 text-primary" />
-                          <Label htmlFor="neighborhoods-toggle" className="text-sm font-semibold cursor-pointer">
-                            Zones de quartiers
-                          </Label>
-                        </div>
-                        <Switch
-                          id="neighborhoods-toggle"
-                          checked={showNeighborhoods}
-                          onCheckedChange={setShowNeighborhoods}
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Afficher les délimitations et prix par quartier
-                      </p>
-                    </Card>
-
-                    {/* POI Layers */}
-                    <POILayer
-                      activeLayers={activePOILayers}
-                      onLayerToggle={handlePOILayerToggle}
-                    />
 
                     {/* Quick Stats */}
                     <Card className="p-4">
@@ -173,11 +178,7 @@ const SmartMapV2 = () => {
                           <span className="text-muted-foreground">Prix max</span>
                           <span className="font-semibold">{(stats.maxPrice / 1000).toFixed(0)}k FCFA</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">POI actifs</span>
-                          <span className="font-semibold">{activePOILayers.length}</span>
                         </div>
-                      </div>
                     </Card>
                   </>
                 )}
@@ -208,14 +209,10 @@ const SmartMapV2 = () => {
                       </div>
                     </div>
                   ) : (
-                    <EnhancedMap
-                      properties={properties}
+                    <PropertyMap
+                      properties={filteredProperties}
                       onPropertyClick={handlePropertyClick}
-                      showHeatmap={showHeatmap}
-                      showClusters={true}
-                      activePOILayers={activePOILayers}
-                      showNeighborhoods={showNeighborhoods}
-                      onNeighborhoodClick={handleNeighborhoodClick}
+                      showLocationButton={true}
                     />
                   )}
                 </Card>
@@ -224,16 +221,7 @@ const SmartMapV2 = () => {
           </div>
         </section>
 
-        {/* Neighborhood Card Overlay */}
-        <AnimatePresence>
-          {selectedNeighborhood && (
-            <NeighborhoodCard
-              neighborhood={selectedNeighborhood}
-              onClose={() => setSelectedNeighborhood(null)}
-            />
-          )}
-        </AnimatePresence>
-
+  
         {/* Info Section */}
         <section className="py-12 bg-muted/20">
           <div className="container mx-auto px-2">
@@ -241,44 +229,34 @@ const SmartMapV2 = () => {
               <h2 className="text-h2 mb-6">
                 Une carte <span className="text-gradient-secondary">vraiment intelligente</span>
               </h2>
-              <div className="grid md:grid-cols-4 gap-6 mt-8">
+              <div className="grid md:grid-cols-3 gap-6 mt-8">
                 <Card className="p-6 hover:shadow-lg transition-shadow">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <Layers className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">Clustering</h3>
+                  <h3 className="font-semibold mb-2">Clustering Intelligent</h3>
                   <p className="text-sm text-muted-foreground">
-                    Regroupement intelligent des biens
+                    Regroupement automatique des biens pour une meilleure lisibilité
                   </p>
                 </Card>
 
                 <Card className="p-6 hover:shadow-lg transition-shadow">
                   <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
-                    <Activity className="h-6 w-6 text-secondary" />
+                    <Map className="h-6 w-6 text-secondary" />
                   </div>
-                  <h3 className="font-semibold mb-2">Heatmap</h3>
+                  <h3 className="font-semibold mb-2">Navigation Fluide</h3>
                   <p className="text-sm text-muted-foreground">
-                    Zones de prix visualisées
+                    Interface intuitive et zoom progressif sur les propriétés
                   </p>
                 </Card>
 
                 <Card className="p-6 hover:shadow-lg transition-shadow">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <MapPinned className="h-6 w-6 text-primary" />
+                    <TrendingUp className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">POI</h3>
+                  <h3 className="font-semibold mb-2">Filtres Avancés</h3>
                   <p className="text-sm text-muted-foreground">
-                    Écoles, transports, commerces
-                  </p>
-                </Card>
-
-                <Card className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp className="h-6 w-6 text-secondary" />
-                  </div>
-                  <h3 className="font-semibold mb-2">Analyse</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Statistiques par quartier
+                    Recherche précise par prix, type et nombre de chambres
                   </p>
                 </Card>
               </div>

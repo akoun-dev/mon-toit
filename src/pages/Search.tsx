@@ -37,7 +37,7 @@ const Search = () => {
     usePropertyFilters(properties);
 
   const handleNavigateToProperty = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
+    navigate(`/property/${propertyId}`);
   };
 
   useEffect(() => {

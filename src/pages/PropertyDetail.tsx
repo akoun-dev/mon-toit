@@ -79,7 +79,7 @@ const PropertyDetail = () => {
     ogTitle: property ? `${property.title} - ${property.city}` : 'Bien Immobilier',
     ogDescription: property?.description?.substring(0, 200),
     ogImage: property?.main_image || property?.images?.[0] || 'https://mon-toit.lovable.app/placeholder.svg',
-    ogUrl: property ? `https://mon-toit.lovable.app/properties/${property.id}` : 'https://mon-toit.lovable.app',
+    ogUrl: property ? `https://mon-toit.lovable.app/property/${property.id}` : 'https://mon-toit.lovable.app',
     twitterCard: 'summary_large_image'
   });
 
@@ -815,7 +815,7 @@ const PropertyDetail = () => {
             <div className="mt-12">
               <RecommendationsSection
                 userId={user.id}
-                type="properties"
+                type="property"
                 limit={4}
                 title="Biens similaires"
               />

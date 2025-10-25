@@ -45,10 +45,23 @@ const SmartMap = () => {
     refetchInterval: 30000,
   });
 
+  // Debug log to see what properties are received
+  console.log('🗺️ SmartMap - Properties received:', {
+    count: properties.length,
+    properties: properties.map(p => ({
+      id: p.id,
+      title: p.title,
+      neighborhood: p.neighborhood,
+      coordinates: `${p.latitude}, ${p.longitude}`,
+      rent: p.monthly_rent,
+      status: p.status
+    }))
+  });
+
   const stats = useMapStats(properties);
 
   const handlePropertyClick = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
+    navigate(`/property/${propertyId}`);
   };
 
   return (

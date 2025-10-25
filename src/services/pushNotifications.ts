@@ -215,7 +215,7 @@ class PushNotificationService {
       switch (payload.data.action) {
         case 'view_property':
           if (payload.data.propertyId) {
-            window.location.href = `/properties/${payload.data.propertyId}`;
+            window.location.href = `/property/${payload.data.propertyId}`;
           }
           break;
         case 'view_messages':

@@ -4,50 +4,11 @@ import PropertyMap from "./PropertyMap";
 import { Link } from "react-router-dom";
 import { useWeather } from "@/hooks/useWeather";
 import { Badge } from "./ui/badge";
-
-/**
- * Mock featured properties data for map demonstration
- * These are example properties located in different neighborhoods of Abidjan
- * In production, this would be fetched from the database
- */
-const featuredProperties = [
-  {
-    id: "1",
-    title: "Appartement 3 pièces - Cocody",
-    city: "Cocody",
-    monthly_rent: 350000,
-    latitude: 5.3599,
-    longitude: -3.9889,
-    main_image: null
-  },
-  {
-    id: "2",
-    title: "Villa F4 - Plateau",
-    city: "Plateau",
-    monthly_rent: 550000,
-    latitude: 5.3244,
-    longitude: -4.0125,
-    main_image: null
-  },
-  {
-    id: "3",
-    title: "Studio moderne - Marcory",
-    city: "Marcory",
-    monthly_rent: 180000,
-    latitude: 5.2869,
-    longitude: -3.9967,
-    main_image: null
-  },
-  {
-    id: "4",
-    title: "Duplex 5 pièces - Riviera",
-    city: "Riviera",
-    monthly_rent: 650000,
-    latitude: 5.3736,
-    longitude: -3.9609,
-    main_image: null
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import { propertyService } from "@/services/propertyService";
+import { Skeleton } from "./ui/skeleton";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "./ui/alert";
 
 /**
  * ExploreMap component displays an interactive map with featured properties
@@ -55,12 +16,51 @@ const featuredProperties = [
  */
 const ExploreMap = () => {
   const { weather } = useWeather();
-  
+
+  // Fetch real properties from database
+  const { data: properties = [], isLoading, error } = useQuery({
+    queryKey: ['properties'],
+    queryFn: async () => {
+      console.log('🗺️ ExploreMap - Fetching properties from propertyService.fetchAll()');
+      const data = await propertyService.fetchAll();
+      console.log('🗺️ ExploreMap - Raw data from fetchAll():', {
+        count: data.length,
+        data: data.map(p => ({
+          id: p.id,
+          title: p.title,
+          latitude: p.latitude,
+          longitude: p.longitude,
+          coordinates: `${p.latitude}, ${p.longitude}`
+        }))
+      });
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Filter properties with valid coordinates for map display
+  const mapProperties = properties.filter(property =>
+    property.latitude &&
+    property.longitude &&
+    !isNaN(property.latitude) &&
+    !isNaN(property.longitude)
+  );
+
+  console.log('🗺️ ExploreMap - Properties with valid coordinates:', {
+    total: properties.length,
+    withValidCoords: mapProperties.length,
+    filtered: mapProperties.map(p => ({
+      id: p.id,
+      title: p.title,
+      coordinates: `${p.latitude}, ${p.longitude}`
+    }))
+  });
+
   /**
    * Navigate to property detail page when marker is clicked
    */
   const handlePropertyClick = (propertyId: string) => {
-    window.location.href = `/properties/${propertyId}`;
+    window.location.href = `/property/${propertyId}`;
   };
 
   /**
@@ -76,8 +76,8 @@ const ExploreMap = () => {
     }
   };
 
-  const WeatherIcon = weather.description.toLowerCase().includes('pluie') 
-    ? CloudRain 
+  const WeatherIcon = weather.description.toLowerCase().includes('pluie')
+    ? CloudRain
     : weather.description.toLowerCase().includes('nuage')
     ? Cloud
     : Sun;
@@ -110,11 +110,31 @@ const ExploreMap = () => {
           </Badge>
 
           <div className="h-[60vh] md:h-[700px]">
-            <PropertyMap 
-              properties={featuredProperties}
-              onPropertyClick={handlePropertyClick}
-              showLocationButton={true}
-            />
+            {isLoading ? (
+              <Skeleton className="w-full h-full" />
+            ) : error ? (
+              <Alert variant="destructive" className="m-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Erreur lors du chargement des propriétés sur la carte
+                </AlertDescription>
+              </Alert>
+            ) : mapProperties.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">
+                    Aucune propriété avec coordonnées géographiques disponible
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <PropertyMap
+                properties={mapProperties}
+                onPropertyClick={handlePropertyClick}
+                showLocationButton={true}
+              />
+            )}
           </div>
         </div>
 

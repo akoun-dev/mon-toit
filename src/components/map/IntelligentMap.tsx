@@ -49,12 +49,23 @@ const MAP_STYLES: Record<MapStyle, string> = {
   hybrid: 'mapbox://styles/mapbox/satellite-streets-v12',
 };
 
-export const IntelligentMap = ({ 
-  properties, 
+export const IntelligentMap = ({
+  properties,
   onPropertyClick,
   showHeatmap = false,
   showClusters = true
 }: IntelligentMapProps) => {
+  // Debug log to see what properties are received
+  console.log('🗺️ IntelligentMap - Properties received:', {
+    count: properties.length,
+    properties: properties.map(p => ({
+      id: p.id,
+      title: p.title,
+      neighborhood: p.neighborhood,
+      coordinates: `${p.latitude}, ${p.longitude}`
+    }))
+  });
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
