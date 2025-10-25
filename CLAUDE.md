@@ -45,11 +45,19 @@ VITE_SENTRY_DSN=your_sentry_dsn  # Optional for error tracking
 - **Authentication**: Multi-factor auth with role-based access control
 
 ### Multi-Tenant Role System
-The application supports 4 distinct user roles with separate dashboards:
-- **propriétaire** (Owner): Property management and tenant applications
-- **locataire** (Tenant): Property search and lease management
-- **agence** (Agency): Portfolio management and mandates
-- **tiers_de_confiance** (Third-party Trust): Certification and mediation
+The application supports 5 distinct user roles with separate dashboards:
+- **admin_ansut** (Platform Admin): Full system administration and user management
+- **propriétaire** (Owner): Property management and tenant applications (9 users)
+- **locataire** (Tenant): Property search and lease management (4 users)
+- **agence** (Agency): Portfolio management and mandates (2 users)
+- **tiers_de_confiance** (Third-party Trust): Certification and mediation (1 user)
+
+**Test Accounts** (all passwords match role name + "123"):
+- Admin: `admin@mon-toit.ci` / `admin123`
+- Proprietaire: `kouadio.jean@mon-toit.ci` / `proprietaire123`
+- Locataire: `yao.konan@mon-toit.ci` / `locataire123`
+- Agence: `contact@agence-cocody.ci` / `agence123`
+- Tiers: `notaire.konan@mon-toit.ci` / `tiers123`
 
 ### Key Directory Structure
 
@@ -159,6 +167,21 @@ The PWA includes sophisticated offline capabilities:
 - Test security policies located in `tests/security/` directory
 - Duplicate code detection with JSCPD prevents maintenance issues
 
+### Authentication & Role System
+- **Multi-factor authentication** with OTP verification for sensitive operations
+- **Role-based redirection** handled in `useAuthEnhanced.tsx` and `ProtectedRoute.tsx`
+- **User roles stored** in `public.user_roles` table with RLS policies
+- **Login attempt tracking** in `public.login_attempts` with rate limiting
+- **Session management** with secure storage and device fingerprinting
+- **Default role fallback** to 'locataire' if no role found (check `user_roles` table first)
+
+### Common Issues & Solutions
+- **All users redirect to tenant dashboard**: Check `user_roles` table is populated
+- **Authentication fails**: Verify password hashes are compatible with Supabase auth
+- **404 on check_login_rate_limit**: Grant EXECUTE permissions on RPC function to anon/authenticated roles
+- **401 on login_attempts**: Update RLS policy to allow anonymous INSERT operations
+- **Missing user profiles**: Run `npm run seed:auth` to create proper user data
+
 ### Testing Commands
 ```bash
 # Run tests (when test files are added)
@@ -170,9 +193,25 @@ npx vitest run --coverage  # Run tests with coverage report
 
 ### Database & Data Seeding
 ```bash
-npm run seed:auth        # Seed authentication data (requires scripts directory)
-npm run seed:auth:clean  # Clean user data (requires scripts directory)
-npm run seed:properties  # Seed property data (requires scripts directory)
+npm run seed:auth        # Seed authentication data (creates 17 functional user accounts)
+npm run seed:auth:create # Same as seed:auth - creates users with working passwords
+npm run seed:passwords  # Generate and apply working password hashes
+npm run seed:properties  # Seed property data (30+ properties with images)
+```
+
+### Supabase Database Management
+```bash
+# Reset and reseed database (use with caution)
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -f supabase/seed.sql
+
+# Fix user roles if everyone appears as tenant
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -f fix-user-roles.sql
+
+# Update password hashes if authentication fails
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -f fix-passwords.sql
+
+# Check user role distribution
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -c "SELECT role, COUNT(*) FROM public.user_roles GROUP BY role;"
 ```
 
 ### Code Quality
