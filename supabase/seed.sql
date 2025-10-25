@@ -218,20 +218,63 @@ DECLARE
   prop8_id UUID := '550e8400-e29b-41d4-a716-446655440108';
   prop9_id UUID := '550e8400-e29b-41d4-a716-446655440109';
   prop10_id UUID := '550e8400-e29b-41d4-a716-446655440110';
+  -- Additional 20 properties
+  prop11_id UUID := '550e8400-e29b-41d4-a716-446655440111';
+  prop12_id UUID := '550e8400-e29b-41d4-a716-446655440112';
+  prop13_id UUID := '550e8400-e29b-41d4-a716-446655440113';
+  prop14_id UUID := '550e8400-e29b-41d4-a716-446655440114';
+  prop15_id UUID := '550e8400-e29b-41d4-a716-446655440115';
+  prop16_id UUID := '550e8400-e29b-41d4-a716-446655440116';
+  prop17_id UUID := '550e8400-e29b-41d4-a716-446655440117';
+  prop18_id UUID := '550e8400-e29b-41d4-a716-446655440118';
+  prop19_id UUID := '550e8400-e29b-41d4-a716-446655440119';
+  prop20_id UUID := '550e8400-e29b-41d4-a716-446655440120';
+  prop21_id UUID := '550e8400-e29b-41d4-a716-446655440121';
+  prop22_id UUID := '550e8400-e29b-41d4-a716-446655440122';
+  prop23_id UUID := '550e8400-e29b-41d4-a716-446655440123';
+  prop24_id UUID := '550e8400-e29b-41d4-a716-446655440124';
+  prop25_id UUID := '550e8400-e29b-41d4-a716-446655440125';
+  prop26_id UUID := '550e8400-e29b-41d4-a716-446655440126';
+  prop27_id UUID := '550e8400-e29b-41d4-a716-446655440127';
+  prop28_id UUID := '550e8400-e29b-41d4-a716-446655440128';
+  prop29_id UUID := '550e8400-e29b-41d4-a716-446655440129';
+  prop30_id UUID := '550e8400-e29b-41d4-a716-446655440130';
 BEGIN
-  INSERT INTO public.properties (id, title, description, property_type, city, neighborhood, address, monthly_rent, surface_area, bedrooms, bathrooms, owner_id, status, created_at, updated_at) VALUES
-    (prop1_id, 'Résidence Admin - Cocody', 'Propriété de luxe gérée par l''administration pour tests', 'appartement', 'Abidjan', 'Cocody', 'Rue des Administrateurs, Cocody', 500000, 150, 4, 3, admin_user_id, 'disponible', NOW(), NOW()),
-    (prop2_id, 'Bureau Admin - Plateau', 'Bureau administratif pour démonstration', 'bureau', 'Abidjan', 'Plateau', 'Avenue du Gouvernement, Plateau', 750000, 200, 2, 2, admin_user_id, 'disponible', NOW(), NOW()),
-    (prop3_id, 'Appartement F3 Cocody', 'Bel appartement F3 dans un quartier résidentiel calme', 'appartement', 'Abidjan', 'Cocody', 'Rue des Palmiers, Cocody', 350000, 120, 3, 2, user2_id, 'disponible', NOW(), NOW()),
-    (prop4_id, 'Studio Yopougon', 'Studio idéal pour étudiant ou jeune professionnel', 'studio', 'Abidjan', 'Yopougon', 'Boulevard du Lac, Yopougon', 80000, 35, 1, 1, user3_id, 'disponible', NOW(), NOW()),
-    (prop5_id, 'Bureau Plateau', 'Bureau de standing au centre-ville', 'bureau', 'Abidjan', 'Plateau', 'Avenue Ch. de Gaulle, Plateau', 250000, 100, 0, 1, user10_id, 'disponible', NOW(), NOW()),
+  INSERT INTO public.properties (id, title, description, property_type, city, neighborhood, address, monthly_rent, surface_area, bedrooms, bathrooms, owner_id, status, latitude, longitude, created_at, updated_at) VALUES
+    (prop1_id, 'Résidence Admin - Cocody', 'Propriété de luxe gérée par l''administration pour tests', 'appartement', 'Abidjan', 'Cocody', 'Rue des Administrateurs, Cocody', 500000, 150, 4, 3, admin_user_id, 'disponible', 5.3601, -3.9953, NOW(), NOW()),
+    (prop2_id, 'Bureau Admin - Plateau', 'Bureau administratif pour démonstration', 'bureau', 'Abidjan', 'Plateau', 'Avenue du Gouvernement, Plateau', 750000, 200, 2, 2, admin_user_id, 'disponible', 5.3384, -4.0112, NOW(), NOW()),
+    (prop3_id, 'Appartement F3 Cocody', 'Bel appartement F3 dans un quartier résidentiel calme', 'appartement', 'Abidjan', 'Cocody', 'Rue des Palmiers, Cocody', 350000, 120, 3, 2, user2_id, 'disponible', 5.3589, -4.0083, NOW(), NOW()),
+    (prop4_id, 'Studio Yopougon', 'Studio idéal pour étudiant ou jeune professionnel', 'studio', 'Abidjan', 'Yopougon', 'Boulevard du Lac, Yopougon', 80000, 35, 1, 1, user3_id, 'disponible', 5.3295, -4.0627, NOW(), NOW()),
+    (prop5_id, 'Bureau Plateau', 'Bureau de standing au centre-ville', 'bureau', 'Abidjan', 'Plateau', 'Avenue Ch. de Gaulle, Plateau', 250000, 100, 0, 1, user10_id, 'disponible', 5.3402, -4.0087, NOW(), NOW()),
 
     -- NEW properties owned by new proprietaires
-    (prop6_id, 'Villa F5 Marcory', 'Spacieuse villa F5 avec jardin et garage', 'villa', 'Abidjan', 'Marcory', 'Rue des Hibiscus, Marcory', 600000, 220, 5, 4, user11_id, 'disponible', NOW(), NOW()),
-    (prop7_id, 'Résidence Studio Treichville', 'Immeuble de studios meublés pour étudiants', 'studio', 'Abidjan', 'Treichville', 'Impasse des Lycéens, Treichville', 90000, 30, 0, 1, user12_id, 'disponible', NOW(), NOW()),
-    (prop8_id, 'Local Commercial Plateau', 'Local commercial situé en zone passante', 'local_commercial', 'Abidjan', 'Plateau', 'Rue du Marché, Plateau', 450000, 120, 0, 2, user13_id, 'disponible', NOW(), NOW()),
-    (prop9_id, 'Appartement F2 Cocody', 'Charmant F2 proche universités', 'appartement', 'Abidjan', 'Cocody', 'Avenue des Universités, Cocody', 180000, 60, 2, 1, user14_id, 'disponible', NOW(), NOW()),
-    (prop10_id, 'Bureau Zone 4', 'Bureau moderne en open-space', 'bureau', 'Abidjan', 'Zone 4', 'Boulevard des Affaires, Zone 4', 300000, 110, 0, 1, user15_id, 'disponible', NOW(), NOW())
+    (prop6_id, 'Villa F5 Marcory', 'Spacieuse villa F5 avec jardin et garage', 'villa', 'Abidjan', 'Marcory', 'Rue des Hibiscus, Marcory', 600000, 220, 5, 4, user11_id, 'disponible', 5.3069, -3.9912, NOW(), NOW()),
+    (prop7_id, 'Résidence Studio Treichville', 'Immeuble de studios meublés pour étudiants', 'studio', 'Abidjan', 'Treichville', 'Impasse des Lycéens, Treichville', 90000, 30, 0, 1, user12_id, 'disponible', 5.2846, -3.9765, NOW(), NOW()),
+    (prop8_id, 'Local Commercial Plateau', 'Local commercial situé en zone passante', 'local_commercial', 'Abidjan', 'Plateau', 'Rue du Marché, Plateau', 450000, 120, 0, 2, user13_id, 'disponible', 5.3358, -4.0156, NOW(), NOW()),
+    (prop9_id, 'Appartement F2 Cocody', 'Charmant F2 proche universités', 'appartement', 'Abidjan', 'Cocody', 'Avenue des Universités, Cocody', 180000, 60, 2, 1, user14_id, 'disponible', 5.3672, -3.9894, NOW(), NOW()),
+    (prop10_id, 'Bureau Zone 4', 'Bureau moderne en open-space', 'bureau', 'Abidjan', 'Zone 4', 'Boulevard des Affaires, Zone 4', 300000, 110, 0, 1, user15_id, 'disponible', 5.3187, -3.9832, NOW(), NOW()),
+
+    -- 20 ADDITIONAL PROPERTIES WITH GEOGRAPHIC COORDINATES
+    (prop11_id, 'Appartement F3 Abobo', 'Appartement spacieux dans quartier résidentiel', 'appartement', 'Abidjan', 'Abobo', 'Boulevard de la Liberté, Abobo', 250000, 110, 3, 2, user2_id, 'disponible', 5.4218, -4.0215, NOW(), NOW()),
+    (prop12_id, 'Studio Meublé Adjame', 'Studio moderne meublé près du marché', 'studio', 'Abidjan', 'Adjamé', 'Rue du Commerce, Adjamé', 75000, 28, 0, 1, user3_id, 'disponible', 5.3669, -4.0317, NOW(), NOW()),
+    (prop13_id, 'Villa F4 Riviera', 'Villa de luxe avec piscine privative', 'villa', 'Abidjan', 'Riviera', 'Avenue des Palmiers, Riviera', 800000, 280, 4, 3, user10_id, 'disponible', 5.3765, -3.9456, NOW(), NOW()),
+    (prop14_id, 'Bureau Commercial Marcory', 'Espace de bureau idéalement situé', 'bureau', 'Abidjan', 'Marcory', 'Rue des Entreprises, Marcory', 320000, 95, 0, 1, user11_id, 'disponible', 5.3024, -3.9857, NOW(), NOW()),
+    (prop15_id, 'Appartement F1 Plateau', 'Studio centre-ville avec vue', 'appartement', 'Abidjan', 'Plateau', 'Avenue du Progrès, Plateau', 150000, 45, 1, 1, user12_id, 'disponible', 5.3421, -4.0098, NOW(), NOW()),
+    (prop16_id, 'Résidence F5 Yopougon', 'Grande résidence familiale', 'villa', 'Abidjan', 'Yopougon', 'Boulevard des Nations, Yopougon', 450000, 200, 5, 3, user13_id, 'disponible', 5.3356, -4.0543, NOW(), NOW()),
+    (prop17_id, 'Local Commercial Cocody', 'Magasin commercial en zone passante', 'local_commercial', 'Abidjan', 'Cocody', 'Rue des Commerces, Cocody', 380000, 80, 0, 1, user14_id, 'disponible', 5.3634, -3.9987, NOW(), NOW()),
+    (prop18_id, 'Appartement F2 Treichville', 'Appartement rénové près du port', 'appartement', 'Abidjan', 'Treichville', 'Avenue du Port, Treichville', 200000, 65, 2, 1, user15_id, 'disponible', 5.2798, -3.9689, NOW(), NOW()),
+    (prop19_id, 'Villa F6 Bingerville', 'Villa de prestige avec grand jardin', 'villa', 'Abidjan', 'Bingerville', 'Route de la Paix, Bingerville', 900000, 320, 6, 4, user2_id, 'disponible', 5.3467, -3.8765, NOW(), NOW()),
+    (prop20_id, 'Studio Etudiant Cocody', 'Studio adapté pour étudiants', 'studio', 'Abidjan', 'Cocody', 'Rue Universitaire, Cocody', 95000, 32, 0, 1, user3_id, 'disponible', 5.3701, -3.9923, NOW(), NOW()),
+    (prop21_id, 'Bureau Open Space Zone 4', 'Espace de travail moderne et lumineux', 'bureau', 'Abidjan', 'Zone 4', 'Avenue de la Technologie, Zone 4', 420000, 130, 0, 2, user10_id, 'disponible', 5.3156, -3.9789, NOW(), NOW()),
+    (prop22_id, 'Appartement F4 Marcory', 'Appartement familial avec balcon', 'appartement', 'Abidjan', 'Marcory', 'Boulevard de la République, Marcory', 380000, 140, 4, 2, user11_id, 'disponible', 5.3087, -3.9965, NOW(), NOW()),
+    (prop23_id, 'Local Commercial Plateau', 'Bureau de prestige centre financier', 'local_commercial', 'Abidjan', 'Plateau', 'Avenue Bancaire, Plateau', 650000, 180, 0, 2, user12_id, 'disponible', 5.3378, -4.0123, NOW(), NOW()),
+    (prop24_id, 'Villa F3 Abobo', 'Villa avec jardin et terrasse', 'villa', 'Abidjan', 'Abobo', 'Rue des Jardins, Abobo', 280000, 150, 3, 2, user13_id, 'disponible', 5.4187, -4.0243, NOW(), NOW()),
+    (prop25_id, 'Appartement F1 Yopougon', 'Studio rénové avec cuisine équipée', 'appartement', 'Abidjan', 'Yopougon', 'Rue des Artisans, Yopougon', 85000, 38, 1, 1, user14_id, 'disponible', 5.3321, -4.0587, NOW(), NOW()),
+    (prop26_id, 'Bureau Cocody', 'Bureau dans quartier d''affaires', 'bureau', 'Abidjan', 'Cocody', 'Avenue des Affaires, Cocody', 280000, 85, 0, 1, user15_id, 'disponible', 5.3598, -3.9876, NOW(), NOW()),
+    (prop27_id, 'Appartement F3 Adjame', 'Appartement centre commercial', 'appartement', 'Abidjan', 'Adjamé', 'Place du Marché, Adjamé', 220000, 105, 3, 2, user2_id, 'disponible', 5.3645, -4.0298, NOW(), NOW()),
+    (prop28_id, 'Studio Meublé Plateau', 'Studio de luxe centre-ville', 'studio', 'Abidjan', 'Plateau', 'Rue de la Victoire, Plateau', 175000, 40, 0, 1, user3_id, 'disponible', 5.3409, -4.0065, NOW(), NOW()),
+    (prop29_id, 'Villa F4 Riviera', 'Villa moderne avec alarme', 'villa', 'Abidjan', 'Riviera', 'Chemin des Rêves, Riviera', 750000, 260, 4, 3, user10_id, 'disponible', 5.3789, -3.9412, NOW(), NOW()),
+    (prop30_id, 'Appartement F2 Treichville', 'Appartement près des transports', 'appartement', 'Abidjan', 'Treichville', 'Avenue des Gares, Treichville', 165000, 70, 2, 1, user11_id, 'disponible', 5.2765, -3.9734, NOW(), NOW())
   ON CONFLICT (id) DO NOTHING;
 
   RAISE NOTICE '✓ Propriétés existantes + nouvelles créées (ou ignorées si existants)';
