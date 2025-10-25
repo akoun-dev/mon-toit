@@ -1,23 +1,25 @@
 -- Migration: Create Login Rate Limit Functions
 -- Description: Create functions for login rate limiting and security
 
--- Create login_attempts table if it doesn't exist
-CREATE TABLE IF NOT EXISTS public.login_attempts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL,
-  ip_address INET NOT NULL,
-  user_agent TEXT,
-  attempted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  success BOOLEAN DEFAULT false,
-  failure_reason TEXT,
-  user_id UUID REFERENCES auth.users(id),
-  blocked_until TIMESTAMP WITH TIME ZONE
-);
+-- Add missing columns to login_attempts table if they don't exist
+DO $$
+BEGIN
+  -- Add missing columns
+  ALTER TABLE public.login_attempts ADD COLUMN IF NOT EXISTS attempted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+  ALTER TABLE public.login_attempts ADD COLUMN IF NOT EXISTS failure_reason TEXT;
+  ALTER TABLE public.login_attempts ADD COLUMN IF NOT EXISTS blocked_until TIMESTAMP WITH TIME ZONE;
 
--- Create indexes
+  -- Rename created_at to attempted_at if needed (or use attempted_at as primary timestamp)
+  -- Since created_at already exists, we'll keep it and also use attempted_at
+EXCEPTION
+  WHEN duplicate_column THEN NULL;
+END $$;
+
+-- Create indexes (use created_at as fallback if attempted_at doesn't exist)
 CREATE INDEX IF NOT EXISTS idx_login_attempts_email ON public.login_attempts(email);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_ip_address ON public.login_attempts(ip_address);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_attempted_at ON public.login_attempts(attempted_at);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_created_at ON public.login_attempts(created_at);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_blocked_until ON public.login_attempts(blocked_until);
 
 -- Enable RLS
@@ -34,8 +36,8 @@ CREATE POLICY "Users can view their own login attempts" ON public.login_attempts
     auth.uid() = user_id
   );
 
--- Function to check login rate limit
-CREATE OR REPLACE FUNCTION check_login_rate_limit(p_email TEXT, p_ip_address INET DEFAULT NULL)
+-- Function to check login rate limit (enhanced version)
+CREATE OR REPLACE FUNCTION check_login_rate_limit_advanced(p_email TEXT, p_ip_address INET DEFAULT NULL)
 RETURNS TABLE (
   allowed BOOLEAN,
   remaining_attempts INTEGER,
@@ -219,7 +221,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Grant permissions
-GRANT EXECUTE ON FUNCTION check_login_rate_limit(TEXT, INET) TO authenticated;
+GRANT EXECUTE ON FUNCTION check_login_rate_limit_advanced(TEXT, INET) TO authenticated;
 GRANT EXECUTE ON FUNCTION record_login_attempt(TEXT, BOOLEAN, TEXT, INET, TEXT, UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION cleanup_login_attempts() TO authenticated;
 GRANT EXECUTE ON FUNCTION get_login_statistics(INTEGER) TO authenticated;

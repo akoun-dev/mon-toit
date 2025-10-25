@@ -1,9 +1,12 @@
 -- Migration: Create User Roles Summary
 -- Description: Create user_roles_summary table for admin dashboard
 
+-- Drop the existing view if it exists
+DROP VIEW IF EXISTS public.user_roles_summary;
+
 CREATE TABLE IF NOT EXISTS public.user_roles_summary (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_type user_type NOT NULL,
+  user_type user_type NOT NULL UNIQUE,
   total_users INTEGER NOT NULL DEFAULT 0,
   verified_users INTEGER NOT NULL DEFAULT 0,
   unverified_users INTEGER NOT NULL DEFAULT 0,
