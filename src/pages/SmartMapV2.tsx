@@ -21,10 +21,10 @@ const SmartMapV2 = () => {
   
   const [filters, setFilters] = useState<MapFiltersState>({
     minPrice: 0,
-    maxPrice: 2000000,
+    maxPrice: null,
     propertyType: 'all',
-    minBedrooms: 1,
-    maxBedrooms: 5,
+    minBedrooms: null,
+    maxBedrooms: null,
     amenities: [],
   });
 
@@ -67,13 +67,30 @@ const SmartMapV2 = () => {
     }))
   });
 
-  // Apply filters to properties
+  // Apply filters to properties - with no default restrictions
   const filteredProperties = properties.filter(property => {
-    if (filters.minPrice && property.monthly_rent < filters.minPrice) return false;
-    if (filters.maxPrice && property.monthly_rent > filters.maxPrice) return false;
-    if (filters.propertyType !== 'all' && property.property_type !== filters.propertyType) return false;
-    if (filters.minBedrooms && property.bedrooms < filters.minBedrooms) return false;
-    if (filters.maxBedrooms && property.bedrooms > filters.maxBedrooms) return false;
+    // Only apply filters if they are set (not null)
+    if (filters.minPrice !== null && filters.minPrice !== undefined && property.monthly_rent < filters.minPrice) {
+      console.log(`🗺️ Filtered out ${property.title} - rent ${property.monthly_rent} < minPrice ${filters.minPrice}`);
+      return false;
+    }
+    if (filters.maxPrice !== null && filters.maxPrice !== undefined && property.monthly_rent > filters.maxPrice) {
+      console.log(`🗺️ Filtered out ${property.title} - rent ${property.monthly_rent} > maxPrice ${filters.maxPrice}`);
+      return false;
+    }
+    if (filters.propertyType !== 'all' && filters.propertyType && property.property_type !== filters.propertyType) {
+      console.log(`🗺️ Filtered out ${property.title} - type ${property.property_type} != filter ${filters.propertyType}`);
+      return false;
+    }
+    if (filters.minBedrooms !== null && filters.minBedrooms !== undefined && property.bedrooms < filters.minBedrooms) {
+      console.log(`🗺️ Filtered out ${property.title} - bedrooms ${property.bedrooms} < minBedrooms ${filters.minBedrooms}`);
+      return false;
+    }
+    if (filters.maxBedrooms !== null && filters.maxBedrooms !== undefined && property.bedrooms > filters.maxBedrooms) {
+      console.log(`🗺️ Filtered out ${property.title} - bedrooms ${property.bedrooms} > maxBedrooms ${filters.maxBedrooms}`);
+      return false;
+    }
+    console.log(`🗺️ Kept ${property.title} - passed all filters`);
     return true;
   });
 
