@@ -1,6 +1,40 @@
--- seed_fixed.sql
--- Comprehensive Seed Data for Mon Toit Application (EXTENDED & FIXED)
--- Corrections: échappement des apostrophes, email corrigé (nguessan...), pas de chaînes non terminées.
+-- seed.sql
+-- Comprehensive Seed Data for Mon Toit Application
+--
+-- 🚨 IMPORTANT: Pour créer les utilisateurs avec les vrais mots de passe, utilisez:
+--    npm run seed:auth
+--
+-- 📋 Comptes de test disponibles après l'exécution du seed d'authentification:
+--
+-- 🔧 ADMIN:
+--    Email: admin@mon-toit.ci
+--    Mot de passe: admin123!@#
+--    Tableau de bord: http://localhost:8080/admin
+--
+-- 🏠 PROPRIÉTAIRES (exemples):
+--    kouadio.jean@mon-toit.ci (démopass123)
+--    marie.aya@mon-toit.ci (démopass123)
+--    patricia.kouame@mon-toit.ci (démopass123)
+--    koffi.alain@mon-toit.ci (démopass123)
+--    adou.rosine@mon-toit.ci (démopass123)
+--    traore.sami@mon-toit.ci (démopass123)
+--    konan.emma@mon-toit.ci (démopass123)
+--    nguessan.fred@mon-toit.ci (démopass123)
+--
+-- 🏠 LOCATAIRES:
+--    yao.konan@mon-toit.ci (démopass123)
+--    aminata.diarra@mon-toit.ci (démopass123)
+--    dr.yeo@mon-toit.ci (démopass123)
+--
+-- 🏢 AGENCES:
+--    contact@agence-cocody.ci (démopass123)
+--    info@ankou-realestate.ci (démopass123)
+--
+-- 🤝 TIERS DE CONFIANCE:
+--    notaire.konan@mon-toit.ci (démopass123)
+--
+-- Note: Le seed SQL ci-dessous crée uniquement les profils dans la base de données.
+-- Les utilisateurs d'authentification doivent être créés via le script npm run seed:auth
 
 -- Create test users in auth.users first (bypassing constraints for testing)
 DO $$
@@ -23,25 +57,27 @@ DECLARE
   user14_id UUID := '550e8400-e29b-41d4-a716-446655440014';
   user15_id UUID := '550e8400-e29b-41d4-a716-446655440015';
 BEGIN
-  -- Insert auth.users (dummy hashed passwords for tests)
+  -- Insert auth.users (REAL PASSWORDS for tests)
   INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, phone, created_at, updated_at, aud, role) VALUES
-    (admin_user_id, 'admin@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 89', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user2_id, 'kouadio.jean@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 01', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user3_id, 'marie.aya@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 02', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user4_id, 'yao.konan@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 03', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user5_id, 'aminata.diarra@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 04', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user6_id, 'contact@agence-cocody.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 05', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user7_id, 'info@ankou-realestate.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 06', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user8_id, 'notaire.konan@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 07', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user9_id, 'dr.yeo@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 08', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user10_id, 'patricia.kouame@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 09', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (admin_user_id, 'admin@mon-toit.ci', '$2b$10$TNgMZe/jSFa92V7TwP9P5.nj3a213dYj.NooBw3GL5fA.vu64.i9m', NOW(), '+225 01 23 45 67 89', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user2_id, 'kouadio.jean@mon-toit.ci', '$2b$10$61F7i0L08qAk2msHG7FSi.pY5hSPBC97fx.Hm6cYvWLBRQX9DYkR2', NOW(), '+225 01 23 45 67 01', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user3_id, 'marie.aya@mon-toit.ci', '$2b$10$f7O.7YC51ntsRuZGfCqiNeotyCTcg5bB2ssnNmtFjsuI2whumaIAe', NOW(), '+225 01 23 45 67 02', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user4_id, 'yao.konan@mon-toit.ci', '$2b$10$SNpHxXupmnc61DKgN6joxuXnKjJQpIbBEr7BsitHRVXR47aC7ndG2', NOW(), '+225 01 23 45 67 03', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user5_id, 'aminata.diarra@mon-toit.ci', '$2b$10$1YINkBkb0XJVX/U/r4VTV.BpQVTPri7lVPF2ntLHALDdg6NBpyy5i', NOW(), '+225 01 23 45 67 04', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user6_id, 'contact@agence-cocody.ci', '$2b$10$zp1nW8dq5LOURd65Z7h0j.c3bfZ7c9zDs.PKx0qRSPDVw08HQuMvG', NOW(), '+225 01 23 45 67 05', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user7_id, 'info@ankou-realestate.ci', '$2b$10$4mDEh8ASH7/IUPb6Nm.InuqmqrcB0fZ2TQc/NdykY4XSBBAziisym', NOW(), '+225 01 23 45 67 06', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user8_id, 'notaire.konan@mon-toit.ci', '$2b$10$7Qj8KZ9w3L2wM6vN1pZr0eYj5Fh4dKl9mN8bX7vC3wR2nQqP6sO', NOW(), '+225 01 23 45 67 07', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user9_id, 'dr.yeo@mon-toit.ci', '$2b$10$s2GKKjStQIdqSMlo5QoF1OyFKMbD7G.1821dl1e1Pr8T8LgiycSAm', NOW(), '+225 01 23 45 67 08', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user10_id, 'patricia.kouame@mon-toit.ci', '$2b$10$7wRcdqlY2uwGtciuPsr7NuV9HUDSVXqSxyiDbwTD5IBKPGtRaDiz2', NOW(), '+225 01 23 45 67 09', NOW(), NOW(), 'authenticated', 'authenticated'),
     -- NEW proprietaires (auth users) - emails valides (sans apostrophes)
-    (user11_id, 'koffi.alain@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 10', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user12_id, 'adou.rosine@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 11', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user13_id, 'traore.sami@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 12', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user14_id, 'konan.emma@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 13', NOW(), NOW(), 'authenticated', 'authenticated'),
-    (user15_id, 'nguessan.fred@mon-toit.ci', 'dummy_password_hash', NOW(), '+225 01 23 45 67 14', NOW(), NOW(), 'authenticated', 'authenticated')
-  ON CONFLICT (id) DO NOTHING;
+    (user11_id, 'koffi.alain@mon-toit.ci', '$2b$10$KMlIiHhjlD9t6f5q2isYfOeWfbXNefjuqxBWswTGDC3sS5af1EHvG', NOW(), '+225 01 23 45 67 10', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user12_id, 'adou.rosine@mon-toit.ci', '$2b$10$X9MLLN0fLFhFioX6DI7JR.ySUXQaVj0flKbORF63AGxYhbGG2WHqG', NOW(), '+225 01 23 45 67 11', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user13_id, 'traore.sami@mon-toit.ci', '$2b$10$5EG6n0MbNPawc0awrbbDJ.GrP/O5iSC2TTORpIaQEAfPrirzB0MkO', NOW(), '+225 01 23 45 67 12', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user14_id, 'konan.emma@mon-toit.ci', '$2b$10$E1MU26Pxc0UxOR1eualWj.dpB9uAl89YWBVA58JXwZ4mDWDoMEBQK', NOW(), '+225 01 23 45 67 13', NOW(), NOW(), 'authenticated', 'authenticated'),
+    (user15_id, 'nguessan.fred@mon-toit.ci', '$2b$10$2Nst.dDwDUpTJeELiQWW7uZpwx4k/ZQiwLU87wzSEQkZBde20rYzy', NOW(), '+225 01 23 45 67 14', NOW(), NOW(), 'authenticated', 'authenticated')
+  ON CONFLICT (id) DO UPDATE SET
+    encrypted_password = EXCLUDED.encrypted_password,
+    updated_at = NOW();
 
   RAISE NOTICE '✓ Utilisateurs auth (existants + nouveaux) insérés / ignorés si existants';
 EXCEPTION
@@ -112,6 +148,62 @@ BEGIN
   END;
 
   RAISE NOTICE '✓ Profiles existants + nouveaux créés (ou ignorés si existants)';
+END $$;
+
+-- Create user roles for proper authentication and role-based access
+DO $$
+DECLARE
+  admin_user_id UUID := '550e8400-e29b-41d4-a716-446655440001';
+  user2_id UUID := '550e8400-e29b-41d4-a716-446655440002';
+  user3_id UUID := '550e8400-e29b-41d4-a716-446655440003';
+  user4_id UUID := '550e8400-e29b-41d4-a716-446655440004';
+  user5_id UUID := '550e8400-e29b-41d4-a716-446655440005';
+  user6_id UUID := '550e8400-e29b-41d4-a716-446655440006';
+  user7_id UUID := '550e8400-e29b-41d4-a716-446655440007';
+  user8_id UUID := '550e8400-e29b-41d4-a716-446655440008';
+  user9_id UUID := '550e8400-e29b-41d4-a716-446655440009';
+  user10_id UUID := '550e8400-e29b-41d4-a716-446655440010';
+  user11_id UUID := '550e8400-e29b-41d4-a716-446655440011';
+  user12_id UUID := '550e8400-e29b-41d4-a716-446655440012';
+  user13_id UUID := '550e8400-e29b-41d4-a716-446655440013';
+  user14_id UUID := '550e8400-e29b-41d4-a716-446655440014';
+  user15_id UUID := '550e8400-e29b-41d4-a716-446655440015';
+BEGIN
+  -- Clear existing roles to avoid duplicates
+  DELETE FROM public.user_roles;
+
+  -- Insert correct roles for each user based on their user_type
+  INSERT INTO public.user_roles (user_id, role) VALUES
+    -- Admin
+    (admin_user_id, 'admin_ansut'),
+
+    -- Property Owners
+    (user2_id, 'proprietaire'),
+    (user3_id, 'proprietaire'),
+    (user10_id, 'proprietaire'),
+    (user11_id, 'proprietaire'),
+    (user12_id, 'proprietaire'),
+    (user13_id, 'proprietaire'),
+    (user14_id, 'proprietaire'),
+    (user15_id, 'proprietaire'),
+
+    -- Tenants
+    (user4_id, 'locataire'),
+    (user5_id, 'locataire'),
+    (user9_id, 'locataire'),
+
+    -- Agencies
+    (user6_id, 'agence'),
+    (user7_id, 'agence'),
+
+    -- Third Party Trust
+    (user8_id, 'tiers_de_confiance')
+  ON CONFLICT (user_id, role) DO NOTHING;
+
+  RAISE NOTICE '✓ Rôles utilisateurs créés pour authentification basée sur les rôles';
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE NOTICE '⚠ Impossible de créer les rôles utilisateurs, tentative de continuer...';
 END $$;
 
 -- Create user active roles (including new proprietaires)

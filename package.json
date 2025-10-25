@@ -9,8 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "seed:auth": "node scripts/seed-auth-service.js",
-    "seed:auth:clean": "node scripts/clean-users-service.js",
+    "seed:auth": "node scripts/seed-auth-final.js",
+    "seed:auth:create": "node scripts/seed-auth-final.js",
+    "seed:passwords": "node scripts/generate-real-passwords.js && psql -h localhost -p 54322 -U postgres -d postgres -f supabase/seed-passwords-patch.sql",
     "seed:properties": "node scripts/seed-properties.js"
   },
   "dependencies": {
@@ -72,6 +73,7 @@
     "@types/crypto-js": "^4.2.2",
     "@types/dompurify": "^3.0.5",
     "@vitest/ui": "^3.2.4",
+    "bcrypt": "^6.0.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
