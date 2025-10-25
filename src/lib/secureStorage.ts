@@ -206,6 +206,11 @@ class SecureStorage {
       const encryptedValue = localStorage.getItem(key);
       if (!encryptedValue) return null;
 
+      // Check if it's a valid base64 string (legacy format)
+      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(encryptedValue)) {
+        return null; // Not legacy encrypted data
+      }
+
       // Simple XOR decryption (legacy)
       const userAgent = navigator.userAgent;
       const language = navigator.language;
@@ -220,7 +225,8 @@ class SecureStorage {
       }
       return result;
     } catch (error) {
-      console.error('Legacy decryption failed:', error);
+      // Silently handle legacy decryption failures - these are expected
+      // during migration from old storage format
       return null;
     }
   }
@@ -306,7 +312,8 @@ class SecureStorage {
           migratedCount++;
         }
       } catch (error) {
-        console.error(`Failed to migrate key ${key}:`, error);
+        // Silently handle migration failures - expected during transition
+        // No need to log errors for legacy data that can't be migrated
       }
     }
 
