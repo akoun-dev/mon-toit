@@ -2,3 +2,15 @@
 supabase db reset --linked
 // Appliquer les migrations et seed
 supabase db push --include-seed
+
+
+
+
+Au niveau des l'interface locataire, assure que tous les services sont presentes et CRUD implementé
+
+
+  - Admin : admin@mon-toit.ci / admin123
+  - Propriétaire : kouadio.jean@mon-toit.ci / proprietaire123
+  - Locataire : yao.konan@mon-toit.ci / locataire123
+  - Agence : contact@agence-cocody.ci / agence123
+  - Tiers de confiance : notaire.konan@mon-toit.ci / tiers123

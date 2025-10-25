@@ -16,10 +16,11 @@ CREATE POLICY "Users can update own profile" ON public.profiles
 CREATE POLICY "Users can insert own profile" ON public.profiles
   FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND auth.uid() = id);
 
-CREATE POLICY "Profiles are publicly viewable" ON public.profiles
+CREATE POLICY "Limited public profile access" ON public.profiles
   FOR SELECT USING (
-    -- Allow viewing basic info for all profiles
-    true
+    -- Allow access only for authenticated users or verified public profiles
+    auth.uid() IS NOT NULL OR
+    (is_verified = true AND user_type IN ('proprietaire', 'agence'))
   );
 
 -- User roles policies
