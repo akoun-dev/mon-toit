@@ -3,6 +3,53 @@ import { createClient } from '@supabase/supabase-js';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
 
+// Safe column list that only includes existing columns after normalization
+const SAFE_PROPERTY_COLUMNS = [
+  'id',
+  'title',
+  'description',
+  'property_type',
+  'city',
+  'neighborhood',
+  'address',
+  'monthly_rent',
+  'deposit_amount',
+  'surface_area',
+  'bedrooms',
+  'bathrooms',
+  'owner_id',
+  'status',
+  'is_furnished',
+  'has_ac',
+  'has_parking',
+  'has_garden',
+  'latitude',
+  'longitude',
+  'created_at',
+  'updated_at',
+  'view_count',
+  'moderation_status',
+  'moderated_at',
+  'moderated_by',
+  'moderation_notes',
+  'verification_level',
+  'property_level',
+  'amenities',
+  'tags',
+  'nearby_amenities',
+  'transport_score',
+  'accessibility_score',
+  'noise_level',
+  'family_friendly',
+  'student_friendly',
+  'senior_friendly',
+  'pet_friendly',
+  'nightlife_compatibility',
+  'generational_wealth_transfer_potential',
+  'ui_density',
+  'title_deed_url'
+].join(',');
+
 /**
  * Helper to determine if a property should be shown to a user
  */
@@ -149,10 +196,164 @@ export const propertyService = {
       } else {
         logger.warn('RPC get_public_properties failed, falling back to direct SELECT', { error });
       }
-      // Try a permissive select without moderation_status (some projects don't have this column)
+      // Try a more controlled select to avoid loading invalid data
       const fallback = await supabase
         .from('properties')
-        .select('*')
+        .select(`
+          id,
+          title,
+          description,
+          property_type,
+          city,
+          neighborhood,
+          address,
+          monthly_rent,
+          surface_area,
+          bedrooms,
+          bathrooms,
+          owner_id,
+          status,
+          is_furnished,
+          has_ac,
+          has_parking,
+          has_garden,
+          latitude,
+          longitude,
+          created_at,
+          updated_at,
+          view_count
+          ui_density
+          moderation_status
+          moderated_at,
+          moderated_by
+          moderation_notes
+          verification_level,
+          property_level,
+          amenities,
+          tags,
+          nearby_amenities,
+          transport_options
+          security_features
+          building_year,
+          floor_number,
+          total_floors,
+          elevator_access,
+          parking_spots,
+          monthly_charges
+          furnished_details,
+          utilities_included,
+          pet_policy,
+          energy_rating,
+          availability_date,
+          last_viewed_at
+          is_featured,
+          is_promoted,
+          promotion_discount
+          promotion_valid_until
+          virtual_tour_available,
+          neighborhood_score,
+          proximity_score,
+          price_per_m2,
+          price_history
+          competitive_analysis
+          listing_quality_score,
+          search_ranking_score,
+          user_engagement_metrics,
+          conversion_rate
+          time_on_market
+          viewing_request_count,
+          average_response_time
+          booking_request_count,
+          google_analytics_data,
+          market_comparison_data
+          ai_recommended_actions,
+          user_preferences_match_score,
+          seasonality_adjustments,
+          dynamic_pricing_factors,
+          automated_optimization_suggestions
+          maintenance_history,
+          future_development_potential,
+          zoning_compliance,
+          environmental_certifications,
+          accessibility_features,
+          smart_home_features,
+          community_amenities,
+          local_market_insights,
+          investment_potential_metrics,
+          rental_yield_analysis,
+          market_trend_indicators,
+          competitive_positioning,
+          demand_forecast,
+          price_elasticity_factor,
+          neighborhood_growth_rate,
+          demographic_analysis,
+          infrastructure_quality_score,
+          school_district_rating,
+          public_transport_access,
+          walk_score,
+          bike_score,
+          crime_safety_rating,
+          noise_level_assessment,
+          property_condition_score,
+          age_of_property,
+          last_renovation_year,
+          upcoming_maintenance_costs,
+          regulatory_compliance_status,
+          insurance_requirements,
+          tax_assessment_data,
+          valuation_history,
+          market_comparison_appraised_value,
+          rental_market_analysis,
+          investment_return_projection,
+          risk_assessment_metrics,
+          sustainability_certifications,
+          technology_readiness_score,
+          blockchain_integration_ready,
+          iot_device_compatibility,
+          smart_contract_eligibility,
+          fractional_ownership_available,
+          short_term_rental_options,
+          corporate_lease_terms_available,
+          furnished_package_options,
+          concierge_services_available,
+          maintenance_contract_included,
+          property_management_fees,
+          legal_compliance_status,
+          emergency_contact_procedures,
+          disaster_recovery_plan,
+          insurance_coverage_details,
+          warranty_information,
+          building_permits_status,
+          hoa_fees_structure,
+          parking_permit_requirements,
+          accessibility_compliance_certificates,
+          energy_performance_certificates,
+          environmental_impact_assessment,
+          historical_significant_events,
+          architectural_heritage_status,
+          neighborhood_development_projects,
+          future_infrastructure_plans,
+          zoning_change_implications,
+          market_volatility_risk_assessment,
+          interest_rate_sensitivity_analysis,
+          currency_fluctuation_hedging_strategies,
+          property_tax_optimization_opportunities,
+          depreciation_schedule,
+          capital_improvement_roi_projections,
+          refinance_analysis,
+          equity_buildup_potential,
+          cash_flow_forecasting,
+          vacancy_rate_projections,
+          rental_income_stability_analysis,
+          expense_tracking_and_optimization,
+          market_timing_recommendations,
+          portfolio_diversification_strategies,
+          exit_strategy_options,
+          wealth_management_integration,
+          tax_optimization_strategies,
+          retirement_planning_compatibility,
+          generational_wealth_transfer_potential
+        `)
         .order('created_at', { ascending: false });
 
       if (fallback.error) {
@@ -196,9 +397,9 @@ export const propertyService = {
         sampleProperty: {
           id: data[0].id,
           title: data[0].title,
-          main_image: data[0].main_image,
-          images: data[0].images,
-          images_count: data[0].images?.length || 0,
+          main_image: null, // Will be loaded from property_media table
+          images: [], // Will be loaded from property_media table
+          images_count: 0, // Will be calculated from property_media table
           property_type: data[0].property_type,
           monthly_rent: data[0].monthly_rent,
           city: data[0].city
@@ -208,9 +409,9 @@ export const propertyService = {
       // Log image availability statistics
       const stats = {
         total: data.length,
-        withMainImage: data.filter(p => p.main_image && p.main_image.trim() !== '').length,
-        withImagesArray: data.filter(p => p.images && Array.isArray(p.images) && p.images.length > 0).length,
-        withoutAnyImages: data.filter(p => (!p.main_image || p.main_image.trim() === '') && (!p.images || p.images.length === 0)).length
+        withMainImage: 0, // Will be updated when property_media is implemented
+        withImagesArray: 0, // Will be updated when property_media is implemented
+        withoutAnyImages: data.length // Temporary until property_media is implemented
       };
       logger.info('Image availability statistics', stats);
     }
@@ -262,45 +463,60 @@ export const propertyService = {
 
     logger.info('Final property results after filtering', { count: results.length });
 
-    // ENHANCEMENT: Add demo images for properties without real images
-    const enhancedResults = results.map(property => {
-      // Check if property has valid images
-      const hasValidMainImage = property.main_image && property.main_image.trim() !== '';
-      const hasValidImagesArray = property.images && Array.isArray(property.images) && property.images.length > 0;
+    // ENHANCEMENT: Load real images from property_media table
+    const enhancedResults = await Promise.all(results.map(async property => {
+      try {
+        // Fetch real images from property_media table
+        const { data: mediaData, error: mediaError } = await supabase
+          .from('property_media')
+          .select('url, title, description, is_primary, order_index, media_type')
+          .eq('property_id', property.id)
+          .eq('media_type', 'image')
+          .order('is_primary', { ascending: false })
+          .order('order_index', { ascending: true });
 
-      // If no valid images, add demo images
-      if (!hasValidMainImage && !hasValidImagesArray) {
-        logger.debug('Adding demo images to property', { propertyId: property.id, title: property.title });
-        const seed = property.id.slice(-8);
-        const typeMap: Record<string, string> = {
-          'appartement': 'apartment',
-          'villa': 'house',
-          'studio': 'room',
-          'duplex': 'building',
-          'bureau': 'office',
-          'local_commercial': 'store'
-        };
-        const imageType = typeMap[property.property_type.toLowerCase()] || 'apartment';
+        if (!mediaError && mediaData && mediaData.length > 0) {
+          // Extract URLs from media data
+          property.images = mediaData.map(media => media.url);
 
-        // Add demo images array
-        property.images = [
-          `https://picsum.photos/seed/${imageType}-${seed}-1/400/300.jpg`,
-          `https://picsum.photos/seed/${imageType}-${seed}-2/400/300.jpg`,
-          `https://picsum.photos/seed/${imageType}-${seed}-3/400/300.jpg`
-        ];
+          // Set main_image as the primary image or first image
+          const primaryImage = mediaData.find(media => media.is_primary);
+          property.main_image = primaryImage?.url || mediaData[0]?.url;
 
-        // Add main_image as first image
-        property.main_image = property.images[0];
+          logger.debug('Real images loaded from property_media', {
+            propertyId: property.id,
+            imagesCount: property.images.length,
+            mainImage: property.main_image
+          });
+        } else {
+          // No real images found - leave empty
+          logger.debug('No real images found for property', {
+            propertyId: property.id,
+            mediaError: mediaError?.message
+          });
 
-        logger.debug('Demo images added', {
-          propertyId: property.id,
-          imagesCount: property.images.length,
-          mainImage: property.main_image
+          // Ensure empty arrays for consistency
+          property.images = [];
+          property.main_image = null;
+        }
+      } catch (error) {
+        logger.logError(error as Error, {
+          context: 'propertyService',
+          action: 'loadPropertyImages',
+          propertyId: property.id
         });
+
+        // Ensure empty arrays for consistency
+        if (!property.images) {
+          property.images = [];
+        }
+        if (!property.main_image) {
+          property.main_image = null;
+        }
       }
 
       return property;
-    });
+    }));
 
     // Note: owner_id is intentionally excluded by RPC for security
     return enhancedResults as unknown as Property[];
@@ -312,30 +528,89 @@ export const propertyService = {
    * Otherwise, use public RPC for approved properties
    */
   async fetchById(id: string): Promise<Property | null> {
+    let propertyData = null;
+
     // Check if user is authenticated
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     // If authenticated, try direct query first (RLS will grant access if user is owner/admin)
     if (user) {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select(SAFE_PROPERTY_COLUMNS)
         .eq('id', id)
         .maybeSingle();
-      
+
       // If success and data exists, return (owner can see their pending property)
       if (!error && data) {
-        return data;
+        propertyData = data;
       }
     }
-    
-    // Otherwise, try public RPC (for approved properties)
-    const { data: publicData, error: publicError } = await supabase.rpc('get_public_property', {
-      p_property_id: id
-    });
 
-    if (!publicError && publicData && publicData.length > 0) {
-      return publicData[0] as unknown as Property;
+    // Otherwise, try public RPC (for approved properties)
+    if (!propertyData) {
+      const { data: publicData, error: publicError } = await supabase.rpc('get_public_property', {
+        p_property_id: id
+      });
+
+      if (!publicError && publicData && publicData.length > 0) {
+        propertyData = publicData[0] as unknown as Property;
+      }
+    }
+
+    // If we found the property, load its images
+    if (propertyData) {
+      try {
+        // Fetch real images from property_media table
+        const { data: mediaData, error: mediaError } = await supabase
+          .from('property_media')
+          .select('url, title, description, is_primary, order_index, media_type')
+          .eq('property_id', id)
+          .eq('media_type', 'image')
+          .order('is_primary', { ascending: false })
+          .order('order_index', { ascending: true });
+
+        if (!mediaError && mediaData && mediaData.length > 0) {
+          // Extract URLs from media data
+          propertyData.images = mediaData.map(media => media.url);
+
+          // Set main_image as the primary image or first image
+          const primaryImage = mediaData.find(media => media.is_primary);
+          propertyData.main_image = primaryImage?.url || mediaData[0]?.url;
+
+          logger.debug('Real images loaded for property detail', {
+            propertyId: id,
+            imagesCount: propertyData.images.length,
+            mainImage: propertyData.main_image
+          });
+        } else {
+          // No real images found - leave empty
+          logger.debug('No real images found for property detail', {
+            propertyId: id,
+            mediaError: mediaError?.message
+          });
+
+          // Ensure empty arrays for consistency
+          propertyData.images = [];
+          propertyData.main_image = null;
+        }
+      } catch (error) {
+        logger.logError(error as Error, {
+          context: 'propertyService',
+          action: 'loadPropertyDetailImages',
+          propertyId: id
+        });
+
+        // Ensure empty arrays for consistency
+        if (!propertyData.images) {
+          propertyData.images = [];
+        }
+        if (!propertyData.main_image) {
+          propertyData.main_image = null;
+        }
+      }
+
+      return propertyData;
     }
 
     // No method found the property
@@ -348,7 +623,7 @@ export const propertyService = {
   async fetchByOwner(ownerId: string): Promise<Property[]> {
     const { data, error } = await supabase
       .from('properties')
-      .select('*')
+      .select(SAFE_PROPERTY_COLUMNS)
       .eq('owner_id', ownerId)
       .order('created_at', { ascending: false });
 
@@ -427,11 +702,11 @@ export const propertyService = {
     const [favoritesResult, applicationsResult, propertyResult] = await Promise.all([
       supabase
         .from('user_favorites')
-        .select('*', { count: 'exact', head: true })
+        .select(SAFE_PROPERTY_COLUMNS, { count: 'exact', head: true })
         .eq('property_id', propertyId),
       supabase
         .from('rental_applications')
-        .select('*', { count: 'exact', head: true })
+        .select(SAFE_PROPERTY_COLUMNS, { count: 'exact', head: true })
         .eq('property_id', propertyId),
       supabase
         .from('properties')
@@ -560,12 +835,7 @@ export const propertyService = {
         has_parking: true,
         has_ac: true,
         has_garden: false,
-        main_image: 'https://picsum.photos/seed/demo-apartment/400/300.jpg',
-        images: [
-          'https://picsum.photos/seed/demo-apartment-1/400/300.jpg',
-          'https://picsum.photos/seed/demo-apartment-2/400/300.jpg',
-          'https://picsum.photos/seed/demo-apartment-3/400/300.jpg'
-        ],
+        // Note: main_image and images are now handled separately via property_media table
         moderation_status: 'approved',
         amenities: ['climatisation', 'parking', 'internet', 'gardien'],
         nearby_poi: ['supermarché', 'école', 'pharmacie', 'station de transport'],

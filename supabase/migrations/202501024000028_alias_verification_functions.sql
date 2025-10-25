@@ -12,7 +12,7 @@ BEGIN
     'verified', false,
     'verification_level', 'authentication_required',
     'message', 'Please authenticate to access verification status',
-    'user_id', auth.uid(),
+    'user_id', CASE WHEN auth.uid() IS NOT NULL THEN auth.uid() ELSE NULL END,
     'created_at', now()
   );
 EXCEPTION

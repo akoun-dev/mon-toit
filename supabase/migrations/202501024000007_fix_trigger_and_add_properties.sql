@@ -102,19 +102,20 @@ CREATE POLICY "Properties are publicly viewable" ON public.properties
   FOR SELECT USING (status = 'disponible');
 
 CREATE POLICY "Owners can view own properties" ON public.properties
-  FOR SELECT USING (owner_id = auth.uid());
+  FOR SELECT USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can insert own properties" ON public.properties
-  FOR INSERT WITH CHECK (owner_id = auth.uid());
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can update own properties" ON public.properties
-  FOR UPDATE USING (owner_id = auth.uid());
+  FOR UPDATE USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can delete own properties" ON public.properties
-  FOR DELETE USING (owner_id = auth.uid());
+  FOR DELETE USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Admins can view all properties" ON public.properties
   FOR SELECT USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles
       WHERE id = auth.uid() AND user_type = 'admin_ansut'
@@ -123,6 +124,7 @@ CREATE POLICY "Admins can view all properties" ON public.properties
 
 CREATE POLICY "Admins can manage all properties" ON public.properties
   FOR ALL USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles
       WHERE id = auth.uid() AND user_type = 'admin_ansut'

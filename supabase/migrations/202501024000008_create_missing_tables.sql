@@ -153,23 +153,24 @@ ALTER TABLE public.search_history ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for notifications
 CREATE POLICY "Users can view own notifications" ON public.notifications
-  FOR SELECT USING (user_id = auth.uid());
+  FOR SELECT USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 CREATE POLICY "Users can insert own notifications" ON public.notifications
-  FOR INSERT WITH CHECK (user_id = auth.uid());
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 CREATE POLICY "Users can update own notifications" ON public.notifications
-  FOR UPDATE USING (user_id = auth.uid());
+  FOR UPDATE USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 CREATE POLICY "Users can delete own notifications" ON public.notifications
-  FOR DELETE USING (user_id = auth.uid());
+  FOR DELETE USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 -- RLS Policies for rental_applications
 CREATE POLICY "Users can view own rental applications" ON public.rental_applications
-  FOR SELECT USING (applicant_id = auth.uid());
+  FOR SELECT USING (auth.uid() IS NOT NULL AND applicant_id = auth.uid());
 
 CREATE POLICY "Property owners can view applications for their properties" ON public.rental_applications
   FOR SELECT USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.properties p
       WHERE p.id = property_id AND p.owner_id = auth.uid()
@@ -177,22 +178,22 @@ CREATE POLICY "Property owners can view applications for their properties" ON pu
   );
 
 CREATE POLICY "Users can insert own rental applications" ON public.rental_applications
-  FOR INSERT WITH CHECK (applicant_id = auth.uid());
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND applicant_id = auth.uid());
 
 CREATE POLICY "Users can update own rental applications" ON public.rental_applications
-  FOR UPDATE USING (applicant_id = auth.uid());
+  FOR UPDATE USING (auth.uid() IS NOT NULL AND applicant_id = auth.uid());
 
 -- RLS Policies for user_preferences
 CREATE POLICY "Users can manage own preferences" ON public.user_preferences
-  FOR ALL USING (user_id = auth.uid());
+  FOR ALL USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 -- RLS Policies for user_favorites
 CREATE POLICY "Users can manage own favorites" ON public.user_favorites
-  FOR ALL USING (user_id = auth.uid());
+  FOR ALL USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 -- RLS Policies for search_history
 CREATE POLICY "Users can manage own search history" ON public.search_history
-  FOR ALL USING (user_id = auth.uid());
+  FOR ALL USING (auth.uid() IS NOT NULL AND user_id = auth.uid());
 
 -- Add comments
 COMMENT ON VIEW public.user_roles_summary IS 'Vue résumée des rôles utilisateurs';

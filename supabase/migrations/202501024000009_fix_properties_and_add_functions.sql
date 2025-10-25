@@ -78,19 +78,20 @@ CREATE POLICY "Properties are publicly viewable" ON public.properties
   FOR SELECT USING (status = 'disponible');
 
 CREATE POLICY "Owners can view own properties" ON public.properties
-  FOR SELECT USING (owner_id = auth.uid());
+  FOR SELECT USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can insert own properties" ON public.properties
-  FOR INSERT WITH CHECK (owner_id = auth.uid());
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can update own properties" ON public.properties
-  FOR UPDATE USING (owner_id = auth.uid());
+  FOR UPDATE USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Owners can delete own properties" ON public.properties
-  FOR DELETE USING (owner_id = auth.uid());
+  FOR DELETE USING (auth.uid() IS NOT NULL AND owner_id = auth.uid());
 
 CREATE POLICY "Admins can view all properties" ON public.properties
   FOR SELECT USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles
       WHERE id = auth.uid() AND user_type = 'admin_ansut'
@@ -99,6 +100,7 @@ CREATE POLICY "Admins can view all properties" ON public.properties
 
 CREATE POLICY "Admins can manage all properties" ON public.properties
   FOR ALL USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles
       WHERE id = auth.uid() AND user_type = 'admin_ansut'
@@ -362,7 +364,7 @@ COMMENT ON FUNCTION public.get_property_details IS 'Récupérer les détails d''
 COMMENT ON FUNCTION public.increment_property_view_count IS 'Incrémenter le compteur de vues d''un bien';
 
 -- Grant permissions for RPC functions
-GRANT EXECUTE ON FUNCTION public.get_public_properties TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_public_properties TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.get_properties_with_owner TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_property_details TO authenticated;
-GRANT EXECUTE ON FUNCTION public.increment_property_view_count TO authenticated;
+GRANT EXECUTE ON FUNCTION public.increment_property_view_count TO anon, authenticated;

@@ -41,13 +41,13 @@ BEGIN
 
     -- RLS Policies
     CREATE POLICY "Users can view own favorites" ON public.user_favorites
-      FOR SELECT USING (auth.uid() = user_id);
+      FOR SELECT USING (auth.uid() IS NOT NULL AND auth.uid() = user_id);
 
     CREATE POLICY "Users can insert own favorites" ON public.user_favorites
-      FOR INSERT WITH CHECK (auth.uid() = user_id);
+      FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND auth.uid() = user_id);
 
     CREATE POLICY "Users can delete own favorites" ON public.user_favorites
-      FOR DELETE USING (auth.uid() = user_id);
+      FOR DELETE USING (auth.uid() IS NOT NULL AND auth.uid() = user_id);
 
     -- Trigger
     CREATE TRIGGER handle_user_favorites_updated_at

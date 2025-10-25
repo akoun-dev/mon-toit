@@ -70,6 +70,10 @@ The application supports 4 distinct user roles with separate dashboards:
 - `vite.config.ts`: Vite configuration with PWA and Capacitor support
 - `capacitor.config.ts`: Native app configuration with security settings
 - `supabase.ts`: Database client with secure storage integration
+- `vitest.config.ts`: Test configuration with coverage and aliases
+- `tailwind.config.ts`: Tailwind CSS with custom design system
+- `eslint.config.js`: Code quality and security rules
+- `components.json`: shadcn/ui component configuration
 
 ### State Management & Data Flow
 - **TanStack Query**: Server state management with caching and synchronization
@@ -104,10 +108,12 @@ The application supports 4 distinct user roles with separate dashboards:
 
 ### Testing & Quality
 - **ESLint**: Code quality with React and TypeScript rules
-- **SonarJS**: Additional security and quality checks
+- **SonarJS**: Additional security and quality checks (eslint-plugin-sonarjs)
 - **TypeScript**: Full type safety with extended Supabase types
-- **Vitest**: Available for unit testing (package.json includes Vitest dependencies)
-- **JSCPD**: Duplicate code detection (configured in .jscpd.json)
+- **Vitest**: Unit testing framework with coverage and UI interface
+- **JSCPD**: Duplicate code detection with configurable thresholds (.jscpd.json)
+- **Test Structure**: Tests located in `tests/` directory with security focus
+- **Coverage**: Configured for src/ directory excluding type definitions
 
 ## Development Notes
 
@@ -150,13 +156,29 @@ The PWA includes sophisticated offline capabilities:
 - Native app security configured in `capacitor.config.ts` with restricted navigation
 - PWA security with service worker caching strategies in `vite.config.ts`
 - Sentry integration available for production error tracking
+- Test security policies located in `tests/security/` directory
+- Duplicate code detection with JSCPD prevents maintenance issues
 
 ### Testing Commands
 ```bash
 # Run tests (when test files are added)
-npm run test             # Run Vitest tests
-npm run test:ui          # Run tests with Vitest UI
-npm run test:coverage    # Run tests with coverage report
+npx vitest              # Run Vitest tests
+npx vitest ui           # Run tests with Vitest UI
+npx vitest run          # Run tests once
+npx vitest run --coverage  # Run tests with coverage report
+```
+
+### Database & Data Seeding
+```bash
+npm run seed:auth        # Seed authentication data (requires scripts directory)
+npm run seed:auth:clean  # Clean user data (requires scripts directory)
+npm run seed:properties  # Seed property data (requires scripts directory)
+```
+
+### Code Quality
+```bash
+npm run lint             # ESLint code checking
+npx jscpd .              # Detect duplicate code (configured in .jscpd.json)
 ```
 
 ### Build Configuration

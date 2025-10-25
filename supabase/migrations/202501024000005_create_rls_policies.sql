@@ -8,13 +8,13 @@ DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 
 -- Profiles table policies
 CREATE POLICY "Users can view own profile" ON public.profiles
-  FOR SELECT USING (auth.uid() = id);
+  FOR SELECT USING (auth.uid() IS NOT NULL AND auth.uid() = id);
 
 CREATE POLICY "Users can update own profile" ON public.profiles
-  FOR UPDATE USING (auth.uid() = id);
+  FOR UPDATE USING (auth.uid() IS NOT NULL AND auth.uid() = id);
 
 CREATE POLICY "Users can insert own profile" ON public.profiles
-  FOR INSERT WITH CHECK (auth.uid() = id);
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL AND auth.uid() = id);
 
 CREATE POLICY "Profiles are publicly viewable" ON public.profiles
   FOR SELECT USING (
@@ -26,7 +26,7 @@ CREATE POLICY "Profiles are publicly viewable" ON public.profiles
 CREATE POLICY "Users can view own roles" ON public.user_roles
   FOR SELECT USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "System can manage user roles" ON public.user_roles
@@ -39,26 +39,26 @@ CREATE POLICY "System can manage user roles" ON public.user_roles
 CREATE POLICY "Users can view own active roles" ON public.user_active_roles
   FOR SELECT USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "Users can update own active roles" ON public.user_active_roles
   FOR UPDATE USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "Users can insert own active roles" ON public.user_active_roles
   FOR INSERT WITH CHECK (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 -- Login attempts policies (restricted access)
 CREATE POLICY "Users can view own login attempts" ON public.login_attempts
   FOR SELECT USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 -- OTP verifications policies
@@ -72,32 +72,32 @@ CREATE POLICY "Users can view own OTP verifications" ON public.otp_verifications
 CREATE POLICY "Users can view own sessions" ON public.user_sessions
   FOR SELECT USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "Users can delete own sessions" ON public.user_sessions
   FOR DELETE USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 -- User verifications policies
 CREATE POLICY "Users can view own verifications" ON public.user_verifications
   FOR SELECT USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "Users can update own verifications" ON public.user_verifications
   FOR UPDATE USING (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 CREATE POLICY "Users can insert own verifications" ON public.user_verifications
   FOR INSERT WITH CHECK (EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = user_id AND auth.uid() = id
+    WHERE id = user_id AND auth.uid() IS NOT NULL AND auth.uid() = id
   ));
 
 -- Create function to automatically create profile on signup
@@ -156,7 +156,7 @@ BEGIN
     p.avatar_url
   FROM public.profiles p
   LEFT JOIN public.user_active_roles uar ON p.id = uar.user_id
-  WHERE p.id = auth.uid();
+  WHERE p.id = auth.uid() AND auth.uid() IS NOT NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

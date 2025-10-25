@@ -58,10 +58,12 @@ DROP POLICY IF EXISTS "Users can view own verifications" ON public.user_verifica
 CREATE POLICY "Users can view own verifications" ON public.user_verifications
   FOR SELECT
   USING (
-    user_id = auth.uid() OR
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
+    auth.uid() IS NOT NULL AND (
+      user_id = auth.uid() OR
+      EXISTS (
+        SELECT 1 FROM public.profiles p
+        WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
+      )
     )
   );
 
@@ -70,10 +72,12 @@ DROP POLICY IF EXISTS "Users can view own rental applications" ON public.rental_
 CREATE POLICY "Users can view own rental applications" ON public.rental_applications
   FOR SELECT
   USING (
-    applicant_id = auth.uid() OR
-    EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
+    auth.uid() IS NOT NULL AND (
+      applicant_id = auth.uid() OR
+      EXISTS (
+        SELECT 1 FROM public.profiles p
+        WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
+      )
     )
   );
 
@@ -89,7 +93,28 @@ DROP POLICY IF EXISTS "Owners can view own properties" ON public.properties;
 CREATE POLICY "Owners can view own properties" ON public.properties
   FOR SELECT
   USING (
-    owner_id = auth.uid()
+    auth.uid() IS NOT NULL AND owner_id = auth.uid()
+  );
+
+DROP POLICY IF EXISTS "Owners can insert own properties" ON public.properties;
+CREATE POLICY "Owners can insert own properties" ON public.properties
+  FOR INSERT
+  WITH CHECK (
+    auth.uid() IS NOT NULL AND owner_id = auth.uid()
+  );
+
+DROP POLICY IF EXISTS "Owners can update own properties" ON public.properties;
+CREATE POLICY "Owners can update own properties" ON public.properties
+  FOR UPDATE
+  USING (
+    auth.uid() IS NOT NULL AND owner_id = auth.uid()
+  );
+
+DROP POLICY IF EXISTS "Owners can delete own properties" ON public.properties;
+CREATE POLICY "Owners can delete own properties" ON public.properties
+  FOR DELETE
+  USING (
+    auth.uid() IS NOT NULL AND owner_id = auth.uid()
   );
 
 -- Fix admin policies to use proper enum comparison
@@ -97,6 +122,18 @@ DROP POLICY IF EXISTS "Admins can view all properties" ON public.properties;
 CREATE POLICY "Admins can view all properties" ON public.properties
   FOR SELECT
   USING (
+    auth.uid() IS NOT NULL AND
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
+    )
+  );
+
+DROP POLICY IF EXISTS "Admins can manage all properties" ON public.properties;
+CREATE POLICY "Admins can manage all properties" ON public.properties
+  FOR ALL
+  USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles p
       WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type
@@ -153,6 +190,7 @@ DROP POLICY IF EXISTS "Admins can view security logs" ON public.security_audit_l
 CREATE POLICY "Admins can view security logs" ON public.security_audit_logs
   FOR SELECT
   USING (
+    auth.uid() IS NOT NULL AND
     EXISTS (
       SELECT 1 FROM public.profiles p
       WHERE p.id = auth.uid() AND p.user_type = 'admin_ansut'::public.user_type

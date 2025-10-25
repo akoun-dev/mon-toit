@@ -178,24 +178,19 @@ export const PropertyCard = ({
             );
           }
 
-          // Use demo image as fallback
-          const demoImage = getDemoImage(property.id, property.property_type);
+          // No image available - show placeholder
           return (
-            <>
-              <SimpleImage
-                src={demoImage}
-                alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-              {/* Demo badge */}
-              <div className="absolute top-3 left-3">
-                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3" />
-                  Démo
-                </Badge>
+            <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+              <div className="text-center p-4">
+                <Building2 className="h-12 w-12 mx-auto mb-2 text-slate-400" />
+                <p className="text-sm text-slate-500 font-medium">
+                  {property.property_type}
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  {property.city}
+                </p>
               </div>
-            </>
+            </div>
           );
         })()}
         
