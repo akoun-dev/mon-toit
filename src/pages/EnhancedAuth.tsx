@@ -159,12 +159,27 @@ const EnhancedAuth = () => {
 
     console.log('📡 [DEBUG] EnhancedAuth signup result', {
       error: error ? { message: error.message } : null,
-      data: data ? 'has_data' : null
+      data: data ? 'has_data' : null,
+      hasUserData: !!data?.user
     });
 
     setLoading(false);
 
     if (!error) {
+      // Attendre un court instant pour s'assurer que le processus de déconnexion forcée est initié
+      // et que l'état de l'authentification est bien mis à jour avant de rediriger
+      console.log('⏳ [DEBUG] Waiting for auth state to settle before redirect...');
+
+      // Attendre que l'état d'authentification se stabilise
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Vérifier que l'utilisateur n'est plus connecté avant de rediriger vers OTP
+      console.log('🔍 [DEBUG] Checking user state before redirect:', {
+        hasUser: !!user,
+        hasSession: !!session,
+        emailConfirmed: user?.email_confirmed_at
+      });
+
       // Rediriger vers la page de confirmation avec l'email et marquer comme venant de l'inscription
       const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}&from=signup`;
       console.log('🔀 [DEBUG] Redirecting to:', confirmationUrl);

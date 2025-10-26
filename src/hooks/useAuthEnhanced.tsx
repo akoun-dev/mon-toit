@@ -209,7 +209,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     logger.info('Setting up auth listener');
-    
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -222,30 +222,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
 
-        // Vérifier si l'utilisateur vient de s'inscrire et n'a pas encore vérifié son email
-        // Ne pas permettre l'accès au dashboard sans vérification OTP
+        // BLOQUER TOUJOURS l'accès au dashboard si l'email n'est pas confirmé
+        // Ceci empêche les utilisateurs non vérifiés d'accéder à l'application
         if (event === 'SIGNED_IN' && session?.user && !session.user.email_confirmed_at) {
           logger.info('🚫 [AUTH] User signed in but email not confirmed, blocking dashboard access', {
             userId: session.user.id,
             email: session.user.email,
-            emailConfirmed: !!session.user.email_confirmed_at
+            emailConfirmed: !!session.user.email_confirmed_at,
+            event
           });
-          // Forcer la déconnexion pour obliger la vérification OTP
-          await supabase.auth.signOut();
-          return;
+
+          // Forcer la déconnexion immédiatement
+          try {
+            await supabase.auth.signOut();
+
+            // Réinitialiser manuellement l'état pour s'assurer qu'il n'y a pas de session résiduelle
+            setUser(null);
+            setSession(null);
+            setProfile(null);
+            setRoles([]);
+
+            // Afficher un message pour l'utilisateur
+            toast({
+              title: "Vérification requise",
+              description: "Veuillez vérifier votre email et entrer le code OTP pour activer votre compte.",
+              variant: "destructive",
+            });
+
+            return;
+          } catch (signOutError) {
+            logger.error('Error forcing sign out for unconfirmed user', { signOutError });
+          }
         }
 
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Defer profile fetching to avoid deadlock
-          setTimeout(async () => {
-            const profileData = await fetchProfile(session.user.id);
-            setProfile(profileData);
-            const userRoles = await fetchUserRoles(session.user.id);
-            setRoles(userRoles);
-          }, 0);
+          // Ne charger le profil que si l'email est confirmé
+          if (session.user.email_confirmed_at) {
+            // Defer profile fetching to avoid deadlock
+            setTimeout(async () => {
+              const profileData = await fetchProfile(session.user.id);
+              setProfile(profileData);
+              const userRoles = await fetchUserRoles(session.user.id);
+              setRoles(userRoles);
+            }, 0);
+          } else {
+            logger.warn('⚠️ [AUTH] Not loading profile for unconfirmed user', {
+              userId: session.user.id,
+              email: session.user.email
+            });
+          }
         } else {
           setProfile(null);
           setRoles([]);
@@ -256,9 +284,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       logger.info('Initial session check', { hasSession: !!session });
+
+      // Si la session existe mais l'email n'est pas confirmé, déconnecter immédiatement
+      if (session?.user && !session.user.email_confirmed_at) {
+        logger.info('🚫 [AUTH] Initial session has unconfirmed email, signing out', {
+          userId: session.user.id,
+          email: session.user.email
+        });
+
+        supabase.auth.signOut().then(() => {
+          setUser(null);
+          setSession(null);
+          setProfile(null);
+          setRoles([]);
+          setLoading(false);
+          logger.info('Unconfirmed user signed out during initial check');
+        });
+
+        return;
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         setTimeout(async () => {
           const profileData = await fetchProfile(session.user.id);
@@ -275,7 +323,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [forceSigningOut]);
 
   const signUp = async (email: string, password: string, fullName: string, userType: string) => {
     try {
@@ -413,27 +461,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
       } else if (data.session) {
-        // Utilisateur connecté automatiquement - ignorer en développement, forcer OTP
-        if (isDevelopment) {
-          console.log('⚠️ [DEBUG] User auto-signed in, forcing OTP in development', {
-            userId: data.user.id,
-            email
-          });
+        // Utilisateur connecté automatiquement - FORCER TOUJOURS LA DÉCONNEXION
+        // Car les utilisateurs ne doivent PAS être connectés automatiquement après inscription
+        logger.warn('⚠️ [AUTH] User auto-signed in after registration - forcing sign out', {
+          userId: data.user.id,
+          email,
+          hasEmailConfirmed: !!data.user.email_confirmed_at
+        });
 
-          logger.warn('⚠️ [AUTH] User auto-signed in, forcing OTP in development', {
-            userId: data.user.id,
-            email
-          });
+        // Activer le flag de déconnexion forcée pour éviter les réactivations immédiates
+        setForceSigningOut(true);
 
-          // Activer le flag de déconnexion forcée pour éviter les réactivations
-          setForceSigningOut(true);
+        // Sign out l'utilisateur pour forcer le processus OTP
+        logger.info('🔒 [AUTH] Signing out user to enforce OTP verification', { userId: data.user.id });
 
-          // Sign out l'utilisateur pour forcer le processus OTP
-          logger.info('🔒 [AUTH] Signing out user to force OTP process', { userId: data.user.id });
-          console.log('🔒 [DEBUG] Starting sign out process');
-
+        try {
           await supabase.auth.signOut();
-          console.log('✅ [DEBUG] Sign out completed');
 
           // Attendre un peu pour s'assurer que le signOut est bien effectué
           await new Promise(resolve => setTimeout(resolve, 500));
@@ -448,28 +491,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setTimeout(() => {
             setForceSigningOut(false);
             logger.info('🔓 [AUTH] Force sign-out flag cleared', { email });
-            console.log('🔓 [DEBUG] Force sign-out flag cleared');
           }, 2000);
 
-          toast({
-            title: "Compte créé !",
-            description: "Un code de vérification a été envoyé à votre email.",
-          });
-
-          logger.info('✅ [AUTH] User signed out, ready for OTP verification', { email });
-          console.log('✅ [DEBUG] Returning success for OTP flow');
+          logger.info('✅ [AUTH] User signed out successfully, ready for OTP verification', { email });
 
           // Ne pas retourner d'erreur pour permettre la redirection vers la page OTP
           return { error: null, data: { user: data.user } };
-        } else {
-          logger.info('✅ [AUTH] User automatically signed in - production mode', {
-            userId: data.user.id,
-            email
-          });
-          await refreshProfile();
-          toast({
-            title: "Inscription réussie",
-            description: "Votre compte a été créé avec succès !",
+
+        } catch (signOutError) {
+          logger.error('❌ [AUTH] Error during forced sign out', {
+            error: signOutError,
+            userId: data.user.id
           });
         }
       } else {
@@ -501,7 +533,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -513,15 +545,73 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        await logLoginAttempt(email, true);
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue sur Mon Toit !",
-        });
+        return { error };
       }
 
-      return { error };
+      // Si la connexion réussit, vérifier le statut OTP de l'utilisateur
+      if (data.user) {
+        logger.info('🔍 [AUTH] Checking OTP verification status for signed in user', {
+          userId: data.user.id,
+          email: data.user.email,
+          emailConfirmed: !!data.user.email_confirmed_at
+        });
+
+        // Vérifier si l'utilisateur a complété la vérification OTP
+        try {
+          const { data: otpVerification } = await supabase
+            .from('otp_verifications')
+            .select('verified, verification_type')
+            .eq('user_id', data.user.id)
+            .eq('verification_type', 'signup')
+            .eq('verified', true)
+            .single();
+
+          if (!otpVerification) {
+            logger.warn('🚫 [AUTH] User attempting login without OTP verification', {
+              userId: data.user.id,
+              email: data.user.email
+            });
+
+            // Déconnecter immédiatement l'utilisateur
+            await supabase.auth.signOut();
+
+            await logLoginAttempt(email, false, "OTP verification required");
+            toast({
+              title: "Vérification requise",
+              description: "Veuillez d'abord vérifier votre compte avec le code OTP envoyé par email.",
+              variant: "destructive",
+            });
+
+            return { error: { message: "OTP verification required" } as AuthError };
+          }
+
+        } catch (otpError) {
+          logger.warn('⚠️ [AUTH] Error checking OTP verification status', {
+            error: otpError,
+            userId: data.user.id
+          });
+
+          // En cas d'erreur lors de la vérification OTP, déconnecter par sécurité
+          await supabase.auth.signOut();
+
+          await logLoginAttempt(email, false, "OTP verification check failed");
+          toast({
+            title: "Vérification requise",
+            description: "Une erreur est survenue lors de la vérification de votre compte. Veuillez réessayer ou contacter le support.",
+            variant: "destructive",
+          });
+
+          return { error: { message: "OTP verification check failed" } as AuthError };
+        }
+      }
+
+      await logLoginAttempt(email, true);
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur Mon Toit !",
+      });
+
+      return { error: null };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
       await logLoginAttempt(email, false, errorMessage);
@@ -612,9 +702,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userId: otpResult.user_id
         });
 
-        // Supabase gère la confirmation d'email via l'URL de vérification ou un flux de vérification OTP
-        // La ligne `email_confirm: true` n'est pas supportée par Supabase.auth.updateUser
-        // On suppose que l'étape de vérification OTP valide le processus.
+        // Marquer l'utilisateur comme vérifié dans la table otp_verifications
+        try {
+          const { error: updateError } = await supabase
+            .from('otp_verifications')
+            .update({
+              verified: true,
+              verified_at: new Date().toISOString()
+            })
+            .eq('user_id', otpResult.user_id)
+            .eq('verification_type', 'signup')
+            .eq('email', email);
+
+          if (updateError) {
+            logger.error('Error updating OTP verification status', {
+              error: updateError,
+              userId: otpResult.user_id
+            });
+          } else {
+            logger.info('✅ [AUTH] User marked as OTP verified in database', {
+              userId: otpResult.user_id,
+              email
+            });
+          }
+        } catch (updateError) {
+          logger.error('Exception updating OTP verification status', {
+            error: updateError,
+            userId: otpResult.user_id
+          });
+        }
 
         await logLoginAttempt(email, true);
         toast({
