@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
-import { brevoEmailService } from '@/services/brevoEmailService';
 
 export interface OTPCode {
   id: string;
@@ -190,58 +189,30 @@ class OTPService {
         environment: import.meta.env.MODE
       });
 
-      // Vérifier la configuration Brevo
-      const brevoConfig = brevoEmailService.checkConfiguration();
+      // Simuler l'envoi d'email (pour développement)
+      logger.info('📧 [OTP] Simulating email sending (development mode)');
 
-      if (brevoConfig.configured) {
-        // Utiliser Brevo pour l'envoi
-        logger.info('📧 [OTP] Using Brevo service for email sending');
+      // Simulation d'envoi réussi
+      const messageId = `otp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@mon-toit.ci`;
 
-        const result = await brevoEmailService.sendOTPCode(email, code, type);
+      logger.info('✅ [OTP] Email simulated successfully', {
+        email,
+        type,
+        messageId,
+        environment: import.meta.env.MODE
+      });
 
-        if (result.success) {
-          logger.info('✅ [OTP] Email sent successfully via Brevo', {
-            email,
-            type,
-            messageId: result.messageId
-          });
-          return {
-            success: true,
-            messageId: result.messageId
-          };
-        } else {
-          logger.error('❌ [OTP] Brevo email sending failed', {
-            email,
-            error: result.error
-          });
-          return {
-            success: false,
-            error: result.error || 'Erreur lors de l\'envoi via Brevo'
-          };
-        }
-      } else {
-        // Mode développement : logger l'email
-        logger.warn('🔧 [OTP] Brevo not configured - logging email for development', {
-          missing: brevoConfig.missing,
-          email,
-          type,
-          code: code.replace(/./g, '*')
-        });
-
-        // Simuler un succès en développement
-        const messageId = `dev_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        logger.info('📧 [Development] Email would be sent:', {
-          to: email,
-          subject: `🔐 Code OTP - Mon Toit (${type})`,
-          code: this.formatOTPCode(code),
-          messageId
-        });
-
-        return {
-          success: true,
-          messageId
-        };
+      // Afficher le code dans la console pour le développement
+      if (import.meta.env.DEV) {
+        console.log(`🔐 [OTP] CODE DE DÉVELOPPEMENT: ${code}`);
+        console.log(`📧 [OTP] Email: ${email}`);
+        console.log(`📋 [OTP] Type: ${type}`);
       }
+
+      return {
+        success: true,
+        messageId
+      };
 
     } catch (error) {
       logger.error('💥 [OTP] Unexpected error in sendOTPByEmail', {

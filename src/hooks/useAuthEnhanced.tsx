@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase, supabaseAnon } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';
@@ -13,7 +13,6 @@ interface AuthContextType {
   profile: Profile | null;
   roles: string[];
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string, userType: string) => Promise<{ error: AuthError | null; data?: any }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signInWithOAuth: (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => Promise<{ error: AuthError | null }>;
   verifyOTP: (email: string, token: string) => Promise<{ error: AuthError | null }>;
@@ -27,65 +26,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Helper function to get client IP address
 const getClientIP = async (): Promise<string | null> => {
   try {
-    // Utiliser un service de détection d'IP (vous pouvez remplacer par votre propre service)
     const response = await fetch('https://api.ipify.org?format=json');
     const data = await response.json();
-    return data.ip || null;
+    return data.ip;
   } catch (error) {
-    logger.warn('Failed to get client IP', { error });
+    logger.error('Error getting client IP:', error);
     return null;
   }
 };
 
-// Helper function to log login attempts
-const logLoginAttempt = async (email: string, success: boolean, errorMessage?: string) => {
-  try {
-    // Éviter de logger en double pour les mêmes tentatives
-    const now = Date.now();
-    const lastLogKey = `login_log_${email}_${Math.floor(now / 5000)}`; // Regrouper par 5 secondes
-    const lastLogTime = parseInt(sessionStorage.getItem(lastLogKey) || '0');
-
-    // Si on a déjà loggé cette tentative il y a moins de 5 secondes, ignorer
-    if (now - lastLogTime < 5000) {
-      return;
-    }
-
-    sessionStorage.setItem(lastLogKey, now.toString());
-
-    // Utiliser le client anonyme pour les tentatives de connexion non authentifiées
-    const ipAddress = await getClientIP();
-
-    const { error } = await supabase
-      .from('login_attempts')
-      .insert({
-        email,
-        success,
-        failure_reason: errorMessage,
-        ip_address: ipAddress,
-        user_agent: navigator.userAgent,
-        created_at: new Date().toISOString()
-      });
-
-    if (error) {
-      // Logger l'erreur silencieusement pour le débogage mais ne pas bloquer
-      logger.warn('Failed to log login attempt', {
-        email: email.replace(/(.{2}).*@/, '$1***@'), // Masquer l'email
-        error: error.message,
-        success
-      });
-    } else {
-      logger.info('Login attempt logged successfully', {
-        email: email.replace(/(.{2}).*@/, '$1***@'), // Masquer l'email
-        success
-      });
-    }
-  } catch (error) {
-    // Ne pas logger l'erreur de logging pour éviter les boucles
-    logger.warn('Error logging login attempt', {
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+export const useAuthEnhanced = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuthEnhanced must be used within an AuthProvider');
   }
+  return context;
 };
+
+// Alias pour maintenir la compatibilité avec le code existant
+export const useAuth = useAuthEnhanced;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -94,8 +53,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [forceSigningOut, setForceSigningOut] = useState(false);
+  const navigate = useNavigate();
 
-  const fetchProfile = async (userId: string) => {
+  // Function to fetch user profile
+  const fetchProfile = async (userId: string): Promise<Profile | null> => {
     logger.info('Fetching profile for user', { userId });
 
     try {
@@ -129,72 +90,69 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             }
           } catch (createError) {
-            logger.error('Error creating profile', { error: createError, userId });
-            // Ne pas bloquer - retourner null pour continuer
-            return null;
+            logger.error('Error creating profile', { createError, userId });
           }
         }
-        // Pour d'autres erreurs (permissions, etc), essayer de récupérer malgré tout
-        else {
-          logger.warn('Profile fetch error, returning null but continuing', { error, userId });
-          return null;
-        }
+        return null;
       }
 
-      logger.info('Profile fetched successfully', { userId, profile: data ? 'exists' : 'null' });
+      logger.info('Profile fetched successfully', { userId, userType: data.user_type });
       return data;
     } catch (error) {
-      logger.error('Unexpected error fetching profile', { error, userId });
+      logger.error('Error in fetchProfile', { error, userId });
       return null;
     }
   };
 
-  const fetchUserRoles = async (userId: string) => {
-    logger.info('Fetching roles for user', { userId });
+  // Function to fetch user roles
+  const fetchUserRoles = async (userId: string): Promise<string[]> => {
+    logger.info('Fetching user roles', { userId });
 
     try {
-      // Use anonymous client to avoid RLS issues
-      const { data, error } = await supabaseAnon
+      const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId);
 
       if (error) {
-        logger.error('Error fetching roles', { error, userId });
-
-        // If RLS recursion issue or other 500 errors, use default role
-        if (error.code === '42P17' || error.message?.includes('recursion') ||
-            error.message?.includes('500') || error.status === 500) {
-          logger.warn('RLS recursion or server error in user_roles, using default role', { userId, error });
-          return ['locataire'];
-        }
-
-        // If no roles found, assign default role
+        logger.error('Error fetching user roles', { error, userId });
+        // If user_roles table doesn't exist, return default role
         if (error.code === 'PGRST116') {
-          logger.info('No roles found, assigning default role', { userId });
-          // Skip insert for now due to RLS issues
-          return ['locataire'];
+          logger.warn('user_roles table not found, using default role', { userId });
+          return ['locataire']; // Default role
         }
         return [];
       }
-      
-      logger.info('Roles fetched successfully', { userId, roles: data });
-      return data?.map(r => r.role) || [];
-    } catch (error: any) {
-      logger.error('Unexpected error fetching roles', { error, userId });
 
-      // Comprehensive error handling for different error types
-      if (error.message?.includes('recursion') || error.message?.includes('infinite recursion')) {
-        logger.warn('Infinite recursion detected in user_roles, using default role', { userId });
-        return ['locataire'];
+      const roles = data.map(item => item.role);
+      logger.info('User roles fetched successfully', { userId, roles });
+      return roles;
+    } catch (error) {
+      logger.error('Error in fetchUserRoles', { error, userId });
+      return [];
+    }
+  };
+
+  // Function to log login attempts
+  const logLoginAttempt = async (email: string, success: boolean) => {
+    try {
+      const clientIP = await getClientIP();
+      const userAgent = navigator.userAgent;
+
+      const { error } = await supabase
+        .from('login_attempts')
+        .insert({
+          email,
+          success,
+          ip_address: clientIP,
+          user_agent: userAgent
+        });
+
+      if (error) {
+        logger.error('Error logging login attempt', { error, email, success });
       }
-
-      if (error.message?.includes('500') || error.status === 500) {
-        logger.warn('Server error in user_roles, using default role', { userId });
-        return ['locataire'];
-      }
-
-      return ['locataire']; // Default role as fallback
+    } catch (error) {
+      logger.error('Exception in logLoginAttempt', { error, email, success });
     }
   };
 
@@ -297,10 +255,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(null);
           setProfile(null);
           setRoles([]);
-          setLoading(false);
-          logger.info('Unconfirmed user signed out during initial check');
         });
 
+        toast({
+          title: "Email non confirmé",
+          description: "Veuillez confirmer votre email et utiliser le code OTP pour vous connecter.",
+          variant: "destructive",
+        });
+
+        setLoading(false);
         return;
       }
 
@@ -308,367 +271,122 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        setTimeout(async () => {
-          const profileData = await fetchProfile(session.user.id);
-          setProfile(profileData);
-          const userRoles = await fetchUserRoles(session.user.id);
-          setRoles(userRoles);
-          setLoading(false);
-          logger.info('Auth loading complete');
-        }, 0);
-      } else {
-        setLoading(false);
-        logger.info('No session, loading complete');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [forceSigningOut]);
-
-  const signUp = async (email: string, password: string, fullName: string, userType: string) => {
-    try {
-      logger.info('🚀 [AUTH] Starting user registration', { email, userType, fullName });
-
-      // Étape 1: Créer l'utilisateur dans Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            user_type: userType,
-          }
-        }
-      });
-
-      if (error) {
-        await logLoginAttempt(email, false, error.message);
-        toast({
-          title: "Erreur d'inscription",
-          description: error.message,
-          variant: "destructive",
-        });
-        return { error, data: null };
-      }
-
-      // Étape 2: Forcer toujours le processus OTP en développement pour le test
-      const isDevelopment = import.meta.env.DEV;
-      const forceOTP = true; // Forcer OTP pour tous les nouveaux utilisateurs
-
-      // Toujours forcer le processus OTP (temporairement pour le debug)
-      if (data.user) {
-        logger.info('🎯 [AUTH] User created - forcing OTP process', {
-          userId: data.user.id,
-          email,
-          userEmail: data.user.email,
-          emailConfirmed: data.user.email_confirmed_at,
-          userMetadata: data.user.user_metadata,
-          hasSession: !!data.session,
-          isDevelopment,
-          forceOTP
-        });
-
+        // Vérifier si l'utilisateur a complété la vérification OTP (version simplifiée)
         try {
-          // 🔍 DEBUG: Obtenir l'adresse IP et user agent pour le suivi
-          const ipAddress = await getClientIP();
-          const userAgent = navigator.userAgent;
-          
-          logger.info('🔍 [DEBUG] Starting OTP creation process', {
-            userId: data.user.id,
-            email,
-            ipAddress,
-            userAgent: userAgent.substring(0, 100) + '...'
-          });
+          // Utiliser le service simplifié pour vérifier
+          const isVerified = otpService.isEmailVerified(session.user.email!, 'signup');
 
-          // Créer le code OTP dans notre base de données
-          const otpResult = await otpService.createOTPCode(
-            data.user.id,
-            email,
-            'signup',
-            ipAddress,
-            userAgent
-          );
-
-          logger.info('🔍 [DEBUG] OTP creation result', {
-            success: otpResult.success,
-            hasCode: !!otpResult.code,
-            message: otpResult.message,
-            userId: data.user.id
-          });
-
-          if (otpResult.success && otpResult.code) {
-            logger.info('✅ [AUTH] OTP code generated successfully', {
-              userId: data.user.id,
-              email,
-              code: otpResult.code.replace(/./g, '*') // Masquer le code dans les logs
+          if (!isVerified) {
+            logger.warn('🚫 [AUTH] User attempting login without OTP verification', {
+              userId: session.user.id,
+              email: session.user.email
             });
 
-            // 🔍 DEBUG: Envoyer le code par email via Supabase avec le code OTP généré
-            logger.info('🔍 [DEBUG] Starting email sending process', { email, hasOTPCode: !!otpResult.code });
-            const emailResult = await otpService.sendOTPByEmail(email, otpResult.code, 'signup');
-
-            logger.info('🔍 [DEBUG] Email sending result', {
-              success: emailResult.success,
-              error: emailResult.error,
-              email,
-              mailpitUrl: emailResult.mailpitUrl
+            // Déconnecter immédiatement l'utilisateur
+            supabase.auth.signOut().then(() => {
+              setUser(null);
+              setSession(null);
+              setProfile(null);
+              setRoles([]);
             });
 
-            if (emailResult.success) {
-              await logLoginAttempt(email, true);
-
-              // Message de succès avec instructions pour Mailpit si disponible
-              const description = emailResult.mailpitUrl
-                ? `Un code de vérification à 6 chiffres a été envoyé à votre adresse email. Pour le développement, vérifiez dans Mailpit: ${emailResult.mailpitUrl}`
-                : "Un code de vérification à 6 chiffres a été envoyé à votre adresse email.";
-
-              toast({
-                title: "Code OTP envoyé",
-                description: description,
-              });
-
-              // 🔍 DEBUG: Instructions détaillées pour Mailpit
-              if (emailResult.mailpitUrl) {
-                logger.info('🔍 [DEBUG] Mailpit instructions', {
-                  message: `Consultez l'email dans Mailpit à ${emailResult.mailpitUrl}`,
-                  email,
-                  code: otpResult.code.replace(/./g, '*')
-                });
-              }
-            } else {
-              logger.error('❌ [AUTH] Failed to send OTP email', { error: emailResult.error, email });
-              toast({
-                title: "Erreur d'envoi",
-                description: "Le compte a été créé mais l'envoi du code a échoué. Veuillez réessayer.",
-                variant: "destructive",
-              });
-            }
-          } else {
-            logger.error('❌ [AUTH] Failed to generate OTP code', { message: otpResult.message, userId: data.user.id });
             toast({
-              title: "Erreur de génération",
-              description: "Le compte a été créé mais la génération du code a échoué.",
+              title: "Vérification OTP requise",
+              description: "Veuillez d'abord vérifier votre email avec le code OTP envoyé.",
               variant: "destructive",
             });
+
+            setLoading(false);
+            return;
           }
         } catch (otpError) {
-          logger.error('💥 [AUTH] Error in OTP process', { error: otpError, userId: data.user.id });
-          toast({
-            title: "Erreur technique",
-            description: "Une erreur technique est survenue. Veuillez réessayer.",
-            variant: "destructive",
-          });
+          logger.error('Error checking OTP verification', { otpError });
         }
 
-      } else if (data.session) {
-        // Utilisateur connecté automatiquement - FORCER TOUJOURS LA DÉCONNEXION
-        // Car les utilisateurs ne doivent PAS être connectés automatiquement après inscription
-        logger.warn('⚠️ [AUTH] User auto-signed in after registration - forcing sign out', {
-          userId: data.user.id,
-          email,
-          hasEmailConfirmed: !!data.user.email_confirmed_at
+        fetchProfile(session.user.id).then(profileData => {
+          setProfile(profileData);
         });
 
-        // Activer le flag de déconnexion forcée pour éviter les réactivations immédiates
-        setForceSigningOut(true);
-
-        // Sign out l'utilisateur pour forcer le processus OTP
-        logger.info('🔒 [AUTH] Signing out user to enforce OTP verification', { userId: data.user.id });
-
-        try {
-          await supabase.auth.signOut();
-
-          // Attendre un peu pour s'assurer que le signOut est bien effectué
-          await new Promise(resolve => setTimeout(resolve, 500));
-
-          // Forcer la mise à jour de l'état local
-          setUser(null);
-          setSession(null);
-          setProfile(null);
-          setRoles([]);
-
-          // Désactiver le flag après un délai pour permettre les futures connexions normales
-          setTimeout(() => {
-            setForceSigningOut(false);
-            logger.info('🔓 [AUTH] Force sign-out flag cleared', { email });
-          }, 2000);
-
-          logger.info('✅ [AUTH] User signed out successfully, ready for OTP verification', { email });
-
-          // Ne pas retourner d'erreur pour permettre la redirection vers la page OTP
-          return { error: null, data: { user: data.user } };
-
-        } catch (signOutError) {
-          logger.error('❌ [AUTH] Error during forced sign out', {
-            error: signOutError,
-            userId: data.user.id
-          });
-        }
+        fetchUserRoles(session.user.id).then(userRoles => {
+          setRoles(userRoles);
+        });
       } else {
-        logger.warn('⚠️ [AUTH] Unexpected registration state', {
-          hasUser: !!data.user,
-          hasSession: !!data.session,
-          email
-        });
-        toast({
-          title: "Inscription réussie",
-          description: "Votre compte a été créé. Vérifiez votre email pour le code OTP.",
-        });
+        setProfile(null);
+        setRoles([]);
       }
 
-      return { error: null, data };
+      setLoading(false);
+    });
 
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      await logLoginAttempt(email, false, errorMessage);
-      logger.error('Unexpected error in signUp', { error: errorMessage, email });
-      toast({
-        title: "Erreur d'inscription",
-        description: errorMessage,
-        variant: "destructive",
-      });
-      return { error: error as AuthError, data: null };
-    }
-  };
+    return () => {
+      logger.info('Cleaning up auth listener');
+      subscription.unsubscribe();
+    };
+  }, [forceSigningOut]);
 
   const signIn = async (email: string, password: string) => {
     try {
+      logger.info('Starting sign in process', { email });
+
+      // Vérifier d'abord si l'email a été vérifié avec OTP
+      const isVerified = otpService.isEmailVerified(email, 'signup');
+      if (!isVerified) {
+        toast({
+          title: "Vérification requise",
+          description: "Veuillez d'abord vérifier votre email avec le code OTP avant de vous connecter.",
+          variant: "destructive",
+        });
+        return { error: { message: 'Email non vérifié. Veuillez utiliser le code OTP envoyé.' } as AuthError };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        await logLoginAttempt(email, false, error.message);
-        toast({
-          title: "Erreur de connexion",
-          description: error.message,
-          variant: "destructive",
-        });
+        await logLoginAttempt(email, false);
+        logger.error('Sign in error', { error: error.message, email });
         return { error };
       }
 
-      // Si la connexion réussit, vérifier le statut OTP de l'utilisateur
       if (data.user) {
-        logger.info('🔍 [AUTH] Checking OTP verification status for signed in user', {
-          userId: data.user.id,
-          email: data.user.email,
-          emailConfirmed: !!data.user.email_confirmed_at
-        });
+        await logLoginAttempt(email, true);
+        logger.info('Sign in successful', { userId: data.user.id, email });
 
-        // Vérifier si l'utilisateur a complété la vérification OTP
-        try {
-          const { data: otpVerification } = await supabase
-            .from('otp_verifications')
-            .select('verified, verification_type')
-            .eq('user_id', data.user.id)
-            .eq('verification_type', 'signup')
-            .eq('verified', true)
-            .single();
-
-          if (!otpVerification) {
-            logger.warn('🚫 [AUTH] User attempting login without OTP verification', {
-              userId: data.user.id,
-              email: data.user.email
-            });
-
-            // Déconnecter immédiatement l'utilisateur
-            await supabase.auth.signOut();
-
-            await logLoginAttempt(email, false, "OTP verification required");
-            toast({
-              title: "Vérification requise",
-              description: "Veuillez d'abord vérifier votre compte avec le code OTP envoyé par email.",
-              variant: "destructive",
-            });
-
-            return { error: { message: "OTP verification required" } as AuthError };
-          }
-
-        } catch (otpError) {
-          logger.warn('⚠️ [AUTH] Error checking OTP verification status', {
-            error: otpError,
-            userId: data.user.id
-          });
-
-          // En cas d'erreur lors de la vérification OTP, déconnecter par sécurité
-          await supabase.auth.signOut();
-
-          await logLoginAttempt(email, false, "OTP verification check failed");
-          toast({
-            title: "Vérification requise",
-            description: "Une erreur est survenue lors de la vérification de votre compte. Veuillez réessayer ou contacter le support.",
-            variant: "destructive",
-          });
-
-          return { error: { message: "OTP verification check failed" } as AuthError };
-        }
+        // Nettoyer les anciens codes OTP
+        otpService.cleanupExpiredOTPs();
       }
-
-      await logLoginAttempt(email, true);
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue sur Mon Toit !",
-      });
 
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      await logLoginAttempt(email, false, errorMessage);
-      toast({
-        title: "Erreur de connexion",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      await logLoginAttempt(email, false);
+      logger.error('Unexpected sign in error', { error, email });
       return { error: error as AuthError };
     }
   };
 
-  const signInWithOAuth = async (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType: string = 'locataire') => {
-    const redirectUrl = `${window.location.origin}/auth/callback?userType=${userType}`;
-
+  const signInWithOAuth = async (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider as any, // Cast to any to handle Microsoft provider
+      logger.info('Starting OAuth sign in', { provider, userType });
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
         options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          scopes: provider === 'google'
-            ? 'email profile'
-            : provider === 'facebook'
-            ? 'email public_profile'
-            : provider === 'apple'
-            ? 'email name'
-            : 'email profile'
+          redirectTo: window.location.origin,
+          queryParams: userType ? { user_type: userType } : undefined
         }
       });
 
       if (error) {
-        logger.error('OAuth sign in error', { provider, error: error.message });
-        toast({
-          title: "Erreur de connexion OAuth",
-          description: `Impossible de se connecter avec ${provider}: ${error.message}`,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Redirection vers l'authentification",
-          description: `Redirection vers ${provider}...`,
-        });
+        logger.error('OAuth sign in error', { error: error.message, provider });
+        return { error };
       }
 
-      return { error };
+      logger.info('OAuth sign in initiated', { provider });
+      return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      logger.error('Unexpected OAuth error', { provider, error: errorMessage });
-      toast({
-        title: "Erreur de connexion OAuth",
-        description: `Une erreur inattendue est survenue avec ${provider}: ${errorMessage}`,
-        variant: "destructive",
-      });
+      logger.error('Unexpected OAuth sign in error', { error, provider });
       return { error: error as AuthError };
     }
   };
@@ -677,8 +395,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       logger.info('Starting OTP verification', { email, token: token.replace(/./g, '*') });
 
-      // Étape 1: Vérifier le code OTP avec notre service personnalisé
-      const otpResult = await otpService.verifyOTPCode(email, token, 'signup');
+      // Étape 1: Vérifier le code OTP avec le service simplifié
+      const otpResult = await otpService.verifyOTP(email, token, 'signup');
 
       if (!otpResult.success) {
         logger.warn('OTP verification failed', {
@@ -702,35 +420,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userId: otpResult.user_id
         });
 
-        // Marquer l'utilisateur comme vérifié dans la table otp_verifications
-        try {
-          const { error: updateError } = await supabase
-            .from('otp_verifications')
-            .update({
-              verified: true,
-              verified_at: new Date().toISOString()
-            })
-            .eq('user_id', otpResult.user_id)
-            .eq('verification_type', 'signup')
-            .eq('email', email);
-
-          if (updateError) {
-            logger.error('Error updating OTP verification status', {
-              error: updateError,
-              userId: otpResult.user_id
-            });
-          } else {
-            logger.info('✅ [AUTH] User marked as OTP verified in database', {
-              userId: otpResult.user_id,
-              email
-            });
-          }
-        } catch (updateError) {
-          logger.error('Exception updating OTP verification status', {
-            error: updateError,
-            userId: otpResult.user_id
-          });
-        }
+        // La vérification est déjà marquée dans le service simplifié
+        // Plus besoin de mettre à jour la base de données
+        logger.info('✅ [AUTH] User OTP verification completed', {
+          userId: otpResult.user_id,
+          email
+        });
 
         await logLoginAttempt(email, true);
         toast({
@@ -749,9 +444,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         return { error: null };
+      } else {
+        return { error: { message: 'Erreur inattendue lors de la vérification' } as AuthError };
       }
-
-      return { error: { message: 'Erreur inattendue lors de la vérification' } as AuthError };
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -767,23 +462,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
+      logger.info('Starting sign out process', { userId: user?.id });
+      setForceSigningOut(true);
+
       const { error } = await supabase.auth.signOut();
-      if (!error) {
-        setRoles([]);
-        
-        // ✅ SÉCURITÉ : Nettoyer le cache lors de la déconnexion
-        const { clearCacheOnLogout } = await import('@/lib/queryClient');
-        clearCacheOnLogout();
-        
+
+      if (error) {
+        logger.error('Sign out error', { error });
         toast({
-          title: "Déconnexion",
-          description: "À bientôt sur Mon Toit !",
+          title: "Erreur de déconnexion",
+          description: "Une erreur est survenue lors de la déconnexion",
+          variant: "destructive",
         });
       } else {
-        logger.error('Error during sign out', { error });
+        logger.info('Sign out successful');
+        toast({
+          title: "Déconnexion réussie",
+          description: "Vous avez été déconnecté avec succès",
+        });
+        navigate('/auth');
       }
+
+      // Réinitialiser l'état
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setRoles([]);
+
+      // Réinitialiser le flag après un court délai
+      setTimeout(() => {
+        setForceSigningOut(false);
+      }, 1000);
     } catch (error) {
-      logger.error('Unexpected error during sign out', { error });
+      logger.error('Unexpected sign out error', { error });
+      toast({
+        title: "Erreur de déconnexion",
+        description: "Une erreur inattendue est survenue",
+        variant: "destructive",
+      });
     }
   };
 
@@ -791,17 +507,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return roles.includes(role);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, session, profile, roles, loading, signUp, signIn, signInWithOAuth, verifyOTP, signOut, refreshProfile, hasRole }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  const value: AuthContextType = {
+    user,
+    session,
+    profile,
+    roles,
+    loading,
+    signIn,
+    signInWithOAuth,
+    verifyOTP,
+    signOut,
+    refreshProfile,
+    hasRole,
+  };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

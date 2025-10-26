@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { supabase, supabaseAnon } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import type { AgencyMandate } from '@/types/admin';
 import { useQuery } from '@tanstack/react-query';

@@ -108,7 +108,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                     }, 100);
                   }
                 }}
-                className="md:hidden"
+                className="md:hidden h-10 w-10 min-h-[44px] min-w-[44px]"
                 aria-label="Ouvrir la recherche"
               >
                 <Search className="h-4 w-4" />
@@ -124,7 +124,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button aria-label="Ouvrir le menu utilisateur" variant="ghost" size="icon" className="rounded-full">
+                    <Button aria-label="Ouvrir le menu utilisateur" variant="ghost" size="icon" className="rounded-full h-10 w-10 min-h-[44px] min-w-[44px]">
                       <Avatar>
                         <AvatarFallback className="bg-primary text-primary-foreground">
                           {profile?.full_name?.charAt(0).toUpperCase() || 'U'}
@@ -212,7 +212,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
               <Button
                 size="sm"
                 variant="default"
-                className="font-semibold h-10 md:h-9"
+                className="font-semibold h-10 md:h-9 min-h-[44px] px-4"
                 asChild
               >
                 <Link to="/auth" aria-label="Se connecter">
@@ -246,6 +246,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 searchModal?.classList.add('hidden');
               }}
               aria-label="Fermer la recherche"
+              className="h-10 w-10 min-h-[44px] min-w-[44px]"
             >
               <X className="h-5 w-5" />
             </Button>

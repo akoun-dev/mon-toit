@@ -330,7 +330,7 @@ const AdminLeasesPage = () => {
                     </div>
                   </div>
 
-                  <div className="rounded-md border overflow-x-auto">
+                  <div className="rounded-md border overflow-x-auto max-w-[100vw]">
                     <Table>
                       <TableHeader>
                         <TableRow>

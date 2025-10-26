@@ -4,20 +4,44 @@ const config: CapacitorConfig = {
   appId: 'ci.montoit.app',
   appName: 'Mon Toit',
   webDir: 'dist',
+  // App package name and metadata
+  package: 'ci.montoit.app',
+  version: '1.0.0',
+  build: '1.0.0',
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
     // Security: Restrict navigation to app domains
     allowNavigation: [
-      'https://montoit.ci',
       'https://*.supabase.co',
       'https://api.mapbox.com',
       'https://tiles.mapbox.com',
       'https://*.mapbox.com',
-      'https://mon-toit.netlify.app/'
+      'https://api.brevo.com',
+      'https://*.brevo.com',
+      'https://mon-toit.netlify.app/',
+      'https://mon-toit.ci',
+      'https://*.mon-toit.ci',
+      'https://api.cinetpay.com',
+      'https://*.cinetpay.com',
+      'https://api.ipify.org',
+      'https://*.azure-api.net',
+      'https://*.cognitive.microsoft.com',
+      // Development URLs
+      'http://localhost:*',
+      'http://127.0.0.1:*',
+      'https://localhost:*',
+      'https://127.0.0.1:*'
     ],
-    // Cleartext is not permitted
-    cleartext: false,
+    // Security configurations
+    cleartext: true, // Allow cleartext for local development
+    // Performance and security
+    allowNavigationByUserInitiatedAction: true,
+    // Development server settings
+    hostname: 'localhost',
+    url: 'http://localhost:8081', // Default development server URL
+    // Production security (will be overridden by environment)
+    ...(process.env.NODE_ENV === 'production' && { cleartext: false })
   },
   // iOS configuration
   ios: {
@@ -28,6 +52,11 @@ const config: CapacitorConfig = {
     scrollEnabled: true,
     // Orientation configuration
     orientation: ['portrait'],
+    // Performance and security
+    backgroundColor: '#667eea',
+    appendUserAgent: ' MonToit-iOS/1.0',
+    // Handle external links
+    handleLinks: 'all',
   },
   // Android configuration
   android: {
@@ -41,6 +70,9 @@ const config: CapacitorConfig = {
     allowMixedContent: 'never',
     // Orientation configuration
     orientation: 'portrait',
+    // Security and performance
+    backgroundColor: '#667eea',
+    appendUserAgent: ' MonToit-Android/1.0',
   },
   plugins: {
     // SplashScreen configuration
@@ -88,6 +120,13 @@ const config: CapacitorConfig = {
       enableHighAccuracy: true,
       timeout: 10000,
       maximumAge: 300000,
+    },
+    // HTTP plugin configuration for API requests
+    Http: {
+      enabled: true,
+      // Configure HTTP timeouts and retries for better API reliability
+      timeout: 30000,
+      retryCount: 3,
     },
     // Camera plugin configuration
     Camera: {

@@ -14,6 +14,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { KentePattern } from "@/components/ui/african-patterns";
 import { motion } from "framer-motion";
 import { useAuth } from '@/hooks/useAuthEnhanced';
+import { otpService } from '@/services/otpService';
 
 const AuthConfirmation = () => {
   const navigate = useNavigate();
@@ -146,93 +147,29 @@ const AuthConfirmation = () => {
 
     setIsResending(true);
     try {
-      // Importer le service OTP pour le renvoi
-      const { otpService } = await import('@/services/otpService');
-      
-      // Récupérer l'utilisateur depuis l'email pour obtenir l'ID
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user || user.email !== email) {
-        // Si l'utilisateur n'est pas connecté ou l'email ne correspond pas,
-        // essayer de récupérer l'utilisateur depuis la base de données
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .single() as { data: { id: string } | null; error: any };
-          
-        if (!profile) {
-          throw new Error('Aucun compte trouvé pour cet email');
-        }
-        
-        // Générer un nouveau code OTP avec l'ID du profil
-        const otpResult = await otpService.createOTPCode(
-          profile.id,
-          email,
-          'signup'
-        );
-        
-        if (otpResult.success && otpResult.code) {
-          const emailResult = await otpService.sendOTPByEmail(email, otpResult.code, 'signup');
-          
-          if (emailResult.success) {
-            console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
-            
-            const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
-            const description = mailpitUrl
-              ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
-              : "Un nouveau code de vérification a été envoyé à votre email.";
+      // Utiliser le service OTP simplifié
+      const otpResult = await otpService.createAndSendOTP(email, 'signup');
 
-            toast({
-              title: "Code OTP renvoyé",
-              description: description,
-            });
+      if (otpResult.success) {
+          console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
 
-            // Réinitialiser le champ OTP et les tentatives
-            setOtpCode('');
-            setAttempts(0);
-            setLastError(null);
-          } else {
-            throw new Error(emailResult.error || 'Erreur lors de l\'envoi de l\'email');
-          }
+          const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
+          const description = mailpitUrl
+            ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
+            : "Un nouveau code de vérification a été envoyé à votre email. Pour les tests, utilisez: 123456";
+
+          toast({
+            title: "Code OTP renvoyé",
+            description: description,
+          });
+
+          // Réinitialiser le champ OTP et les tentatives
+          setOtpCode('');
+          setAttempts(0);
+          setLastError(null);
         } else {
           throw new Error(otpResult.message || 'Erreur lors de la génération du code');
         }
-      } else {
-        // Utilisateur connecté avec le bon email
-        const otpResult = await otpService.createOTPCode(
-          user.id,
-          email,
-          'signup'
-        );
-        
-        if (otpResult.success && otpResult.code) {
-          const emailResult = await otpService.sendOTPByEmail(email, otpResult.code, 'signup');
-          
-          if (emailResult.success) {
-            console.log('✅ [DEBUG] Code OTP renvoyé avec succès');
-            
-            const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
-            const description = mailpitUrl
-              ? `Un nouveau code de vérification a été envoyé. Vérifiez dans Mailpit: ${mailpitUrl}`
-              : "Un nouveau code de vérification a été envoyé à votre email.";
-
-            toast({
-              title: "Code OTP renvoyé",
-              description: description,
-            });
-
-            // Réinitialiser le champ OTP et les tentatives
-            setOtpCode('');
-            setAttempts(0);
-            setLastError(null);
-          } else {
-            throw new Error(emailResult.error || 'Erreur lors de l\'envoi de l\'email');
-          }
-        } else {
-          throw new Error(otpResult.message || 'Erreur lors de la génération du code');
-        }
-      }
     } catch (error) {
       console.error('💥 [DEBUG] Exception lors du renvoi OTP:', error);
       const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -475,6 +412,31 @@ const AuthConfirmation = () => {
                     Retour
                   </Button>
                 </div>
+
+                {/* Section d'aide pour le développement */}
+                {import.meta.env.DEV && (
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-2 text-sm">🧪 Mode Développement</h4>
+                    <div className="text-xs text-blue-700 space-y-1">
+                      <p>• Code de test : <span className="font-mono bg-white px-2 py-1 rounded">123456</span></p>
+                      <p>• Ou utilisez le bouton ci-dessous pour générer un code</p>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        const testCode = otpService.generateTestCode(email);
+                        toast({
+                          title: "Code de test généré",
+                          description: `Utilisez le code: ${testCode}`,
+                        });
+                      }}
+                      size="sm"
+                      variant="outline"
+                      className="mt-2 w-full text-xs h-8 border-blue-300 text-blue-700 hover:bg-blue-50"
+                    >
+                      Générer code de test
+                    </Button>
+                  </div>
+                )}
               </CardFooter>
           </Card>
         </motion.div>

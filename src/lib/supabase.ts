@@ -49,17 +49,7 @@ window.addEventListener('unhandledrejection', (event) => {
 // Run environment detection
 detectAndFixEnvironment();
 
-// Create anonymous Supabase client for public data (no authentication)
-export const supabaseAnon = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: false, // Don't persist sessions for anon client
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
-    flowType: 'pkce',
-  }
-});
-
-// Create authenticated Supabase client with simplified storage configuration
+// Create a single Supabase client
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: {
