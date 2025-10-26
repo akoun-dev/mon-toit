@@ -245,14 +245,13 @@ const AuthConfirmation = () => {
   if (loading) {
     return (
       <PageTransition>
-        <MainLayout>
-          <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12">
-            <div className="text-center">
-              <RefreshCw className="h-8 w-8 sm:h-10 sm:w-10 animate-spin text-blue-600 mx-auto mb-4" />
-              <p className="text-gray-600 text-sm sm:text-base">Vérification du statut de votre compte...</p>
-            </div>
+        <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12 relative">
+          <KentePattern />
+          <div className="text-center relative z-10">
+            <RefreshCw className="h-8 w-8 sm:h-10 sm:w-10 animate-spin text-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600 text-sm sm:text-base">Vérification du statut de votre compte...</p>
           </div>
-        </MainLayout>
+        </div>
       </PageTransition>
     );
   }
@@ -260,14 +259,14 @@ const AuthConfirmation = () => {
   if (isVerified) {
     return (
       <PageTransition>
-        <MainLayout>
-          <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="w-full max-w-md sm:max-w-lg"
-            >
+        <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12 relative">
+          <KentePattern />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md sm:max-w-lg relative z-10"
+          >
               <Card className="shadow-xl border-0">
                 <CardHeader className="text-center pb-4 sm:pb-6 px-4 sm:px-6">
                   <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-600 mx-auto mb-3 sm:mb-4" />
@@ -284,7 +283,7 @@ const AuthConfirmation = () => {
                   </p>
                   <Button
                     onClick={handleGoToDashboard}
-                    className="w-full h-11 sm:h-12 text-sm sm:text-base font-medium bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full h-13 sm:h-15 text-base sm:text-lg font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300 rounded-xl"
                     size="lg"
                   >
                     Aller à la connexion
@@ -292,23 +291,21 @@ const AuthConfirmation = () => {
                 </CardContent>
               </Card>
             </motion.div>
-          </div>
-        </MainLayout>
+        </div>
       </PageTransition>
     );
   }
 
   return (
     <PageTransition>
-      <MainLayout>
-        <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12">
-          <KentePattern />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full max-w-md sm:max-w-lg"
-          >
+      <div className="min-h-screen flex items-center justify-center px-4 py-6 sm:py-8 md:py-12 relative">
+        <KentePattern />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md sm:max-w-lg relative z-10"
+        >
             <Card className="shadow-xl border-0">
               <CardHeader className="text-center pb-4 sm:pb-6 px-4 sm:px-6">
                 <Key className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto mb-3 sm:mb-4" />
@@ -337,14 +334,6 @@ const AuthConfirmation = () => {
                     </ul>
                   </AlertDescription>
                 </Alert>
-
-                {email && (
-                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
-                    <p className="text-sm text-gray-600 break-all">
-                      <strong>Email :</strong> {email}
-                    </p>
-                  </div>
-                )}
 
                 <div className="space-y-3 sm:space-y-4">
                   <div className="space-y-2">
@@ -412,71 +401,72 @@ const AuthConfirmation = () => {
                       id="email"
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      readOnly
                       placeholder="votre@email.com"
-                      className="w-full h-10 sm:h-11"
+                      className="w-full h-10 sm:h-11 bg-gray-50 border-gray-200 text-gray-700 cursor-not-allowed"
                       disabled={isVerifying}
                     />
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="space-y-3 px-4 sm:px-6 py-4 sm:py-6">
+              <CardFooter className="flex flex-col gap-3 px-4 sm:px-6 py-4 sm:py-6">
                 <Button
                   onClick={handleVerifyOTP}
                   disabled={isVerifying || !email || !otpCode || otpCode.length !== 6 || attempts >= 5}
-                  className="w-full h-12 sm:h-14 text-sm sm:text-base font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-13 sm:h-15 text-base sm:text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none rounded-xl"
                   size="lg"
                 >
                   {isVerifying ? (
                     <>
-                      <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5 mr-2 animate-spin" />
+                      <RefreshCw className="h-5 w-5 sm:h-6 sm:w-6 mr-3 animate-spin" />
                       Vérification en cours...
                     </>
                   ) : attempts >= 5 ? (
                     <>
-                      <Shield className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      <Shield className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
                       Maximum de tentatives atteint
                     </>
                   ) : (
                     <>
-                      <Key className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      <Key className="h-5 w-5 sm:h-6 sm:w-6 mr-3" />
                       Vérifier le code
                     </>
                   )}
                 </Button>
 
-                <Button
-                  onClick={handleResendOTP}
-                  disabled={isResending || !email}
-                  className="w-full h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  variant="outline"
-                >
-                  {isResending ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                      Envoi en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="h-4 w-4 mr-2" />
-                      Renvoyer le code
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-3 w-full">
+                  <Button
+                    onClick={handleResendOTP}
+                    disabled={isResending || !email}
+                    className="flex-1 h-11 sm:h-12 text-sm sm:text-base font-medium border-2 border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-800 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg"
+                    variant="outline"
+                  >
+                    {isResending ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Envoi...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4 mr-2" />
+                        Renvoyer
+                      </>
+                    )}
+                  </Button>
 
-                <Button
-                  onClick={handleBackToAuth}
-                  variant="ghost"
-                  className="w-full h-10 sm:h-11 text-sm sm:text-base text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-all duration-200"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Retour à la connexion
-                </Button>
+                  <Button
+                    onClick={handleBackToAuth}
+                    variant="ghost"
+                    className="flex-1 h-11 sm:h-12 text-sm sm:text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 hover:shadow-sm transition-all duration-300 rounded-lg"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Retour
+                  </Button>
+                </div>
               </CardFooter>
-            </Card>
-          </motion.div>
-        </div>
-      </MainLayout>
+          </Card>
+        </motion.div>
+      </div>
     </PageTransition>
   );
 };
