@@ -6,15 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development Environment
 ```bash
-npm run dev              # Start development server on port 8080
+npm run dev              # Start development server (usually port 8080/8081)
 npm run build            # Production build
 npm run build:dev        # Development build (faster, less optimized)
 npm run lint             # ESLint code checking
 npm run preview          # Preview production build locally
-npm run seed:auth        # Seed authentication data (17 users)
-npm run seed:auth:create # Same as seed:auth - creates users with working passwords
-npm run seed:passwords  # Generate and apply working password hashes
-npm run seed:properties  # Seed property data (30+ properties)
 ```
 
 ### Mobile Development (Capacitor)
@@ -34,15 +30,23 @@ npx vitest ui           # Run tests with Vitest UI
 npx vitest run          # Run tests once
 npx vitest run --coverage  # Run tests with coverage report
 npx jscpd .             # Detect duplicate code (configured in .jscpd.json)
+npm run lint            # ESLint code checking
 ```
 
 ### Environment Setup
 Create `.env.local` with:
 ```
+# Supabase Configuration
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
+
+# Mapbox Configuration (required for maps)
 VITE_MAPBOX_PUBLIC_TOKEN=your_mapbox_token
-VITE_SENTRY_DSN=your_sentry_dsn  # Optional for error tracking
+
+# Optional Services
+VITE_SENTRY_DSN=your_sentry_dsn  # Error tracking
+VITE_CINETPAY_API_KEY=          # Payment gateway
+VITE_BREVO_API_KEY=             # Email service (if needed)
 ```
 
 **Important**: Supabase keys have secure fallbacks for local development in `src/lib/supabase.ts`
@@ -55,6 +59,7 @@ VITE_SENTRY_DSN=your_sentry_dsn  # Optional for error tracking
 - **Backend**: Supabase (PostgreSQL) with Row Level Security (RLS)
 - **Maps**: Mapbox GL JS with Supercluster clustering
 - **Authentication**: Multi-factor auth with role-based access control
+- **OTP System**: Built-in OTP service with email simulation for development
 
 ### Multi-Tenant Role System
 The application supports 5 distinct user roles with separate dashboards:
@@ -145,7 +150,7 @@ The application supports 5 distinct user roles with separate dashboards:
 - **Seed Data**: Complete seed in `supabase/seed.sql` with 17 users and 30+ properties
 
 ```bash
-# Database Management
+# Database Management (if using local Docker Supabase)
 docker exec supabase_db_mon-toit psql -U postgres -d postgres -f supabase/seed.sql
 docker exec supabase_db_mon-toit psql -U postgres -d postgres -c "SELECT role, COUNT(*) FROM public.user_roles GROUP BY role;"
 ```
@@ -180,6 +185,8 @@ When creating new features, consider which roles can access them:
 
 ### Authentication & Role System
 - **Multi-factor authentication** with OTP verification for sensitive operations
+- **OTP Service**: `src/services/otpService.ts` handles code generation, verification, and email simulation
+- **Development Mode**: OTP codes are displayed in console for testing (no real email sending)
 - **Role-based redirection** handled in `useAuthEnhanced.tsx` and `ProtectedRoute.tsx`
 - **User roles stored** in `public.user_roles` table with RLS policies
 - **Login attempt tracking** in `public.login_attempts` with rate limiting
@@ -191,7 +198,9 @@ When creating new features, consider which roles can access them:
 - **Authentication fails**: Verify password hashes are compatible with Supabase auth
 - **404 on check_login_rate_limit**: Grant EXECUTE permissions on RPC function to anon/authenticated roles
 - **401 on login_attempts**: Update RLS policy to allow anonymous INSERT operations
-- **Missing user profiles**: Run `npm run seed:auth` to create proper user data
+- **Missing user profiles**: Check supabase/seed.sql for proper user data
+- **OTP codes not working**: In development, check browser console for displayed OTP codes
+- **Email simulation not working**: Ensure `otpService.ts` is properly imported and no external email services are referenced
 
 ### Offline Development
 The PWA includes sophisticated offline capabilities:
@@ -217,8 +226,17 @@ The PWA includes sophisticated offline capabilities:
 - **Image Optimization**: WebP format with compression
 - **Asset Caching**: Strategic caching for API responses and static assets
 
+### OTP System Architecture
+The application includes a comprehensive OTP system for user verification:
+- **Service Location**: `src/services/otpService.ts` - Main OTP service
+- **Development Mode**: Codes are displayed in browser console for testing
+- **Code Types**: signup, reset_password, email_change
+- **Security Features**: Rate limiting, attempt tracking, IP logging, expiration
+- **Database Tables**: `otp_codes` and `otp_notifications` with full audit trails
+- **Integration**: Works with `useAuthEnhanced.tsx` and `AuthConfirmation.tsx`
+
 ### Hook Architecture
-The application uses 70+ custom React hooks organized by functionality:
+The application uses 50+ custom React hooks organized by functionality:
 - **Authentication**: `useAuthEnhanced`, `useRequireRole`, `useMfaStatus`, `useMfaCompliance`
 - **Properties**: `useProperties`, `usePropertyDetail`, `usePropertyFilters`, `usePropertyForm`, `usePropertyDelete`, `usePropertyPermissions`, `usePropertyImageAccess`, `usePropertyViews`
 - **Dashboard**: `useOwnerDashboard`, `useOwnerAnalytics`, `useTenantDashboard`, `useDashboardLayout`
