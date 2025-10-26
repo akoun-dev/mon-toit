@@ -592,20 +592,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return { error: { message: otpResult.message } as AuthError };
       }
 
-      // Étape 2: Si la vérification réussit, confirmer l'email dans Supabase
-      if (otpResult.user_id) {
-        logger.info('OTP verified, confirming email in Supabase', {
-          userId: otpResult.user_id,
-          email
+      // Étape 2: Si la vérification réussit, confirmer l'email et finaliser
+      if (otpResult.success) {
+        logger.info('OTP verified successfully', {
+          email,
+          userId: otpResult.user_id
         });
 
         // Supabase gère la confirmation d'email via l'URL de vérification ou un flux de vérification OTP
         // La ligne `email_confirm: true` n'est pas supportée par Supabase.auth.updateUser
         // On suppose que l'étape de vérification OTP valide le processus.
-        // On passe à la connexion automatique.
-
-        // Étape 3: Informer l'utilisateur de se connecter manuellement
-        // Nous n'avons pas le mot de passe pour la connexion automatique.
 
         await logLoginAttempt(email, true);
         toast({
@@ -613,8 +609,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           description: "Votre compte a été activé avec succès. Vous pouvez maintenant vous connecter.",
         });
 
-        // Forcer le rafraîchissement du profil
-        await refreshProfile();
+        // Forcer le rafraîchissement du profil si on a un user_id
+        if (otpResult.user_id) {
+          await refreshProfile();
+        }
 
         logger.info('OTP verification completed successfully', {
           userId: otpResult.user_id,
