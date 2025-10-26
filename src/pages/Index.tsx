@@ -32,7 +32,7 @@ const Index = () => {
         {/* Main Property Grid - Dynamic height */}
         <PropertyGrid
           limit={16}
-          showFilters={false}
+          showFilters={true}
         />
 
         {/* Mini CTA - Subtle, non-intrusive */}

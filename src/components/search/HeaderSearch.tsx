@@ -81,8 +81,25 @@ export const HeaderSearch = ({
     setRecentSearches(newRecentSearches);
     localStorage.setItem('recentSearches', JSON.stringify(newRecentSearches));
 
-    // Naviguer vers la page de recherche
-    navigate(`/explorer?q=${encodeURIComponent(term)}`);
+    // Naviguer vers la page de recherche avec les bons paramètres
+    const searchParams = new URLSearchParams();
+
+    // Détecter si c'est une ville, un type de bien, ou un prix
+    const cities = ['Abidjan', 'Cocody', 'Plateau', 'Adjame', 'Yopougon', 'Marcory', 'Treichville', 'Abobo'];
+    const propertyTypes = ['appartement', 'studio', 'villa', 'maison', 'duplex', 'chambre'];
+
+    if (cities.some(city => term.toLowerCase().includes(city.toLowerCase()))) {
+      searchParams.set('location', term);
+    } else if (propertyTypes.some(type => term.toLowerCase().includes(type))) {
+      searchParams.set('type', term);
+    } else if (/^\d+$/.test(term)) {
+      searchParams.set('maxPrice', term);
+    } else {
+      // Recherche générale
+      searchParams.set('q', term);
+    }
+
+    navigate(`/search?${searchParams.toString()}`);
     setOpen(false);
     setInputValue('');
   };
