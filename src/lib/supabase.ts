@@ -11,7 +11,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.
 console.log('🔑 Supabase URL:', SUPABASE_URL);
 console.log('🔑 Supabase ANON Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
 
-// Auto-detect and fix environment mismatch
+// Simplified environment detection - less aggressive clearing
 const detectAndFixEnvironment = () => {
   const currentUrl = window.location.href;
   const isLocalDev = currentUrl.includes('localhost') || currentUrl.includes('127.0.0.1');
@@ -23,55 +23,14 @@ const detectAndFixEnvironment = () => {
     supabaseKey: SUPABASE_ANON_KEY.substring(0, 20) + '...'
   });
 
-  // Only clear storage if there's a JWT parsing issue (not always)
-  // This prevents clearing valid tokens on every page load
+  // Only clear storage on explicit JWT errors, not automatically
   const hasJwtError = sessionStorage.getItem('supabase.jwt.error');
   if (hasJwtError) {
-    console.warn('🔄 JWT error detected, clearing Supabase storage');
-    
-    // Clear all possible Supabase storage keys from localStorage
-    const keysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && (key.includes('supabase') || key.includes('sb-') || key.includes('auth-'))) {
-        keysToRemove.push(key);
-      }
-    }
+    console.warn('🔄 JWT error detected, clearing only invalid tokens');
 
-    keysToRemove.forEach(key => {
-      try {
-        secureStorage.removeItem(key);
-      } catch {
-        localStorage.removeItem(key);
-      }
-    });
-
-    // Also clear related metadata
-    const metaKeysToRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && (key.includes('supabase') || key.includes('sb-') || key.includes('auth-')) && key.endsWith('_meta')) {
-        metaKeysToRemove.push(key);
-      }
-    }
-
-    metaKeysToRemove.forEach(key => localStorage.removeItem(key));
-
-    // Clear session storage
-    const sessionKeysToRemove = [];
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key && (key.includes('supabase') || key.includes('sb-') || key.includes('auth-'))) {
-        sessionKeysToRemove.push(key);
-      }
-    }
-
-    sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key));
-
-    // Clear the error flag
+    // Clear only the specific error flag, not all tokens
     sessionStorage.removeItem('supabase.jwt.error');
-    
-    console.log(`✅ Cleared ${keysToRemove.length + metaKeysToRemove.length} localStorage keys and ${sessionKeysToRemove.length} sessionStorage keys`);
+    console.log('✅ Cleared JWT error flag only');
   } else {
     console.log('✅ No JWT error detected, keeping existing tokens');
   }
@@ -100,14 +59,16 @@ export const supabaseAnon = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_K
   }
 });
 
-// Create authenticated Supabase client with proper storage configuration
+// Create authenticated Supabase client with simplified storage configuration
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: {
       getItem: (key: string) => {
         try {
-          console.log(`🔍 Getting ${key} from secure storage`);
-          return secureStorage.getItem(key);
+          // Utiliser localStorage directement pour la stabilité
+          const value = localStorage.getItem(key);
+          console.log(`🔍 Getting ${key} from localStorage:`, value ? 'found' : 'not found');
+          return value;
         } catch (error) {
           console.warn(`⚠️  Error getting ${key} from storage:`, error);
           return null;
@@ -115,20 +76,22 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, 
       },
       setItem: (key: string, value: string) => {
         try {
-          console.log(`💾 Storing ${key} in secure storage`);
-          return secureStorage.setItem(key, value, true);
+          console.log(`💾 Storing ${key} in localStorage`);
+          localStorage.setItem(key, value);
+          return Promise.resolve();
         } catch (error) {
           console.warn(`⚠️  Error storing ${key}:`, error);
-          return null;
+          return Promise.reject(error);
         }
       },
       removeItem: (key: string) => {
         try {
-          console.log(`🗑️  Removing ${key} from secure storage`);
-          return secureStorage.removeItem(key);
+          console.log(`🗑️  Removing ${key} from localStorage`);
+          localStorage.removeItem(key);
+          return Promise.resolve();
         } catch (error) {
           console.warn(`⚠️  Error removing ${key}:`, error);
-          return null;
+          return Promise.reject(error);
         }
       },
     },

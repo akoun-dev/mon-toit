@@ -375,7 +375,8 @@ export const migrateToSecureStorage = async () => {
   return migratedCount + legacyMigratedCount;
 };
 
-// Auto-migrate on module load (in development)
-if (import.meta.env.DEV) {
-  migrateToSecureStorage().catch(console.error);
-}
+// Disable auto-migration to prevent session issues
+// Migration will be handled manually if needed
+// if (import.meta.env.DEV) {
+//   migrateToSecureStorage().catch(console.error);
+// }
