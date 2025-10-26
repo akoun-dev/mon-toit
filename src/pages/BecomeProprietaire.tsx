@@ -10,13 +10,13 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { KentePattern } from "@/components/ui/african-patterns";
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { motion } from "framer-motion";
-import { 
-  User, 
-  Building2, 
-  FileText, 
-  ShieldCheck, 
-  CreditCard, 
-  CheckCircle, 
+import {
+  User,
+  Building2,
+  FileText,
+  ShieldCheck,
+  CreditCard,
+  CheckCircle,
   AlertTriangle,
   Star,
   TrendingUp,
@@ -152,7 +152,7 @@ const BecomeProprietaire = () => {
     }
   };
 
-  
+
   if (!user) {
     navigate('/auth');
     return null;
@@ -162,20 +162,15 @@ const BecomeProprietaire = () => {
     <PageTransition>
       <MainLayout>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-          <div className="px-4 md:px-6 py-4 sm:py-6 w-full">
-            <div className="w-full space-y-4">
-              <DynamicBreadcrumb />
-              <div className="max-w-6xl mx-auto relative z-10">
-                <KentePattern className="absolute inset-0 opacity-5" />
-                  {/* En-tête */}
-                <div className="relative z-10 text-center mb-6 sm:mb-10">
+          <div className="container-fluid max-w-full mx-auto px-4 md:px-6 py-4 sm:py-6 w-full">
+            <DynamicBreadcrumb />
+
+            {/* En-tête */}
+            <div className="text-center mb-6 sm:mb-8">
                   <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 text-lg font-semibold">
-                      Devenir Propriétaire Certifié
-                    </Badge>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 mt-6">
                       Transformez votre expérience locative en opportunité immobilière
                     </h1>
@@ -186,14 +181,17 @@ const BecomeProprietaire = () => {
                   </motion.div>
                 </div>
 
-                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-                  {/* Avantages */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="xl:col-span-1 order-2 xl:order-1"
-                  >
+            {/* Contenu principal - formulaire et avantages */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 relative">
+              <KentePattern className="absolute inset-0 opacity-5" />
+
+              {/* Avantages */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="xl:col-span-1 order-2 xl:order-1 relative z-10"
+              >
                 <Card className="h-full">
                   <CardHeader className="pb-4 px-4 sm:px-6">
                     <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -227,12 +225,12 @@ const BecomeProprietaire = () => {
               </motion.div>
 
               {/* Formulaire multi-étapes */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="xl:col-span-2 order-1 xl:order-2"
-                  >
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="xl:col-span-2 order-1 xl:order-2"
+              >
                 <Card className="h-full">
                   <CardHeader className="pb-4 sm:pb-6 px-4 sm:px-6">
                     <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -374,7 +372,7 @@ const BecomeProprietaire = () => {
                               value={state.formData.city}
                               onChange={(e) => actions.updateFormData({ city: e.target.value })}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                              placeholder="Abidjan, Cocody..."
+                              placeholder="Abidjan, Yamoussoukro..."
                             />
                           </div>
                         </div>
@@ -387,46 +385,56 @@ const BecomeProprietaire = () => {
                         <div className="space-y-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-4">
-                              Type de propriétaire
+                              Quel est votre statut ?
                             </label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                               {[
-                                { value: 'particulier', label: 'Particulier', icon: User },
-                                { value: 'agence', label: 'Agence immobilière', icon: Building2 },
-                                { value: 'professionnel', label: 'Professionnel', icon: Award }
-                              ].map((type) => (
-                                <label
-                                  key={type.value}
-                                  className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                                    state.formData.ownerType === type.value
-                                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                {
+                                  value: 'particulier',
+                                  title: 'Particulier',
+                                  description: 'Propriétaire individuel',
+                                  icon: User
+                                },
+                                {
+                                  value: 'agence',
+                                  title: 'Agence immobilière',
+                                  description: 'Personne morale agréée',
+                                  icon: Building2
+                                },
+                                {
+                                  value: 'professionnel',
+                                  title: 'Professionnel',
+                                  description: 'Expert du secteur',
+                                  icon: Award
+                                }
+                              ].map((option) => (
+                                <div
+                                  key={option.value}
+                                  onClick={() => actions.updateFormData({ ownerType: option.value as any })}
+                                  className={`relative p-4 border rounded-lg cursor-pointer transition-all ${
+                                    state.formData.ownerType === option.value
+                                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500'
                                       : 'border-gray-200 hover:border-gray-300'
                                   }`}
-                              >
-                                <input
-                                  type="radio"
-                                  name="ownerType"
-                                  value={type.value}
-                                  checked={state.formData.ownerType === type.value}
-                                  onChange={(e) => actions.updateFormData({ ownerType: e.target.value as any })}
-                                  className="sr-only"
-                                />
-                                <type.icon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
-                                <div className="min-w-0 flex-1">
-                                  <div className="font-medium text-sm sm:text-base">{type.label}</div>
-                                  <div className="text-xs sm:text-sm text-gray-500">
-                                    {type.value === 'particulier' && 'Propriétaire individuel'}
-                                    {type.value === 'agence' && 'Société immobilière'}
-                                    {type.value === 'professionnel' && 'Profession libéral'}
+                                >
+                                  <div className="flex flex-col items-center text-center space-y-2">
+                                    <option.icon className="h-8 w-8 text-blue-600" />
+                                    <h4 className="font-semibold">{option.title}</h4>
+                                    <p className="text-sm text-gray-600">{option.description}</p>
                                   </div>
+                                  {state.formData.ownerType === option.value && (
+                                    <div className="absolute top-2 right-2">
+                                      <CheckCircle className="h-5 w-5 text-blue-600" />
+                                    </div>
+                                  )}
                                 </div>
-                              </label>
                               ))}
                             </div>
                           </div>
 
+                          {/* Champs supplémentaires pour agence */}
                           {state.formData.ownerType === 'agence' && (
-                            <>
+                            <div className="space-y-4 border-t pt-4">
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                   Nom de l'agence
@@ -436,7 +444,7 @@ const BecomeProprietaire = () => {
                                   value={state.formData.agencyName}
                                   onChange={(e) => actions.updateFormData({ agencyName: e.target.value })}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="Nom officiel de l'agence"
+                                  placeholder="Nom officiel de votre agence"
                                 />
                               </div>
                               <div>
@@ -448,10 +456,10 @@ const BecomeProprietaire = () => {
                                   value={state.formData.agencyLicense}
                                   onChange={(e) => actions.updateFormData({ agencyLicense: e.target.value })}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                  placeholder="Numéro d'enregistrement commercial"
+                                  placeholder="Numéro d'agrément officiel"
                                 />
                               </div>
-                            </>
+                            </div>
                           )}
                         </div>
                         </div>
@@ -460,79 +468,108 @@ const BecomeProprietaire = () => {
                       {/* Étape 3: Documents */}
                       {state.currentStep === 3 && (
                         <div className="space-y-6">
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Pièce d'identité (CNI, passeport...)
-                            </label>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
-                              <input
-                                type="file"
-                                accept="image/*,.pdf"
-                                onChange={(e) => handleFileUpload(e, 'idDocument')}
-                                className="hidden"
-                                id="idDocument"
-                              />
-                              <label
-                                htmlFor="idDocument"
-                                className="flex flex-col items-center gap-2 cursor-pointer py-2"
-                              >
-                                <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
-                                <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
-                                  {state.formData.idDocument ? state.formData.idDocument.name : 'Cliquez pour télécharger'}
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Justificatif de domicile
-                            </label>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
-                              <input
-                                type="file"
-                                accept="image/*,.pdf"
-                                onChange={(e) => handleFileUpload(e, 'proofOfAddress')}
-                                className="hidden"
-                                id="proofOfAddress"
-                              />
-                              <label
-                                htmlFor="proofOfAddress"
-                                className="flex flex-col items-center gap-2 cursor-pointer py-2"
-                              >
-                                <FileCheck className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
-                                <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
-                                  {state.formData.proofOfAddress ? state.formData.proofOfAddress.name : 'Cliquez pour télécharger'}
-                                </span>
-                              </label>
-                            </div>
-                          </div>
+                        <div className="space-y-6">
+                          <Alert className="border-blue-200 bg-blue-50">
+                            <FileCheck className="h-4 w-4 text-blue-600" />
+                            <AlertDescription>
+                              <strong>Téléchargement sécurisé des documents</strong>
+                              <p className="mt-2 text-sm">
+                                Vos documents sont cryptés et stockés de manière sécurisée.
+                                Formats acceptés: JPG, PNG, WebP, PDF (max 10MB par fichier).
+                              </p>
+                            </AlertDescription>
+                          </Alert>
 
-                          {state.formData.ownerType === 'professionnel' && (
+                          <div className="space-y-4">
+                            {/* Pièce d'identité */}
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Carte professionnelle (optionnel)
+                                Pièce d'identité <span className="text-red-500">*</span>
                               </label>
-                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
+                              <div className="flex items-center gap-4">
                                 <input
                                   type="file"
-                                  accept="image/*,.pdf"
-                                  onChange={(e) => handleFileUpload(e, 'professionalCard')}
+                                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                  onChange={(e) => handleFileUpload(e, 'idDocument')}
                                   className="hidden"
-                                  id="professionalCard"
+                                  id="idDocument"
                                 />
                                 <label
-                                  htmlFor="professionalCard"
-                                  className="flex flex-col items-center gap-2 cursor-pointer py-2"
+                                  htmlFor="idDocument"
+                                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                                 >
-                                  <Award className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
-                                  <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
-                                    {state.formData.professionalCard ? state.formData.professionalCard.name : 'Cliquez pour télécharger'}
-                                  </span>
+                                  <Camera className="h-4 w-4 text-gray-500" />
+                                  <span>Choisir un fichier</span>
                                 </label>
+                                {state.formData.idDocument && (
+                                  <span className="text-sm text-green-600 flex items-center gap-1">
+                                    <Check className="h-4 w-4" />
+                                    {state.formData.idDocument.name}
+                                  </span>
+                                )}
                               </div>
                             </div>
-                          )}
+
+                            {/* Justificatif de domicile */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Justificatif de domicile <span className="text-red-500">*</span>
+                              </label>
+                              <div className="flex items-center gap-4">
+                                <input
+                                  type="file"
+                                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                  onChange={(e) => handleFileUpload(e, 'proofOfAddress')}
+                                  className="hidden"
+                                  id="proofOfAddress"
+                                />
+                                <label
+                                  htmlFor="proofOfAddress"
+                                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                                >
+                                  <Camera className="h-4 w-4 text-gray-500" />
+                                  <span>Choisir un fichier</span>
+                                </label>
+                                {state.formData.proofOfAddress && (
+                                  <span className="text-sm text-green-600 flex items-center gap-1">
+                                    <Check className="h-4 w-4" />
+                                    {state.formData.proofOfAddress.name}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Carte professionnelle (optionnel) */}
+                            {state.formData.ownerType === 'professionnel' && (
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Carte professionnelle <span className="text-gray-400">(optionnel)</span>
+                                </label>
+                                <div className="flex items-center gap-4">
+                                  <input
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                    onChange={(e) => handleFileUpload(e, 'professionalCard')}
+                                    className="hidden"
+                                    id="professionalCard"
+                                  />
+                                  <label
+                                    htmlFor="professionalCard"
+                                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                                  >
+                                    <Camera className="h-4 w-4 text-gray-500" />
+                                    <span>Choisir un fichier</span>
+                                  </label>
+                                  {state.formData.professionalCard && (
+                                    <span className="text-sm text-green-600 flex items-center gap-1">
+                                      <Check className="h-4 w-4" />
+                                      {state.formData.professionalCard.name}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         </div>
                       )}
@@ -698,10 +735,8 @@ const BecomeProprietaire = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    </MainLayout>
-  </PageTransition>
+      </MainLayout>
+    </PageTransition>
   );
 };
 
