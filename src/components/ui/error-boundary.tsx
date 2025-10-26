@@ -380,5 +380,5 @@ export const useErrorContext = () => {
 
 // Export du ErrorBoundary de Sentry pour compatibilité
 export const SentryErrorBoundary = Sentry.withErrorBoundary(ErrorBoundary, {
-  fallback: <div>Une erreur est survenue</div>
+  fallback: React.createElement('div', null, 'Une erreur est survenue')
 });

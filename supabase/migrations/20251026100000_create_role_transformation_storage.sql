@@ -147,7 +147,7 @@ GRANT EXECUTE ON FUNCTION cleanup_temp_transformation_docs() TO authenticated;
 GRANT EXECUTE ON FUNCTION get_transformation_storage_stats() TO authenticated;
 
 -- Commentaires
-COMMENT ON STORAGE.BUCKET role-transformation-docs IS 'Stockage sécurisé pour les documents de transformation de rôle (propriétaire, agence, etc.)';
-COMMENT ON STORAGE.BUCKET temp-transformation-docs IS 'Stockage temporaire pour les documents en cours de validation';
+-- Note: Les commentaires sur les buckets de stockage sont gérés différemment dans Supabase
+-- Les commentaires sur les fonctions sont corrects
 COMMENT ON FUNCTION cleanup_temp_transformation_docs() IS 'Nettoie les documents temporaires de plus de 24h';
 COMMENT ON FUNCTION get_transformation_storage_stats() IS 'Statistiques d utilisation du stockage de transformation';
