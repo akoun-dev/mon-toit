@@ -44,7 +44,7 @@ export default function TestCryptoNeo() {
     const { data: leases } = await supabase
       .from('leases')
       .select('*')
-      .or(`landlord_id.eq.${user.id},tenant_id.eq.${user.id}`)
+      .or(`owner_id.eq.${user.id},tenant_id.eq.${user.id}`)
       .order('created_at', { ascending: false })
       .limit(1);
 

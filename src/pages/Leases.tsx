@@ -55,7 +55,7 @@ interface Lease {
     main_image: string;
   };
   tenant_id: string;
-  landlord_id: string;
+  owner_id: string;
   tenant?: {
     full_name: string;
   } | null;
@@ -87,7 +87,7 @@ export default function Leases() {
           *,
           properties (title, address, city, main_image)
         `)
-        .or(`landlord_id.eq.${user?.id},tenant_id.eq.${user?.id}`)
+        .or(`owner_id.eq.${user?.id},tenant_id.eq.${user?.id}`)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -104,7 +104,7 @@ export default function Leases() {
           const { data: landlordData } = await supabase
             .from('profiles')
             .select('full_name')
-            .eq('id', lease.landlord_id)
+            .eq('id', lease.owner_id)
             .single();
           
           return {
@@ -430,7 +430,7 @@ export default function Leases() {
                           <ReviewForm
                             revieweeId={
                               profile?.user_type === 'locataire' 
-                                ? lease.landlord_id 
+                                ? lease.owner_id 
                                 : lease.tenant_id
                             }
                             revieweeName={
@@ -457,7 +457,7 @@ export default function Leases() {
                 <CardContent>
                   <DocumentManager
                     leaseId={lease.id}
-                    landlordId={lease.landlord_id}
+                    landlordId={lease.owner_id}
                     tenantId={lease.tenant_id}
                   />
                 </CardContent>
