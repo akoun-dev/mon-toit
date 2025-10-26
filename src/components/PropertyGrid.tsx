@@ -158,7 +158,7 @@ export const PropertyGrid = ({
           ) : isError ? (
             <Alert variant="destructive">
               <AlertDescription>
-                Erreur lors du chargement des propriétés. {(error as Error)?.message}
+                Erreur lors du chargement des propriétés. Veuillez réessayer plus tard.
               </AlertDescription>
             </Alert>
           ) : filteredProperties.length === 0 ? (

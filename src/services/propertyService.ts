@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
 
-// Safe column list that only includes existing columns after normalization
+// Safe column list that only includes existing columns in the database
 const SAFE_PROPERTY_COLUMNS = [
   'id',
   'title',
@@ -25,6 +25,7 @@ const SAFE_PROPERTY_COLUMNS = [
   'has_garden',
   'latitude',
   'longitude',
+  'floor_number',
   'created_at',
   'updated_at',
   'view_count',
@@ -32,21 +33,6 @@ const SAFE_PROPERTY_COLUMNS = [
   'moderated_at',
   'moderated_by',
   'moderation_notes',
-  'verification_level',
-  'property_level',
-  'amenities',
-  'tags',
-  'nearby_amenities',
-  'transport_score',
-  'accessibility_score',
-  'noise_level',
-  'family_friendly',
-  'student_friendly',
-  'senior_friendly',
-  'pet_friendly',
-  'nightlife_compatibility',
-  'generational_wealth_transfer_potential',
-  'ui_density',
   'title_deed_url'
 ].join(',');
 
@@ -143,12 +129,12 @@ export function parsePropertyError(error: Error | { message?: string; code?: str
 export const propertyService = {
   /**
    * Fetch all properties with optional filters
-   * Uses secure RPC to hide owner_id from public queries
+   * Uses direct query with anonymous client for public browsing
    */
   async fetchAll(filters?: SearchFilters): Promise<Property[]> {
     logger.debug('PropertyService fetchAll called with filters', { filters });
-    
-    // SECURITY: Use RPC for public property browsing (hides owner_id)
+
+    // SECURITY: Use direct query with anonymous client for public property browsing
     // For ANSUT certified properties, still use direct query with join
     if (filters?.isAnsutCertified) {
       const { data, error } = await supabase
@@ -164,7 +150,7 @@ export const propertyService = {
         logger.logError(error, { context: 'propertyService', action: 'fetchCertifiedProperties' });
         throw error;
       }
-      
+
       // Remove duplicates if multiple certified leases for the same property
       const uniqueProperties = data.reduce((acc, current) => {
         const exists = acc.find(item => item.id === current.id);
@@ -178,49 +164,65 @@ export const propertyService = {
       return uniqueProperties as Property[];
     }
 
-    // Try secure RPC for public browsing using anonymous client, but with better error handling
-    const rpcResult = await supabaseAnon.rpc('get_public_properties', {
-      p_city: filters?.city || null,
-      p_property_type: filters?.propertyType?.[0] || null,
-      p_min_price: filters?.minPrice || null,
-      p_max_price: filters?.maxPrice || null,
-      p_bedrooms: filters?.minBedrooms || null,
-      p_limit: 50, // Ajout des paramètres requis
-      p_offset: 0,
-    });
+    // Build query with filters using anonymous client for public access
+    let query = supabaseAnon
+      .from('properties')
+      .select(SAFE_PROPERTY_COLUMNS);
 
-    let data = rpcResult.data;
-    const error = rpcResult.error;
-
-    // Fallback: if RPC is missing (404) or fails, try a safe direct query
-    if (error || !data) {
-      if (error?.code === 'PGRST116' || error?.message?.includes('function') || error?.message?.includes('404')) {
-        logger.warn('RPC function get_public_properties does not exist, using direct query fallback', { error });
-      } else {
-        logger.warn('RPC get_public_properties failed, falling back to direct SELECT', { error });
-      }
-      // Try a more controlled select to avoid loading invalid data using anonymous client
-      const fallback = await supabaseAnon
-        .from('properties')
-        .select(SAFE_PROPERTY_COLUMNS)
-        .order('created_at', { ascending: false });
-
-      if (fallback.error) {
-        logger.logError(fallback.error, { context: 'propertyService', action: 'fetchAllPropertiesFallback' });
-
-        // Provide more context in error message
-        const enhancedError = new Error(
-          `Failed to fetch properties: ${fallback.error.message || 'Unknown error'}. ${
-            fallback.error.code ? `Error code: ${fallback.error.code}` : ''
-          }`
-        );
-        (enhancedError as any).originalError = fallback.error;
-        throw enhancedError;
-      }
-
-      const fallbackData = fallback.data as any[];
-      data = fallbackData;
+    // Apply filters directly in the query
+    if (filters?.city) {
+      query = query.eq('city', filters.city);
     }
+    if (filters?.propertyType && filters.propertyType.length > 0) {
+      query = query.in('property_type', filters.propertyType);
+    }
+    if (filters?.minPrice) {
+      query = query.gte('monthly_rent', filters.minPrice);
+    }
+    if (filters?.maxPrice) {
+      query = query.lte('monthly_rent', filters.maxPrice);
+    }
+    if (filters?.minBedrooms) {
+      query = query.gte('bedrooms', filters.minBedrooms);
+    }
+    if (filters?.minSurface) {
+      query = query.gte('surface_area', filters.minSurface);
+    }
+    if (filters?.maxSurface) {
+      query = query.lte('surface_area', filters.maxSurface);
+    }
+    if (filters?.isFurnished !== undefined) {
+      query = query.eq('is_furnished', filters.isFurnished);
+    }
+    if (filters?.hasAc !== undefined) {
+      query = query.eq('has_ac', filters.hasAc);
+    }
+    if (filters?.hasParking !== undefined) {
+      query = query.eq('has_parking', filters.hasParking);
+    }
+    if (filters?.hasGarden !== undefined) {
+      query = query.eq('has_garden', filters.hasGarden);
+    }
+
+    // Order by most recent and limit results
+    query = query.order('created_at', { ascending: false }).limit(100);
+
+    const { data: propertiesData, error } = await query;
+
+    if (error) {
+      logger.logError(error, { context: 'propertyService', action: 'fetchAllProperties' });
+
+      // Provide more context in error message
+      const enhancedError = new Error(
+        `Failed to fetch properties: ${error.message || 'Unknown error'}. ${
+          error.code ? `Error code: ${error.code}` : ''
+        }`
+      );
+      (enhancedError as any).originalError = error;
+      throw enhancedError;
+    }
+
+    let data = propertiesData || [];
 
     logger.debug('Properties received from API', { count: data?.length || 0 });
 
@@ -251,7 +253,8 @@ export const propertyService = {
           images_count: 0, // Will be calculated from property_media table
           property_type: data[0].property_type,
           monthly_rent: data[0].monthly_rent,
-          city: data[0].city
+          city: data[0].city,
+          status: data[0].status
         }
       });
 
@@ -265,9 +268,9 @@ export const propertyService = {
       logger.info('Image availability statistics', stats);
     }
 
-    // Apply client-side filters not supported by RPC
+    // Filter properties for public viewing
     let results = data || [];
-    
+
     // CRITICAL: Filter out rented properties from public view (unless user is owner)
     // Use try/catch to avoid authentication errors for public browsing
     let currentUserId: string | undefined;
@@ -282,41 +285,12 @@ export const propertyService = {
     const beforeFilter = results.length;
     results = results.filter(p => shouldShowProperty(p as any, currentUserId));
     logger.debug('Properties filtered by visibility', { before: beforeFilter, after: results.length, hasUser: !!currentUserId });
-    
-    if (filters?.propertyType && filters.propertyType.length > 1) {
-      const before = results.length;
-      results = results.filter(p => filters.propertyType?.includes(p.property_type));
-      logger.debug('Properties filtered by type', { before, after: results.length });
-    }
+
+    // Apply remaining client-side filters not supported in the main query
     if (filters?.minBathrooms) {
       const before = results.length;
       results = results.filter(p => p.bathrooms >= filters.minBathrooms!);
       logger.debug('Properties filtered by bathrooms', { before, after: results.length });
-    }
-    if (filters?.minSurface) {
-      const before = results.length;
-      results = results.filter(p => p.surface_area && p.surface_area >= filters.minSurface!);
-      logger.debug('Properties filtered by surface', { before, after: results.length });
-    }
-    if (filters?.isFurnished !== undefined) {
-      const before = results.length;
-      results = results.filter(p => p.is_furnished === filters.isFurnished);
-      logger.debug('Properties filtered by furnished status', { before, after: results.length });
-    }
-    if (filters?.hasParking !== undefined) {
-      const before = results.length;
-      results = results.filter(p => p.has_parking === filters.hasParking);
-      logger.debug('Properties filtered by parking', { before, after: results.length });
-    }
-    if (filters?.hasGarden !== undefined) {
-      const before = results.length;
-      results = results.filter(p => p.has_garden === filters.hasGarden);
-      logger.debug('Properties filtered by garden', { before, after: results.length });
-    }
-    if (filters?.hasAc !== undefined) {
-      const before = results.length;
-      results = results.filter(p => p.has_ac === filters.hasAc);
-      logger.debug('Properties filtered by AC', { before, after: results.length });
     }
 
     logger.info('Final property results after filtering', { count: results.length });
@@ -412,14 +386,16 @@ export const propertyService = {
       }
     }
 
-    // Otherwise, try public RPC (for approved properties) using anonymous client
+    // Otherwise, try public query using anonymous client
     if (!propertyData) {
-      const { data: publicData, error: publicError } = await supabaseAnon.rpc('get_public_property', {
-        p_property_id: id
-      });
+      const { data: publicData, error: publicError } = await supabaseAnon
+        .from('properties')
+        .select(SAFE_PROPERTY_COLUMNS)
+        .eq('id', id)
+        .maybeSingle();
 
-      if (!publicError && publicData && publicData.length > 0) {
-        propertyData = publicData[0] as unknown as Property;
+      if (!publicError && publicData) {
+        propertyData = publicData as unknown as Property;
       }
     }
 
