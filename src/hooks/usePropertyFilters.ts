@@ -17,9 +17,20 @@ export const usePropertyFilters = (properties: Property[]) => {
   const handleFilterChange = (filters: SearchFilters) => {
     let filtered = [...properties];
 
+    // Search query filter (title and description)
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(query) ||
+        (p.description && p.description.toLowerCase().includes(query)) ||
+        p.city.toLowerCase().includes(query) ||
+        (p.neighborhood && p.neighborhood.toLowerCase().includes(query))
+      );
+    }
+
     // City filter
     if (filters.city) {
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.city.toLowerCase().includes(filters.city!.toLowerCase())
       );
     }

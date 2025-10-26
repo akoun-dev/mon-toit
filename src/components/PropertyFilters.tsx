@@ -29,6 +29,7 @@ export interface PropertyFilters {
   status?: string;
   isAnsutCertified?: boolean;
   addedPeriod?: 'today' | 'week' | 'month' | 'all';
+  searchQuery?: string;
 }
 
 interface PropertyFiltersProps {

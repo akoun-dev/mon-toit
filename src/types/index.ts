@@ -266,6 +266,7 @@ export interface SearchFilters {
   longitude?: number;
   radius?: number;
   isAnsutCertified?: boolean;
+  searchQuery?: string;
 }
 
 export interface GeoLocation {

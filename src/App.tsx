@@ -32,7 +32,6 @@ import { PageTransition } from "@/components/animations/PageTransition";
 // Eager load critical pages
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Search from "./pages/Search";
 
 // Lazy load heavy pages
 const PropertyDetail = lazy(() => import("./pages/PropertyDetail"));
@@ -66,6 +65,7 @@ const Leases = lazy(() => import("./pages/Leases"));
 const Payments = lazy(() => import("./pages/Payments"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
 const ScheduleVisit = lazy(() => import("./pages/ScheduleVisit"));
+const Search = lazy(() => import("./pages/Search"));
 
 // Load other pages normally
 import Certification from "./pages/Certification";
@@ -155,6 +155,11 @@ const AppContent = () => {
             <Route path="/recherche" element={<Navigate to="/explorer" replace />} />
             <Route path="/ajouter-bien" element={<Navigate to="/publier" replace />} />
             <Route path="/explorer" element={<Explorer />} />
+            <Route path="/search" element={
+              <Suspense fallback={<PageSkeleton />}>
+                <Search />
+              </Suspense>
+            } />
             <Route path="/carte-intelligente" element={<SmartMapV2 />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             <Route path="/a-propos" element={<AboutPage />} />

@@ -3,14 +3,13 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { HeroHeader } from '@/components/shared/HeroHeader';
-import { Search as SearchIcon } from 'lucide-react';
 import PropertyFiltersComponent, { PropertyFilters } from '@/components/PropertyFilters';
 import MobileFilters from '@/components/properties/MobileFilters';
 import { PullToRefresh } from '@/components/properties/PullToRefresh';
 import PropertyMap from '@/components/PropertyMap';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Grid, List, Map, Search as SearchIcon, Eye, CheckCircle2, Lock } from 'lucide-react';
+import { Grid, List, Map, Search, Eye, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useProperties } from '@/hooks/useProperties';
@@ -45,14 +44,19 @@ const Search = () => {
       const location = searchParams.get('location');
       const type = searchParams.get('type');
       const maxPrice = searchParams.get('maxPrice');
+      const q = searchParams.get('q');
 
-      if (location || type || maxPrice) {
+      if (location || type || maxPrice || q) {
         const filters: PropertyFilters = {};
         if (location) {
           filters.city = location;
         }
         if (type) filters.propertyType = type;
         if (maxPrice) filters.maxPrice = parseInt(maxPrice);
+        if (q) {
+          // Pour les recherches générales, chercher dans le titre et la description
+          filters.searchQuery = q;
+        }
         handleFilterChange(filters as any);
       }
     }
@@ -74,7 +78,7 @@ const Search = () => {
 
           <HeroHeader 
             badgeLabel="Recherche"
-            badgeIcon={SearchIcon}
+            badgeIcon={Search}
             title={<> <span className="text-gradient-primary">Rechercher</span> un bien</>}
             description={`Trouvez le logement idéal parmi ${properties.length} annonces à Abidjan et environs`}
           />
@@ -155,7 +159,7 @@ const Search = () => {
                     </div>
                   ) : (
                     <Card className="p-12 text-center space-y-4">
-                      <SearchIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                      <Search className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                       <div>
                         <h3 className="text-2xl font-semibold mb-2">
                           {searchParams.get('location') ? (
