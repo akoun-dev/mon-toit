@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Cell, PieChart, Pie } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import * as confetti from 'canvas-confetti';
+import confetti from 'canvas-confetti';
 
 interface TenantScoreMeterProps {
   score: number;
