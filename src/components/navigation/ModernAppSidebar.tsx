@@ -109,12 +109,14 @@ export function ModernAppSidebar() {
       ] : [],
 
       tenant: (profile?.user_type === "locataire" && !canAccessAdminDashboard) ? [
+        { to: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord", color: "text-indigo-500", highlight: true },
         { to: "/candidatures", icon: FileText, label: "Mes Candidatures", color: "text-indigo-500" },
         { to: "/baux", icon: FileText, label: "Mes Baux", color: "text-teal-500" },
         { to: "/payments", icon: CreditCard, label: "Paiements", color: "text-emerald-500" },
       ] : [],
 
       owner: ((profile?.user_type === "proprietaire" || profile?.user_type === "agence") && !canAccessAdminDashboard) ? [
+        { to: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord", color: "text-cyan-500", highlight: true },
         { to: "/mes-biens", icon: Building2, label: "Mes Biens", color: "text-cyan-500" },
         { to: "/my-mandates", icon: FileText, label: "Mes Mandats", color: "text-amber-500" },
         { to: "/publier", icon: PlusCircle, label: "Publier un bien", color: "text-green-500" },
