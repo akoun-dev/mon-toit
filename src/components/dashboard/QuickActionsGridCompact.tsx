@@ -36,16 +36,24 @@ const quickActions = [
 
 export const QuickActionsGridCompact = () => {
   return (
-    <div className="grid grid-cols-2 gap-2 h-[180px]">
+    <div className="grid grid-cols-2 gap-1.5 xs:gap-2 h-[140px] xs:h-[150px] sm:h-[160px] md:h-[180px]">
       {quickActions.map((action) => (
         <Link key={action.title} to={action.link}>
           <Card className={cn(
             'transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer bg-gradient-to-br h-full',
             action.color
           )}>
-            <CardContent className="p-2 flex flex-col items-center justify-center h-full gap-1">
-              <action.icon className={cn('h-6 w-6', action.iconColor)} />
-              <span className="text-xs font-semibold text-center">{action.title}</span>
+            <CardContent className="p-1.5 xs:p-2 sm:p-3 flex flex-col items-center justify-center h-full gap-0.5 xs:gap-1">
+              <action.icon className={cn('h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6', action.iconColor)} />
+              <span className="text-xs font-semibold text-center leading-tight">
+                <span className="hidden xs:inline">{action.title}</span>
+                <span className="xs:hidden">
+                  {action.title === 'Rechercher' ? '🔍' :
+                   action.title === 'Favoris' ? '❤️' :
+                   action.title === 'Candidatures' ? '📄' :
+                   action.title === 'Profil' ? '👤' : action.title}
+                </span>
+              </span>
             </CardContent>
           </Card>
         </Link>

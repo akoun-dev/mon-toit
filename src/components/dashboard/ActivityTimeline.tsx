@@ -169,31 +169,31 @@ export const ActivityTimeline = ({ className }: ActivityTimelineProps) => {
 
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5" />
-          Activité récente
+      <CardHeader className="p-2 xs:p-3 sm:p-4">
+        <CardTitle className="flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base lg:text-lg">
+          <Clock className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5" />
+          <span>Activité récente</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="p-2 xs:p-3 sm:p-4">
+        <div className="space-y-2 xs:space-y-3 sm:space-y-4">
           {activities.map((activity, index) => (
             <div
               key={activity.id}
-              className="flex gap-3 pb-4 border-b last:border-b-0 last:pb-0"
+              className="flex gap-1 xs:gap-2 sm:gap-3 pb-2 xs:pb-3 sm:pb-4 border-b last:border-b-0 last:pb-0"
             >
-              <div className={`flex-shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center ${activity.color}`}>
-                <activity.icon className="h-5 w-5" />
+              <div className={`flex-shrink-0 w-6 h-6 xs:w-8 xs:h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center ${activity.color}`}>
+                <activity.icon className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{activity.title}</p>
-                    <p className="text-sm text-muted-foreground truncate">
+                <div className="flex items-start justify-between gap-1 xs:gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-xs xs:text-xs sm:text-sm">{activity.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">
                       {activity.description}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-xs whitespace-nowrap">
+                  <Badge variant="outline" className="text-xs whitespace-nowrap ml-auto">
                     {formatTimestamp(activity.timestamp)}
                   </Badge>
                 </div>

@@ -55,45 +55,45 @@ export const ApplicationsOverviewCompact = () => {
 
   return (
     <Card>
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="text-base">Mes candidatures</CardTitle>
+      <CardHeader className="p-2 xs:p-3 sm:p-4 pb-1 xs:pb-2">
+        <CardTitle className="text-xs xs:text-sm sm:text-base">Mes candidatures</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <div className="flex items-center gap-4">
-          <Link 
+      <CardContent className="p-2 xs:p-3 sm:p-4 pt-0">
+        <div className="flex items-center gap-1 xs:gap-2 sm:gap-4">
+          <Link
             to="/candidatures?status=pending"
-            className="flex-1 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
+            className="flex-1 p-1.5 xs:p-2 sm:p-3 rounded-lg border hover:bg-accent/50 transition-colors"
           >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              <div className="flex-1">
-                <div className="text-2xl font-bold">{stats.pending}</div>
-                <div className="text-xs text-muted-foreground">En attente</div>
+            <div className="flex items-center gap-1 xs:gap-2">
+              <Clock className="h-3 w-3 xs:h-4 xs:w-4 text-yellow-600 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-base xs:text-lg sm:text-2xl font-bold">{stats.pending}</div>
+                <div className="text-xs text-muted-foreground truncate">En attente</div>
               </div>
             </div>
           </Link>
 
-          <Link 
+          <Link
             to="/candidatures?status=accepted"
-            className="flex-1 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
+            className="flex-1 p-1.5 xs:p-2 sm:p-3 rounded-lg border hover:bg-accent/50 transition-colors"
           >
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <div className="flex-1">
-                <div className="text-2xl font-bold">{stats.accepted}</div>
-                <div className="text-xs text-muted-foreground">Acceptées</div>
+            <div className="flex items-center gap-1 xs:gap-2">
+              <CheckCircle className="h-3 w-3 xs:h-4 xs:w-4 text-green-600 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-base xs:text-lg sm:text-2xl font-bold">{stats.accepted}</div>
+                <div className="text-xs text-muted-foreground truncate">Acceptées</div>
               </div>
             </div>
           </Link>
 
-          <Link 
+          <Link
             to="/candidatures"
-            className="flex-1 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
+            className="flex-1 p-1.5 xs:p-2 sm:p-3 rounded-lg border hover:bg-accent/50 transition-colors"
           >
-            <div className="flex items-center gap-2">
-              <div className="flex-1">
-                <div className="text-2xl font-bold">{stats.total}</div>
-                <div className="text-xs text-muted-foreground">Total</div>
+            <div className="flex items-center gap-1 xs:gap-2">
+              <div className="flex-1 min-w-0 text-center">
+                <div className="text-base xs:text-lg sm:text-2xl font-bold">{stats.total}</div>
+                <div className="text-xs text-muted-foreground truncate">Total</div>
               </div>
             </div>
           </Link>

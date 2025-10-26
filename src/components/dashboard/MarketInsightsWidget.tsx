@@ -96,86 +96,53 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
     fetchMarketInsights();
   }, [user]);
 
-  if (loading) {
-    return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Marché immobilier
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Marché immobilier
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">{error}</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!insights || (!insights.summary && !insights.monthly_trends && !insights.neighborhood_stats)) {
-    return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Marché immobilier
-          </CardTitle>
-          <CardDescription>
-            {insights?.message || 'Chargement des insights du marché...'}
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    );
-  }
-
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          Marché immobilier
+      <CardHeader className="p-2 xs:p-3 sm:p-4">
+        <CardTitle className="flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base lg:text-lg">
+          <TrendingUp className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5" />
+          <span>Marché immobilier</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-xs xs:text-xs sm:text-sm">
           Analyse basée sur vos recherches récentes
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2 xs:space-y-3 sm:space-y-4 p-2 xs:p-3 sm:p-4">
+        {/* Loading State */}
+        {loading && (
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-8 w-1/2" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
         {/* Summary Section */}
-        {insights.summary && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-lg mb-3">Vue d'ensemble</h3>
-            <div className="grid grid-cols-2 gap-4">
+        {!loading && !error && insights && insights.summary && (
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-2 xs:p-3 sm:p-4 rounded-lg">
+            <h3 className="font-semibold text-xs xs:text-sm sm:text-base lg:text-lg mb-1 xs:mb-2 sm:mb-3">Vue d'ensemble</h3>
+            <div className="grid grid-cols-2 gap-2 xs:gap-3 sm:gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-base xs:text-lg sm:text-2xl font-bold text-blue-600">
                   {(insights.summary.average_rent / 1000).toFixed(0)}k
                 </p>
                 <p className="text-xs text-muted-foreground">Loyer moyen</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">
+                <p className="text-base xs:text-lg sm:text-2xl font-bold text-purple-600">
                   {insights.summary.properties_count}
                 </p>
                 <p className="text-xs text-muted-foreground">Biens disponibles</p>
               </div>
             </div>
-            <div className="mt-3 flex flex-wrap gap-1">
+            <div className="mt-1 xs:mt-2 sm:mt-3 flex flex-wrap gap-1">
               {insights.summary.popular_neighborhoods?.slice(0, 3).map((neighborhood) => (
                 <Badge key={neighborhood} variant="secondary" className="text-xs">
                   {neighborhood}
@@ -185,42 +152,14 @@ export const MarketInsightsWidget = ({ className }: MarketInsightsWidgetProps) =
           </div>
         )}
 
-        {/* Neighborhood Stats */}
-        {insights.neighborhood_stats && insights.neighborhood_stats.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="font-semibold text-lg">Quartiers populaires</h3>
-            {insights.neighborhood_stats.slice(0, 3).map((neighborhood) => (
-              <div key={neighborhood.neighborhood} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span className="font-medium">{neighborhood.neighborhood}</span>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold">{(neighborhood.average_rent / 1000).toFixed(0)}k F</p>
-                  <p className="text-xs text-muted-foreground">{neighborhood.properties_count} biens</p>
-                </div>
-              </div>
-            ))}
+        {/* Empty State */}
+        {!loading && !error && (!insights || !insights.summary) && (
+          <div className="text-center py-4 text-muted-foreground text-sm">
+            Données du marché non disponibles pour le moment
           </div>
         )}
 
-        {/* Recommendations */}
-        {insights.recommendations && insights.recommendations.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="font-semibold text-lg">Recommandations</h3>
-            {insights.recommendations.map((rec, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5"></div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm">{rec.area}</p>
-                  <p className="text-xs text-muted-foreground">{rec.reason}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <p className="text-xs text-muted-foreground text-center pt-2">
+        <p className="text-xs text-muted-foreground text-center pt-0.5 xs:pt-1">
           Mis à jour : {new Date().toLocaleDateString('fr-FR')}
         </p>
       </CardContent>
