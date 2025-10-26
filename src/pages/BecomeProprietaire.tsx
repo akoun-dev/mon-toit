@@ -1,645 +1,753 @@
-/*
-  =========================================
-  Page: BecomeProprietaire
-  =========================================
-
-  Cette page permet aux utilisateurs de devenir propriétaire
-  avec les fonctionnalités suivantes :
-
-  1. Checklist des prérequis (ONECI, téléphone, email, profil)
-  2. Barre de progression dynamique
-  3. Instructions détaillées pour chaque étape
-  4. Interface pour compléter les prérequis manquants
-  5. Liste des avantages du rôle propriétaire
-  6. Intégration avec le système de changement de rôle V2
-
-  Date: 2025-10-17
-  Version: 2.0.0
-  Auteur: Manus AI
-*/
-
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useRoleSwitchV2 } from '@/hooks/useRoleSwitchV2'
-import { useAuth } from '@/hooks/useAuth'
-import { supabase } from '@/lib/supabase'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { cn } from '@/lib/utils'
-import { toast } from '@/hooks/use-toast'
-
-// Icons
-import {
-  Building2,
-  Home,
-  CheckCircle2,
-  Circle,
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PageTransition } from '@/components/animations/PageTransition';
+import { MainLayout } from "@/components/layout/MainLayout";
+import { KentePattern } from "@/components/ui/african-patterns";
+import { motion } from "framer-motion";
+import { 
+  User, 
+  Building2, 
+  FileText, 
+  ShieldCheck, 
+  CreditCard, 
+  CheckCircle, 
   AlertTriangle,
-  ArrowRight,
   Star,
   TrendingUp,
   Users,
-  Shield,
-  Clock,
+  Home,
+  Camera,
   FileCheck,
+  Banknote,
+  Award,
   Phone,
   Mail,
-  User,
-  Camera,
-  Loader2,
-  ExternalLink,
-  BookOpen,
-  HelpCircle,
-  Lightbulb
-} from 'lucide-react'
+  MapPin,
+  Clock,
+  ChevronRight,
+  ArrowRight,
+  Check
+} from "lucide-react";
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
+import { useBecomeProprietaire } from '@/hooks/useBecomeProprietaire';
 
-// Types
-interface Prerequisite {
-  id: string
-  title: string
-  description: string
-  icon: React.ComponentType<{ className?: string }>
-  completed: boolean
-  action?: {
-    label: string
-    href?: string
-    onClick?: () => void
-  }
-  priority: 'high' | 'medium' | 'low'
+interface StepConfig {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  completed: boolean;
+  optional?: boolean;
 }
 
-interface Advantage {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
+interface FormData {
+  // Étape 1: Informations de base
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  // Étape 2: Type de propriétaire
+  ownerType: 'particulier' | 'agence' | 'professionnel';
+  agencyName?: string;
+  agencyLicense?: string;
+  // Étape 3: Documents
+  idDocument: File | null;
+  proofOfAddress: File | null;
+  professionalCard?: File | null;
+  // Étape 4: Vérification
+  idNumber: string;
+  bankAccount: string;
+  acceptTerms: boolean;
 }
 
-// Configuration des prérequis
-const prerequisitesConfig = [
-  {
-    id: 'oneci_verification',
-    title: 'Vérification d\'identité ONECI',
-    description: 'Vérifiez votre identité avec la carte nationale d\'identité ivoirienne',
-    icon: Shield,
-    priority: 'high' as const,
-    action: {
-      label: 'Vérifier mon identité',
-      href: '/profile/verification'
+const BecomeProprietaire = () => {
+  const navigate = useNavigate();
+  const { user, profile } = useAuth();
+  // Utiliser l'état du hook au lieu de variables locales
+  const { state, actions } = useBecomeProprietaire();
+
+  const steps: StepConfig[] = [
+    {
+      id: '1',
+      title: 'Informations personnelles',
+      description: 'Vos coordonnées et informations de base',
+      icon: User,
+      completed: false
+    },
+    {
+      id: '2',
+      title: 'Type de propriétaire',
+      description: 'Particulier, agence ou professionnel',
+      icon: Building2,
+      completed: false
+    },
+    {
+      id: '3',
+      title: 'Documents justificatifs',
+      description: 'Pièce d\'identité et justificatif de domicile',
+      icon: FileText,
+      completed: false
+    },
+    {
+      id: '4',
+      title: 'Vérification et validation',
+      description: 'Vérification d\'identité, bancaire et soumission finale',
+      icon: ShieldCheck,
+      completed: false
     }
-  },
-  {
-    id: 'phone_verification',
-    title: 'Téléphone vérifié',
-    description: 'Confirmez votre numéro de téléphone par SMS',
-    icon: Phone,
-    priority: 'high' as const,
-    action: {
-      label: 'Vérifier mon téléphone',
-      href: '/profile/phone'
+  ];
+
+  const advantages = [
+    {
+      icon: TrendingUp,
+      title: 'Revenus supplémentaires',
+      description: 'Générez jusqu\'à 40% de revenus supplémentaires grâce à la location de vos biens'
+    },
+    {
+      icon: Users,
+      title: 'Gestion simplifiée',
+      description: 'Tableau de bord intuitif pour suivre vos biens, locataires et paiements'
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Sécurité renforcée',
+      description: 'Vérification ANSUT et protection contre les impayés'
+    },
+    {
+      icon: Home,
+      title: 'Visibilité maximale',
+      description: 'Mise en avant de vos biens sur notre plateforme certifiée'
+    },
+    {
+      icon: CreditCard,
+      title: 'Paiements sécurisés',
+      description: 'Collecte des loyers directement via la plateforme'
+    },
+    {
+      icon: Award,
+      title: 'Accompagnement',
+      description: 'Support dédié et ressources pour propriétaires'
     }
-  },
-  {
-    id: 'email_verification',
-    title: 'Email vérifié',
-    description: 'Validez votre adresse email',
-    icon: Mail,
-    priority: 'high' as const,
-    action: {
-      label: 'Vérifier mon email',
-      href: '/profile/email'
+  ];
+
+  const requirements = [
+    'Pièce d\'identité en cours de validité',
+    'Justificatif de domicile récent',
+    'Compte bancaire actif',
+    'Autorisation de location si applicable',
+    'Certification ANSUT (recommandée)'
+  ];
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, fileType: 'idDocument' | 'proofOfAddress' | 'professionalCard') => {
+    const file = event.target.files?.[0];
+    if (file) {
+      actions.updateFormData({ [fileType]: file });
     }
-  },
-  {
-    id: 'profile_completion',
-    title: 'Profil complété à 80%',
-    description: 'Renseignez vos informations personnelles (nom, prénom, téléphone, adresse)',
-    icon: User,
-    priority: 'medium' as const,
-    action: {
-      label: 'Compléter mon profil',
-      href: '/profile'
+  };
+
+  const validateCurrentStep = (): boolean => {
+    switch (state.currentStep) {
+      case 1:
+        return state.formData.fullName.trim() !== '' &&
+               state.formData.phone.trim() !== '' &&
+               state.formData.address.trim() !== '' &&
+               state.formData.city.trim() !== '';
+      case 2:
+        return state.formData.ownerType !== '' &&
+               (state.formData.ownerType !== 'agence' || (state.formData.agencyName?.trim() !== '' && state.formData.agencyLicense?.trim() !== ''));
+      case 3:
+        return state.formData.idDocument !== null && state.formData.proofOfAddress !== null;
+      case 4:
+        return state.formData.idNumber.trim() !== '' &&
+               state.formData.bankAccount.trim() !== '' &&
+               state.formData.acceptTerms === true;
+      default:
+        return false;
     }
-  }
-]
+  };
 
-// Configuration des avantages
-const advantages: Advantage[] = [
-  {
-    icon: Home,
-    title: 'Gérez vos biens',
-    description: 'Ajoutez, modifiez et suivez l\'ensemble de vos propriétés'
-  },
-  {
-    icon: Users,
-    title: 'Recevez des candidatures',
-    description: 'Consultez et gérez les demandes de location en temps réel'
-  },
-  {
-    icon: FileCheck,
-    title: 'Validation de dossiers',
-    description: 'Accédez aux outils de vérification des locataires'
-  },
-  {
-    icon: TrendingUp,
-    title: 'Statistiques avancées',
-    description: 'Analysez la performance de vos biens et optimisez vos revenus'
-  },
-  {
-    icon: Camera,
-    title: 'Galerie de photos',
-    description: 'Présentez vos biens avec des photos et visites virtuelles'
-  },
-  {
-    icon: BookOpen,
-    title: 'Ressources propriétaires',
-    description: 'Accédez à des guides juridiques et conseils de gestion'
-  }
-]
-
-export default function BecomeProprietaire() {
-  const navigate = useNavigate()
-  const { user, refreshProfile } = useAuth()
-  const { switchRole, isSwitching } = useRoleSwitchV2()
-  const [prerequisites, setPrerequisites] = useState<Prerequisite[]>([])
-  const [completionPercentage, setCompletionPercentage] = useState(0)
-  const [validation, setValidation] = useState<any>(null)
-  const [isValidating, setIsValidating] = useState(false)
-
-  // Charger les données utilisateur au montage
-  useEffect(() => {
-    if (user) {
-      loadUserData()
-    }
-  }, [user])
-
-  // Charger les données utilisateur et valider les prérequis
-  const loadUserData = async () => {
-    setIsValidating(true)
-    try {
-      // Récupérer les données du profil
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select(`
-          first_name,
-          last_name,
-          phone,
-          phone_verified,
-          email_confirmed_at,
-          address,
-          oneci_verified,
-          avatar_url
-        `)
-        .eq('id', user?.id)
-        .single()
-
-      if (error || !profile) {
-        console.error('Erreur profil:', error)
-        return
-      }
-
-      // Calculer l'état des prérequis
-      const updatedPrerequisites = prerequisitesConfig.map(prereq => {
-        let completed = false
-
-        switch (prereq.id) {
-          case 'oneci_verification':
-            completed = profile.oneci_verified === true
-            break
-          case 'phone_verification':
-            completed = profile.phone_verified === true
-            break
-          case 'email_verification':
-            completed = profile.email_confirmed_at !== null
-            break
-          case 'profile_completion':
-            const profileCompletion = calculateProfileCompletion(profile)
-            completed = profileCompletion >= 80
-            break
-        }
-
-        return {
-          ...prereq,
-          completed
-        }
-      })
-
-      setPrerequisites(updatedPrerequisites)
-
-      // Calculer le pourcentage de complétion
-      const completedCount = updatedPrerequisites.filter(p => p.completed).length
-      const percentage = Math.round((completedCount / updatedPrerequisites.length) * 100)
-      setCompletionPercentage(percentage)
-
-      // Valider les prérequis pour devenir propriétaire
-      const validationResult = await validateProprietairePrerequisites(user.id)
-      setValidation(validationResult)
-
-    } catch (error) {
-      console.error('Erreur chargement données:', error)
+  const handleNextStep = async () => {
+    if (!validateCurrentStep()) {
       toast({
-        title: "Erreur",
-        description: "Impossible de charger vos informations",
-        variant: "destructive"
-      })
-    } finally {
-      setIsValidating(false)
+        title: "Informations incomplètes",
+        description: "Veuillez remplir tous les champs obligatoires avant de continuer.",
+        variant: "destructive",
+      });
+      return;
     }
-  }
 
-  // Calculer le pourcentage de complétion du profil
-  const calculateProfileCompletion = (profile: any): number => {
-    let completion = 0
-    const maxCompletion = 100
-
-    if (profile.first_name) completion += 20
-    if (profile.last_name) completion += 20
-    if (profile.phone) completion += 20
-    if (profile.address) completion += 20
-    if (profile.avatar_url) completion += 20
-
-    return Math.min(completion, maxCompletion)
-  }
-
-  // Valider les prérequis propriétaire
-  const validateProprietairePrerequisites = async (userId: string) => {
-    try {
-      const { data, error } = await supabase.rpc('validate_proprietaire_prerequisites', {
-        p_user_id: userId
-      })
-
-      if (error) {
-        console.error('Erreur validation:', error)
-        return null
-      }
-
-      return data[0] || null
-    } catch (error) {
-      console.error('Exception validation:', error)
-      return null
+    if (state.currentStep < 4) {
+      actions.nextStep();
     }
-  }
+  };
 
-  // Gérer le clic sur une action
-  const handleActionClick = (action: Prerequisite['action']) => {
-    if (action?.href) {
-      navigate(action.href)
-    } else if (action?.onClick) {
-      action.onClick()
+  const handlePreviousStep = () => {
+    if (state.currentStep > 1) {
+      actions.previousStep();
     }
-  }
+  };
 
-  // Devenir propriétaire
-  const handleBecomeProprietaire = async () => {
-    if (!validation?.canUpgrade) {
-      toast({
-        title: "Prérequis manquants",
-        description: "Veuillez compléter tous les prérequis avant de continuer",
-        variant: "destructive"
-      })
-      return
+  const handleSubmit = async () => {
+    if (!validateCurrentStep()) {
+      return;
     }
 
     try {
-      await switchRole('proprietaire')
-      // Le hook gère la redirection et les messages
+      await actions.submitTransformation();
+
+      // Rediriger vers le tableau de bord propriétaire après 2 secondes
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+
     } catch (error) {
-      console.error('Erreur changement de rôle:', error)
+      // Error handling is done in the hook
     }
-  }
+  };
 
-  // Priorité de couleur
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-600'
-      case 'medium': return 'text-amber-600'
-      case 'low': return 'text-blue-600'
-      default: return 'text-gray-600'
-    }
-  }
+  const getStepProgress = () => {
+    return ((state.currentStep - 1) / 3) * 100;
+  };
 
-  if (isValidating) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-            <h2 className="text-xl font-semibold mb-2">Chargement...</h2>
-            <p className="text-muted-foreground">Vérification de vos prérequis</p>
-          </div>
-        </div>
-      </div>
-    )
+  if (!user) {
+    navigate('/auth');
+    return null;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      {/* En-tête */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-4">
-          <Building2 className="h-8 w-8 text-white" />
-        </div>
-        <h1 className="text-3xl font-bold mb-4">Devenir Propriétaire</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Accédez à des fonctionnalités avancées pour gérer vos biens et optimiser vos revenus locatifs
-        </p>
-      </div>
-
-      {/* Barre de progression */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5" />
-            Prérequis de validation
-          </CardTitle>
-          <CardDescription>
-            Complétez ces étapes pour débloquer le rôle Propriétaire
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Progression</span>
-              <Badge variant={completionPercentage === 100 ? "default" : "secondary"}>
-                {completionPercentage}%
+    <PageTransition>
+      <MainLayout>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-4 sm:py-6 lg:py-8 px-3 sm:px-4">
+          <KentePattern />
+          <div className="max-w-6xl mx-auto relative z-10">
+            {/* En-tête */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-6 sm:mb-8"
+            >
+              <Badge className="mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 text-sm sm:text-lg font-semibold">
+                Devenir Propriétaire Certifié
               </Badge>
-            </div>
-            <Progress value={completionPercentage} className="h-3" />
-            <p className="text-xs text-muted-foreground">
-              {completionPercentage === 100
-                ? "🎉 Tous les prérequis sont complétés !"
-                : `${prerequisites.filter(p => p.completed).length} sur ${prerequisites.length} étapes complétées`
-              }
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
+                Transformez votre expérience locative en opportunité immobilière
+              </h1>
+              <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
+                Rejoignez les milliers de propriétaires certifiés qui génèrent jusqu'à 40% de revenus
+                supplémentaires grâce à la plateforme Mon Toit.
+              </p>
+            </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Liste des prérequis */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Étapes de validation</CardTitle>
-              <CardDescription>
-                Suivez ces étapes pour vérifier votre éligibilité
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {prerequisites.map((prereq, index) => {
-                  const Icon = prereq.icon
-                  const isCompleted = prereq.completed
-
-                  return (
-                    <div
-                      key={prereq.id}
-                      className={cn(
-                        "flex items-start gap-4 p-4 rounded-lg border transition-all duration-200",
-                        isCompleted
-                          ? "bg-green-50/50 border-green-200/50"
-                          : "bg-muted/30 border-border/50"
-                      )}
-                    >
-                      <div className="flex-shrink-0 mt-0.5">
-                        {isCompleted ? (
-                          <CheckCircle2 className="h-5 w-5 text-green-600" />
-                        ) : (
-                          <Circle className={cn("h-5 w-5", getPriorityColor(prereq.priority))} />
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className={cn(
-                            "font-medium",
-                            isCompleted ? "text-green-900" : "text-foreground"
-                          )}>
-                            {prereq.title}
-                          </h4>
-                          <Badge
-                            variant="outline"
-                            className={cn("text-xs", getPriorityColor(prereq.priority))}
-                          >
-                            {prereq.priority === 'high' ? 'Obligatoire' : 'Recommandé'}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {prereq.description}
-                        </p>
-
-                        {!isCompleted && prereq.action && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleActionClick(prereq.action)}
-                            className="h-8"
-                          >
-                            {prereq.action.label}
-                            <ArrowRight className="h-3 w-3 ml-2" />
-                          </Button>
-                        )}
-
-                        {isCompleted && (
-                          <Badge variant="default" className="bg-green-100 text-green-800">
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Complété
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {validation && !validation.canUpgrade && (
-                <Alert className="mt-6">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    <div className="space-y-2">
-                      <p className="font-medium">Prérequis manquants:</p>
-                      <ul className="text-sm space-y-1">
-                        {validation.missingRequirements.map((req: string, index: number) => (
-                          <li key={index} className="flex items-center gap-2">
-                            <Circle className="h-2 w-2 fill-current" />
-                            {req}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Carte d'action */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                Devenir Propriétaire
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button
-                onClick={handleBecomeProprietaire}
-                disabled={!validation?.canUpgrade || isSwitching}
-                className="w-full"
-                size="lg"
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
+              {/* Avantages */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="xl:col-span-1 order-2 xl:order-1"
               >
-                {isSwitching ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Traitement en cours...
-                  </>
-                ) : validation?.canUpgrade ? (
-                  <>
-                    <Shield className="h-4 w-4 mr-2" />
-                    Activer le rôle Propriétaire
-                  </>
-                ) : (
-                  <>
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    Prérequis incomplets
-                  </>
-                )}
-              </Button>
+                <Card className="h-full">
+                  <CardHeader className="pb-4 px-4 sm:px-6">
+                    <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                      <Star className="h-5 w-5 text-yellow-500" />
+                      Pour devenir propriétaire ?
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base">
+                      Les avantages de la certification ANSUT
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 px-4 sm:px-6">
+                    {advantages.map((advantage, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + index * 0.1 }}
+                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex-shrink-0">
+                          <advantage.icon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 mt-1" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{advantage.title}</h4>
+                          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{advantage.description}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              {!validation?.canUpgrade && (
-                <Alert>
-                  <Lightbulb className="h-4 w-4" />
-                  <AlertDescription className="text-xs">
-                    Complétez tous les prérequis obligatoires pour débloquer cette fonctionnalité.
-                  </AlertDescription>
-                </Alert>
-              )}
-            </CardContent>
-          </Card>
+              {/* Formulaire multi-étapes */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="xl:col-span-2 order-1 xl:order-2"
+              >
+                <Card className="h-full">
+                  <CardHeader className="pb-4 sm:pb-6 px-4 sm:px-6">
+                    <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <span className="text-lg sm:text-xl">Formulaire de transformation</span>
+                      <Badge variant="outline" className="self-start sm:self-auto">
+                        Étape {state.currentStep}/4
+                      </Badge>
+                    </CardTitle>
+                    <CardDescription className="text-center text-sm sm:text-base">
+                      Complétez les étapes suivantes pour devenir propriétaire certifié
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4 px-4 sm:px-6">
+                    {/* Barre de progression */}
+                    <div className="mb-4 sm:mb-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700">Progression</span>
+                        <span className="text-sm text-gray-500">{state.currentStep}/4 étapes</span>
+                      </div>
+                      <Progress value={getStepProgress()} className="h-2" />
+                      <div className="mt-6">
+                        <div className="flex justify-between overflow-x-auto">
+                          {steps.map((step, index) => (
+                            <div
+                              key={step.id}
+                              className={`flex flex-col items-center gap-2 min-w-fit ${
+                                index + 1 < state.currentStep ? 'text-blue-600' :
+                                index + 1 === state.currentStep ? 'text-blue-700' : 'text-gray-400'
+                              }`}
+                            >
+                              <div
+                                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
+                                  index + 1 < state.currentStep
+                                    ? 'bg-blue-600 text-white'
+                                    : index + 1 === state.currentStep
+                                    ? 'bg-blue-100 text-blue-600 border-2 border-blue-600'
+                                    : 'bg-gray-200 text-gray-600'
+                                }`}
+                              >
+                                {index + 1 < state.currentStep ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : step.id}
+                              </div>
+                              <div className="text-xs font-medium text-center max-w-20 sm:max-w-24 px-1">
+                                <span className="hidden sm:inline">
+                                  {step.id === '1' ? 'Informations' :
+                                   step.id === '2' ? 'Type propriétaire' :
+                                   step.id === '3' ? 'Documents' :
+                                   step.id === '4' ? 'Validation' : step.title}
+                                </span>
+                                <span className="sm:hidden">
+                                  {step.id === '1' ? 'Infos' :
+                                   step.id === '2' ? 'Type' :
+                                   step.id === '3' ? 'Docs' :
+                                   step.id === '4' ? 'Validation' : step.title}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
 
-          {/* Avantages */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Vos avantages</CardTitle>
-              <CardDescription>
-                Ce que vous obtiendrez en tant que propriétaire
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {advantages.map((advantage, index) => {
-                  const Icon = advantage.icon
-                  return (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Icon className="h-4 w-4 text-primary" />
+                        {/* Lignes de connexion entre les étapes */}
+                        <div className="relative">
+                          <div className="absolute top-4 left-0 right-0 h-0.5 -z-10">
+                            <div className="relative h-full bg-gray-300">
+                              <div
+                                className="absolute top-0 left-0 h-full bg-blue-600 transition-all duration-300"
+                                style={{ width: `${((state.currentStep - 1) / (steps.length - 1)) * 100}%` }}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="font-medium text-sm">{advantage.title}</h4>
-                        <p className="text-xs text-muted-foreground">
-                          {advantage.description}
-                        </p>
-                      </div>
                     </div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Aide */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="h-5 w-5" />
-                Besoin d'aide ?
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Guide du propriétaire
-                <ExternalLink className="h-3 w-3 ml-auto" />
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Users className="h-4 w-4 mr-2" />
-                Contacter le support
-                <ExternalLink className="h-3 w-3 ml-auto" />
-              </Button>
-            </CardContent>
-          </Card>
+                    {/* Exigences */}
+                    <Alert className="border-amber-200 bg-amber-50">
+                      <AlertTriangle className="h-4 w-4 text-amber-600" />
+                      <AlertDescription>
+                        <strong>Documents requis :</strong>
+                        <ul className="mt-2 space-y-1 text-sm">
+                          {requirements.map((req, index) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+                              {req}
+                            </li>
+                          ))}
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+
+                    {/* Contenu du formulaire selon l'étape */}
+                    <div className="w-full">
+
+                      {/* Étape 1: Informations personnelles */}
+                      {state.currentStep === 1 && (
+                        <div className="space-y-4 mt-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Nom complet
+                            </label>
+                            <input
+                              type="text"
+                              value={state.formData.fullName}
+                              onChange={(e) => actions.updateFormData({ fullName: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Votre nom complet"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Téléphone
+                            </label>
+                            <input
+                              type="tel"
+                              value={state.formData.phone}
+                              onChange={(e) => actions.updateFormData({ phone: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="+225 XX XX XX XX XX"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Adresse complète
+                            </label>
+                            <input
+                              type="text"
+                              value={state.formData.address}
+                              onChange={(e) => actions.updateFormData({ address: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Rue, numéro, quartier..."
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Ville
+                            </label>
+                            <input
+                              type="text"
+                              value={state.formData.city}
+                              onChange={(e) => actions.updateFormData({ city: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Abidjan, Cocody..."
+                            />
+                          </div>
+                        </div>
+                        </div>
+                      )}
+
+                      {/* Étape 2: Type de propriétaire */}
+                      {state.currentStep === 2 && (
+                        <div className="space-y-4 mt-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-4">
+                              Type de propriétaire
+                            </label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                              {[
+                                { value: 'particulier', label: 'Particulier', icon: User },
+                                { value: 'agence', label: 'Agence immobilière', icon: Building2 },
+                                { value: 'professionnel', label: 'Professionnel', icon: Award }
+                              ].map((type) => (
+                                <label
+                                  key={type.value}
+                                  className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                                    state.formData.ownerType === type.value
+                                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                      : 'border-gray-200 hover:border-gray-300'
+                                  }`}
+                              >
+                                <input
+                                  type="radio"
+                                  name="ownerType"
+                                  value={type.value}
+                                  checked={state.formData.ownerType === type.value}
+                                  onChange={(e) => actions.updateFormData({ ownerType: e.target.value as any })}
+                                  className="sr-only"
+                                />
+                                <type.icon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <div className="font-medium text-sm sm:text-base">{type.label}</div>
+                                  <div className="text-xs sm:text-sm text-gray-500">
+                                    {type.value === 'particulier' && 'Propriétaire individuel'}
+                                    {type.value === 'agence' && 'Société immobilière'}
+                                    {type.value === 'professionnel' && 'Profession libéral'}
+                                  </div>
+                                </div>
+                              </label>
+                              ))}
+                            </div>
+                          </div>
+
+                          {state.formData.ownerType === 'agence' && (
+                            <>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Nom de l'agence
+                                </label>
+                                <input
+                                  type="text"
+                                  value={state.formData.agencyName}
+                                  onChange={(e) => actions.updateFormData({ agencyName: e.target.value })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Nom officiel de l'agence"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Numéro de licence
+                                </label>
+                                <input
+                                  type="text"
+                                  value={state.formData.agencyLicense}
+                                  onChange={(e) => actions.updateFormData({ agencyLicense: e.target.value })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Numéro d'enregistrement commercial"
+                                />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        </div>
+                      )}
+
+                      {/* Étape 3: Documents */}
+                      {state.currentStep === 3 && (
+                        <div className="space-y-4 mt-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Pièce d'identité (CNI, passeport...)
+                            </label>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
+                              <input
+                                type="file"
+                                accept="image/*,.pdf"
+                                onChange={(e) => handleFileUpload(e, 'idDocument')}
+                                className="hidden"
+                                id="idDocument"
+                              />
+                              <label
+                                htmlFor="idDocument"
+                                className="flex flex-col items-center gap-2 cursor-pointer py-2"
+                              >
+                                <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+                                <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
+                                  {state.formData.idDocument ? state.formData.idDocument.name : 'Cliquez pour télécharger'}
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Justificatif de domicile
+                            </label>
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
+                              <input
+                                type="file"
+                                accept="image/*,.pdf"
+                                onChange={(e) => handleFileUpload(e, 'proofOfAddress')}
+                                className="hidden"
+                                id="proofOfAddress"
+                              />
+                              <label
+                                htmlFor="proofOfAddress"
+                                className="flex flex-col items-center gap-2 cursor-pointer py-2"
+                              >
+                                <FileCheck className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+                                <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
+                                  {state.formData.proofOfAddress ? state.formData.proofOfAddress.name : 'Cliquez pour télécharger'}
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+
+                          {state.formData.ownerType === 'professionnel' && (
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Carte professionnelle (optionnel)
+                              </label>
+                              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 sm:p-4">
+                                <input
+                                  type="file"
+                                  accept="image/*,.pdf"
+                                  onChange={(e) => handleFileUpload(e, 'professionalCard')}
+                                  className="hidden"
+                                  id="professionalCard"
+                                />
+                                <label
+                                  htmlFor="professionalCard"
+                                  className="flex flex-col items-center gap-2 cursor-pointer py-2"
+                                >
+                                  <Award className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+                                  <span className="text-xs sm:text-sm text-gray-600 text-center px-2">
+                                    {state.formData.professionalCard ? state.formData.professionalCard.name : 'Cliquez pour télécharger'}
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        </div>
+                      )}
+
+                      {/* Étape 4: Vérification et validation finale */}
+                      {state.currentStep === 4 && (
+                        <div className="space-y-4 mt-6">
+                        <div className="space-y-6">
+                          {/* Section KYC */}
+                          <div className="space-y-4">
+                            <Alert className="border-blue-200 bg-blue-50">
+                              <ShieldCheck className="h-4 w-4 text-blue-600" />
+                              <AlertDescription>
+                                <strong>Vérification sécurisée ANSUT</strong>
+                                <p className="mt-2 text-sm">
+                                  Vos informations sont cryptées et protégées conformément aux standards
+                                  de sécurité les plus stricts. La vérification KYC (Know Your Customer)
+                                  est obligatoire pour devenir propriétaire certifié.
+                                </p>
+                              </AlertDescription>
+                            </Alert>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Numéro de pièce d'identité
+                              </label>
+                              <input
+                                type="text"
+                                value={state.formData.idNumber}
+                                onChange={(e) => actions.updateFormData({ idNumber: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Numéro CNI/passeport"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                RIB (Relevé d'Identité Bancaire)
+                              </label>
+                              <input
+                                type="text"
+                                value={state.formData.bankAccount}
+                                onChange={(e) => actions.updateFormData({ bankAccount: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="XX XXXX XXXX XXXX XXXX XXXX XXX"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                id="acceptTerms"
+                                checked={state.formData.acceptTerms}
+                                onChange={(e) => actions.updateFormData({ acceptTerms: e.target.checked })}
+                                className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
+                              />
+                              <label htmlFor="acceptTerms" className="text-sm text-gray-700">
+                                J'accepte les conditions générales et la politique de confidentialité
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Section Résumé et Finalisation */}
+                          <div className="border-t pt-6">
+                            <div className="text-center space-y-4 sm:space-y-6">
+                              <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center">
+                                <CheckCircle className="h-8 w-8 sm:h-10 sm:w-10 text-green-600" />
+                              </div>
+                              <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+                                Prêt à finaliser votre transformation
+                              </h3>
+                              <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base px-4">
+                                Vérifiez que toutes les informations sont correctes avant de soumettre votre demande.
+                              </p>
+
+                              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3">
+                                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                                  <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="truncate">{state.formData.fullName}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                                  <Phone className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="truncate">{state.formData.phone}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                                  <Mail className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="truncate">{user?.email}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                                  <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="truncate">{state.formData.address}, {state.formData.city}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs sm:text-sm">
+                                  <Building2 className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                                  <span className="capitalize truncate">{state.formData.ownerType}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Boutons de navigation */}
+                    <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-6 sm:mt-8">
+                      <Button
+                        variant="outline"
+                        onClick={handlePreviousStep}
+                        disabled={state.currentStep === 1}
+                        className="flex items-center justify-center gap-2 w-full sm:w-auto order-2 sm:order-1"
+                      >
+                        <ArrowRight className="h-4 w-4 rotate-180" />
+                        Précédent
+                      </Button>
+
+                      {state.currentStep === 4 ? (
+                        <Button
+                          onClick={handleSubmit}
+                          disabled={state.isSubmitting || state.verificationStatus === 'processing'}
+                          className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 w-full sm:w-auto order-1 sm:order-2"
+                        >
+                          {state.verificationStatus === 'processing' ? (
+                            <>
+                              <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                              Envoi en cours...
+                            </>
+                          ) : state.verificationStatus === 'success' ? (
+                            <>
+                              <Check className="h-4 w-4" />
+                              Demande envoyée
+                            </>
+                          ) : (
+                            <>
+                              <ChevronRight className="h-4 w-4" />
+                              Soumettre la demande
+                            </>
+                          )}
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleNextStep}
+                          disabled={!validateCurrentStep()}
+                          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto order-1 sm:order-2"
+                        >
+                          Suivant
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+          </div>
         </div>
-      </div>
+      </MainLayout>
+    </PageTransition>
+  );
+};
 
-      {/* Section FAQ */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Questions fréquentes</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="general">Général</TabsTrigger>
-              <TabsTrigger value="verification">Vérification</TabsTrigger>
-              <TabsTrigger value="advantages">Avantages</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="general" className="space-y-4 mt-6">
-              <div>
-                <h4 className="font-medium mb-2">Combien de temps prend la validation ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  La validation est généralement instantanée. Seule la vérification ONECI peut prendre jusqu'à 24-48h.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">Puis-je changer de rôle plus tard ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  Oui, vous pouvez basculer entre vos rôles actifs (limite de 3 changements par jour).
-                </p>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="verification" className="space-y-4 mt-6">
-              <div>
-                <h4 className="font-medium mb-2">Quels documents sont nécessaires pour ONECI ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  Une photo de votre carte nationale d'identité ivoirienne en cours de validité.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">Comment vérifier mon téléphone ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  Vous recevrez un code SMS à 6 chiffres que vous devrez saisir pour confirmer.
-                </p>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="advantages" className="space-y-4 mt-6">
-              <div>
-                <h4 className="font-medium mb-2">Le service est-il gratuit ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  L'inscription et les fonctionnalités de base sont gratuites. Des options premium sont disponibles.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">Puis-je gérer plusieurs biens ?</h4>
-                <p className="text-sm text-muted-foreground">
-                  Oui, il n'y a pas de limite au nombre de biens que vous pouvez gérer.
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
+export default BecomeProprietaire;
