@@ -29,7 +29,7 @@ export const InstallPWA = () => {
     checkInstalled();
 
     // Écouter l'événement beforeinstallprompt
-    const handleBeforeInstall = (e: Event) => {
+    const handleBeforeInstall = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       
