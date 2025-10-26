@@ -92,6 +92,7 @@ import CertificationFAQ from "./pages/CertificationFAQ";
 import Tarifs from "./pages/Tarifs";
 import PopulateImages from "./pages/PopulateImages";
 import TestCryptoNeo from "./pages/TestCryptoNeo";
+import { EmailTestPage } from "./pages/EmailTestPage";
 import Guide from "./pages/Guide";
 import Explorer from "./pages/Explorer";
 import CommentCaMarche from "./pages/CommentCaMarche";
@@ -635,13 +636,21 @@ const AppContent = () => {
                 </ProtectedRoute>
               }
             />
-            <Route 
-              path="/test-cryptoneo" 
+            <Route
+              path="/test-cryptoneo"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
                   <TestCryptoNeo />
                 </ProtectedRoute>
-              } 
+              }
+            />
+            <Route
+              path="/test-emails"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'super_admin']}>
+                  <EmailTestPage />
+                </ProtectedRoute>
+              }
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

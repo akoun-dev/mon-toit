@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabaseAnon } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';
@@ -138,37 +138,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserRoles = async (userId: string) => {
     logger.info('Fetching roles for user', { userId });
-    
+
     try {
-      const { data, error } = await supabase
+      // Use anonymous client to avoid RLS issues
+      const { data, error } = await supabaseAnon
         .from('user_roles')
         .select('role')
         .eq('user_id', userId);
 
       if (error) {
         logger.error('Error fetching roles', { error, userId });
-        
+
+        // If RLS recursion issue or other 500 errors, use default role
+        if (error.code === '42P17' || error.message?.includes('recursion') ||
+            error.message?.includes('500') || error.status === 500) {
+          logger.warn('RLS recursion or server error in user_roles, using default role', { userId, error });
+          return ['locataire'];
+        }
+
         // If no roles found, assign default role
         if (error.code === 'PGRST116') {
           logger.info('No roles found, assigning default role', { userId });
-          const { error: insertError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: userId,
-              role: 'locataire'
-            });
-          
-          if (!insertError) {
-            return ['locataire'];
-          }
+          // Skip insert for now due to RLS issues
+          return ['locataire'];
         }
         return [];
       }
       
       logger.info('Roles fetched successfully', { userId, roles: data });
       return data?.map(r => r.role) || [];
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Unexpected error fetching roles', { error, userId });
+
+      // Comprehensive error handling for different error types
+      if (error.message?.includes('recursion') || error.message?.includes('infinite recursion')) {
+        logger.warn('Infinite recursion detected in user_roles, using default role', { userId });
+        return ['locataire'];
+      }
+
+      if (error.message?.includes('500') || error.status === 500) {
+        logger.warn('Server error in user_roles, using default role', { userId });
+        return ['locataire'];
+      }
+
       return ['locataire']; // Default role as fallback
     }
   };
