@@ -42,7 +42,7 @@ const logLoginAttempt = async (email: string, success: boolean, errorMessage?: s
   try {
     // Éviter de logger en double pour les mêmes tentatives
     const now = Date.now();
-    const lastLogKey = `login_log_${email}_${now}`;
+    const lastLogKey = `login_log_${email}_${Math.floor(now / 5000)}`; // Regrouper par 5 secondes
     const lastLogTime = parseInt(sessionStorage.getItem(lastLogKey) || '0');
 
     // Si on a déjà loggé cette tentative il y a moins de 5 secondes, ignorer
@@ -52,25 +52,38 @@ const logLoginAttempt = async (email: string, success: boolean, errorMessage?: s
 
     sessionStorage.setItem(lastLogKey, now.toString());
 
-    // Direct table insert instead of RPC call to avoid type issues
+    // Utiliser le client anonyme pour les tentatives de connexion non authentifiées
+    const ipAddress = await getClientIP();
+
     const { error } = await supabase
       .from('login_attempts')
       .insert({
         email,
         success,
-        user_id: null, // Can be populated if we have the user ID
-        ip_address: null, // You can get this from a service if needed
-        fingerprint: null, // You can get this from device fingerprinting
-        user_agent: navigator.userAgent
+        failure_reason: errorMessage,
+        ip_address: ipAddress,
+        user_agent: navigator.userAgent,
+        created_at: new Date().toISOString()
       });
 
     if (error) {
-      // Ne pas logger l'erreur de logging pour éviter les boucles
-      console.warn('Failed to log login attempt', error.message);
+      // Logger l'erreur silencieusement pour le débogage mais ne pas bloquer
+      logger.warn('Failed to log login attempt', {
+        email: email.replace(/(.{2}).*@/, '$1***@'), // Masquer l'email
+        error: error.message,
+        success
+      });
+    } else {
+      logger.info('Login attempt logged successfully', {
+        email: email.replace(/(.{2}).*@/, '$1***@'), // Masquer l'email
+        success
+      });
     }
   } catch (error) {
     // Ne pas logger l'erreur de logging pour éviter les boucles
-    console.warn('Error logging login attempt', error);
+    logger.warn('Error logging login attempt', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

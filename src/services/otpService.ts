@@ -65,11 +65,9 @@ class OTPService {
       // 🔍 DEBUG: Utiliser une approche alternative si RPC n'est pas disponible
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
       const { data, error } = await supabase.rpc('create_otp_code' as any, {
-        p_user_id: userId,
         p_email: email,
-        p_type: type,
-        p_ip_address: ipAddress,
-        p_user_agent: userAgent
+        p_user_agent: userAgent,
+        p_user_id: userId
       });
 
       logger.info('🔑 [OTP] RPC call completed', {
@@ -86,7 +84,8 @@ class OTPService {
         };
       }
 
-      const result = data?.[0];
+      // La fonction retourne directement un objet JSON, pas un tableau
+      const result = data;
       if (!result) {
         logger.error('🔑 [OTP] No result from RPC call', { userId, email, data });
         return {
@@ -97,7 +96,7 @@ class OTPService {
 
       logger.info('🔑 [OTP] Code creation result', {
         success: result.success,
-        code: result.code ? result.code.replace(/./g, '*') : 'null', // Masquer le code dans les logs
+        code: result.token ? result.token.replace(/./g, '*') : 'null', // Masquer le code dans les logs
         message: result.message,
         userId,
         email
@@ -105,7 +104,7 @@ class OTPService {
 
       return {
         success: result.success,
-        code: result.code,
+        code: result.token, // Utiliser 'token' au lieu de 'code'
         message: result.message
       };
 
@@ -133,8 +132,7 @@ class OTPService {
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
       const { data, error } = await supabase.rpc('verify_otp_code' as any, {
         p_email: email,
-        p_code: code,
-        p_type: type
+        p_token: code
       });
 
       if (error) {
@@ -145,7 +143,8 @@ class OTPService {
         };
       }
 
-      const result = data?.[0];
+      // La fonction retourne directement un objet JSON, pas un tableau
+      const result = data;
       if (!result) {
         return {
           success: false,
@@ -154,16 +153,15 @@ class OTPService {
       }
 
       logger.info('OTP code verification completed', {
-        success: result.success,
+        success: result.verified, // Utiliser 'verified' au lieu de 'success'
         message: result.message,
-        userId: result.user_id,
         email
       });
 
       return {
-        success: result.success,
+        success: result.verified, // Utiliser 'verified' au lieu de 'success'
         message: result.message,
-        user_id: result.user_id
+        user_id: undefined // La fonction ne retourne pas user_id
       };
 
     } catch (error) {
