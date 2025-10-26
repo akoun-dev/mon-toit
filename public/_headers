@@ -1,5 +1,5 @@
 # Content Security Policy Headers for Mon Toit Platform
-# Applied to all responses from Vercel deployment
+# Applied to all responses from Netlify deployment
 
 /*
   X-Frame-Options: DENY
@@ -8,9 +8,21 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-  # Content Security Policy - Restrictive but functional
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.sentry-cdn.com https://browser.sentry-cdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: *.supabase.co *.tile.openstreetmap.org *.tiles.mapbox.com; connect-src 'self' https: *.supabase.co *.supabase.in wss://*.supabase.co wss://*.supabase.in https://api.mapbox.com https://events.mapbox.com https://sentry.io; media-src 'self' blob: https: *.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  # Content Security Policy - PWA Compatible
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.sentry-cdn.com https://browser.sentry-cdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.mapbox.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: *.supabase.co *.tile.openstreetmap.org *.tiles.mapbox.com; connect-src 'self' https: *.supabase.co *.supabase.in wss://*.supabase.co wss://*.supabase.in https://api.mapbox.com https://events.mapbox.com https://sentry.io; media-src 'self' blob: https: *.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; worker-src 'self' blob:;
 
   # Additional security headers
   X-XSS-Protection: 1; mode=block
   X-Permitted-Cross-Domain-Policies: none
+
+# PWA specific headers
+/manifest.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=31536000, immutable
+
+/sw.js
+  Content-Type: application/javascript
+  Cache-Control: public, max-age=0, must-revalidate
+
+/icons/*
+  Cache-Control: public, max-age=31536000, immutable
