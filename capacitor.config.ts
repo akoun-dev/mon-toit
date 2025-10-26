@@ -1,5 +1,37 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
+// Environment detection
+const isProd = process.env.NODE_ENV === 'production';
+const isDev = process.env.NODE_ENV === 'development';
+
+// Dynamic values
+const serverUrl = isProd ? 'https://mon-toit.netlify.app' : 'https://mon-toit.netlify.app';
+const serverHostname = isProd ? 'mon-toit.netlify.app' : 'mon-toit.netlify.app';
+
+// Base navigation domains
+const baseNavigation = [
+  'https://mon-toit.netlify.app',
+  'https://mon-toit.ci',
+  'https://*.mon-toit.ci',
+  'https://*.supabase.co',
+  'https://api.mapbox.com',
+  'https://tiles.mapbox.com',
+  'https://*.mapbox.com',
+  'https://api.cinetpay.com',
+  'https://*.cinetpay.com',
+  'https://api.ipify.org',
+  'https://*.azure-api.net',
+  'https://*.cognitive.microsoft.com'
+];
+
+// Add development URLs if in dev mode
+const developmentNavigation = isDev ? [
+  'http://localhost:*',
+  'http://127.0.0.1:*',
+  'https://localhost:*',
+  'https://127.0.0.1:*'
+] : [];
+
 const config: CapacitorConfig = {
   appId: 'ci.montoit.app',
   appName: 'Mon Toit',
@@ -11,37 +43,18 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
-    // Security: Restrict navigation to app domains
+    // Security: Restrict navigation to approved domains only
     allowNavigation: [
-      'https://*.supabase.co',
-      'https://api.mapbox.com',
-      'https://tiles.mapbox.com',
-      'https://*.mapbox.com',
-      'https://api.brevo.com',
-      'https://*.brevo.com',
-      'https://mon-toit.netlify.app/',
-      'https://mon-toit.ci',
-      'https://*.mon-toit.ci',
-      'https://api.cinetpay.com',
-      'https://*.cinetpay.com',
-      'https://api.ipify.org',
-      'https://*.azure-api.net',
-      'https://*.cognitive.microsoft.com',
-      // Development URLs
-      'http://localhost:*',
-      'http://127.0.0.1:*',
-      'https://localhost:*',
-      'https://127.0.0.1:*'
+      ...baseNavigation,
+      ...developmentNavigation
     ],
     // Security configurations
-    cleartext: true, // Allow cleartext for local development
+    cleartext: isDev, // Only allow cleartext in development
     // Performance and security
     allowNavigationByUserInitiatedAction: true,
-    // Development server settings
-    hostname: 'localhost',
-    url: 'http://localhost:8081', // Default development server URL
-    // Production security (will be overridden by environment)
-    ...(process.env.NODE_ENV === 'production' && { cleartext: false })
+    // Dynamic URL based on environment
+    url: serverUrl,
+    hostname: serverHostname
   },
   // iOS configuration
   ios: {
@@ -54,30 +67,53 @@ const config: CapacitorConfig = {
     orientation: ['portrait'],
     // Performance and security
     backgroundColor: '#667eea',
-    appendUserAgent: ' MonToit-iOS/1.0',
+    appendUserAgent: 'MonToit-iOS/1.0' + (isProd ? '-PROD' : '-DEV'),
     // Handle external links
     handleLinks: 'all',
+    // Production optimizations
+    ...(isProd && {
+      // Disallow debugging in production
+      webContentsDebuggingEnabled: false,
+      // Enhanced security for production
+      allowsInlineMediaPlayback: false,
+      limitsNavigationsToAppBoundDomains: true,
+    })
   },
   // Android configuration
   android: {
     // Deep linking configuration
-    webContentsDebuggingEnabled: false,
+    webContentsDebuggingEnabled: isDev, // Only in development
     // Input method configuration
     captureInput: true,
     // Log configuration
-    loggingBehavior: 'production',
+    loggingBehavior: isProd ? 'production' : 'debug',
     // WebView configuration
     allowMixedContent: 'never',
     // Orientation configuration
     orientation: 'portrait',
     // Security and performance
     backgroundColor: '#667eea',
-    appendUserAgent: ' MonToit-Android/1.0',
+    appendUserAgent: 'MonToit-Android/1.0' + (isProd ? '-PROD' : '-DEV'),
+    // Production optimizations
+    ...(isProd && {
+      // Enhanced security for production
+      hardwareAccelerated: true,
+      // Network security
+      networkSecurityConfig: {
+        allowClearTextTraffic: false,
+        domainConfigs: [
+          {
+            includeSubdomains: true,
+            domains: ['mon-toit.netlify.app', 'mon-toit.ci', '*.mon-toit.ci', '*.supabase.co']
+          }
+        ]
+      }
+    })
   },
   plugins: {
     // SplashScreen configuration
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: isProd ? 1500 : 2000,
       launchAutoHide: true,
       backgroundColor: '#667eea',
       androidSplashResourceName: 'splash',
@@ -86,26 +122,56 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
       // iOS specific
-      launchFadeInDuration: 300,
+      launchFadeInDuration: isProd ? 200 : 300,
+      // Production optimizations
+      ...(isProd && {
+        useDialog: true,
+        layoutDisplayOptions: {
+          backgroundColor: '#667eea'
+        }
+      })
     },
     // StatusBar configuration
     StatusBar: {
       style: 'dark',
       backgroundColor: '#FF8F00',
       overlaysWebView: true,
+      // Production style
+      ...(isProd && {
+        style: 'LIGHT',
+        backgroundColor: '#FFFFFF'
+      })
     },
     // App plugin configuration
     App: {
-      appendUserAgent: ' MonToit-Secure-App/1.0',
+      appendUserAgent: 'MonToit-Secure-App/1.0' + (isProd ? '-PROD' : '-DEV'),
       handleUrlOpen: true,
       allowNavigation: true,
+      // Production security
+      ...(isProd && {
+        // Enhanced security for production
+        // Disallow opening external URLs
+        urlOpen: {
+          // Allow only specific domains in production
+          allowedUrls: [
+            'https://mon-toit.netlify.app',
+            'https://mon-toit.ci',
+            'https://*.mon-toit.ci'
+          ]
+        }
+      })
     },
     // Keyboard plugin configuration
     Keyboard: {
       resize: 'ionic',
-      style: 'dark',
+      style: isProd ? 'light' : 'dark',
       mode: 'resize',
       hideFormActionBar: false,
+      // Production optimizations
+      ...(isProd && {
+        scrollable: true,
+        resizeOnKeyboardShow: true
+      })
     },
     // Share plugin configuration
     Share: {
@@ -125,8 +191,17 @@ const config: CapacitorConfig = {
     Http: {
       enabled: true,
       // Configure HTTP timeouts and retries for better API reliability
-      timeout: 30000,
-      retryCount: 3,
+      timeout: isProd ? 25000 : 30000,
+      retryCount: isProd ? 5 : 3,
+      // Production optimizations
+      ...(isProd && {
+        // Enhanced caching for production
+        caching: {
+          enabled: true,
+          maxSize: 50 * 1024 * 1024, // 50MB
+          maxAge: 3600000 // 1 hour
+        }
+      })
     },
     // Camera plugin configuration
     Camera: {
@@ -162,6 +237,24 @@ const config: CapacitorConfig = {
     // Push Notifications (when Firebase is configured)
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
+      // Production optimizations
+      ...(isProd && {
+        // Enhanced push notification settings for production
+        displayOptions: {
+          badge: true,
+          sound: true,
+          alert: true,
+          // Priority settings
+          priority: 5,
+          visibility: 'public'
+        },
+        // Local notification scheduling
+        localNotifications: {
+          allowScheduling: true,
+          allowWhileIdle: true,
+          allowWhileInBackground: true
+        }
+      })
     },
   },
 };
