@@ -163,6 +163,11 @@ const AppContent = () => {
                 <PropertyDetail />
               </Suspense>
             } />
+            <Route path="/bien/:id" element={
+              <Suspense fallback={<PropertyDetailSkeleton />}>
+                <PropertyDetail />
+              </Suspense>
+            } />
             <Route path="/certification" element={<Certification />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />

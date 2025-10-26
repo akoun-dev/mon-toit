@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase, supabaseAnon } from '@/lib/supabase';
+import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import type { AgencyMandate } from '@/types/admin';
 import { useQuery } from '@tanstack/react-query';
 
@@ -326,31 +327,54 @@ const PropertyDetail = () => {
     );
   }
 
+  // Gérer le cas où images peut être un objet ou un tableau
+  const imagesArray = Array.isArray(property.images)
+    ? property.images
+    : (property.images && typeof property.images === 'object' ? Object.values(property.images) : []);
+
   const allImages = [
     property.main_image,
-    ...(property.images || [])
+    ...imagesArray
   ].filter(Boolean) as string[];
+
+  // Ajouter une image par défaut si aucune image n'est disponible
+  const displayImages = allImages.length > 0
+    ? allImages
+    : ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop'];
+
+  // Debug: Log des images pour le débogage
+  console.log('PropertyDetail - Images:', {
+    propertyId: property.id,
+    main_image: property.main_image,
+    rawImages: property.images,
+    imagesArray,
+    allImages: allImages.length,
+    displayImages: displayImages.length
+  });
 
   const favorite = isFavorite(property.id);
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-2 py-4">
-        <div className="max-w-7xl mx-auto">
+      <main className="px-2 sm:px-3 md:px-4 lg:px-6 py-2 sm:py-3 md:py-4 w-full max-w-screen-2xl mx-auto">
+        <div className="w-full space-y-2 sm:space-y-3 md:space-y-4">
+          {/* DynamicBreadcrumb */}
+          <DynamicBreadcrumb />
+
           {/* Back button */}
-          <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour
           </Button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Images and main content */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3 sm:space-y-4">
               {/* Multimedia Gallery */}
               <div className="relative">
                 <MediaGallery
                   propertyId={property.id}
-                  images={allImages}
+                  images={displayImages}
                   videoUrl={property.video_url || undefined}
                   virtualTourUrl={property.virtual_tour_url || undefined}
                   panoramicImages={Array.isArray(property.panoramic_images) ? property.panoramic_images : []}
@@ -546,7 +570,7 @@ const PropertyDetail = () => {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Owner actions */}
               {isOwner && (
                 <Card className="border-primary">
@@ -786,7 +810,7 @@ const PropertyDetail = () => {
 
           {/* Similar Properties Section */}
           {!isOwner && user && (
-            <div className="mt-12">
+            <div className="mt-6 sm:mt-8 md:mt-12">
               <RecommendationsSection
                 userId={user.id}
                 type="property"
@@ -796,7 +820,7 @@ const PropertyDetail = () => {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </MainLayout>
   );
 };
