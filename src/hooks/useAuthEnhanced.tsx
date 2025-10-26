@@ -14,6 +14,7 @@ interface AuthContextType {
   roles: string[];
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string, fullName: string, userType: string) => Promise<{ error: AuthError | null; data?: { user: User } }>;
   signInWithOAuth: (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => Promise<{ error: AuthError | null }>;
   verifyOTP: (email: string, token: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
@@ -366,6 +367,65 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signUp = async (email: string, password: string, fullName: string, userType: string) => {
+    try {
+      logger.info('Starting sign up process', { email, fullName, userType });
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            user_type: userType,
+            // Add any additional user metadata here
+          }
+        }
+      });
+
+      if (error) {
+        logger.error('Sign up error', { error, email, fullName, userType });
+        return { error: error as AuthError, data: null };
+      }
+
+      logger.info('Sign up successful', { email, fullName, userType });
+      
+      // Après l'inscription réussie, créer et envoyer le code OTP
+      try {
+        const otpResult = await otpService.createAndSendOTP(email, 'signup');
+        if (!otpResult.success) {
+          logger.warn('OTP creation failed after signup', { email, error: otpResult.message });
+          // Ne pas bloquer l'inscription si l'OTP échoue
+          toast({
+            title: "Compte créé",
+            description: "Votre compte a été créé mais l'envoi du code de vérification a échoué. Veuillez demander un nouveau code.",
+            variant: "default",
+          });
+        } else {
+          logger.info('OTP sent successfully after signup', { email });
+          toast({
+            title: "Compte créé",
+            description: "Votre compte a été créé avec succès. Un code de vérification a été envoyé à votre email.",
+            variant: "default",
+          });
+        }
+      } catch (otpError) {
+        logger.error('Error creating OTP after signup', { otpError, email });
+        // Ne pas bloquer l'inscription si l'OTP échoue
+        toast({
+          title: "Compte créé",
+          description: "Votre compte a été créé. Veuillez vérifier votre email pour le code de confirmation.",
+          variant: "default",
+        });
+      }
+
+      return { error: null, data: data.user };
+    } catch (error) {
+      logger.error('Unexpected sign up error', { error, email, fullName, userType });
+      return { error: error as AuthError, data: null };
+    }
+  };
+
   const signInWithOAuth = async (provider: 'google' | 'facebook' | 'apple' | 'microsoft', userType?: string) => {
     try {
       logger.info('Starting OAuth sign in', { provider, userType });
@@ -514,6 +574,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     roles,
     loading,
     signIn,
+    signUp,
     signInWithOAuth,
     verifyOTP,
     signOut,

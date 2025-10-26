@@ -423,6 +423,183 @@ class OTPService {
     // Générer un code simple pour les tests
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
+
+  /**
+   * Vérifie si un email a été vérifié avec OTP (stockage local pour le développement)
+   */
+  isEmailVerified(email: string, type: 'signup' | 'reset_password' | 'email_change' = 'signup'): boolean {
+    try {
+      const storageKey = `otp_verified_${email}_${type}`;
+      const verified = localStorage.getItem(storageKey);
+      if (verified) {
+        const data = JSON.parse(verified);
+        // Vérifier si la vérification est encore valide (24 heures)
+        const isValid = new Date().getTime() - data.timestamp < 24 * 60 * 60 * 1000;
+        if (!isValid) {
+          localStorage.removeItem(storageKey);
+          return false;
+        }
+        return true;
+      }
+      return false;
+    } catch (error) {
+      logger.error('Error checking email verification', { error, email });
+      return false;
+    }
+  }
+
+  /**
+   * Vérifie un code OTP (version simplifiée pour le développement)
+   */
+  async verifyOTP(
+    email: string,
+    token: string,
+    type: 'signup' | 'reset_password' | 'email_change' = 'signup'
+  ): Promise<OTPVerifyResult> {
+    try {
+      logger.info('🔍 [OTP] Starting OTP verification', { email, token: token.replace(/./g, '*'), type });
+
+      // En développement, accepter le code de test
+      if (import.meta.env.DEV && token === '123456') {
+        logger.info('✅ [OTP] Using test code in development', { email });
+        
+        // Marquer l'email comme vérifié
+        const storageKey = `otp_verified_${email}_${type}`;
+        localStorage.setItem(storageKey, JSON.stringify({
+          verified: true,
+          timestamp: new Date().getTime(),
+          email,
+          type
+        }));
+
+        return {
+          success: true,
+          message: 'Code vérifié avec succès (mode développement)',
+          user_id: `dev_user_${email.replace(/[^a-zA-Z0-9]/g, '_')}`
+        };
+      }
+
+      // Utiliser la fonction RPC pour la vérification en production
+      const { data, error } = await supabase.rpc('verify_otp_code' as any, {
+        p_email: email,
+        p_token: token
+      });
+
+      if (error) {
+        logger.error('❌ [OTP] RPC verification failed', { error, email });
+        return {
+          success: false,
+          message: error.message || 'Code invalide ou expiré'
+        };
+      }
+
+      const result = data;
+      if (!result || !result.verified) {
+        return {
+          success: false,
+          message: result?.message || 'Code invalide ou expiré'
+        };
+      }
+
+      // Marquer l'email comme vérifié localement
+      const storageKey = `otp_verified_${email}_${type}`;
+      localStorage.setItem(storageKey, JSON.stringify({
+        verified: true,
+        timestamp: new Date().getTime(),
+        email,
+        type
+      }));
+
+      logger.info('✅ [OTP] Verification successful', { email, type });
+      
+      return {
+        success: true,
+        message: result.message || 'Code vérifié avec succès',
+        user_id: result.user_id
+      };
+
+    } catch (error) {
+      logger.error('💥 [OTP] Unexpected error in verifyOTP', { error, email });
+      return {
+        success: false,
+        message: 'Erreur technique lors de la vérification du code'
+      };
+    }
+  }
+
+  /**
+   * Crée et envoie un code OTP (méthode combinée pour simplifier le flux)
+   */
+  async createAndSendOTP(
+    email: string,
+    type: 'signup' | 'reset_password' | 'email_change' = 'signup'
+  ): Promise<OTPCreateResult> {
+    try {
+      logger.info('🔑 [OTP] Starting create and send OTP', { email, type });
+
+      // Générer un user_id temporaire pour le développement
+      const userId = `temp_${email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+
+      // Créer le code OTP
+      const createResult = await this.createOTPCode(userId, email, type);
+      
+      if (!createResult.success || !createResult.code) {
+        return createResult;
+      }
+
+      // Envoyer le code par email
+      const sendResult = await this.sendOTPByEmail(email, createResult.code, type);
+      
+      if (!sendResult.success) {
+        return {
+          success: false,
+          message: sendResult.error || 'Erreur lors de l\'envoi de l\'email'
+        };
+      }
+
+      logger.info('✅ [OTP] Create and send completed successfully', { email, type });
+      
+      return {
+        success: true,
+        code: createResult.code,
+        message: `Code envoyé à ${email}. En développement, utilisez: ${createResult.code}`
+      };
+
+    } catch (error) {
+      logger.error('💥 [OTP] Unexpected error in createAndSendOTP', { error, email });
+      return {
+        success: false,
+        message: 'Erreur technique lors de la création du code OTP'
+      };
+    }
+  }
+
+  /**
+   * Nettoie les codes OTP expirés (version simplifiée)
+   */
+  cleanupExpiredOTPs(): void {
+    try {
+      const keys = Object.keys(localStorage);
+      const now = new Date().getTime();
+      
+      keys.forEach(key => {
+        if (key.startsWith('otp_verified_')) {
+          try {
+            const data = JSON.parse(localStorage.getItem(key) || '{}');
+            if (data.timestamp && (now - data.timestamp > 24 * 60 * 60 * 1000)) {
+              localStorage.removeItem(key);
+              logger.info('🧹 [OTP] Cleaned up expired OTP verification', { key });
+            }
+          } catch (parseError) {
+            // Nettoyer les clés invalides
+            localStorage.removeItem(key);
+          }
+        }
+      });
+    } catch (error) {
+      logger.error('Error cleaning up expired OTPs', { error });
+    }
+  }
 }
 
 export const otpService = new OTPService();

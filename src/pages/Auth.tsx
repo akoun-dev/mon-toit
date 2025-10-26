@@ -213,16 +213,12 @@ const Auth = () => {
 
       // Check rate limit before attempting sign in
       const { data: rateLimitCheck } = await supabase.rpc('check_login_rate_limit', {
-        _email: signInEmail,
-        _ip_address: ipAddress
-      }) as { data: { allowed: boolean; reason?: string; retry_after?: string; blocked?: boolean; show_captcha?: boolean; failed_count?: number } | null };
+        p_email: signInEmail
+      }) as { data: boolean | null };
 
-      if (rateLimitCheck && typeof rateLimitCheck === 'object' && 'allowed' in rateLimitCheck && !rateLimitCheck.allowed) {
+      if (rateLimitCheck === false) {
         setIsBlocked(true);
-        setBlockMessage(rateLimitCheck.reason || 'Trop de tentatives');
-        if (rateLimitCheck.retry_after) {
-          setRetryAfter(formatRetryAfter(rateLimitCheck.retry_after));
-        }
+        setBlockMessage('Trop de tentatives de connexion. Veuillez attendre quelques minutes avant de réessayer.');
         setLoading(false);
         return;
       }
