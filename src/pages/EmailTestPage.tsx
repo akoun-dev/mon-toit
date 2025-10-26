@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { emailService } from '@/services/emailService';
-import { Mail, Send, CheckCircle2, ExternalLink } from 'lucide-react';
+import { brevoEmailService } from '@/services/brevoEmailService';
+import { Mail, Send, CheckCircle2, ExternalLink, Globe } from 'lucide-react';
 
 export const EmailTestPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -141,6 +142,82 @@ export const EmailTestPage = () => {
     }
   };
 
+  const handleSendBrevoTestEmail = async () => {
+    setIsLoading(true);
+    try {
+      const result = await brevoEmailService.sendEmail({
+        to: testEmail,
+        subject: '🧪 Test Brevo - Mon Toit',
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #667eea;">🧪 Email de Test Brevo</h2>
+            <p>Bonjour,</p>
+            <p>Ceci est un email de test pour vérifier que le service Brevo fonctionne correctement.</p>
+            <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 10px 0;">
+              <p><strong>Message test:</strong></p>
+              <p>${testMessage}</p>
+            </div>
+            <p>Cordialement,<br>L'équipe Mon Toit</p>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <p style="font-size: 12px; color: #666;">
+              Envoyé via Brevo depuis Mon Toit - ${new Date().toLocaleString('fr-FR')}
+            </p>
+          </div>
+        `,
+        text: `Email de test Brevo\n\nCeci est un email de test pour vérifier que le service Brevo fonctionne correctement.\n\nMessage: ${testMessage}\n\nEnvoyé via Brevo depuis Mon Toit - ${new Date().toLocaleString('fr-FR')}`
+      });
+
+      if (result.success) {
+        toast({
+          title: 'Email Brevo envoyé avec succès !',
+          description: `ID du message: ${result.messageId}`,
+        });
+      } else {
+        toast({
+          title: 'Erreur Brevo',
+          description: result.error || 'Erreur inconnue',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendOTPTest = async () => {
+    setIsLoading(true);
+    try {
+      const result = await brevoEmailService.sendOTPCode(testEmail, '123456', 'signup');
+
+      if (result.success) {
+        toast({
+          title: 'OTP envoyé avec succès !',
+          description: `ID du message: ${result.messageId}`,
+        });
+      } else {
+        toast({
+          title: 'Erreur OTP',
+          description: result.error || 'Erreur inconnue',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Une erreur est survenue',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const clearMailbox = async () => {
     try {
       const result = await emailService.clearMailbox();
@@ -172,14 +249,46 @@ export const EmailTestPage = () => {
   }, []);
 
   const mailpitUrl = emailService.getMailpitUrl();
+  const brevoConfig = brevoEmailService.checkConfiguration();
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">🧪 Test Email Service (Mailpit)</h1>
+        <h1 className="text-3xl font-bold mb-2">🧪 Test Email Services</h1>
         <p className="text-muted-foreground">
-          Testez le service d'envoi d'emails avec Mailpit en développement
+          Testez les services d'envoi d'emails (Mailpit développement & Brevo production)
         </p>
+
+        {/* Configuration Status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className={`p-4 rounded-lg border ${brevoConfig.configured ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <Globe className="h-4 w-4" />
+              <h3 className="font-semibold">Configuration Brevo</h3>
+            </div>
+            {brevoConfig.configured ? (
+              <p className="text-sm text-green-700">✅ Brevo configuré et prêt</p>
+            ) : (
+              <div>
+                <p className="text-sm text-yellow-700">⚠️ Variables manquantes:</p>
+                <ul className="text-xs text-yellow-600 mt-1">
+                  {brevoConfig.missing.map(varName => (
+                    <li key={varName}>• {varName}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 rounded-lg border bg-blue-50 border-blue-200">
+            <div className="flex items-center gap-2 mb-2">
+              <Mail className="h-4 w-4" />
+              <h3 className="font-semibold">Mailpit (Développement)</h3>
+            </div>
+            <p className="text-sm text-blue-700">🔧 Disponible en développement</p>
+          </div>
+        </div>
+
         <div className="flex gap-2 mt-4">
           <Button
             variant="outline"
@@ -242,39 +351,74 @@ export const EmailTestPage = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-2">
-              <Button
-                onClick={handleSendTestEmail}
-                disabled={isLoading}
-                className="w-full"
-              >
-                {isLoading ? (
-                  <>Envoi en cours...</>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-4 w-4" />
-                    Envoyer email simple
-                  </>
-                )}
-              </Button>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium mb-2">📧 Tests Mailpit (Développement)</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  <Button
+                    onClick={handleSendTestEmail}
+                    disabled={isLoading}
+                    className="w-full"
+                  >
+                    {isLoading ? (
+                      <>Envoi en cours...</>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Envoyer email simple
+                      </>
+                    )}
+                  </Button>
 
-              <Button
-                onClick={handleSendWelcomeEmail}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full"
-              >
-                Envoyer email de bienvenue
-              </Button>
+                  <Button
+                    onClick={handleSendWelcomeEmail}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Envoyer email de bienvenue
+                  </Button>
 
-              <Button
-                onClick={handleSendContactNotification}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full"
-              >
-                Envoyer notification de contact
-              </Button>
+                  <Button
+                    onClick={handleSendContactNotification}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Envoyer notification de contact
+                  </Button>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-medium mb-2">🌍 Tests Brevo (Production)</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  <Button
+                    onClick={handleSendBrevoTestEmail}
+                    disabled={isLoading}
+                    variant="default"
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    {isLoading ? (
+                      <>Envoi en cours...</>
+                    ) : (
+                      <>
+                        <Globe className="mr-2 h-4 w-4" />
+                        Envoyer email Brevo
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    onClick={handleSendOTPTest}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="w-full border-green-200 text-green-700 hover:bg-green-50"
+                  >
+                    Envoyer code OTP via Brevo
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

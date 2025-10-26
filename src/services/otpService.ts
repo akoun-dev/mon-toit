@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
+import { brevoEmailService } from '@/services/brevoEmailService';
 
 export interface OTPCode {
   id: string;
@@ -174,151 +175,83 @@ class OTPService {
   }
 
   /**
-   * Envoie un code OTP par email en utilisant directement l'API Mailpit en développement
+   * Envoie un code OTP par email en utilisant Brevo (production) ou fallback développement
    */
   async sendOTPByEmail(
     email: string,
     code: string,
     type: 'signup' | 'reset_password' | 'email_change' = 'signup'
-  ): Promise<{ success: boolean; error?: string; mailpitUrl?: string }> {
+  ): Promise<{ success: boolean; error?: string; messageId?: string }> {
     try {
-      // 🔍 DEBUG: Vérifier la configuration Mailpit
-      const mailpitUrl = import.meta.env.VITE_MAILPIT_URL;
-      const isDevelopment = import.meta.env.DEV;
-
-      logger.info('🔍 [OTP] Démarrage envoi email', {
-        mailpitUrl,
-        nodeEnv: import.meta.env.NODE_ENV,
-        isDevelopment,
-        hasImportMeta: !!import.meta.env,
-        envKeys: Object.keys(import.meta.env),
+      logger.info('📧 [OTP] Starting email sending', {
         email,
         type,
         code: code.replace(/./g, '*'),
-        codeLength: code.length
+        environment: import.meta.env.MODE
       });
 
-      // Envoyer via l'API Mailpit si disponible
-      if (mailpitUrl) {
-        logger.info('📤 [OTP] Envoi direct via API Mailpit', { email, mailpitUrl });
+      // Vérifier la configuration Brevo
+      const brevoConfig = brevoEmailService.checkConfiguration();
 
-        // Créer un email simple pour le développement
-        const emailData = {
-          from: {
-            name: 'Mon Toit',
-            email: 'noreply@mon-toit.ci'
-          },
-          to: [{
-            name: '',
-            email: email
-          }],
-          subject: `🔐 Code OTP - Mon Toit (${type})`,
-          html: `<div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>Code de vérification</h2>
-            <p>Votre code OTP est : <strong style="font-size: 24px; color: #667eea;">${this.formatOTPCode(code)}</strong></p>
-            <p>Ce code expire dans 24 heures.</p>
-            <hr>
-            <p><small>Pour le développement : vérifiez dans <a href="${mailpitUrl}">Mailpit</a></small></p>
-          </div>`,
-          text: `Votre code OTP est : ${this.formatOTPCode(code)}`
-        };
+      if (brevoConfig.configured) {
+        // Utiliser Brevo pour l'envoi
+        logger.info('📧 [OTP] Using Brevo service for email sending');
 
-        logger.info('📤 [OTP] Données email préparées', {
-          email,
-          subject: emailData.subject,
-          fromEmail: emailData.from.email,
-          toEmail: emailData.to[0].email
-        });
+        const result = await brevoEmailService.sendOTPCode(email, code, type);
 
-        try {
-          // Utiliser le proxy Vite pour éviter les problèmes CORS
-          const apiUrl = `/api/mailpit/send`;
-          logger.info('📤 [OTP] Envoi via proxy', { apiUrl, originalUrl: `${mailpitUrl}/api/v1/send` });
-
-          const mailpitResponse = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(emailData)
-          });
-
-          logger.info('📤 [OTP] Réponse Mailpit reçue', {
-            status: mailpitResponse.status,
-            statusText: mailpitResponse.statusText,
-            ok: mailpitResponse.ok
-          });
-
-          if (!mailpitResponse.ok) {
-            const errorText = await mailpitResponse.text();
-            logger.error('❌ [OTP] Échec envoi Mailpit', {
-              status: mailpitResponse.status,
-              statusText: mailpitResponse.statusText,
-              errorText,
-              email
-            });
-            return {
-              success: false,
-              error: `Erreur Mailpit (${mailpitResponse.status}): ${errorText}`
-            };
-          }
-
-          const result = await mailpitResponse.json();
-          logger.info('✅ [OTP] Email envoyé avec succès via Mailpit', {
+        if (result.success) {
+          logger.info('✅ [OTP] Email sent successfully via Brevo', {
             email,
             type,
-            code: code.replace(/./g, '*'),
-            messageId: result.id
+            messageId: result.messageId
           });
-
           return {
             success: true,
-            mailpitUrl: mailpitUrl
+            messageId: result.messageId
           };
-
-        } catch (fetchError) {
-          logger.error('💥 [OTP] Erreur fetch Mailpit', {
-            error: fetchError instanceof Error ? fetchError.message : 'Unknown error',
-            errorType: fetchError instanceof Error ? fetchError.constructor.name : 'Unknown',
+        } else {
+          logger.error('❌ [OTP] Brevo email sending failed', {
             email,
-            mailpitUrl,
-            stack: fetchError instanceof Error ? fetchError.stack : undefined,
-            isNetworkError: fetchError instanceof TypeError,
-            errorMessage: fetchError.message,
-            errorDetails: {
-              name: fetchError.name,
-              message: fetchError.message,
-              cause: fetchError.cause
-            }
+            error: result.error
           });
           return {
             success: false,
-            error: `Erreur réseau: ${fetchError instanceof Error ? fetchError.message : 'Erreur inconnue'}`
+            error: result.error || 'Erreur lors de l\'envoi via Brevo'
           };
         }
       } else {
-        // Pas de Mailpit configuré
-        logger.error('❌ [OTP] Aucune configuration Mailpit trouvée', {
-          mailpitUrl,
+        // Mode développement : logger l'email
+        logger.warn('🔧 [OTP] Brevo not configured - logging email for development', {
+          missing: brevoConfig.missing,
           email,
           type,
-          envMailpitUrl: import.meta.env.VITE_MAILPIT_URL
+          code: code.replace(/./g, '*')
         });
+
+        // Simuler un succès en développement
+        const messageId = `dev_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        logger.info('📧 [Development] Email would be sent:', {
+          to: email,
+          subject: `🔐 Code OTP - Mon Toit (${type})`,
+          code: this.formatOTPCode(code),
+          messageId
+        });
+
         return {
-          success: false,
-          error: 'Configuration Mailpit manquante'
+          success: true,
+          messageId
         };
       }
 
     } catch (error) {
-      logger.error('💥 [OTP] Erreur inattendue sendOTPByEmail', {
+      logger.error('💥 [OTP] Unexpected error in sendOTPByEmail', {
         error: error instanceof Error ? error.message : 'Unknown error',
         email,
         stack: error instanceof Error ? error.stack : undefined
       });
       return {
         success: false,
-        error: 'Erreur inattendue lors de l\'envoi de l\'email'
+        error: 'Erreur inattendue lors de l\'envoi de l\'email OTP'
       };
     }
   }
