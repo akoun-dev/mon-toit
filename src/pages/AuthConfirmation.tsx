@@ -18,7 +18,7 @@ import { useAuth } from '@/hooks/useAuthEnhanced';
 const AuthConfirmation = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { verifyOTP } = useAuth();
+  const { verifyOTP, user, profile } = useAuth();
 
   // Debug: Vérifier si la page se charge correctement
   console.log('🔍 [DEBUG] AuthConfirmation page loaded', {
@@ -37,10 +37,22 @@ const AuthConfirmation = () => {
   const [lastError, setLastError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Si l'utilisateur est déjà connecté avec un profil complet, rediriger vers le dashboard
+    if (user && profile && profile.full_name && searchParams.get('from') !== 'signup') {
+      console.log('🔍 [DEBUG] User already has complete profile, redirecting to dashboard', {
+        userId: user.id,
+        email: user.email,
+        profileId: profile.id,
+        fullName: profile.full_name
+      });
+      navigate('/dashboard', { replace: true });
+      return;
+    }
+
     // Forcer l'affichage de la page OTP même en développement
     // Ne plus vérifier automatiquement si l'email est confirmé
     setLoading(false);
-  }, []);
+  }, [user, profile, navigate, searchParams]);
 
   const handleVerifyOTP = async () => {
     console.log('🔍 [DEBUG] Début de la vérification OTP', { email, otpCode: otpCode ? `${otpCode[0]}${otpCode[1]}****` : 'undefined', attempts });

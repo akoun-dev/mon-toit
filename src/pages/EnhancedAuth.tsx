@@ -165,8 +165,8 @@ const EnhancedAuth = () => {
     setLoading(false);
 
     if (!error) {
-      // Rediriger vers la page de confirmation avec l'email
-      const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}`;
+      // Rediriger vers la page de confirmation avec l'email et marquer comme venant de l'inscription
+      const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}&from=signup`;
       console.log('🔀 [DEBUG] Redirecting to:', confirmationUrl);
       navigate(confirmationUrl, { replace: true });
       console.log('✅ [DEBUG] Navigation executed');

@@ -222,6 +222,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
 
+        // Vérifier si l'utilisateur vient de s'inscrire et n'a pas encore vérifié son email
+        // Ne pas permettre l'accès au dashboard sans vérification OTP
+        if (event === 'SIGNED_IN' && session?.user && !session.user.email_confirmed_at) {
+          logger.info('🚫 [AUTH] User signed in but email not confirmed, blocking dashboard access', {
+            userId: session.user.id,
+            email: session.user.email,
+            emailConfirmed: !!session.user.email_confirmed_at
+          });
+          // Forcer la déconnexion pour obliger la vérification OTP
+          await supabase.auth.signOut();
+          return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
 
