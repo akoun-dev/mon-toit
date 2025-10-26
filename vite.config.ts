@@ -159,8 +159,37 @@ export default defineConfig(({ mode }) => ({
         return id.startsWith('@capacitor/');
       },
       output: {
-        inlineDynamicImports: true,
-        chunkFileNames: () => {
+        // Disable inline dynamic imports to reduce memory usage during build
+        inlineDynamicImports: false,
+        manualChunks: (id) => {
+          // Vendor chunks for better caching
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'vendor';
+          }
+          if (id.includes('react-router-dom')) {
+            return 'router';
+          }
+          if (id.includes('@radix-ui')) {
+            return 'ui';
+          }
+          if (id.includes('recharts')) {
+            return 'charts';
+          }
+          if (id.includes('date-fns') || id.includes('clsx') || id.includes('tailwind-merge')) {
+            return 'utils';
+          }
+          if (id.includes('lucide-react')) {
+            return 'icons';
+          }
+          if (id.includes('mapbox') || id.includes('supercluster')) {
+            return 'maps';
+          }
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop()?.replace(/\.[^.]*$/, '') : 'chunk';
           return `assets/[name]-[hash].js`;
         },
         assetFileNames: (assetInfo) => {
@@ -171,6 +200,14 @@ export default defineConfig(({ mode }) => ({
         }
       }
     },
-    chunkSizeWarningLimit: 1000,
+    // Increase chunk size warning limit and optimize for production
+    chunkSizeWarningLimit: 1500,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: mode === "production",
+        drop_debugger: mode === "production",
+      },
+    },
   },
 }));
