@@ -11,7 +11,10 @@ npm run build            # Production build
 npm run build:dev        # Development build (faster, less optimized)
 npm run lint             # ESLint code checking
 npm run preview          # Preview production build locally
-npm run seed:auth        # Seed authentication data
+npm run seed:auth        # Seed authentication data (17 users)
+npm run seed:auth:create # Same as seed:auth - creates users with working passwords
+npm run seed:passwords  # Generate and apply working password hashes
+npm run seed:properties  # Seed property data (30+ properties)
 ```
 
 ### Mobile Development (Capacitor)
@@ -22,6 +25,15 @@ npx cap open ios         # Open Xcode
 npx cap run android      # Run on Android device/emulator
 npx cap run ios          # Run on iOS device/emulator
 CAPACITOR=true npm run build  # Build specifically for mobile
+```
+
+### Testing & Quality
+```bash
+npx vitest              # Run Vitest tests
+npx vitest ui           # Run tests with Vitest UI
+npx vitest run          # Run tests once
+npx vitest run --coverage  # Run tests with coverage report
+npx jscpd .             # Detect duplicate code (configured in .jscpd.json)
 ```
 
 ### Environment Setup
@@ -52,11 +64,11 @@ The application supports 5 distinct user roles with separate dashboards:
 - **agence** (Agency): Portfolio management and mandates (2 users)
 - **tiers_de_confiance** (Third-party Trust): Certification and mediation (1 user)
 
-**Test Accounts** (all passwords match role name + "123"):
+**Test Accounts** (updated emails and passwords):
 - Admin: `admin@mon-toit.ci` / `admin123`
-- Proprietaire: `kouadio.jean@mon-toit.ci` / `proprietaire123`
-- Locataire: `yao.konan@mon-toit.ci` / `locataire123`
-- Agence: `contact@agence-cocody.ci` / `agence123`
+- Owners: `kouadio.jean@mon-toit.ci` / `proprietaire123`, `marie.aya@mon-toit.ci`, `koffi.alain@mon-toit.ci`, etc.
+- Tenants: `yao.konan@mon-toit.ci` / `locataire123`, `aminata.diarra@mon-toit.ci`, etc.
+- Agencies: `contact@agence-cocody.ci` / `agence123`, `info@ankou-realestate.ci` / `agence123`
 - Tiers: `notaire.konan@mon-toit.ci` / `tiers123`
 
 ### Key Directory Structure
@@ -125,17 +137,25 @@ The application supports 5 distinct user roles with separate dashboards:
 
 ## Development Notes
 
-### Supabase Integration
+### Supabase Integration & Database Management
 - Uses environment variables with secure fallbacks for local development
 - Only ANON keys are exposed to the client - never use service_role keys
 - All database operations should go through the configured Supabase client in `src/lib/supabase.ts`
 - TypeScript types are auto-generated in `src/integrations/supabase/types.ts`
-- Secure storage integration for auth tokens via `src/lib/secureStorage.ts`
+- **Seed Data**: Complete seed in `supabase/seed.sql` with 17 users and 30+ properties
 
-### Mapbox Configuration
+```bash
+# Database Management
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -f supabase/seed.sql
+docker exec supabase_db_mon-toit psql -U postgres -d postgres -c "SELECT role, COUNT(*) FROM public.user_roles GROUP BY role;"
+```
+
+### Mapbox & Location System
 - Mapbox tokens should be set in environment variables
 - Custom styles and clustering are configured for Abidjan region
 - POI data is pre-loaded in `src/data/abidjanPOI.ts`
+- **Supercluster**: Point clustering for performance with large datasets
+- **Geolocation**: Native device location integration with fallbacks
 
 ### Mobile Development Workflow
 1. Make changes to web code
@@ -149,23 +169,14 @@ When creating new features, consider which roles can access them:
 - Role-specific components should be organized in appropriate directories
 - Dashboard routes are protected and redirect based on user role
 
-### Offline Development
-The PWA includes sophisticated offline capabilities:
-- API responses are cached with NetworkFirst strategy
-- Images use CacheFirst strategy
-- The app remains functional during network interruptions
-- Sync operations handle conflict resolution gracefully
-
-### Security Best Practices
-- All API calls should use the configured Supabase client
-- Sensitive operations require appropriate RLS policies
-- Form inputs are sanitized using DOMPurify
-- Error messages are sanitized to prevent information leakage
-- Native app security configured in `capacitor.config.ts` with restricted navigation
-- PWA security with service worker caching strategies in `vite.config.ts`
-- Sentry integration available for production error tracking
-- Test security policies located in `tests/security/` directory
-- Duplicate code detection with JSCPD prevents maintenance issues
+### Security Architecture
+- **RLS Policies**: Database-level access control for all tables
+- **MFA Support**: Multi-factor authentication for admin users
+- **Secure Storage**: Encrypted client-side storage for auth tokens
+- **Input Sanitization**: All form inputs sanitized using DOMPurify
+- **Error Sanitization**: Error messages sanitized to prevent information leakage
+- **Native App Security**: Restricted navigation in `capacitor.config.ts`
+- **PWA Security**: Service worker caching strategies in `vite.config.ts`
 
 ### Authentication & Role System
 - **Multi-factor authentication** with OTP verification for sensitive operations
@@ -173,7 +184,7 @@ The PWA includes sophisticated offline capabilities:
 - **User roles stored** in `public.user_roles` table with RLS policies
 - **Login attempt tracking** in `public.login_attempts` with rate limiting
 - **Session management** with secure storage and device fingerprinting
-- **Default role fallback** to 'locataire' if no role found (check `user_roles` table first)
+- **Default role fallback** to 'locataire' if no role found
 
 ### Common Issues & Solutions
 - **All users redirect to tenant dashboard**: Check `user_roles` table is populated
@@ -182,47 +193,32 @@ The PWA includes sophisticated offline capabilities:
 - **401 on login_attempts**: Update RLS policy to allow anonymous INSERT operations
 - **Missing user profiles**: Run `npm run seed:auth` to create proper user data
 
-### Testing Commands
-```bash
-# Run tests (when test files are added)
-npx vitest              # Run Vitest tests
-npx vitest ui           # Run tests with Vitest UI
-npx vitest run          # Run tests once
-npx vitest run --coverage  # Run tests with coverage report
-```
+### Offline Development
+The PWA includes sophisticated offline capabilities:
+- API responses cached with NetworkFirst strategy
+- Images use CacheFirst strategy
+- App remains functional during network interruptions
+- Sync operations handle conflict resolution gracefully
 
-### Database & Data Seeding
-```bash
-npm run seed:auth        # Seed authentication data (creates 17 functional user accounts)
-npm run seed:auth:create # Same as seed:auth - creates users with working passwords
-npm run seed:passwords  # Generate and apply working password hashes
-npm run seed:properties  # Seed property data (30+ properties with images)
-```
-
-### Supabase Database Management
-```bash
-# Reset and reseed database (use with caution)
-docker exec supabase_db_mon-toit psql -U postgres -d postgres -f supabase/seed.sql
-
-# Fix user roles if everyone appears as tenant
-docker exec supabase_db_mon-toit psql -U postgres -d postgres -f fix-user-roles.sql
-
-# Update password hashes if authentication fails
-docker exec supabase_db_mon-toit psql -U postgres -d postgres -f fix-passwords.sql
-
-# Check user role distribution
-docker exec supabase_db_mon-toit psql -U postgres -d postgres -c "SELECT role, COUNT(*) FROM public.user_roles GROUP BY role;"
-```
-
-### Code Quality
-```bash
-npm run lint             # ESLint code checking
-npx jscpd .              # Detect duplicate code (configured in .jscpd.json)
-```
+### Code Quality & Testing
+- **JSCPD**: Duplicate code detection with 3-line threshold, 50 token minimum
+- **ESLint**: Code quality with React, TypeScript, and SonarJS rules
+- **Vitest**: Unit testing framework with coverage and UI interface
+- **Test Coverage**: Configured for src/ directory excluding type definitions
 
 ### Build Configuration
-- **PWA Manifest**: Auto-generated in `vite.config.ts` with caching strategies
+- **PWA Manifest**: Auto-generated with Workbox caching strategies
 - **Capacitor Build**: Excludes Capacitor modules from web builds
-- **Code Splitting**: Automatic with custom chunk and asset naming
+- **Code Splitting**: Automatic route-based and feature-based splitting
 - **Source Maps**: Enabled in production for Sentry integration
-- **Bundle Analysis**: Available via Next.js bundle analyzer integration
+- **Bundle Analysis**: Custom chunk and asset naming patterns
+- **Image Optimization**: WebP format with compression
+- **Asset Caching**: Strategic caching for API responses and static assets
+
+### Hook Architecture
+The application uses 50+ custom React hooks organized by functionality:
+- **Authentication**: `useAuthEnhanced`, `useRequireRole`
+- **Properties**: `useProperties`, `usePropertyDetail`, `usePropertyFilters`
+- **Dashboard**: `useOwnerDashboard`, `useTenantDashboard`
+- **Mobile**: `useGeolocation`, `usePushNotifications`, `useOfflineSync`
+- **UI/UX**: `useFavorites`, `useAccessibility`, `usePerformance`

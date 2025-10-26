@@ -302,7 +302,7 @@ class ErrorBoundary extends Component<Props, State> {
               </Alert>
 
               {/* Informations de débogage (en développement) */}
-              {process.env.NODE_ENV === 'development' && this.state.error && (
+              {import.meta.env.DEV && this.state.error && (
                 <details className="border rounded-lg p-3">
                   <summary className="cursor-pointer text-sm font-medium mb-2 flex items-center gap-2">
                     <FileText className="w-4 h-4" />

@@ -8,11 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "seed:auth": "node scripts/seed-auth-final.js",
-    "seed:auth:create": "node scripts/seed-auth-final.js",
-    "seed:passwords": "node scripts/generate-real-passwords.js && psql -h localhost -p 54322 -U postgres -d postgres -f supabase/seed-passwords-patch.sql",
-    "seed:properties": "node scripts/seed-properties.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",

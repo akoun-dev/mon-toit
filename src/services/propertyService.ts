@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase, supabaseAnon } from '@/lib/supabase';
 import { createClient } from '@supabase/supabase-js';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
@@ -178,8 +178,8 @@ export const propertyService = {
       return uniqueProperties as Property[];
     }
 
-    // Try secure RPC for public browsing, but with better error handling
-    let { data, error } = await supabase.rpc('get_public_properties', {
+    // Try secure RPC for public browsing using anonymous client, but with better error handling
+    const rpcResult = await supabaseAnon.rpc('get_public_properties', {
       p_city: filters?.city || null,
       p_property_type: filters?.propertyType?.[0] || null,
       p_min_price: filters?.minPrice || null,
@@ -189,6 +189,9 @@ export const propertyService = {
       p_offset: 0,
     });
 
+    let data = rpcResult.data;
+    const error = rpcResult.error;
+
     // Fallback: if RPC is missing (404) or fails, try a safe direct query
     if (error || !data) {
       if (error?.code === 'PGRST116' || error?.message?.includes('function') || error?.message?.includes('404')) {
@@ -196,164 +199,10 @@ export const propertyService = {
       } else {
         logger.warn('RPC get_public_properties failed, falling back to direct SELECT', { error });
       }
-      // Try a more controlled select to avoid loading invalid data
-      const fallback = await supabase
+      // Try a more controlled select to avoid loading invalid data using anonymous client
+      const fallback = await supabaseAnon
         .from('properties')
-        .select(`
-          id,
-          title,
-          description,
-          property_type,
-          city,
-          neighborhood,
-          address,
-          monthly_rent,
-          surface_area,
-          bedrooms,
-          bathrooms,
-          owner_id,
-          status,
-          is_furnished,
-          has_ac,
-          has_parking,
-          has_garden,
-          latitude,
-          longitude,
-          created_at,
-          updated_at,
-          view_count
-          ui_density
-          moderation_status
-          moderated_at,
-          moderated_by
-          moderation_notes
-          verification_level,
-          property_level,
-          amenities,
-          tags,
-          nearby_amenities,
-          transport_options
-          security_features
-          building_year,
-          floor_number,
-          total_floors,
-          elevator_access,
-          parking_spots,
-          monthly_charges
-          furnished_details,
-          utilities_included,
-          pet_policy,
-          energy_rating,
-          availability_date,
-          last_viewed_at
-          is_featured,
-          is_promoted,
-          promotion_discount
-          promotion_valid_until
-          virtual_tour_available,
-          neighborhood_score,
-          proximity_score,
-          price_per_m2,
-          price_history
-          competitive_analysis
-          listing_quality_score,
-          search_ranking_score,
-          user_engagement_metrics,
-          conversion_rate
-          time_on_market
-          viewing_request_count,
-          average_response_time
-          booking_request_count,
-          google_analytics_data,
-          market_comparison_data
-          ai_recommended_actions,
-          user_preferences_match_score,
-          seasonality_adjustments,
-          dynamic_pricing_factors,
-          automated_optimization_suggestions
-          maintenance_history,
-          future_development_potential,
-          zoning_compliance,
-          environmental_certifications,
-          accessibility_features,
-          smart_home_features,
-          community_amenities,
-          local_market_insights,
-          investment_potential_metrics,
-          rental_yield_analysis,
-          market_trend_indicators,
-          competitive_positioning,
-          demand_forecast,
-          price_elasticity_factor,
-          neighborhood_growth_rate,
-          demographic_analysis,
-          infrastructure_quality_score,
-          school_district_rating,
-          public_transport_access,
-          walk_score,
-          bike_score,
-          crime_safety_rating,
-          noise_level_assessment,
-          property_condition_score,
-          age_of_property,
-          last_renovation_year,
-          upcoming_maintenance_costs,
-          regulatory_compliance_status,
-          insurance_requirements,
-          tax_assessment_data,
-          valuation_history,
-          market_comparison_appraised_value,
-          rental_market_analysis,
-          investment_return_projection,
-          risk_assessment_metrics,
-          sustainability_certifications,
-          technology_readiness_score,
-          blockchain_integration_ready,
-          iot_device_compatibility,
-          smart_contract_eligibility,
-          fractional_ownership_available,
-          short_term_rental_options,
-          corporate_lease_terms_available,
-          furnished_package_options,
-          concierge_services_available,
-          maintenance_contract_included,
-          property_management_fees,
-          legal_compliance_status,
-          emergency_contact_procedures,
-          disaster_recovery_plan,
-          insurance_coverage_details,
-          warranty_information,
-          building_permits_status,
-          hoa_fees_structure,
-          parking_permit_requirements,
-          accessibility_compliance_certificates,
-          energy_performance_certificates,
-          environmental_impact_assessment,
-          historical_significant_events,
-          architectural_heritage_status,
-          neighborhood_development_projects,
-          future_infrastructure_plans,
-          zoning_change_implications,
-          market_volatility_risk_assessment,
-          interest_rate_sensitivity_analysis,
-          currency_fluctuation_hedging_strategies,
-          property_tax_optimization_opportunities,
-          depreciation_schedule,
-          capital_improvement_roi_projections,
-          refinance_analysis,
-          equity_buildup_potential,
-          cash_flow_forecasting,
-          vacancy_rate_projections,
-          rental_income_stability_analysis,
-          expense_tracking_and_optimization,
-          market_timing_recommendations,
-          portfolio_diversification_strategies,
-          exit_strategy_options,
-          wealth_management_integration,
-          tax_optimization_strategies,
-          retirement_planning_compatibility,
-          generational_wealth_transfer_potential
-        `)
+        .select(SAFE_PROPERTY_COLUMNS)
         .order('created_at', { ascending: false });
 
       if (fallback.error) {
@@ -420,10 +269,19 @@ export const propertyService = {
     let results = data || [];
     
     // CRITICAL: Filter out rented properties from public view (unless user is owner)
-    const { data: { user } } = await supabase.auth.getUser();
+    // Use try/catch to avoid authentication errors for public browsing
+    let currentUserId: string | undefined;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      currentUserId = user?.id;
+    } catch (error) {
+      // User not authenticated - continue without filtering by ownership
+      logger.debug('No user authenticated for property browsing', { error: error instanceof Error ? error.message : 'Unknown error' });
+    }
+
     const beforeFilter = results.length;
-    results = results.filter(p => shouldShowProperty(p as any, user?.id));
-    logger.debug('Properties filtered by visibility', { before: beforeFilter, after: results.length });
+    results = results.filter(p => shouldShowProperty(p as any, currentUserId));
+    logger.debug('Properties filtered by visibility', { before: beforeFilter, after: results.length, hasUser: !!currentUserId });
     
     if (filters?.propertyType && filters.propertyType.length > 1) {
       const before = results.length;
@@ -466,8 +324,8 @@ export const propertyService = {
     // ENHANCEMENT: Load real images from property_media table
     const enhancedResults = await Promise.all(results.map(async property => {
       try {
-        // Fetch real images from property_media table
-        const { data: mediaData, error: mediaError } = await supabase
+        // Fetch real images from property_media table using anonymous client
+        const { data: mediaData, error: mediaError } = await supabaseAnon
           .from('property_media')
           .select('url, title, description, is_primary, order_index, media_type')
           .eq('property_id', property.id)
@@ -530,8 +388,15 @@ export const propertyService = {
   async fetchById(id: string): Promise<Property | null> {
     let propertyData = null;
 
-    // Check if user is authenticated
-    const { data: { user } } = await supabase.auth.getUser();
+    // Check if user is authenticated (use try/catch to handle anonymous access)
+    let user = null;
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      user = authUser;
+    } catch (error) {
+      // User not authenticated - continue with anonymous access
+      logger.debug('Anonymous user accessing property detail', { propertyId: id });
+    }
 
     // If authenticated, try direct query first (RLS will grant access if user is owner/admin)
     if (user) {
@@ -547,9 +412,9 @@ export const propertyService = {
       }
     }
 
-    // Otherwise, try public RPC (for approved properties)
+    // Otherwise, try public RPC (for approved properties) using anonymous client
     if (!propertyData) {
-      const { data: publicData, error: publicError } = await supabase.rpc('get_public_property', {
+      const { data: publicData, error: publicError } = await supabaseAnon.rpc('get_public_property', {
         p_property_id: id
       });
 
@@ -561,8 +426,8 @@ export const propertyService = {
     // If we found the property, load its images
     if (propertyData) {
       try {
-        // Fetch real images from property_media table
-        const { data: mediaData, error: mediaError } = await supabase
+        // Fetch real images from property_media table using anonymous client
+        const { data: mediaData, error: mediaError } = await supabaseAnon
           .from('property_media')
           .select('url, title, description, is_primary, order_index, media_type')
           .eq('property_id', id)
@@ -762,8 +627,8 @@ export const propertyService = {
     try {
       // Use service role to bypass RLS for demo data creation
       const supabaseAdmin = createClient(
-        process.env.SUPABASE_URL || Deno.env.get('SUPABASE_URL')!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+        import.meta.env.SUPABASE_URL || Deno.env.get('SUPABASE_URL')!,
+        import.meta.env.SUPABASE_SERVICE_ROLE_KEY || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
         {
           auth: {
             autoRefreshToken: false,

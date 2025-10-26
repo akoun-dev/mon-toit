@@ -232,7 +232,7 @@ class PushNotificationService {
 
   private getVapidPublicKey(): string {
     // This should come from your environment variables
-    return process.env.VITE_VAPID_PUBLIC_KEY || 'your-vapid-public-key';
+    return import.meta.env.VITE_VAPID_PUBLIC_KEY || 'your-vapid-public-key';
   }
 
   private urlBase64ToUint8Array(base64String: string): Uint8Array {

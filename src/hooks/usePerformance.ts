@@ -135,7 +135,7 @@ export const usePerformance = () => {
 
   // Report metrics to console in development
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && metrics.lcp) {
+    if (import.meta.env.DEV && metrics.lcp) {
       console.group('🚀 Performance Metrics');
       console.log('LCP (Largest Contentful Paint):', metrics.lcp?.toFixed(2) + 'ms');
       console.log('FID (First Input Delay):', metrics.fid?.toFixed(2) + 'ms');

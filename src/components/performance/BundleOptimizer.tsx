@@ -246,7 +246,7 @@ export const useBundlePerformance = (bundleName: string) => {
 };
 
 // Bundle optimization hints for development
-export const BundleOptimizer = ({ enabled = process.env.NODE_ENV === 'development' }) => {
+export const BundleOptimizer = ({ enabled = import.meta.env.DEV }) => {
   if (!enabled) return null;
 
   return (

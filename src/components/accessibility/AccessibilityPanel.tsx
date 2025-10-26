@@ -34,7 +34,7 @@ const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
   const { settings, updateSetting, announce } = useAccessibility();
   const [isOpen, setIsOpen] = useState(false);
 
-  const shouldShow = showInProduction || process.env.NODE_ENV === 'development';
+  const shouldShow = showInProduction || import.meta.env.DEV;
 
   if (!shouldShow) {
     return null;

@@ -18,7 +18,7 @@ interface ContrastValidatorProps {
 }
 
 const ContrastValidator: React.FC<ContrastValidatorProps> = ({
-  enabled = process.env.NODE_ENV === 'development',
+  enabled = import.meta.env.DEV,
   showInProduction = false
 }) => {
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');

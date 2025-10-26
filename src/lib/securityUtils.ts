@@ -198,12 +198,12 @@ export const logSecurityEvent = async (
       }
     });
 
-    if (error && process.env.NODE_ENV === 'development') {
+    if (error && import.meta.env.DEV) {
       console.warn('Failed to log security event:', error);
     }
   } catch (error) {
     // Silent fail for security logging
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.warn('Security event logging failed:', error);
     }
   }

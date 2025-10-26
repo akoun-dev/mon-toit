@@ -376,6 +376,6 @@ export const migrateToSecureStorage = async () => {
 };
 
 // Auto-migrate on module load (in development)
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
   migrateToSecureStorage().catch(console.error);
 }

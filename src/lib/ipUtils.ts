@@ -64,7 +64,7 @@ export const getClientIP = async (): Promise<string> => {
   }
 
   // Fallback ultime pour le développement
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     return '127.0.0.1';
   }
 
