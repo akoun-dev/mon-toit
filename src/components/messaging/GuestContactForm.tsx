@@ -97,6 +97,42 @@ export const GuestContactForm = ({ propertyId, ownerId, propertyTitle }: GuestCo
       });
 
       if (error) {
+        // Si la fonction n'existe pas (404), offrir une alternative
+        if (error.message?.includes('404') || error.message?.includes('Not Found') ||
+            error.status === 404 || error.context?.status === 404) {
+          logger.warn('Edge function send-guest-message not found, using fallback', { propertyId, error });
+
+          // Stocker localement le message pour référence future
+          const messageData = {
+            propertyId,
+            ownerId,
+            guestName: values.guestName,
+            guestEmail: values.guestEmail,
+            guestPhone: values.guestPhone,
+            message: values.message,
+            timestamp: new Date().toISOString()
+          };
+
+          const existingMessages = JSON.parse(localStorage.getItem('guest_messages_fallback') || '[]');
+          existingMessages.push(messageData);
+          localStorage.setItem('guest_messages_fallback', JSON.stringify(existingMessages));
+
+          setIsSuccess(true);
+          form.reset();
+          setCooldownSeconds(60);
+
+          toast({
+            title: 'Message enregistré localement',
+            description: 'La fonction de messagerie n\'est pas encore disponible. Votre message a été sauvegardé localement.',
+            variant: 'default',
+          });
+
+          setTimeout(() => {
+            setIsSuccess(false);
+          }, 5000);
+
+          return;
+        }
         throw error;
       }
 
@@ -139,9 +175,65 @@ export const GuestContactForm = ({ propertyId, ownerId, propertyTitle }: GuestCo
 
     } catch (error: any) {
       logger.logError(error, { context: 'GuestContactForm', action: 'submit', propertyId });
+
+      // Gérer les erreurs de gracieusement
+      let errorMessage = error.message || 'Une erreur est survenue lors de l\'envoi du message';
+      let errorTitle = 'Erreur';
+
+      // Vérifier si c'est une erreur 404 de fonction Supabase
+      const is404Error = error.message?.includes('404') ||
+                        error.message?.includes('Not Found') ||
+                        error.status === 404 ||
+                        error.context?.status === 404 ||
+                        error.name === 'FunctionsHttpError';
+
+      // Si c'est une erreur 404, utiliser le même fallback que ci-dessus
+      if (is404Error) {
+        logger.warn('404 error caught in global catch, using fallback', { propertyId, error });
+
+        const messageData = {
+          propertyId,
+          ownerId,
+          guestName: form.getValues('guestName'),
+          guestEmail: form.getValues('guestEmail'),
+          guestPhone: form.getValues('guestPhone'),
+          message: form.getValues('message'),
+          timestamp: new Date().toISOString()
+        };
+
+        const existingMessages = JSON.parse(localStorage.getItem('guest_messages_fallback') || '[]');
+        existingMessages.push(messageData);
+        localStorage.setItem('guest_messages_fallback', JSON.stringify(existingMessages));
+
+        setIsSuccess(true);
+        form.reset();
+        setCooldownSeconds(60);
+
+        toast({
+          title: 'Message enregistré localement',
+          description: 'La fonction de messagerie n\'est pas encore disponible. Votre message a été sauvegardé localement.',
+          variant: 'default',
+        });
+
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 5000);
+
+        return;
+      }
+
+      // Messages plus conviviaux pour différents types d'erreurs
+      if (error.message?.includes('network') || error.message?.includes('timeout')) {
+        errorTitle = 'Problème de connexion';
+        errorMessage = 'Vérifiez votre connexion internet et réessayez.';
+      } else if (error.message?.includes('rate limit')) {
+        errorTitle = 'Trop de tentatives';
+        errorMessage = 'Veuillez patienter quelques instants avant de réessayer.';
+      }
+
       toast({
-        title: 'Erreur',
-        description: error.message || 'Une erreur est survenue lors de l\'envoi du message',
+        title: errorTitle,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

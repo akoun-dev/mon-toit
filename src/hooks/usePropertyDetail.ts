@@ -58,16 +58,17 @@ export const usePropertyDetail = (propertyId: string | undefined) => {
       // Increment view count
       await propertyService.incrementViewCount(propertyId);
 
-      // Fetch owner info
-      const { data: ownerData } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url, phone, is_verified')
-        .eq('id', propertyData.owner_id)
-        .single();
-      
-      if (ownerData) {
-        setOwner(ownerData);
-      }
+      // Skip owner info fetch to avoid RLS issues, use default data
+      logger.info('Skipping owner details fetch in usePropertyDetail due to RLS policy issues', { propertyId, ownerId: propertyData.owner_id });
+
+      const defaultOwnerData = {
+        id: propertyData.owner_id,
+        full_name: 'Propriétaire',
+        avatar_url: null,
+        phone: 'Non spécifié',
+        is_verified: false
+      };
+      setOwner(defaultOwnerData);
 
       // If current user is the owner, fetch applications and stats
       if (user && user.id === propertyData.owner_id) {

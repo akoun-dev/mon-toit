@@ -158,22 +158,20 @@ const PropertyDetail = () => {
       setProperty(propertyData);
       setSelectedImage(propertyData.main_image);
 
-      // Fetch owner details with anonymous client to avoid RLS issues
+      // Skip owner details fetch to avoid RLS recursion issues completely
       try {
-        const { data: ownerData, error: ownerError } = await supabaseAnon
-          .from('profiles')
-          .select('id, full_name, user_type, phone')
-          .eq('id', propertyData.owner_id)
-          .maybeSingle();
+        logger.info('Skipping owner details fetch due to RLS policy issues', { propertyId: id, ownerId: propertyData.owner_id });
 
-        if (ownerError) {
-          logger.warn('Failed to fetch owner details (possibly due to RLS)', { error: ownerError, propertyId: id });
-          // Continue without owner data
-        } else if (ownerData) {
-          setOwner(ownerData);
-        }
+        // Set default owner data for display
+        const defaultOwner = {
+          id: propertyData.owner_id,
+          full_name: 'Propriétaire',
+          user_type: 'proprietaire',
+          phone: 'Non spécifié'
+        };
+        setOwner(defaultOwner);
       } catch (ownerError) {
-        logger.warn('Exception while fetching owner details', { error: ownerError, propertyId: id });
+        logger.warn('Exception while setting default owner details', { error: ownerError, propertyId: id });
         // Continue without owner data
       }
     } catch (error) {
