@@ -167,7 +167,7 @@ class TransformationValidationService {
 
     // Avertissement pour les fichiers de faible qualité
     if (file.type.startsWith('image/') && file.size < 100 * 1024) { // < 100KB
-      warnings.push(`${documentType}: L\'image semble de faible qualité, cela pourrait retarder le traitement`);
+      warnings.push(`${documentType}: L'image semble de faible qualité, cela pourrait retarder le traitement`);
     }
   }
 
@@ -219,7 +219,7 @@ class TransformationValidationService {
       'Oumé', 'Sassandra', 'Lakota', 'Dabou', 'Bingerville',
       'Anyama', 'Grand-Bassam', 'Jacqueville', 'Tiassalé', 'Azaguié',
       'Sakassou', 'Bocanda', 'Dimbokro', 'Béoumi', 'Koundoukou',
-      'M'Bahiakro', 'Tiébissou', 'Taabo', 'Yakassé-Attobrou', 'Alépé',
+      "M'Bahiakro", 'Tiébissou', 'Taabo', 'Yakassé-Attobrou', 'Alépé',
       'Adzopé', 'Akoupé', 'Afféry', 'Agboville', 'Aboisso',
       'Agnibilékrou', 'Akoupingbo', 'Alépé', 'Arrah', 'Bettié',
       'Bianouan', 'Bondoukou', 'Bongouanou', 'Bouaflé', 'Bouandougou',

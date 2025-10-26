@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PageTransition } from '@/components/animations/PageTransition';
 import { MainLayout } from "@/components/layout/MainLayout";
 import { KentePattern } from "@/components/ui/african-patterns";
+import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { motion } from "framer-motion";
 import { 
   User, 
@@ -151,70 +152,7 @@ const BecomeProprietaire = () => {
     }
   };
 
-  const validateCurrentStep = (): boolean => {
-    switch (state.currentStep) {
-      case 1:
-        return state.formData.fullName.trim() !== '' &&
-               state.formData.phone.trim() !== '' &&
-               state.formData.address.trim() !== '' &&
-               state.formData.city.trim() !== '';
-      case 2:
-        return state.formData.ownerType !== '' &&
-               (state.formData.ownerType !== 'agence' || (state.formData.agencyName?.trim() !== '' && state.formData.agencyLicense?.trim() !== ''));
-      case 3:
-        return state.formData.idDocument !== null && state.formData.proofOfAddress !== null;
-      case 4:
-        return state.formData.idNumber.trim() !== '' &&
-               state.formData.bankAccount.trim() !== '' &&
-               state.formData.acceptTerms === true;
-      default:
-        return false;
-    }
-  };
-
-  const handleNextStep = async () => {
-    if (!validateCurrentStep()) {
-      toast({
-        title: "Informations incomplètes",
-        description: "Veuillez remplir tous les champs obligatoires avant de continuer.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (state.currentStep < 4) {
-      actions.nextStep();
-    }
-  };
-
-  const handlePreviousStep = () => {
-    if (state.currentStep > 1) {
-      actions.previousStep();
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!validateCurrentStep()) {
-      return;
-    }
-
-    try {
-      await actions.submitTransformation();
-
-      // Rediriger vers le tableau de bord propriétaire après 2 secondes
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
-
-    } catch (error) {
-      // Error handling is done in the hook
-    }
-  };
-
-  const getStepProgress = () => {
-    return ((state.currentStep - 1) / 3) * 100;
-  };
-
+  
   if (!user) {
     navigate('/auth');
     return null;
@@ -223,35 +161,39 @@ const BecomeProprietaire = () => {
   return (
     <PageTransition>
       <MainLayout>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-4 sm:py-6 lg:py-8 px-3 sm:px-4">
-          <KentePattern />
-          <div className="max-w-6xl mx-auto relative z-10">
-            {/* En-tête */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-6 sm:mb-8"
-            >
-              <Badge className="mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 text-sm sm:text-lg font-semibold">
-                Devenir Propriétaire Certifié
-              </Badge>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
-                Transformez votre expérience locative en opportunité immobilière
-              </h1>
-              <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
-                Rejoignez les milliers de propriétaires certifiés qui génèrent jusqu'à 40% de revenus
-                supplémentaires grâce à la plateforme Mon Toit.
-              </p>
-            </motion.div>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+          <div className="px-4 md:px-6 py-4 sm:py-6 w-full">
+            <div className="w-full space-y-4">
+              <DynamicBreadcrumb />
+              <div className="max-w-6xl mx-auto relative z-10">
+                <KentePattern className="absolute inset-0 opacity-5" />
+                  {/* En-tête */}
+                <div className="relative z-10 text-center mb-6 sm:mb-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <Badge className="mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 text-lg font-semibold">
+                      Devenir Propriétaire Certifié
+                    </Badge>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 mt-6">
+                      Transformez votre expérience locative en opportunité immobilière
+                    </h1>
+                    <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
+                      Rejoignez les milliers de propriétaires certifiés qui génèrent jusqu'à 40% de revenus
+                      supplémentaires grâce à la plateforme Mon Toit.
+                    </p>
+                  </motion.div>
+                </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
-              {/* Avantages */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="xl:col-span-1 order-2 xl:order-1"
-              >
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+                  {/* Avantages */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="xl:col-span-1 order-2 xl:order-1"
+                  >
                 <Card className="h-full">
                   <CardHeader className="pb-4 px-4 sm:px-6">
                     <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
@@ -285,12 +227,12 @@ const BecomeProprietaire = () => {
               </motion.div>
 
               {/* Formulaire multi-étapes */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="xl:col-span-2 order-1 xl:order-2"
-              >
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="xl:col-span-2 order-1 xl:order-2"
+                  >
                 <Card className="h-full">
                   <CardHeader className="pb-4 sm:pb-6 px-4 sm:px-6">
                     <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -310,7 +252,7 @@ const BecomeProprietaire = () => {
                         <span className="text-sm font-medium text-gray-700">Progression</span>
                         <span className="text-sm text-gray-500">{state.currentStep}/4 étapes</span>
                       </div>
-                      <Progress value={getStepProgress()} className="h-2" />
+                      <Progress value={((state.currentStep - 1) / 3) * 100} className="h-2" />
                       <div className="mt-6">
                         <div className="flex justify-between overflow-x-auto">
                           {steps.map((step, index) => (
@@ -385,7 +327,7 @@ const BecomeProprietaire = () => {
 
                       {/* Étape 1: Informations personnelles */}
                       {state.currentStep === 1 && (
-                        <div className="space-y-4 mt-6">
+                        <div className="space-y-6">
                         <div className="space-y-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -441,7 +383,7 @@ const BecomeProprietaire = () => {
 
                       {/* Étape 2: Type de propriétaire */}
                       {state.currentStep === 2 && (
-                        <div className="space-y-4 mt-6">
+                        <div className="space-y-6">
                         <div className="space-y-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-4">
@@ -517,7 +459,7 @@ const BecomeProprietaire = () => {
 
                       {/* Étape 3: Documents */}
                       {state.currentStep === 3 && (
-                        <div className="space-y-4 mt-6">
+                        <div className="space-y-6">
                         <div className="space-y-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -597,7 +539,7 @@ const BecomeProprietaire = () => {
 
                       {/* Étape 4: Vérification et validation finale */}
                       {state.currentStep === 4 && (
-                        <div className="space-y-4 mt-6">
+                        <div className="space-y-6">
                         <div className="space-y-6">
                           {/* Section KYC */}
                           <div className="space-y-4">
@@ -697,7 +639,7 @@ const BecomeProprietaire = () => {
                     <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 mt-6 sm:mt-8">
                       <Button
                         variant="outline"
-                        onClick={handlePreviousStep}
+                        onClick={() => actions.previousStep()}
                         disabled={state.currentStep === 1}
                         className="flex items-center justify-center gap-2 w-full sm:w-auto order-2 sm:order-1"
                       >
@@ -707,7 +649,13 @@ const BecomeProprietaire = () => {
 
                       {state.currentStep === 4 ? (
                         <Button
-                          onClick={handleSubmit}
+                          onClick={() => {
+                            actions.submitTransformation().then(() => {
+                              setTimeout(() => {
+                                navigate('/dashboard');
+                              }, 2000);
+                            });
+                          }}
                           disabled={state.isSubmitting || state.verificationStatus === 'processing'}
                           className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 w-full sm:w-auto order-1 sm:order-2"
                         >
@@ -730,23 +678,30 @@ const BecomeProprietaire = () => {
                         </Button>
                       ) : (
                         <Button
-                          onClick={handleNextStep}
-                          disabled={!validateCurrentStep()}
+                          onClick={() => {
+                            const validation = actions.validateCurrentStep();
+                            if (!validation.isValid) {
+                              return;
+                            }
+                            actions.nextStep();
+                          }}
                           className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto order-1 sm:order-2"
                         >
                           Suivant
                           <ChevronRight className="h-4 w-4" />
                         </Button>
                       )}
-                    </div>
+                      </div>
                   </CardContent>
                 </Card>
               </motion.div>
             </div>
           </div>
         </div>
-      </MainLayout>
-    </PageTransition>
+      </div>
+    </div>
+    </MainLayout>
+  </PageTransition>
   );
 };
 
