@@ -100,14 +100,14 @@ export const usePropertyForm = (propertyId?: string) => {
       });
 
       if (error || !data) {
-        logger.error('Geocoding failed', { error, address, city });
-        handleError(new AppError('GEOCODING_FAILED'));
+        logger.warn('Geocoding failed (non-critical)', { error, address, city });
+        // Ne pas lancer d'erreur fatale, juste logger le problème
         return null;
       }
 
       return data;
     } catch (error) {
-      logger.error('Geocode error', { error, address, city });
+      logger.warn('Geocode error (non-critical)', { error, address, city });
       return null;
     }
   };

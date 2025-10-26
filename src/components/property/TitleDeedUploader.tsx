@@ -63,7 +63,7 @@ export const TitleDeedUploader = ({
 
       if (error) throw error;
 
-      const fullPath = `property-documents/${data.path}`;
+            const fullPath = `property-documents/${data.path}`;
       setUploadedUrl(fullPath);
       onUploadSuccess?.(fullPath);
 
