@@ -28,6 +28,7 @@ dist-ssr
 .env.*
 !.env.example
 !.env.template
+.env.production
 
 # Security - sensitive files
 *.key
