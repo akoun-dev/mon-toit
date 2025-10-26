@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
+import { secureStorage } from '@/lib/secureStorage';
 
 interface LocationPickerProps {
   onLocationSelect: (latitude: number, longitude: number) => void;
@@ -12,8 +13,25 @@ interface LocationPickerProps {
   city?: string;
 }
 
-// Clé publique Mapbox préconfigurée
-const MAPBOX_TOKEN = 'pk.eyJ1IjoicHNvbWV0IiwiYSI6ImNtYTgwZ2xmMzEzdWcyaXM2ZG45d3A4NmEifQ.MYXzdc5CREmcvtBLvfV0Lg';
+// Fonction pour récupérer le token Mapbox depuis les variables d'environnement
+const getMapboxToken = () => {
+  // Priorité 1: Variables d'environnement (production)
+  const envToken = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN ||
+                   import.meta.env.VITE_MAPBOX_TOKEN ||
+                   import.meta.env.MAPBOX_PUBLIC_TOKEN;
+
+  if (envToken && /^pk\.[a-zA-Z0-9.-_]+$/.test(envToken)) {
+    return envToken;
+  }
+
+  // Priorité 2: localStorage sécurisé (fallback)
+  try {
+    return secureStorage.getItem('mapbox_token', true) || '';
+  } catch (error) {
+    console.warn('Erreur lors de la récupération du token Mapbox:', error);
+    return '';
+  }
+};
 
 const CITY_COORDINATES: Record<string, [number, number]> = {
   'Abidjan': [-4.0083, 5.3600],
@@ -41,7 +59,12 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
     const initialCoords: [number, number] = 
       coordinates || cityCoords || CITY_COORDINATES['Abidjan'];
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    const mapboxToken = getMapboxToken();
+    if (!mapboxToken) {
+      console.error('Token Mapbox manquant. Veuillez configurer VITE_MAPBOX_PUBLIC_TOKEN dans les variables d\'environnement Netlify.');
+      return;
+    }
+    mapboxgl.accessToken = mapboxToken;
     
     map.current = new mapboxgl.Map({
       container: mapContainer.current,

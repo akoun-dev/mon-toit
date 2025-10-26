@@ -13,6 +13,23 @@ import "./styles/design-system.css";
 // Initialize secure storage migration on app startup
 migrateToSecureStorage();
 
+// Debug environment variables in production
+if (import.meta.env.PROD) {
+  console.log('🔧 Environment Variables Debug:');
+  console.log('- VITE_SUPABASE_URL:', !!import.meta.env.VITE_SUPABASE_URL);
+  console.log('- VITE_SUPABASE_ANON_KEY:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+  console.log('- VITE_MAPBOX_PUBLIC_TOKEN:', !!import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN);
+  console.log('- VITE_BREVO_API_KEY:', !!import.meta.env.VITE_BREVO_API_KEY);
+
+  // Validate Mapbox token format
+  const mapboxToken = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN;
+  if (mapboxToken && !/^pk\.[a-zA-Z0-9.-_]+$/.test(mapboxToken)) {
+    console.error('❌ Invalid Mapbox token format detected');
+  } else if (mapboxToken) {
+    console.log('✅ Mapbox token format is valid');
+  }
+}
+
 // Initialize mobile services asynchronously only on native platforms
 async function initializeMobileServices() {
   const isNative = await isNativePlatform();

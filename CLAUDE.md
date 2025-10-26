@@ -201,10 +201,12 @@ The PWA includes sophisticated offline capabilities:
 - Sync operations handle conflict resolution gracefully
 
 ### Code Quality & Testing
-- **JSCPD**: Duplicate code detection with 3-line threshold, 50 token minimum
+- **JSCPD**: Duplicate code detection with 3-line threshold, 50 token minimum (configured in .jscpd.json)
 - **ESLint**: Code quality with React, TypeScript, and SonarJS rules
 - **Vitest**: Unit testing framework with coverage and UI interface
 - **Test Coverage**: Configured for src/ directory excluding type definitions
+- **Test Setup**: Global test configuration in `tests/setup.ts` with mocked environment variables
+- **Security Focus**: Tests emphasize authentication, authorization, and input validation scenarios
 
 ### Build Configuration
 - **PWA Manifest**: Auto-generated with Workbox caching strategies
@@ -216,9 +218,14 @@ The PWA includes sophisticated offline capabilities:
 - **Asset Caching**: Strategic caching for API responses and static assets
 
 ### Hook Architecture
-The application uses 50+ custom React hooks organized by functionality:
-- **Authentication**: `useAuthEnhanced`, `useRequireRole`
-- **Properties**: `useProperties`, `usePropertyDetail`, `usePropertyFilters`
-- **Dashboard**: `useOwnerDashboard`, `useTenantDashboard`
-- **Mobile**: `useGeolocation`, `usePushNotifications`, `useOfflineSync`
-- **UI/UX**: `useFavorites`, `useAccessibility`, `usePerformance`
+The application uses 70+ custom React hooks organized by functionality:
+- **Authentication**: `useAuthEnhanced`, `useRequireRole`, `useMfaStatus`, `useMfaCompliance`
+- **Properties**: `useProperties`, `usePropertyDetail`, `usePropertyFilters`, `usePropertyForm`, `usePropertyDelete`, `usePropertyPermissions`, `usePropertyImageAccess`, `usePropertyViews`
+- **Dashboard**: `useOwnerDashboard`, `useOwnerAnalytics`, `useTenantDashboard`, `useDashboardLayout`
+- **Mobile**: `useGeolocation`, `usePushNotifications`, `useOfflineSync`, `useNetworkStatus`, `useOnlineStatus`
+- **UI/UX**: `useFavorites`, `useAccessibility`, `usePerformance`, `useFocusTrap`, `useContrastMode`, `useReducedMotion`, `usePrefersReducedMotion`
+- **Communication**: `useMessages`, `useVoiceSearch`, `useRealtimeVoice`, `useTextToSpeech`
+- **Forms & Input**: `useAutoSave`, `useLongPress`, `useKeyboardShortcuts`, `useDebounce`
+- **Search & Discovery**: `useSearchSuggestions`, `useRecommendations`, `useMapProperties`, `useSavedSearches`
+- **Agency & Business**: `useAgencyProperties`, `useAgencyMandates`, `useApplications`, `useMaintenance`, `useMaintenanceRequests`
+- **System & Utils**: `useCurrentTime`, `useTimeAgo`, `useWeather`, `useMediaUpload`, `usePermissions`
