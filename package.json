@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "create-test-users": "node scripts/create-test-users.js"
+    "create-test-users": "node scripts/create-test-users.js",
+    "setup-users": "node scripts/setup-all-users.js",
+    "setup-all": "npm run setup-users"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",

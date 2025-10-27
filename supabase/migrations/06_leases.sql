@@ -1,0 +1,51 @@
+-- Baux de location
+CREATE TABLE public.leases (
+  id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  property_id uuid NOT NULL REFERENCES public.properties(id),
+  tenant_id uuid NOT NULL REFERENCES public.profiles(id),
+  owner_id uuid NOT NULL REFERENCES public.profiles(id),
+  lease_number text UNIQUE,
+  status text DEFAULT 'draft'::text,
+  start_date date NOT NULL,
+  end_date date NOT NULL,
+  monthly_rent integer NOT NULL,
+  deposit_amount integer,
+  currency text DEFAULT 'XOF'::text,
+  payment_frequency text DEFAULT 'monthly'::text,
+  payment_day integer DEFAULT 1,
+  late_fee_amount integer DEFAULT 0,
+  late_fee_percentage numeric DEFAULT 0,
+  grace_period_days integer DEFAULT 0,
+  auto_renewal boolean DEFAULT false,
+  renewal_notice_days integer DEFAULT 30,
+  termination_notice_days integer DEFAULT 30,
+  emergency_contact jsonb,
+  signed_document_url text,
+  owner_signature_url text,
+  tenant_signature_url text,
+  witness_name text,
+  witness_signature_url text,
+  signed_at timestamp with time zone,
+  terminated_at timestamp with time zone,
+  termination_reason text,
+  early_termination_fee integer DEFAULT 0,
+  metadata jsonb DEFAULT '{}'::jsonb,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT chk_lease_dates CHECK (start_date < end_date)
+);
+
+-- Termes des baux
+CREATE TABLE public.lease_terms (
+  id uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  lease_id uuid NOT NULL REFERENCES public.leases(id),
+  term_type text NOT NULL CHECK (term_type = ANY (ARRAY['rental_terms'::text, 'security_deposit'::text, 'late_fees'::text, 'termination'::text, 'utilities'::text, 'pets'::text, 'smoking'::text, 'subletting'::text, 'maintenance'::text, 'other'::text])),
+  title text,
+  description text NOT NULL,
+  conditions text,
+  amount integer,
+  currency text DEFAULT 'XOF'::text,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now()
+);
