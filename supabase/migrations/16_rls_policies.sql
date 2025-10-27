@@ -5,8 +5,8 @@
 -- Propriétés : DÉSACTIVER RLS pour accès public complet
 -- ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
 
--- Ajouter la contrainte de clé étrangère DEFERRABLE pour les profils
-ALTER TABLE public.profiles ADD CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) DEFERRABLE INITIALLY DEFERRED;
+-- Note: Contrainte de clé étrangère pour profils supprimée pour permettre la création flexible
+-- ALTER TABLE public.profiles ADD CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.property_views ENABLE ROW LEVEL SECURITY;
@@ -593,9 +593,80 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 GRANT EXECUTE ON FUNCTION public.search_properties TO anon;
 GRANT EXECUTE ON FUNCTION public.search_properties TO authenticated;
 
+-- Function to create user profile and assign roles after signup
+CREATE OR REPLACE FUNCTION public.create_user_profile(
+  user_id uuid,
+  user_email text,
+  user_fullname text,
+  user_type_param user_type
+)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  profile_exists boolean;
+BEGIN
+  -- Check if profile already exists
+  SELECT EXISTS(SELECT 1 FROM public.profiles WHERE id = user_id) INTO profile_exists;
+
+  IF profile_exists THEN
+    -- Profile already exists, just ensure roles are set
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (user_id, user_type_param)
+    ON CONFLICT DO NOTHING;
+
+    INSERT INTO public.user_active_roles (user_id, active_role, available_roles)
+    VALUES (user_id, user_type_param, ARRAY[user_type_param])
+    ON CONFLICT (user_id) DO UPDATE SET
+      active_role = user_type_param,
+      available_roles = ARRAY[user_type_param];
+
+    RETURN true;
+  END IF;
+
+  -- Create the profile
+  INSERT INTO public.profiles (
+    id,
+    full_name,
+    user_type,
+    created_at,
+    updated_at
+  ) VALUES (
+    user_id,
+    user_fullname,
+    user_type_param,
+    NOW(),
+    NOW()
+  );
+
+  -- Assign the role
+  INSERT INTO public.user_roles (user_id, role)
+  VALUES (user_id, user_type_param);
+
+  -- Set active role
+  INSERT INTO public.user_active_roles (user_id, active_role, available_roles)
+  VALUES (user_id, user_type_param, ARRAY[user_type_param]);
+
+  RETURN true;
+
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Log error but don't fail the signup
+    RAISE WARNING 'Error creating user profile: %', SQLERRM;
+    RETURN false;
+END;
+$$;
+
+-- Grant permissions for the function
+GRANT EXECUTE ON FUNCTION public.create_user_profile TO anon;
+GRANT EXECUTE ON FUNCTION public.create_user_profile TO authenticated;
+
 -- Commentaires explicatifs pour les développeurs
 COMMENT ON POLICY "properties_public_select" ON public.properties IS 'Permet la lecture publique des propriétés pour la page daccueil et lexplorateur';
 COMMENT ON POLICY "property_views_public_insert" ON public.property_views IS 'Permet le tracking des vues par les visiteurs non authentifiés';
 COMMENT ON FUNCTION public.get_public_properties IS 'Fonction principale pour obtenir les propriétés avec filtres - utilisée dans PropertyGrid';
+COMMENT ON FUNCTION public.create_user_profile IS 'Crée le profil utilisateur et assigne les rôles après inscription - appelée depuis le frontend';
 COMMENT ON FUNCTION public.search_properties IS 'Recherche texte plein sur les propriétés - utilisée dans la barre de recherche';
 COMMENT ON FUNCTION public.increment_property_view IS 'Incrémente le compteur de vues quand un bien est consulté';

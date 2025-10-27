@@ -120,9 +120,9 @@ const AuthConfirmation = () => {
       if (!error) {
         console.log('✅ [DEBUG] Vérification réussie');
         setIsVerified(true);
-        // Rediriger vers la page de connexion pour se connecter normalement
+        // Rediriger vers le dashboard après vérification réussie
         setTimeout(() => {
-          navigate('/auth');
+          navigate('/dashboard', { replace: true });
         }, 2000);
       } else {
         console.log('❌ [DEBUG] Erreur de vérification', { error: error.message, status: error.status });

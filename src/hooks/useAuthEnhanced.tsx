@@ -397,7 +397,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         logger.error('Sign up error', { error, email, fullName, userType });
-        
+
         // Gérer spécifiquement le cas où l'utilisateur existe déjà
         if (error.message.includes('User already registered') || error.status === 422) {
           toast({
@@ -412,12 +412,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             variant: "destructive",
           });
         }
-        
+
         return { error: error as AuthError };
       }
 
       logger.info('Sign up successful', { email, fullName, userType });
-      
+
+      // Créer le profil utilisateur et assigner les rôles
+      if (data.user?.id) {
+        try {
+          const { data: profileData, error: profileError } = await supabase.rpc('create_user_profile', {
+            user_id: data.user.id,
+            user_email: email,
+            user_fullname: fullName,
+            user_type_param: userType
+          });
+
+          if (profileError) {
+            logger.error('Error creating user profile', { error: profileError, userId: data.user.id });
+            // Ne pas bloquer l'inscription si la création du profil échoue
+            toast({
+              title: "Compte créé",
+              description: "Votre compte a été créé mais la configuration du profil a échoué. Contactez le support.",
+              variant: "default",
+            });
+          } else {
+            logger.info('User profile created successfully', { userId: data.user.id, userType });
+          }
+        } catch (profileError) {
+          logger.error('Exception creating user profile', { error: profileError, userId: data.user.id });
+          // Ne pas bloquer l'inscription si la création du profil échoue
+        }
+      }
+
       // Après l'inscription réussie, créer et envoyer le code OTP
       try {
         const otpResult = await otpService.createAndSendOTP(email, 'signup');
