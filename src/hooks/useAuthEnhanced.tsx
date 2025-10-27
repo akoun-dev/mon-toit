@@ -329,17 +329,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       logger.info('Starting sign in process', { email });
 
-      // Vérifier d'abord si l'email a été vérifié avec OTP
-      const isVerified = otpService.isEmailVerified(email, 'signup');
-      if (!isVerified) {
-        toast({
-          title: "Vérification requise",
-          description: "Veuillez d'abord vérifier votre email avec le code OTP avant de vous connecter.",
-          variant: "destructive",
-        });
-        return { error: { message: 'Email non vérifié. Veuillez utiliser le code OTP envoyé.' } as AuthError };
-      }
-
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -348,6 +337,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) {
         await logLoginAttempt(email, false);
         logger.error('Sign in error', { error: error.message, email });
+        
+        // Gérer spécifiquement le cas où l'utilisateur n'a pas confirmé son email
+        if (error.message.includes('Email not confirmed')) {
+          // Vérifier si l'email a été vérifié avec OTP
+          const isVerified = otpService.isEmailVerified(email, 'signup');
+          if (!isVerified) {
+            toast({
+              title: "Email non confirmé",
+              description: "Veuillez d'abord vérifier votre email avec le code OTP envoyé. Si vous n'avez pas reçu le code, demandez un nouveau code.",
+              variant: "destructive",
+            });
+            return { error: { message: 'Email non vérifié. Veuillez utiliser le code OTP envoyé.' } as AuthError };
+          } else {
+            // L'OTP est vérifié mais l'email Supabase ne l'est pas
+            toast({
+              title: "Email en cours de validation",
+              description: "Votre code OTP a été vérifié mais votre email est en cours de validation. Veuillez patienter quelques instants avant de vous connecter.",
+              variant: "destructive",
+            });
+            return { error: { message: 'Email en cours de validation.' } as AuthError };
+          }
+        }
+        
         return { error };
       }
 
@@ -385,7 +397,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         logger.error('Sign up error', { error, email, fullName, userType });
-        return { error: error as AuthError, data: null };
+        
+        // Gérer spécifiquement le cas où l'utilisateur existe déjà
+        if (error.message.includes('User already registered') || error.status === 422) {
+          toast({
+            title: "Compte déjà existant",
+            description: "Cet email est déjà associé à un compte. Veuillez vous connecter ou utiliser un autre email.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Erreur d'inscription",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+        
+        return { error: error as AuthError };
       }
 
       logger.info('Sign up successful', { email, fullName, userType });
@@ -422,7 +450,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: null, data: data.user };
     } catch (error) {
       logger.error('Unexpected sign up error', { error, email, fullName, userType });
-      return { error: error as AuthError, data: null };
+      toast({
+        title: "Erreur technique",
+        description: "Une erreur technique est survenue lors de l'inscription. Veuillez réessayer.",
+        variant: "destructive",
+      });
+      return { error: error as AuthError };
     }
   };
 

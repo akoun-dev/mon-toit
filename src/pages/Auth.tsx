@@ -161,14 +161,14 @@ const Auth = () => {
     const { error, data } = await signUp(signUpEmail, signUpPassword, fullName, userType);
 
     console.log('📡 [DEBUG] Signup result', {
-      error: error ? { message: error.message } : null,
+      error: error ? { message: error.message, status: error.status } : null,
       data: data ? 'has_data' : null
     });
 
     setLoading(false);
 
     if (!error) {
-      // Rediriger vers la page de confirmation avec l'email
+      // Rediriger vers la page de confirmation avec l'email uniquement si l'inscription a réussi
       const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}`;
       console.log('🔀 [DEBUG] Redirecting to:', confirmationUrl);
       navigate(confirmationUrl, { replace: true });
@@ -180,6 +180,13 @@ const Auth = () => {
       setFullName('');
       setUserType('locataire');
       setSignUpErrors({});
+    } else {
+      // En cas d'erreur (notamment si l'utilisateur existe déjà), ne pas rediriger
+      // Le message d'erreur est déjà affiché par useAuthEnhanced
+      console.log('❌ [DEBUG] Signup failed, staying on auth page', {
+        error: error.message,
+        isUserExists: error.message.includes('User already registered') || error.status === 422
+      });
     }
   };
 

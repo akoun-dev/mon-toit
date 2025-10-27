@@ -50,10 +50,28 @@ const AuthConfirmation = () => {
       return;
     }
 
+    // Vérifier si l'email a déjà été vérifié avec OTP
+    if (email) {
+      const isAlreadyVerified = otpService.isEmailVerified(email, 'signup');
+      if (isAlreadyVerified) {
+        console.log('🔍 [DEBUG] Email already verified with OTP', { email });
+        toast({
+          title: "Email déjà vérifié",
+          description: "Cet email a déjà été vérifié. Vous pouvez vous connecter directement.",
+          variant: "default",
+        });
+        // Rediriger vers la page de connexion après un court délai
+        setTimeout(() => {
+          navigate('/auth', { replace: true });
+        }, 2000);
+        return;
+      }
+    }
+
     // Forcer l'affichage de la page OTP même en développement
     // Ne plus vérifier automatiquement si l'email est confirmé
     setLoading(false);
-  }, [user, profile, navigate, searchParams]);
+  }, [user, profile, navigate, searchParams, email]);
 
   const handleVerifyOTP = async () => {
     console.log('🔍 [DEBUG] Début de la vérification OTP', { email, otpCode: otpCode ? `${otpCode[0]}${otpCode[1]}****` : 'undefined', attempts });
@@ -116,10 +134,14 @@ const AuthConfirmation = () => {
           errorMessage = "Le code est incorrect ou a expiré. Veuillez demander un nouveau code.";
         } else if (error.message.includes('rate limit')) {
           errorMessage = "Trop de tentatives. Veuillez attendre quelques minutes avant de réessayer.";
+        } else if (error.message.includes('User already registered') || error.message.includes('already verified')) {
+          errorMessage = "Ce compte a déjà été vérifié. Vous pouvez vous connecter directement.";
+        } else if (error.message.includes('User not found')) {
+          errorMessage = "Aucun compte trouvé avec cet email. Veuillez d'abord vous inscrire.";
         }
         
         toast({
-          title: "Code invalide",
+          title: "Erreur de vérification",
           description: errorMessage,
           variant: "destructive",
         });
