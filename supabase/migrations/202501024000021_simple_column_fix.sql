@@ -28,7 +28,7 @@ DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_favorites') THEN
     CREATE TABLE public.user_favorites (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
       user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
       property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE NOT NULL,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,

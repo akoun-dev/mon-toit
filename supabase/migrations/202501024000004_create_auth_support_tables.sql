@@ -3,7 +3,7 @@
 
 -- Create login_attempts table for security monitoring
 CREATE TABLE IF NOT EXISTS public.login_attempts (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT NOT NULL,
   success BOOLEAN NOT NULL,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.login_attempts (
 
 -- Create otp_verifications table for OTP handling
 CREATE TABLE IF NOT EXISTS public.otp_verifications (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT NOT NULL,
   token TEXT NOT NULL,
   type TEXT NOT NULL DEFAULT 'signup', -- signup, login, reset_password
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS public.otp_verifications (
 
 -- Create user_sessions table for enhanced session tracking
 CREATE TABLE IF NOT EXISTS public.user_sessions (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   session_token TEXT NOT NULL UNIQUE,
   ip_address INET,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.user_sessions (
 
 -- Create user_verifications table for verification tracking
 CREATE TABLE IF NOT EXISTS public.user_verifications (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   oneci_status public.verification_status DEFAULT 'not_attempted',
   cnam_status public.verification_status DEFAULT 'not_attempted',

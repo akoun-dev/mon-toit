@@ -3,7 +3,7 @@
 
 -- Create leases table first (needed by payments foreign key)
 CREATE TABLE IF NOT EXISTS public.leases (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE NOT NULL,
   tenant_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS public.leases (
 
 -- Create payments table
 CREATE TABLE IF NOT EXISTS public.payments (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   payment_type TEXT NOT NULL, -- rent, deposit, fees, utilities, maintenance
   amount INTEGER NOT NULL,
   currency TEXT DEFAULT 'XOF',
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS public.payments (
 
 -- Create messages table
 CREATE TABLE IF NOT EXISTS public.messages (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   sender_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   receiver_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,

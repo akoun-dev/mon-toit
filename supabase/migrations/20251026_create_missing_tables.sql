@@ -1,6 +1,6 @@
 -- Création de la table notification_preferences
 CREATE TABLE IF NOT EXISTS notification_preferences (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   category TEXT NOT NULL CHECK (category IN ('recommendations', 'messages', 'visits', 'applications', 'payments', 'system')),
   enabled BOOLEAN NOT NULL DEFAULT true,
@@ -29,7 +29,7 @@ CREATE TRIGGER handle_notification_preferences_updated_at
 
 -- Création de la table property_alerts
 CREATE TABLE IF NOT EXISTS property_alerts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,

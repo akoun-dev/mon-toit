@@ -18,7 +18,7 @@ GROUP BY uar.user_id, uar.active_role, uar.available_roles, p.full_name, p.user_
 
 -- Table notifications
 CREATE TABLE IF NOT EXISTS public.notifications (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   title TEXT NOT NULL,
   message TEXT,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 
 -- Table rental_applications
 CREATE TABLE IF NOT EXISTS public.rental_applications (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE NOT NULL,
   applicant_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   status public.application_status DEFAULT 'pending',
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS public.rental_applications (
 
 -- Table user_preferences
 CREATE TABLE IF NOT EXISTS public.user_preferences (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   theme TEXT DEFAULT 'light',
   language TEXT DEFAULT 'fr',
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
 
 -- Table user_favorites
 CREATE TABLE IF NOT EXISTS public.user_favorites (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS public.user_favorites (
 
 -- Table search_history
 CREATE TABLE IF NOT EXISTS public.search_history (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   search_filters JSONB,
   results_count INTEGER DEFAULT 0,

@@ -3,7 +3,7 @@
 
 -- Create agency_mandates table
 CREATE TABLE IF NOT EXISTS public.agency_mandates (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
   agency_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,

@@ -104,7 +104,7 @@ GRANT EXECUTE ON FUNCTION public.check_login_rate_limit(TEXT) TO anon, authentic
 
 -- Créer une table pour les logs OTP (optionnel, pour le débogage)
 CREATE TABLE IF NOT EXISTS public.otp_logs (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT NOT NULL,
   token TEXT NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,

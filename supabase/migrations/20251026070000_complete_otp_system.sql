@@ -4,7 +4,7 @@
 
 -- Table otp_codes si elle n'existe pas
 CREATE TABLE IF NOT EXISTS public.otp_codes (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT NOT NULL,
   code TEXT NOT NULL,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,

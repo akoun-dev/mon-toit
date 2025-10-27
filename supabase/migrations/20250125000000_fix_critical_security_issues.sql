@@ -114,7 +114,7 @@ ON public.user_sessions(user_id, is_active, expires_at);
 
 -- CRITICAL FIX 4: Add table for security events logging
 CREATE TABLE IF NOT EXISTS public.security_events (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   event_type TEXT NOT NULL,
   severity TEXT NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')),

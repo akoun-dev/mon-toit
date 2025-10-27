@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS public.properties CASCADE;
 
 CREATE TABLE public.properties (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
   property_type TEXT NOT NULL,

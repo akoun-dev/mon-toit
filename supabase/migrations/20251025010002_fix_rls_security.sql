@@ -172,7 +172,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create security_audit_logs table if it doesn't exist
 CREATE TABLE IF NOT EXISTS public.security_audit_logs (
-  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   table_name TEXT NOT NULL,
   action TEXT NOT NULL,
   user_id UUID,
