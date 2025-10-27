@@ -144,23 +144,13 @@ CREATE POLICY "profiles_insert_controlled" ON public.profiles
 -- Roles utilisateurs : Lecture par utilisateur concerné ou admin
 CREATE POLICY "user_roles_read_user_or_admin" ON public.user_roles
   FOR SELECT USING (
-    auth.uid() = user_id OR
-    EXISTS (
-      SELECT 1 FROM public.user_active_roles uar
-      WHERE uar.user_id = auth.uid()
-      AND uar.active_role = 'admin_ansut'
-    )
+    auth.uid() = user_id
   );
 
 -- Roles actifs : Lecture par utilisateur concerné ou admin
 CREATE POLICY "user_active_roles_read_user_or_admin" ON public.user_active_roles
   FOR SELECT USING (
-    auth.uid() = user_id OR
-    EXISTS (
-      SELECT 1 FROM public.user_active_roles uar
-      WHERE uar.user_id = auth.uid()
-      AND uar.active_role = 'admin_ansut'
-    )
+    auth.uid() = user_id
   );
 
 -- =====================================================
