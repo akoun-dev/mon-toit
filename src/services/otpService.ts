@@ -1,6 +1,24 @@
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
 
+/**
+ * Generate a UUID v4 compatible string for temporary user IDs
+ */
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+/**
+ * Generate a temporary user ID with UUID format for development
+ */
+function generateTempUserId(email: string): string {
+  return generateUUID(); // Always return a proper UUID for database compatibility
+}
+
 export interface OTPCode {
   id: string;
   user_id: string;
@@ -475,7 +493,7 @@ class OTPService {
         return {
           success: true,
           message: 'Code vérifié avec succès (mode développement)',
-          user_id: `dev_user_${email.replace(/[^a-zA-Z0-9]/g, '_')}`
+          user_id: generateTempUserId(email)
         };
       }
 
@@ -537,8 +555,8 @@ class OTPService {
     try {
       logger.info('🔑 [OTP] Starting create and send OTP', { email, type });
 
-      // Générer un user_id temporaire pour le développement
-      const userId = `temp_${email.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}`;
+      // Générer un user_id temporaire pour le développement avec format UUID valide
+      const userId = generateTempUserId(email);
 
       // Créer le code OTP
       const createResult = await this.createOTPCode(userId, email, type);
