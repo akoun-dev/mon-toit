@@ -12,7 +12,7 @@ CREATE TABLE public.properties (
   surface_area integer CHECK (surface_area > 0 AND surface_area < 10000),
   bedrooms integer DEFAULT 1 CHECK (bedrooms >= 0 AND bedrooms <= 50),
   bathrooms integer DEFAULT 1 CHECK (bathrooms >= 0 AND bathrooms <= 20),
-  owner_id uuid NOT NULL REFERENCES public.profiles(id),
+  owner_id uuid NOT NULL, -- REFERENCES public.profiles(id) -- Retiré temporairement pour le seed
   status text DEFAULT 'disponible'::text,
   is_furnished boolean DEFAULT false,
   has_ac boolean DEFAULT false,

@@ -18,9 +18,12 @@ CREATE TABLE public.profiles (
   phone_verified boolean DEFAULT false,
   phone_verified_at timestamp with time zone,
   preferred_mfa_method character varying DEFAULT 'totp'::character varying CHECK (preferred_mfa_method::text = ANY (ARRAY['totp'::character varying, 'sms'::character varying, 'backup'::character varying]::text[])),
-  country_code text DEFAULT '+225'::text,
-  CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
+  country_code text DEFAULT '+225'::text
 );
+
+-- Ajouter une contrainte plus flexible pour permettre la création de profils avant l'auth
+-- La contrainte sera ajoutée plus tard dans la migration 16_rls_policies.sql
+-- ALTER TABLE public.profiles ADD CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) DEFERRABLE INITIALLY DEFERRED;
 
 -- Rôles utilisateurs
 CREATE TABLE public.user_roles (

@@ -2,8 +2,12 @@
 -- Ce fichier configure les permissions pour permettre l'accès public aux propriétés
 -- tout en maintenant la sécurité des données sensibles
 
--- Activer RLS sur toutes les tables
-ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
+-- Propriétés : DÉSACTIVER RLS pour accès public complet
+-- ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
+
+-- Ajouter la contrainte de clé étrangère DEFERRABLE pour les profils
+ALTER TABLE public.profiles ADD CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) DEFERRABLE INITIALLY DEFERRED;
+
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.property_views ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_favorites ENABLE ROW LEVEL SECURITY;
@@ -54,6 +58,10 @@ ALTER TABLE public.user_sessions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "properties_public_select" ON public.properties
   FOR SELECT USING (true);
 
+-- Propriétés : Accès complet pour développement (à retirer en production)
+CREATE POLICY "properties_dev_access" ON public.properties
+  FOR ALL USING (true) WITH CHECK (true);
+
 -- Propriétés : Insertion uniquement pour les propriétaires authentifiés
 CREATE POLICY "properties_insert_owners" ON public.properties
   FOR INSERT WITH CHECK (
@@ -86,6 +94,10 @@ CREATE POLICY "properties_delete_owners" ON public.properties
 CREATE POLICY "property_media_public_select" ON public.property_media
   FOR SELECT USING (true);
 
+-- Médias des propriétés : Accès complet pour développement
+CREATE POLICY "property_media_dev_access" ON public.property_media
+  FOR ALL USING (true) WITH CHECK (true);
+
 -- Médias des propriétés : Insertion par propriétaire du bien
 CREATE POLICY "property_media_insert_owners" ON public.property_media
   FOR INSERT WITH CHECK (
@@ -109,6 +121,10 @@ CREATE POLICY "property_media_update_owners" ON public.property_media
 -- =====================================================
 -- POLITIQUES POUR UTILISATEURS AUTHENTIFIÉS
 -- =====================================================
+
+-- Profils : Accès complet pour développement
+CREATE POLICY "profiles_dev_access" ON public.profiles
+  FOR ALL USING (true) WITH CHECK (true);
 
 -- Profils : Lecture publique (nom complet, ville, etc.)
 CREATE POLICY "profiles_public_read" ON public.profiles
@@ -151,6 +167,10 @@ CREATE POLICY "user_active_roles_read_user_or_admin" ON public.user_active_roles
 -- POLITIQUES POUR LES FONCTIONNALITÉS UTILISATEURS
 -- =====================================================
 
+-- Vues des propriétés : Accès complet pour développement
+CREATE POLICY "property_views_dev_access" ON public.property_views
+  FOR ALL USING (true) WITH CHECK (true);
+
 -- Vues des propriétés : Insertion publique (tracking analytics)
 CREATE POLICY "property_views_public_insert" ON public.property_views
   FOR INSERT WITH CHECK (true);
@@ -181,6 +201,10 @@ CREATE POLICY "user_favorites_insert_user" ON public.user_favorites
 -- Favoris : Suppression par utilisateur propriétaire
 CREATE POLICY "user_favorites_delete_owner" ON public.user_favorites
   FOR DELETE USING (auth.uid() = user_id);
+
+-- Analytics des propriétés : Accès complet pour développement
+CREATE POLICY "property_analytics_dev_access" ON public.property_analytics
+  FOR ALL USING (true) WITH CHECK (true);
 
 -- Analytics des propriétés : Insertion publique (système)
 CREATE POLICY "property_analytics_public_insert" ON public.property_analytics

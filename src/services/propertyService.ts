@@ -1,10 +1,10 @@
-import { supabase } from '@/lib/supabase';
+import { supabase, supabasePublic } from '@/lib/supabase';
 import { createClient } from '@supabase/supabase-js';
 import type { Property, SearchFilters } from '@/types';
 import { logger } from '@/services/logger';
 
-// Anonymous client for public access (same as main supabase client)
-const supabaseAnon = supabase;
+// Anonymous client for public access (uses public client without Authorization header)
+const supabaseAnon = supabasePublic;
 
 // Safe column list that only includes existing columns in the database
 const SAFE_PROPERTY_COLUMNS = [
