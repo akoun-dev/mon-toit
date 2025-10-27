@@ -407,12 +407,12 @@ RETURNS TABLE(is_blocked boolean, attempts integer, blocked_until timestamptz) A
 BEGIN
   RETURN QUERY
   SELECT
-    COALESCE(blocked_until > NOW(), false) as is_blocked,
+    COALESCE(la.blocked_until > NOW(), false) as is_blocked,
     0 as attempts,
-    blocked_until
-  FROM public.login_attempts
-  WHERE email = email_param
-    AND blocked_until > NOW()
+    la.blocked_until
+  FROM public.login_attempts la
+  WHERE la.email = email_param
+    AND la.blocked_until > NOW()
   LIMIT 1;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -653,6 +653,51 @@ $$;
 GRANT EXECUTE ON FUNCTION public.create_user_profile TO anon;
 GRANT EXECUTE ON FUNCTION public.create_user_profile TO authenticated;
 
+-- Function to analyze market trends for the dashboard widget
+CREATE OR REPLACE FUNCTION public.analyze_market_trends()
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result json;
+BEGIN
+  SELECT json_build_object(
+    'data', (
+      SELECT COALESCE(json_agg(
+        json_build_object(
+          'type', property_type,
+          'count', type_count,
+          'avg_price', avg_price
+        )
+      ), '[]'::json)
+      FROM (
+        SELECT
+          property_type,
+          COUNT(*) as type_count,
+          ROUND(AVG(monthly_rent)) as avg_price
+        FROM public.properties
+        WHERE status = 'disponible' AND property_type IS NOT NULL
+        GROUP BY property_type
+        ORDER BY COUNT(*) DESC
+        LIMIT 3
+      ) stats
+    ),
+    'total_properties', (SELECT COUNT(*) FROM public.properties WHERE status = 'disponible'),
+    'avg_price', COALESCE((SELECT ROUND(AVG(monthly_rent)) FROM public.properties WHERE status = 'disponible' AND monthly_rent > 0), 0),
+    'price_trend', 'stable',
+    'last_updated', NOW()
+  ) INTO result;
+
+  RETURN result;
+END;
+$$;
+
+-- Grant permissions for market trends function
+GRANT EXECUTE ON FUNCTION public.analyze_market_trends TO anon;
+GRANT EXECUTE ON FUNCTION public.analyze_market_trends TO authenticated;
+
 -- Commentaires explicatifs pour les développeurs
 COMMENT ON POLICY "properties_public_select" ON public.properties IS 'Permet la lecture publique des propriétés pour la page daccueil et lexplorateur';
 COMMENT ON POLICY "property_views_public_insert" ON public.property_views IS 'Permet le tracking des vues par les visiteurs non authentifiés';
@@ -660,3 +705,4 @@ COMMENT ON FUNCTION public.get_public_properties IS 'Fonction principale pour ob
 COMMENT ON FUNCTION public.create_user_profile IS 'Crée le profil utilisateur et assigne les rôles après inscription - appelée depuis le frontend';
 COMMENT ON FUNCTION public.search_properties IS 'Recherche texte plein sur les propriétés - utilisée dans la barre de recherche';
 COMMENT ON FUNCTION public.increment_property_view IS 'Incrémente le compteur de vues quand un bien est consulté';
+COMMENT ON FUNCTION public.analyze_market_trends IS 'Analyse les tendances du marché pour le widget du dashboard - retourne les statistiques de prix et popularité';

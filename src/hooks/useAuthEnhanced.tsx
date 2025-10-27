@@ -1,10 +1,11 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabasePublic } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { logger } from '@/services/logger';
 import { otpService } from '@/services/otpService';
+import { AuthErrorHandler } from '@/services/authErrorHandler';
 import type { Profile } from '@/types';
 
 interface AuthContextType {
@@ -140,7 +141,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const clientIP = await getClientIP();
       const userAgent = navigator.userAgent;
 
-      const { error } = await supabase
+      // Utiliser supabasePublic pour les opérations non authentifiées
+      const { error } = await supabasePublic
         .from('login_attempts')
         .insert({
           email,
@@ -150,10 +152,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
       if (error) {
-        logger.error('Error logging login attempt', { error, email, success });
+        // Gérer silencieusement les erreurs de log pour ne pas bloquer l'authentification
+        AuthErrorHandler.handleSilent(error, 'logLoginAttempt');
       }
     } catch (error) {
-      logger.error('Exception in logLoginAttempt', { error, email, success });
+      // Gérer silencieusement les exceptions pour ne pas bloquer l'authentification
+      AuthErrorHandler.handleSilent(error, 'logLoginAttempt');
     }
   };
 
@@ -325,9 +329,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [forceSigningOut]);
 
+  const checkRateLimit = async (email: string): Promise<boolean> => {
+    try {
+      // Utiliser supabasePublic pour les appels RPC non authentifiés
+      const { data, error } = await supabasePublic.rpc('check_login_rate_limit', {
+        email_param: email
+      });
+
+      if (error) {
+        AuthErrorHandler.handleSilent(error, 'checkRateLimit');
+        return true; // En cas d'erreur, autoriser la connexion
+      }
+
+      if (data && data.length > 0 && data[0].is_blocked) {
+        logger.warn('Rate limit exceeded', { email, blocked_until: data[0].blocked_until });
+        toast({
+          title: "Trop de tentatives",
+          description: "Trop de tentatives de connexion. Veuillez attendre quelques minutes avant de réessayer.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      AuthErrorHandler.handleSilent(error, 'checkRateLimit');
+      return true; // En cas d'erreur, autoriser la connexion
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       logger.info('Starting sign in process', { email });
+
+      // Vérifier le rate limit avant de continuer
+      const isAllowed = await checkRateLimit(email);
+      if (!isAllowed) {
+        return { error: { message: 'Rate limit exceeded' } as AuthError };
+      }
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -336,30 +375,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         await logLoginAttempt(email, false);
-        logger.error('Sign in error', { error: error.message, email });
-        
-        // Gérer spécifiquement le cas où l'utilisateur n'a pas confirmé son email
-        if (error.message.includes('Email not confirmed')) {
-          // Vérifier si l'email a été vérifié avec OTP
-          const isVerified = otpService.isEmailVerified(email, 'signup');
-          if (!isVerified) {
-            toast({
-              title: "Email non confirmé",
-              description: "Veuillez d'abord vérifier votre email avec le code OTP envoyé. Si vous n'avez pas reçu le code, demandez un nouveau code.",
-              variant: "destructive",
-            });
-            return { error: { message: 'Email non vérifié. Veuillez utiliser le code OTP envoyé.' } as AuthError };
+
+        // Utiliser le gestionnaire d'erreurs pour les erreurs d'authentification
+        if (AuthErrorHandler.isAuthError(error)) {
+          // Gérer spécifiquement le cas où l'utilisateur n'a pas confirmé son email
+          if (error.message.includes('Email not confirmed')) {
+            // Vérifier si l'email a été vérifié avec OTP
+            const isVerified = otpService.isEmailVerified(email, 'signup');
+            if (!isVerified) {
+              toast({
+                title: "Email non confirmé",
+                description: "Veuillez d'abord vérifier votre email avec le code OTP envoyé. Si vous n'avez pas reçu le code, demandez un nouveau code.",
+                variant: "destructive",
+              });
+              return { error: { message: 'Email non vérifié. Veuillez utiliser le code OTP envoyé.' } as AuthError };
+            } else {
+              // L'OTP est vérifié mais l'email Supabase ne l'est pas
+              toast({
+                title: "Email en cours de validation",
+                description: "Votre code OTP a été vérifié mais votre email est en cours de validation. Veuillez patienter quelques instants avant de vous connecter.",
+                variant: "destructive",
+              });
+              return { error: { message: 'Email en cours de validation.' } as AuthError };
+            }
           } else {
-            // L'OTP est vérifié mais l'email Supabase ne l'est pas
-            toast({
-              title: "Email en cours de validation",
-              description: "Votre code OTP a été vérifié mais votre email est en cours de validation. Veuillez patienter quelques instants avant de vous connecter.",
-              variant: "destructive",
-            });
-            return { error: { message: 'Email en cours de validation.' } as AuthError };
+            // Utiliser le gestionnaire d'erreurs pour les autres erreurs d'authentification
+            AuthErrorHandler.handle(error, { context: 'signIn' });
           }
+        } else {
+          // Gérer les autres types d'erreurs
+          AuthErrorHandler.handle(error, { context: 'signIn' });
         }
-        
+
         return { error };
       }
 
@@ -374,7 +421,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: null };
     } catch (error) {
       await logLoginAttempt(email, false);
-      logger.error('Unexpected sign in error', { error, email });
+      AuthErrorHandler.handle(error, { context: 'signIn' });
       return { error: error as AuthError };
     }
   };
@@ -400,7 +447,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) {
         logger.error('Sign up error', { error, email, fullName, userType });
 
-        // Gérer spécifiquement le cas où l'utilisateur existe déjà
+        // Utiliser le gestionnaire d'erreurs pour l'inscription
         if (error.message.includes('User already registered') || error.status === 422) {
           toast({
             title: "Compte déjà existant",
@@ -408,11 +455,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             variant: "destructive",
           });
         } else {
-          toast({
-            title: "Erreur d'inscription",
-            description: error.message,
-            variant: "destructive",
-          });
+          AuthErrorHandler.handle(error, { context: 'signUp' });
         }
 
         return { error: error as AuthError };
