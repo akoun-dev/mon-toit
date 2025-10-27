@@ -62,3 +62,16 @@ CREATE TABLE public.notification_preferences (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
+
+-- Indexes pour les performances des communications
+CREATE INDEX idx_conversations_user1_id ON conversations(user1_id);
+CREATE INDEX idx_conversations_user2_id ON conversations(user2_id);
+CREATE INDEX idx_conversations_property_id ON conversations(property_id);
+CREATE INDEX idx_conversations_last_message ON conversations(last_message_at);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX idx_messages_receiver_id ON messages(receiver_id);
+CREATE INDEX idx_messages_property_id ON messages(property_id);
+CREATE INDEX idx_messages_created_at ON messages(created_at);
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_read ON notifications(read) WHERE read = false;
+CREATE INDEX idx_messages_property_status ON messages(property_id, created_at) WHERE property_id IS NOT NULL;

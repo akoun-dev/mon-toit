@@ -32,6 +32,7 @@ CREATE TABLE public.properties (
   main_image text,
   images text[],
   video_url text,
+  virtual_tour_url text,
   panoramic_images jsonb,
   floor_plans jsonb,
   media_metadata jsonb,
@@ -44,6 +45,18 @@ CREATE TABLE public.properties (
   charges_amount integer,
   is_new boolean DEFAULT false
 );
+
+-- Indexes pour les performances des requêtes publiques
+CREATE INDEX idx_properties_status ON properties(status);
+CREATE INDEX idx_properties_city ON properties(city);
+CREATE INDEX idx_properties_monthly_rent ON properties(monthly_rent);
+CREATE INDEX idx_properties_owner_id ON properties(owner_id);
+CREATE INDEX idx_properties_created_at ON properties(created_at);
+CREATE INDEX idx_properties_view_count ON properties(view_count);
+CREATE INDEX idx_properties_location ON properties USING GIST (point(longitude, latitude)) WHERE longitude IS NOT NULL AND latitude IS NOT NULL;
+CREATE INDEX idx_properties_search ON properties USING GIN (to_tsvector('french', title || ' ' || COALESCE(description, '') || ' ' || city || ' ' || COALESCE(neighborhood, '')));
+CREATE INDEX idx_properties_type_surface ON properties(property_type, surface_area);
+CREATE INDEX idx_properties_available ON properties(status, monthly_rent) WHERE status = 'disponible';
 
 -- Médias des propriétés
 CREATE TABLE public.property_media (

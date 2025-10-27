@@ -82,3 +82,11 @@ CREATE TABLE public.application_documents (
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now()
 );
+
+-- Indexes pour les performances des applications
+CREATE INDEX idx_rental_applications_property_id ON rental_applications(property_id);
+CREATE INDEX idx_rental_applications_applicant_id ON rental_applications(applicant_id);
+CREATE INDEX idx_rental_applications_status ON rental_applications(status);
+CREATE INDEX idx_rental_applications_created_at ON rental_applications(created_at);
+CREATE INDEX idx_application_documents_application_id ON application_documents(application_id);
+CREATE INDEX idx_rental_applications_property_status ON rental_applications(property_id, status) WHERE status IN ('pending', 'approved');
