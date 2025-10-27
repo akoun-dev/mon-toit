@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase, supabasePublic } from '@/lib/supabase';
 import { logger } from '@/services/logger';
 import { emailService } from '@/services/emailService';
 
@@ -83,10 +83,10 @@ class OTPService {
 
       // 🔍 DEBUG: Utiliser une approche alternative si RPC n'est pas disponible
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
-      const { data, error } = await supabase.rpc('create_otp_code' as any, {
-        p_email: email,
-        p_user_agent: userAgent,
-        p_user_id: null // Ne pas passer user_id pour éviter les conflits de clé étrangère
+      const { data, error } = await supabasePublic.rpc('create_otp_code' as any, {
+        email_param: email,
+        code_type_param: type,
+        temp_user_id_param: userId
       });
 
       logger.info('🔑 [OTP] RPC call completed', {
@@ -149,9 +149,10 @@ class OTPService {
 
       // 🔍 DEBUG: Utiliser une approche alternative si RPC n'est pas disponible
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
-      const { data, error } = await supabase.rpc('verify_otp_code_simple' as any, {
-        p_email: email,
-        p_token: code
+      const { data, error } = await supabasePublic.rpc('verify_otp_code_simple' as any, {
+        email_param: email,
+        code_param: code,
+        code_type_param: type
       });
 
       if (error) {
@@ -385,9 +386,7 @@ class OTPService {
     try {
       // 🔍 DEBUG: Utiliser une approche alternative si RPC n'est pas disponible
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
-      const { data, error } = await supabase.rpc('cleanup_old_otp_notifications' as any, {
-        p_days_old: daysOld
-      });
+      const { data, error } = await supabasePublic.rpc('cleanup_old_otp_notifications' as any);
 
       if (error) {
         logger.error('Error cleaning up old OTP codes', { error });
@@ -517,9 +516,10 @@ class OTPService {
       }
 
       // Utiliser la fonction RPC pour la vérification en production
-      const { data, error } = await supabase.rpc('verify_otp_code_simple' as any, {
-        p_email: email,
-        p_token: token
+      const { data, error } = await supabasePublic.rpc('verify_otp_code_simple' as any, {
+        email_param: email,
+        code_param: token,
+        code_type_param: 'signup'
       });
 
       if (error) {
