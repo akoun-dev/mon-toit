@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/services/logger';
+import { emailService } from '@/services/emailService';
 
 /**
  * Generate a UUID v4 compatible string for temporary user IDs
@@ -85,7 +86,7 @@ class OTPService {
       const { data, error } = await supabase.rpc('create_otp_code' as any, {
         p_email: email,
         p_user_agent: userAgent,
-        p_user_id: userId
+        p_user_id: null // Ne pas passer user_id pour éviter les conflits de clé étrangère
       });
 
       logger.info('🔑 [OTP] RPC call completed', {
@@ -148,7 +149,7 @@ class OTPService {
 
       // 🔍 DEBUG: Utiliser une approche alternative si RPC n'est pas disponible
       // @ts-ignore - Les types ne sont pas générés pour les tables OTP
-      const { data, error } = await supabase.rpc('verify_otp_code' as any, {
+      const { data, error } = await supabase.rpc('verify_otp_code_simple' as any, {
         p_email: email,
         p_token: code
       });
@@ -192,7 +193,7 @@ class OTPService {
   }
 
   /**
-   * Envoie un code OTP par email en utilisant Brevo (production) ou fallback développement
+   * Envoie un code OTP par email en utilisant le service email existant
    */
   async sendOTPByEmail(
     email: string,
@@ -207,17 +208,29 @@ class OTPService {
         environment: import.meta.env.MODE
       });
 
-      // Simuler l'envoi d'email (pour développement)
-      logger.info('📧 [OTP] Simulating email sending (development mode)');
+      // Utiliser le template OTP existant
+      const emailSubject = type === 'signup' ? 'Code de vérification - Mon Toit' :
+                        type === 'reset_password' ? 'Réinitialisation du mot de passe - Mon Toit' :
+                        'Changement d\'email - Mon Toit';
 
-      // Simulation d'envoi réussi
-      const messageId = `otp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}@mon-toit.ci`;
+      const emailHtml = this.generateOTPEmailHTML(code, type, email, import.meta.env.VITE_MAILPIT_URL || '');
 
-      logger.info('✅ [OTP] Email simulated successfully', {
+      // Utiliser le service email existant pour envoyer l'email OTP
+      const result = await emailService.sendEmail({
+        to: email,
+        subject: emailSubject,
+        html: emailHtml,
+        text: `Votre code de vérification Mon Toit est : ${code}`,
+        from: import.meta.env.VITE_SMTP_GMAIL_FROM || 'noreply@mon-toit.ci',
+        replyTo: 'support@mon-toit.ci'
+      });
+
+      logger.info('📧 [OTP] Email sending result', {
         email,
         type,
-        messageId,
-        environment: import.meta.env.MODE
+        success: result.success,
+        messageId: result.messageId,
+        error: result.error
       });
 
       // Afficher le code dans la console pour le développement
@@ -225,12 +238,10 @@ class OTPService {
         console.log(`🔐 [OTP] CODE DE DÉVELOPPEMENT: ${code}`);
         console.log(`📧 [OTP] Email: ${email}`);
         console.log(`📋 [OTP] Type: ${type}`);
+        console.log(`📧 [OTP] Message ID: ${result.messageId}`);
       }
 
-      return {
-        success: true,
-        messageId
-      };
+      return result;
 
     } catch (error) {
       logger.error('💥 [OTP] Unexpected error in sendOTPByEmail', {
@@ -443,6 +454,14 @@ class OTPService {
   }
 
   /**
+   * Génère un code de test pour un email spécifique
+   */
+  generateTestCode(email: string): string {
+    // Pour le développement, toujours retourner 123456
+    return '123456';
+  }
+
+  /**
    * Vérifie si un email a été vérifié avec OTP (stockage local pour le développement)
    */
   isEmailVerified(email: string, type: 'signup' | 'reset_password' | 'email_change' = 'signup'): boolean {
@@ -498,7 +517,7 @@ class OTPService {
       }
 
       // Utiliser la fonction RPC pour la vérification en production
-      const { data, error } = await supabase.rpc('verify_otp_code' as any, {
+      const { data, error } = await supabase.rpc('verify_otp_code_simple' as any, {
         p_email: email,
         p_token: token
       });

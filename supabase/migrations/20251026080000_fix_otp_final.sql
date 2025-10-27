@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS public.otp_codes (
   is_used BOOLEAN DEFAULT false
 );
 
+-- Rendre user_id nullable pour éviter les conflits pendant l'inscription
+ALTER TABLE public.otp_codes ALTER COLUMN user_id DROP NOT NULL;
+
 -- Activer RLS si pas déjà fait
 ALTER TABLE public.otp_codes ENABLE ROW LEVEL SECURITY;
 
@@ -65,7 +68,7 @@ BEGIN
   -- Générer un token OTP à 6 chiffres
   v_token := LPAD(FLOOR(RANDOM() * 1000000)::TEXT, 6, '0');
 
-  -- Insérer le nouveau code OTP
+  -- Insérer le nouveau code OTP (user_id peut être NULL pendant l'inscription)
   INSERT INTO public.otp_codes (email, code, user_id, user_agent, expires_at)
   VALUES (p_email, v_token, p_user_id, p_user_agent, now() + interval '15 minutes');
 
