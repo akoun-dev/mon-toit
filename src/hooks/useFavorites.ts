@@ -28,7 +28,7 @@ export const useFavorites = () => {
 
   const fetchFavorites = async () => {
     if (!user) return;
-    
+
     try {
       const { data, error } = await supabase
         .from('user_favorites' as any)
@@ -36,14 +36,14 @@ export const useFavorites = () => {
         .eq('user_id', user.id) as { data: UserFavorite[] | null; error: any };
 
       if (error) {
-        logger.error('Error fetching favorites', { error, userId: user.id });
+        logger.debug('User favorites not accessible (likely RLS)', { error: error.message, userId: user.id });
         const localFavorites = localStorage.getItem(`favorites_${user.id}`);
         setFavorites(localFavorites ? JSON.parse(localFavorites) : []);
       } else {
         setFavorites(data?.map(f => f.property_id) || []);
       }
     } catch (err) {
-      logger.error('Exception fetching favorites', { error: err, userId: user.id });
+      logger.debug('Exception fetching favorites', { error: err instanceof Error ? err.message : 'Unknown error', userId: user.id });
       const localFavorites = localStorage.getItem(`favorites_${user.id}`);
       setFavorites(localFavorites ? JSON.parse(localFavorites) : []);
     } finally {
@@ -72,7 +72,20 @@ export const useFavorites = () => {
           .eq('user_id', user.id)
           .eq('property_id', propertyId);
 
-        if (error) throw error;
+        if (error) {
+          logger.debug('Failed to remove favorite (likely RLS)', { error: error.message, userId: user.id, propertyId });
+          // Fallback to local storage
+          const localFavorites = localStorage.getItem(`favorites_${user.id}`);
+          const favorites = localFavorites ? JSON.parse(localFavorites) : [];
+          const newFavorites = favorites.filter((id: string) => id !== propertyId);
+          localStorage.setItem(`favorites_${user.id}`, JSON.stringify(newFavorites));
+          setFavorites(newFavorites);
+          toast({
+            title: "Favori retiré",
+            description: "Le bien a été retiré de vos favoris"
+          });
+          return;
+        }
 
         setFavorites(favorites.filter(id => id !== propertyId));
         toast({
@@ -85,7 +98,20 @@ export const useFavorites = () => {
           .from('user_favorites' as any)
           .insert({ user_id: user.id, property_id: propertyId });
 
-        if (error) throw error;
+        if (error) {
+          logger.debug('Failed to add favorite (likely RLS)', { error: error.message, userId: user.id, propertyId });
+          // Fallback to local storage
+          const localFavorites = localStorage.getItem(`favorites_${user.id}`);
+          const favorites = localFavorites ? JSON.parse(localFavorites) : [];
+          const newFavorites = [...favorites, propertyId];
+          localStorage.setItem(`favorites_${user.id}`, JSON.stringify(newFavorites));
+          setFavorites(newFavorites);
+          toast({
+            title: "Favori ajouté",
+            description: "Le bien a été ajouté à vos favoris"
+          });
+          return;
+        }
 
         setFavorites([...favorites, propertyId]);
         toast({
@@ -99,7 +125,7 @@ export const useFavorites = () => {
         isFavorite ? favorites.filter(id => id !== propertyId) : [...favorites, propertyId]
       ));
     } catch (error) {
-      logger.error('Error toggling favorite', { error, propertyId, userId: user.id });
+      logger.debug('Exception toggling favorite', { error: error instanceof Error ? error.message : 'Unknown error', propertyId, userId: user.id });
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour vos favoris",

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabasePublic } from '@/lib/supabase';
+import { propertyService } from '@/services/propertyService';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import type { AgencyMandate } from '@/types/admin';
 import { useQuery } from '@tanstack/react-query';
@@ -127,14 +128,9 @@ const PropertyDetail = () => {
     }
 
     try {
-      const { data: propertyData, error: propertyError } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle(); // Use maybeSingle() instead of single()
+      // Use propertyService which handles public/private access correctly
+      const propertyData = await propertyService.fetchById(id);
 
-      if (propertyError) throw propertyError;
-      
       if (!propertyData) {
         // Property doesn't exist (deleted or never existed)
         setLoading(false);
@@ -177,7 +173,7 @@ const PropertyDetail = () => {
       }
     } catch (error) {
       // Toast error ONLY for technical errors
-      logger.error('Error fetching property details', { error, propertyId: id });
+      logger.debug('Error fetching property details', { error: error instanceof Error ? error.message : 'Unknown error', propertyId: id });
       toast({
         title: "Erreur technique",
         description: "Impossible de charger les détails du bien. Veuillez réessayer plus tard.",
@@ -206,37 +202,15 @@ const PropertyDetail = () => {
       let appCount = 0;
       let viewCount = 0;
 
-      // Get favorites count (may fail due to RLS if user is not authenticated)
-      try {
-        const { count } = await supabase
-          .from('user_favorites')
-          .select('*', { count: 'exact', head: true })
-          .eq('property_id', id);
-        favCount = count || 0;
-      } catch (error) {
-        logger.warn('Failed to fetch favorites count (possibly due to RLS)', { error, propertyId: id });
+      // Use property data we already have instead of making additional queries
+      if (property) {
+        viewCount = property.view_count || 0;
+        logger.debug('Using view count from property data', { propertyId: id, viewCount });
       }
 
       // Skip applications count due to RLS issues
-      try {
-        logger.info('Skipping applications count due to RLS policy issues', { propertyId: id });
-        appCount = 0;
-      } catch (error) {
-        logger.warn('Failed to fetch applications count (possibly due to RLS)', { error, propertyId: id });
-        appCount = 0;
-      }
-
-      // Get property view count (should work for public users)
-      try {
-        const { data: propertyData } = await supabase
-          .from('properties')
-          .select('view_count')
-          .eq('id', id)
-          .maybeSingle();
-        viewCount = propertyData?.view_count || 0;
-      } catch (error) {
-        logger.warn('Failed to fetch property view count', { error, propertyId: id });
-      }
+      logger.info('Skipping applications count due to RLS policy issues', { propertyId: id });
+      appCount = 0;
 
       setStats({
         views: viewCount,
