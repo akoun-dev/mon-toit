@@ -24,70 +24,78 @@ interface EmailTemplate {
 }
 
 /**
- * Service d'envoi d'emails optimisé pour Mailpit en développement
+ * Service d'envoi d'emails via SMTP
  */
 class EmailService {
   private isDevelopment = import.meta.env.DEV;
-  private mailpitUrl = import.meta.env.VITE_MAILPIT_URL || 'http://127.0.0.1:54324';
+  private useSmtp = import.meta.env.VITE_SMTP_HOST && import.meta.env.VITE_SMTP_USER; // Utiliser SMTP si configuré
 
   /**
-   * Envoyer un email via l'API Mailpit
+   * Envoyer un email via SMTP
    */
   async sendEmail(data: EmailData): Promise<{ success: boolean; error?: string; messageId?: string }> {
     try {
-      logger.info('Sending email via Mailpit', {
+      // Toujours utiliser SMTP (Gmail) qu'il soit configuré ou non
+      logger.info('Sending email via SMTP (Gmail)', {
         to: data.to,
         subject: data.subject,
         development: this.isDevelopment
       });
-
-      const emailPayload = {
-        From: {
-          Name: 'Mon Toit',
-          Email: data.from || 'noreply@mon-toit.ci'
-        },
-        To: Array.isArray(data.to)
-          ? data.to.map(email => ({ Name: '', Email: email }))
-          : [{ Name: '', Email: data.to }],
-        Subject: data.subject,
-        HtmlBody: data.html || this.textToHtml(data.text || ''),
-        TextBody: data.text || this.htmlToText(data.html || ''),
-        ReplyTo: data.replyTo ? [{ Name: '', Email: data.replyTo }] : [],
-        Attachments: data.attachments || []
+      return await this.sendEmailViaSMTP(data);
+    } catch (error) {
+      logger.error('Failed to send email', { error });
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
+    }
+  }
 
-      // Envoyer via l'API Mailpit
-      const response = await fetch(`${this.mailpitUrl}/api/v1/send`, {
+  /**
+   * Envoyer un email via SMTP (Gmail)
+   */
+  private async sendEmailViaSMTP(data: EmailData): Promise<{ success: boolean; error?: string; messageId?: string }> {
+    try {
+      // Utiliser l'API backend pour envoyer via SMTP
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify(emailPayload)
+        body: JSON.stringify({
+          to: data.to,
+          subject: data.subject,
+          html: data.html,
+          text: data.text,
+          from: data.from,
+          replyTo: data.replyTo
+        })
       });
 
       if (!response.ok) {
         const errorData = await response.text();
-        logger.error('Mailpit API error', {
+        logger.error('SMTP API error', {
           status: response.status,
           statusText: response.statusText,
           error: errorData
         });
         return {
           success: false,
-          error: `Mailpit API error: ${response.status} ${response.statusText}`
+          error: `SMTP API error: ${response.status} ${response.statusText}`
         };
       }
 
       const result = await response.json();
-      logger.info('Email sent successfully via Mailpit', { messageId: result.id });
+      logger.info('Email sent successfully via SMTP', { messageId: result.messageId });
 
       return {
         success: true,
-        messageId: result.id
+        messageId: result.messageId
       };
 
     } catch (error) {
-      logger.error('Failed to send email via Mailpit', { error });
+      logger.error('Failed to send email via SMTP', { error });
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -191,64 +199,6 @@ class EmailService {
     return result;
   }
 
-  /**
-   * Récupérer la liste des emails envoyés via Mailpit
-   */
-  async getSentEmails(): Promise<{ success: boolean; emails?: any[]; error?: string }> {
-    try {
-      const response = await fetch(`${this.mailpitUrl}/api/v1/messages`);
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: `Failed to fetch emails: ${response.status}`
-        };
-      }
-
-      const emails = await response.json();
-      return { success: true, emails };
-    } catch (error) {
-      logger.error('Failed to fetch emails from Mailpit', { error });
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  /**
-   * Vider la boîte de réception Mailpit
-   */
-  async clearMailbox(): Promise<{ success: boolean; error?: string }> {
-    try {
-      const response = await fetch(`${this.mailpitUrl}/api/v1/messages`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: `Failed to clear mailbox: ${response.status}`
-        };
-      }
-
-      logger.info('Mailpit mailbox cleared');
-      return { success: true };
-    } catch (error) {
-      logger.error('Failed to clear Mailpit mailbox', { error });
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  /**
-   * Obtenir l'URL de l'interface Mailpit
-   */
-  getMailpitUrl(): string {
-    return this.mailpitUrl;
-  }
 
   // Templates d'emails
 
