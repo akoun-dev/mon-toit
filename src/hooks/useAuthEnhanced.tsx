@@ -391,7 +391,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             full_name: fullName,
             user_type: userType,
             // Add any additional user metadata here
-          }
+          },
+          // Empêcher la connexion automatique après inscription
+          emailRedirectTo: undefined
         }
       });
 

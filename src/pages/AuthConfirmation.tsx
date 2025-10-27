@@ -120,9 +120,17 @@ const AuthConfirmation = () => {
       if (!error) {
         console.log('✅ [DEBUG] Vérification réussie');
         setIsVerified(true);
-        // Rediriger vers le dashboard après vérification réussie
+
+        // Afficher un message clair pour l'utilisateur
+        toast({
+          title: "Email vérifié !",
+          description: "Votre compte a été vérifié avec succès. Vous allez être redirigé vers la page de connexion.",
+          variant: "default",
+        });
+
+        // Rediriger vers la page de connexion pour que l'utilisateur se connecte avec ses identifiants
         setTimeout(() => {
-          navigate('/dashboard', { replace: true });
+          navigate('/auth', { replace: true });
         }, 2000);
       } else {
         console.log('❌ [DEBUG] Erreur de vérification', { error: error.message, status: error.status });

@@ -168,11 +168,20 @@ const Auth = () => {
     setLoading(false);
 
     if (!error) {
-      // Rediriger vers la page de confirmation avec l'email uniquement si l'inscription a réussi
-      const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}`;
-      console.log('🔀 [DEBUG] Redirecting to:', confirmationUrl);
+      console.log('✅ [DEBUG] Signup successful, preparing OTP flow');
+
+      // Vérifier si l'utilisateur est automatiquement connecté et le déconnecter
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log('🔓 [DEBUG] User auto-logged in, signing out for OTP flow');
+        await supabase.auth.signOut();
+      }
+
+      // Rediriger vers la page de confirmation OTP
+      const confirmationUrl = `/auth/confirmation?email=${encodeURIComponent(signUpEmail)}&from=signup`;
+      console.log('🔀 [DEBUG] Redirecting to OTP confirmation:', confirmationUrl);
       navigate(confirmationUrl, { replace: true });
-      console.log('✅ [DEBUG] Navigation executed');
+      console.log('✅ [DEBUG] Navigation to OTP page executed');
 
       // Réinitialiser le formulaire
       setSignUpEmail('');
