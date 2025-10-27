@@ -153,6 +153,7 @@ const AppContent = () => {
             {/* Redirections pour les anciennes routes */}
             <Route path="/recherche" element={<Navigate to="/explorer" replace />} />
             <Route path="/ajouter-bien" element={<Navigate to="/publier" replace />} />
+            <Route path="/modifier-bien/:id" element={<Navigate to="/biens/:id/modifier" replace />} />
             <Route path="/explorer" element={<Explorer />} />
             <Route path="/search" element={
               <Suspense fallback={<PageSkeleton />}>
