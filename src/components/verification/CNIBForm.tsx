@@ -473,7 +473,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       
       const { data: storageData, error: storageError } = await supabase.storage
         .from('verification-documents')
-        .upload(`cnib/${user.id}-${Date.now()}.jpg`, cniBlob, {
+        .upload(`${user.id}/cnib-${Date.now()}.jpg`, cniBlob, {
           contentType: 'image/jpeg',
           upsert: false
         });
