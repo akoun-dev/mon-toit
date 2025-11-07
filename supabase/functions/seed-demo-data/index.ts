@@ -89,32 +89,61 @@ Deno.serve(async (req) => {
       overdueApplications: 0,
     };
 
+    // Fonction pour générer des avatars réalistes
+    const maleAvatars = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39];
+    const femaleAvatars = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39];
+
+    function getAvatarUrl(name: string, index: number): string {
+      const femaleNames = ['Marie', 'Aminata', 'Fatoumata', 'Aïcha', 'Alima', 'Mariam', 'Salamata', 'Rahinatou', 'Clarisse', 'Rachelle'];
+      const isFemale = femaleNames.some(fn => name.startsWith(fn));
+      
+      if (isFemale) {
+        const avatarId = femaleAvatars[index % femaleAvatars.length];
+        return `https://randomuser.me/api/portraits/women/${avatarId}.jpg`;
+      } else {
+        const avatarId = maleAvatars[index % maleAvatars.length];
+        return `https://randomuser.me/api/portraits/men/${avatarId}.jpg`;
+      }
+    }
+
     // 1. CRÉER LES UTILISATEURS
     const users = [
       // Propriétaires individuels
-      { email: 'jean-paul.ouedraogo@example.com', name: 'Jean-Paul Ouédraogo', type: 'proprietaire', roles: ['user'], verifications: {} },
-      { email: 'marie.kabore@example.com', name: 'Marie Kaboré', type: 'proprietaire', roles: ['user'], verifications: {} },
-      { email: 'ismael.sawadogo@example.com', name: 'Ismaël Sawadogo', type: 'proprietaire', roles: ['user'], verifications: {} },
+      { email: 'jean-paul.ouedraogo@example.com', name: 'Jean-Paul Ouédraogo', type: 'proprietaire', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      { email: 'marie.kabore@example.com', name: 'Marie Kaboré', type: 'proprietaire', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      { email: 'ismael.sawadogo@example.com', name: 'Ismaël Sawadogo', type: 'proprietaire', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      
+      // Nouveaux propriétaires - Nouvelles villes
+      { email: 'amadou.dicko@fadangourma.bf', name: 'Amadou Dicko', type: 'proprietaire', roles: ['user'], verifications: { oneci: true }, city: 'Fada N\'Gourma' },
+      { email: 's.ouattara@dori.bf', name: 'Salamata Ouattara', type: 'proprietaire', roles: ['user'], verifications: { oneci: true }, city: 'Dori' },
+      { email: 'paul.kabore@tenkodogo.bf', name: 'Paul Kaboré', type: 'proprietaire', roles: ['user'], verifications: {}, city: 'Tenkodogo' },
       
       // Agences
-      { email: 'contact@immobilier-bf.com', name: 'Immobilier BF', type: 'agence', roles: ['user'], verifications: {} },
-      { email: 'contact@ouaga-prestige.com', name: 'Ouaga Prestige Immobilier', type: 'agence', roles: ['user'], verifications: {} },
+      { email: 'contact@immobilier-bf.com', name: 'Immobilier BF', type: 'agence', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      { email: 'contact@ouaga-prestige.com', name: 'Ouaga Prestige Immobilier', type: 'agence', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
       
       // Locataires
-      { email: 'abdoul.zongo@example.com', name: 'Abdoul Zongo', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
-      { email: 'aminata.compaore@example.com', name: 'Aminata Compaoré', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
-      { email: 'moussa.sankara@example.com', name: 'Moussa Sankara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
-      { email: 'fatoumata.traore@example.com', name: 'Fatoumata Traoré', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
-      { email: 'boureima.ouattara@example.com', name: 'Boureima Ouattara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
-      { email: 'aicha.yameogo@example.com', name: 'Aïcha Yaméogo', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
-      { email: 'rasmane.diallo@example.com', name: 'Rasmané Diallo', type: 'locataire', roles: ['user'], verifications: {} },
-      { email: 'alima.tall@example.com', name: 'Alima Tall', type: 'locataire', roles: ['user'], verifications: {} },
-      { email: 'souleymane.nikiema@example.com', name: 'Souleymane Nikiéma', type: 'locataire', roles: ['user'], verifications: { oneci: 'pending' } },
-      { email: 'mariam.nacanabo@example.com', name: 'Mariam Nacanabo', type: 'locataire', roles: ['user'], verifications: { cnam: 'pending' } },
+      { email: 'abdoul.zongo@example.com', name: 'Abdoul Zongo', type: 'locataire', roles: ['user'], verifications: { oneci: true }, city: 'Ouagadougou' },
+      { email: 'aminata.compaore@example.com', name: 'Aminata Compaoré', type: 'locataire', roles: ['user'], verifications: { oneci: true }, city: 'Ouagadougou' },
+      { email: 'moussa.sankara@example.com', name: 'Moussa Sankara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true }, city: 'Ouagadougou' },
+      { email: 'fatoumata.traore@example.com', name: 'Fatoumata Traoré', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true }, city: 'Ouagadougou' },
+      { email: 'boureima.ouattara@example.com', name: 'Boureima Ouattara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true }, city: 'Ouagadougou' },
+      { email: 'aicha.yameogo@example.com', name: 'Aïcha Yaméogo', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true }, city: 'Ouagadougou' },
+      { email: 'rasmane.diallo@example.com', name: 'Rasmané Diallo', type: 'locataire', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      { email: 'alima.tall@example.com', name: 'Alima Tall', type: 'locataire', roles: ['user'], verifications: {}, city: 'Ouagadougou' },
+      { email: 'souleymane.nikiema@example.com', name: 'Souleymane Nikiéma', type: 'locataire', roles: ['user'], verifications: { oneci: 'pending' }, city: 'Ouagadougou' },
+      { email: 'mariam.nacanabo@example.com', name: 'Mariam Nacanabo', type: 'locataire', roles: ['user'], verifications: { cnam: 'pending' }, city: 'Ouagadougou' },
+      
+      // Nouveaux locataires - Nouvelles villes
+      { email: 'rahinatou.sawadogo@example.com', name: 'Rahinatou Sawadogo', type: 'locataire', roles: ['user'], verifications: { oneci: true }, city: 'Fada N\'Gourma' },
+      { email: 'bila.diallo@example.com', name: 'Bila Diallo', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true }, city: 'Dori' },
+      { email: 'clarisse.compaore@example.com', name: 'Clarisse Compaoré', type: 'locataire', roles: ['user'], verifications: { oneci: true }, city: 'Tenkodogo' },
+      { email: 'hamidou.zongo@example.com', name: 'Hamidou Zongo', type: 'locataire', roles: ['user'], verifications: {}, city: 'Fada N\'Gourma' },
+      { email: 'rachelle.ouedraogo@example.com', name: 'Rachelle Ouédraogo', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true }, city: 'Dori' },
       
       // Admins - utiliser 'proprietaire' comme type car admin role is managed separately
-      { email: 'admin@mzaka.bf', name: 'Admin MZAKA', type: 'proprietaire', roles: ['user', 'admin', 'super_admin'], verifications: { oneci: true, cnam: true } },
-      { email: 'moderateur@mzaka.bf', name: 'Modérateur MZAKA', type: 'proprietaire', roles: ['user', 'admin'], verifications: { oneci: true } },
+      { email: 'admin@mzaka.bf', name: 'Admin MZAKA', type: 'proprietaire', roles: ['user', 'admin', 'super_admin'], verifications: { oneci: true, cnam: true }, city: 'Ouagadougou' },
+      { email: 'moderateur@mzaka.bf', name: 'Modérateur MZAKA', type: 'proprietaire', roles: ['user', 'admin'], verifications: { oneci: true }, city: 'Ouagadougou' },
     ];
 
     const userMap = new Map<string, string>();
@@ -122,6 +151,7 @@ Deno.serve(async (req) => {
 
     console.log(`[SEED] Creating ${users.length} users...`);
 
+    let userIndex = 0;
     for (const userData of users) {
       console.log(`[SEED] Processing user: ${userData.email}`);
       
@@ -188,12 +218,15 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Créer/mettre à jour le profil
+        // Créer/mettre à jour le profil avec avatar
         console.log(`[SEED] Creating/updating profile for ${userData.email}`);
+        const avatarUrl = getAvatarUrl(userData.name, userIndex);
         const { error: profileError } = await supabase.from('profiles').upsert({
           id: userId,
           full_name: userData.name,
           user_type: userData.type,
+          city: userData.city,
+          avatar_url: avatarUrl,
           oneci_verified: userData.verifications.oneci === true,
           cnam_verified: userData.verifications.cnam === true,
           face_verified: userData.verifications.face === true,
@@ -220,8 +253,10 @@ Deno.serve(async (req) => {
 
         userMap.set(userData.email, userId);
         console.log(`[SEED] User ${userData.email} processed successfully`);
+        userIndex++;
       } catch (error) {
         console.error(`[SEED] Unexpected error processing user ${userData.email}:`, error);
+        userIndex++;
         continue;
       }
     }
@@ -274,6 +309,22 @@ Deno.serve(async (req) => {
       
       // KOUDOUGOU
       { owner: 'contact@ouaga-prestige.com', title: 'Appartement Neuf Koudougou', city: 'Koudougou', neighborhood: 'Secteur 3', type: 'apartment', rent: 95000, bedrooms: 2, bathrooms: 1, surface: 60, status: 'disponible', moderation: 'approved' },
+      
+      // FADA N'GOURMA - Nouvelles propriétés
+      { owner: 'amadou.dicko@fadangourma.bf', title: 'Villa 3 Chambres Fada Centre', city: 'Fada N\'Gourma', neighborhood: 'Centre-Ville', type: 'house', rent: 180000, bedrooms: 3, bathrooms: 2, surface: 160, status: 'disponible', moderation: 'approved' },
+      { owner: 'amadou.dicko@fadangourma.bf', title: 'Appartement 2 Pièces Secteur 1', city: 'Fada N\'Gourma', neighborhood: 'Secteur 1', type: 'apartment', rent: 95000, bedrooms: 2, bathrooms: 1, surface: 70, status: 'disponible', moderation: 'approved' },
+      { owner: 'amadou.dicko@fadangourma.bf', title: 'Maison Familiale Secteur 2', city: 'Fada N\'Gourma', neighborhood: 'Secteur 2', type: 'house', rent: 150000, bedrooms: 4, bathrooms: 2, surface: 180, status: 'disponible', moderation: 'approved' },
+      { owner: 'amadou.dicko@fadangourma.bf', title: 'Studio Meublé Commercial', city: 'Fada N\'Gourma', neighborhood: 'Quartier Commercial', type: 'studio', rent: 65000, bedrooms: 0, bathrooms: 1, surface: 32, status: 'disponible', moderation: 'approved' },
+      
+      // DORI - Nouvelles propriétés
+      { owner: 's.ouattara@dori.bf', title: 'Villa Moderne 3 Chambres Dori', city: 'Dori', neighborhood: 'Centre', type: 'house', rent: 140000, bedrooms: 3, bathrooms: 2, surface: 150, status: 'disponible', moderation: 'approved' },
+      { owner: 's.ouattara@dori.bf', title: 'Appartement 2 Pièces Administratif', city: 'Dori', neighborhood: 'Secteur Administratif', type: 'apartment', rent: 85000, bedrooms: 2, bathrooms: 1, surface: 65, status: 'disponible', moderation: 'approved' },
+      { owner: 's.ouattara@dori.bf', title: 'Maison Traditionnelle Rénovée', city: 'Dori', neighborhood: 'Quartier Résidentiel', type: 'house', rent: 110000, bedrooms: 3, bathrooms: 2, surface: 130, status: 'disponible', moderation: 'approved' },
+      
+      // TENKODOGO - Nouvelles propriétés
+      { owner: 'paul.kabore@tenkodogo.bf', title: 'Villa 4 Chambres Centre Tenkodogo', city: 'Tenkodogo', neighborhood: 'Centre-Ville', type: 'house', rent: 160000, bedrooms: 4, bathrooms: 2, surface: 170, status: 'disponible', moderation: 'approved' },
+      { owner: 'paul.kabore@tenkodogo.bf', title: 'Appartement Économique Secteur 1', city: 'Tenkodogo', neighborhood: 'Secteur 1', type: 'apartment', rent: 75000, bedrooms: 2, bathrooms: 1, surface: 55, status: 'disponible', moderation: 'approved' },
+      { owner: 'paul.kabore@tenkodogo.bf', title: 'Maison 3 Chambres Quartier Neuf', city: 'Tenkodogo', neighborhood: 'Quartier Neuf', type: 'house', rent: 120000, bedrooms: 3, bathrooms: 2, surface: 140, status: 'disponible', moderation: 'approved' },
     ];
 
     const propertyMap = new Map<string, string>();
@@ -348,6 +399,13 @@ Deno.serve(async (req) => {
       { property: 'Villa Rénovation Complète', applicant: 'awa.bamba@example.com', status: 'rejected', score: 32, daysAgo: 18 },
       { property: 'Appartement 3 Pièces', applicant: 'ibrahim.sanogo@example.com', status: 'rejected', score: 28, daysAgo: 20 },
       { property: 'Villa de Prestige', applicant: 'nguessan.kouame@example.com', status: 'rejected', score: 25, daysAgo: 19 },
+      
+      // NOUVELLES VILLES - Applications
+      { property: 'Villa 3 Chambres Fada Centre', applicant: 'rahinatou.sawadogo@example.com', status: 'pending', score: 82, daysAgo: 1 },
+      { property: 'Villa Moderne 3 Chambres Dori', applicant: 'bila.diallo@example.com', status: 'pending', score: 88, daysAgo: 1.5 },
+      { property: 'Villa 4 Chambres Centre Tenkodogo', applicant: 'clarisse.compaore@example.com', status: 'approved', score: 90, daysAgo: 5 },
+      { property: 'Studio Meublé Commercial', applicant: 'hamidou.zongo@example.com', status: 'pending', score: 65, daysAgo: 0.8 },
+      { property: 'Appartement 2 Pièces Administratif', applicant: 'rachelle.ouedraogo@example.com', status: 'rejected', score: 45, daysAgo: 10 },
     ];
 
     for (const appData of applications) {
@@ -446,6 +504,12 @@ Deno.serve(async (req) => {
       { user: 'aminata.toure@example.com', property: 'Duplex Luxueux 5 Chambres' },
       { user: 'yao.kouadio@example.com', property: 'Villa Contemporaine' },
       { user: 'fanta.diarra@example.com', property: 'Appartement Standing' },
+      
+      // Favoris nouvelles villes
+      { user: 'rahinatou.sawadogo@example.com', property: 'Villa 3 Chambres Fada Centre' },
+      { user: 'rahinatou.sawadogo@example.com', property: 'Maison Familiale Secteur 2' },
+      { user: 'bila.diallo@example.com', property: 'Villa Moderne 3 Chambres Dori' },
+      { user: 'clarisse.compaore@example.com', property: 'Villa 4 Chambres Centre Tenkodogo' },
     ];
 
     for (const fav of favorites) {
@@ -486,6 +550,16 @@ Deno.serve(async (req) => {
       
       { sender: 'awa.bamba@example.com', receiver: 'ismael.traore@example.com', content: "Y a-t-il un parking disponible ?" },
       { sender: 'ismael.traore@example.com', receiver: 'awa.bamba@example.com', content: "Oui, un parking sécurisé est inclus dans le loyer." },
+      
+      // Messages nouvelles villes
+      { sender: 'rahinatou.sawadogo@example.com', receiver: 'amadou.dicko@fadangourma.bf', content: "Bonjour, je suis intéressée par la villa 3 chambres à Fada. Est-elle toujours disponible ?" },
+      { sender: 'amadou.dicko@fadangourma.bf', receiver: 'rahinatou.sawadogo@example.com', content: "Oui, la villa est disponible ! Voulez-vous organiser une visite ?", read: true },
+      { sender: 'bila.diallo@example.com', receiver: 's.ouattara@dori.bf', content: "La villa moderne à Dori est-elle équipée de la climatisation ?" },
+      { sender: 's.ouattara@dori.bf', receiver: 'bila.diallo@example.com', content: "Oui, toutes les chambres sont climatisées et le salon également.", read: true },
+      { sender: 'clarisse.compaore@example.com', receiver: 'paul.kabore@tenkodogo.bf', content: "Bonjour, votre villa à 160 000 FCFA m'intéresse. Peut-on négocier le prix ?" },
+      { sender: 'paul.kabore@tenkodogo.bf', receiver: 'clarisse.compaore@example.com', content: "Le prix est déjà très correct pour une villa 4 chambres, mais nous pouvons discuter.", read: true },
+      { sender: 'hamidou.zongo@example.com', receiver: 'amadou.dicko@fadangourma.bf', content: "Le studio meublé inclut-il l'eau et l'électricité ?" },
+      { sender: 'amadou.dicko@fadangourma.bf', receiver: 'hamidou.zongo@example.com', content: "Non, les charges sont en supplément, environ 15 000 FCFA/mois." },
     ];
 
     for (const msgData of messages) {
