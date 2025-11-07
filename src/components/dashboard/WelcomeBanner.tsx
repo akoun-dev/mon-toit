@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from 'react-i18next';
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
-import { type IllustrationKey } from "@/assets/illustrations/ivorian/illustrationPaths";
+import { type IllustrationKey } from "@/assets/illustrations/burkinabe/illustrationPaths";
 
 export const WelcomeBanner = () => {
   const { profile } = useAuth();

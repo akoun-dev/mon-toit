@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 initI18n();
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -52,7 +52,6 @@ const Maintenance = lazy(() => import("./pages/Maintenance"));
 const ScheduleVisit = lazy(() => import("./pages/ScheduleVisit"));
 
 // Load other pages normally
-import Certification from "./pages/Certification";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
@@ -66,6 +65,7 @@ import APropos from "./pages/APropos";
 import Conditions from "./pages/Conditions";
 import Confidentialite from "./pages/Confidentialite";
 import MentionsLegales from "./pages/MentionsLegales";
+import Confiance from "./pages/Confiance";
 import TiersDeConfianceDashboard from "./pages/TiersDeConfianceDashboard";
 import CertificationFAQ from "./pages/CertificationFAQ";
 import Tarifs from "./pages/Tarifs";
@@ -134,7 +134,6 @@ const AppContent = () => {
                 <PropertyDetail />
               </Suspense>
             } />
-            <Route path="/certification" element={<Certification />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/guide" element={<Guide />} />
@@ -367,6 +366,8 @@ const AppContent = () => {
             <Route path="/user/:userId/reviews" element={<UserReviews />} />
             <Route path="/publier" element={<Publier />} />
             <Route path="/a-propos" element={<APropos />} />
+            <Route path="/confiance" element={<Confiance />} />
+            <Route path="/certification" element={<Navigate to="/confiance" replace />} />
             <Route path="/conditions" element={<Conditions />} />
             <Route path="/confidentialite" element={<Confidentialite />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />

@@ -332,7 +332,7 @@ const Auth = () => {
           <div className="mb-8">
             <LazyIllustration
               src={getIllustrationPath("ivorian-family-house")}
-              alt="Trouvez votre logement en Côte d'Ivoire"
+              alt="Trouvez votre logement au Burkina Faso"
               className="w-full h-[250px] md:h-[300px] rounded-2xl"
               animate={true}
             />
@@ -348,14 +348,14 @@ const Auth = () => {
                   Bienvenue sur MZAKA
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  La plateforme immobilière certifiée ARCEP pour le Burkina Faso
+                  Plateforme immobilière de confiance au Burkina Faso
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
                     <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-medium text-foreground">Sécurité garantie</p>
-                      <p className="text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par l'ARCEP</p>
+                      <p className="text-sm text-muted-foreground">Tous les utilisateurs sont vérifiés par notre équipe</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">

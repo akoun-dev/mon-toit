@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath, cn } from "@/lib/utils";
-import { type IllustrationKey } from "@/assets/illustrations/ivorian/illustrationPaths";
+import { type IllustrationKey } from "@/assets/illustrations/burkinabe/illustrationPaths";
 
 interface IllustratedSectionProps {
   illustration: IllustrationKey;

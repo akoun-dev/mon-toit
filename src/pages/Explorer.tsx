@@ -24,7 +24,7 @@ const Explorer = () => {
                 Explorez les biens <span className="text-gradient-primary">disponibles</span>
               </h1>
               <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                Découvrez tous nos biens immobiliers certifiés à travers la Côte d'Ivoire
+                Découvrez tous nos biens immobiliers vérifiés à travers le Burkina Faso
               </p>
             </div>
           </div>
@@ -33,14 +33,14 @@ const Explorer = () => {
           <section className="mb-8">
             <div className="relative h-40 md:h-48 rounded-lg overflow-hidden shadow-lg">
               <LazyIllustration 
-                src={getIllustrationPath('abidjan-neighborhood')!}
-                alt="Quartier d'Abidjan"
+                src={getIllustrationPath('ouagadougou-neighborhood')!}
+                alt="Quartier de Ouagadougou"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
                 <div className="text-white p-6">
-                  <h2 className="text-2xl font-bold">Explorez les quartiers d'Abidjan</h2>
-                  <p className="text-sm opacity-90">Cocody, Plateau, Marcory et plus encore</p>
+                  <h2 className="text-2xl font-bold">Explorez les quartiers de Ouagadougou</h2>
+                  <p className="text-sm opacity-90">Cissin, Ouaga 2000, Gounghin et plus encore</p>
                 </div>
               </div>
             </div>

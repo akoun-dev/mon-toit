@@ -21,7 +21,7 @@ const journeys = [
       {
         number: "2",
         icon: ShieldCheck,
-        title: "Faites-vous certifier ARCEP",
+        title: "Vérifiez votre identité",
         description: "Vérification biométrique et constitution de votre dossier digital"
       },
       {

@@ -105,7 +105,7 @@ export const PremiumHero = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Location immobilière certifiée ARCEP • Baux sécurisés • Paiement en ligne
+            Location immobilière de confiance • Baux vérifiés • Paiement en ligne
           </motion.p>
 
           {/* Formulaire de Recherche */}
@@ -222,10 +222,10 @@ export const PremiumHero = () => {
                 <span className="text-lg"><strong className="font-bold">100%</strong> Gratuit</span>
               </div>
               
-              {/* ANSUT */}
+              {/* Vérifié */}
               <div className="flex items-center gap-2">
                 <FileSignature className="h-5 w-5 text-yellow-300" />
-                <span className="text-lg font-semibold">Certifié ANSUT</span>
+                <span className="text-lg font-semibold">Baux vérifiés</span>
               </div>
             </div>
             

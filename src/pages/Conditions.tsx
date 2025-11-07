@@ -6,7 +6,7 @@ const Conditions = () => {
       <h2>1. Objet</h2>
       <p>
         Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès 
-        et l'utilisation de la plateforme MZAKA propulsée par l'ARCEP.
+        et l'utilisation de la plateforme MZAKA.
       </p>
 
       <h2>2. Inscription</h2>

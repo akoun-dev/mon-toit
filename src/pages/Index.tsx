@@ -14,10 +14,10 @@ const Index = () => {
   return (
     <MainLayout>
       <Helmet>
-        <title>MZAKA - Location Immobilière Certifiée ARCEP au Burkina Faso</title>
+        <title>MZAKA - Location Immobilière au Burkina Faso</title>
         <meta 
           name="description" 
-          content="Trouvez votre logement idéal au Burkina Faso. Baux certifiés ARCEP, dossiers vérifiés, signature électronique. Plus de 3,500 logements à Ouagadougou, Bobo-Dioulasso." 
+          content="Trouvez votre logement idéal au Burkina Faso. Baux vérifiés, dossiers sécurisés, signature électronique. Plus de 3,500 logements à Ouagadougou, Bobo-Dioulasso." 
         />
         <link rel="canonical" href="https://mzaka.bf" />
       </Helmet>

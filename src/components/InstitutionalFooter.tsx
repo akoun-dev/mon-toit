@@ -1,6 +1,6 @@
 /**
  * MZAKA - Footer Institutionnel
- * Conforme aux directives ARCEP et service public numérique
+ * Plateforme privée de confiance
  */
 
 import { Link } from 'react-router-dom';

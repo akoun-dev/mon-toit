@@ -6,13 +6,12 @@ const MentionsLegales = () => {
       <h2>Éditeur du site</h2>
       <p>
         <strong>MZAKA</strong><br />
-        Plateforme propulsée par ARCEP<br />
-        (Autorité de Régulation des Communications Électroniques et des Postes)<br />
+        Plateforme privée de location immobilière<br />
         Ouagadougou, Burkina Faso
       </p>
 
       <h2>Directeur de publication</h2>
-      <p>[Nom du Directeur Général de l'ARCEP]</p>
+      <p>[Nom du Directeur Général de MZAKA]</p>
 
       <h2>Hébergement</h2>
       <p>
@@ -23,12 +22,12 @@ const MentionsLegales = () => {
       <h2>Propriété intellectuelle</h2>
       <p>
         L'ensemble du contenu de ce site (textes, images, logos, code source) 
-        est la propriété exclusive de MZAKA / ARCEP.
+        est la propriété exclusive de MZAKA.
       </p>
 
       <h2>Crédits</h2>
       <ul>
-        <li>Logo MZAKA : ARCEP</li>
+        <li>Logo MZAKA : Propriété MZAKA</li>
         <li>Framework : React + TypeScript</li>
         <li>UI : shadcn/ui + Tailwind CSS</li>
         <li>Backend : Lovable Cloud</li>

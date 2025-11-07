@@ -1,38 +1,38 @@
 /**
- * Mapping des illustrations ivoiriennes générées par l'IA
+ * Mapping des illustrations burkinabè générées par l'IA
  * Ces illustrations sont utilisées à travers l'application pour enrichir l'expérience visuelle
  */
 
 export const illustrationPaths = {
-  // Famille et maison ivoirienne - Hero, Features
-  'ivorian-family-house': '/src/assets/illustrations/ivorian/ivorian-family-house.png',
+  // Famille et maison burkinabè - Hero, Features
+  'ivorian-family-house': '/src/assets/illustrations/burkinabe/ivorian-family-house.png',
   
   // Visite d'appartement - Features, Explorer
-  'apartment-visit': '/src/assets/illustrations/ivorian/apartment-visit.png',
+  'apartment-visit': '/src/assets/illustrations/burkinabe/apartment-visit.png',
   
-  // Agent immobilier - Features, Certification
-  'real-estate-agent': '/src/assets/illustrations/ivorian/real-estate-agent.png',
+  // Agent immobilier - Features, Confiance
+  'real-estate-agent': '/src/assets/illustrations/burkinabe/real-estate-agent.png',
   
-  // Quartier d'Abidjan - Explorer, HowItWorks
-  'abidjan-neighborhood': '/src/assets/illustrations/ivorian/abidjan-neighborhood.png',
+  // Quartier de Ouagadougou - Explorer, HowItWorks
+  'ouagadougou-neighborhood': '/src/assets/illustrations/burkinabe/ouagadougou-neighborhood.png',
   
   // Salon moderne - PropertyCard, Explorer
-  'modern-living-room': '/src/assets/illustrations/ivorian/modern-living-room.png',
+  'modern-living-room': '/src/assets/illustrations/burkinabe/modern-living-room.png',
   
-  // Skyline d'Abidjan - Hero alternatif, Footer
-  'abidjan-skyline': '/src/assets/illustrations/ivorian/abidjan-skyline.png',
+  // Skyline de Ouagadougou - Hero alternatif, Footer
+  'ouagadougou-skyline': '/src/assets/illustrations/burkinabe/ouagadougou-skyline.png',
   
   // Remise de clés - Testimonials, Success page
-  'key-handover': '/src/assets/illustrations/ivorian/key-handover.png',
+  'key-handover': '/src/assets/illustrations/burkinabe/key-handover.png',
   
   // Famille en déménagement - HowItWorks, Onboarding
-  'family-moving': '/src/assets/illustrations/ivorian/family-moving.png',
+  'family-moving': '/src/assets/illustrations/burkinabe/family-moving.png',
   
   // Réunion copropriété - Admin, Agence Dashboard
-  'co-ownership-meeting': '/src/assets/illustrations/ivorian/co-ownership-meeting.png',
+  'co-ownership-meeting': '/src/assets/illustrations/burkinabe/co-ownership-meeting.png',
   
-  // Certification ANSUT - Certification, CertificationBanner
-  'certification-ansut-illustration': '/src/assets/illustrations/ivorian/certification-ansut-illustration.png',
+  // Vérification MZAKA - Confiance, CertificationBanner
+  'verification-mzaka-illustration': '/src/assets/illustrations/burkinabe/verification-mzaka-illustration.png',
 } as const;
 
 export type IllustrationKey = keyof typeof illustrationPaths;

@@ -27,7 +27,6 @@ const Confidentialite = () => {
         Vos données ne sont jamais vendues. Elles peuvent être partagées avec :
       </p>
       <ul>
-        <li>ARCEP (pour certification des baux)</li>
         <li>Partenaires de paiement (Mobile Money)</li>
         <li>Autorités légales (sur demande judiciaire)</li>
       </ul>

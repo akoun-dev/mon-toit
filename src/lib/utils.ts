@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type IllustrationKey, illustrationPaths } from "@/assets/illustrations/ivorian/illustrationPaths";
+import { type IllustrationKey, illustrationPaths } from "@/assets/illustrations/burkinabe/illustrationPaths";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

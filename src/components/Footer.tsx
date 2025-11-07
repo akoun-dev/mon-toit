@@ -14,7 +14,7 @@ const Footer = () => {
             <span className="text-white/80">© 2025 MZAKA</span>
             <div className="flex items-center gap-1.5 px-2 py-1 bg-primary-900/50 border border-primary-700 rounded">
               <Shield className="h-3 w-3 text-white" />
-              <span className="text-xs">ARCEP</span>
+              <span className="text-xs">100% Burkinabè</span>
             </div>
           </div>
 

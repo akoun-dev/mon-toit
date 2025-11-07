@@ -103,7 +103,7 @@ const ResetPassword = () => {
             <Home className="h-8 w-8" />
             MZAKA
           </Link>
-          <p className="text-muted-foreground">Propulsé par ARCEP</p>
+          <p className="text-muted-foreground">Plateforme de confiance</p>
         </div>
 
         <Card>

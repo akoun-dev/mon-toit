@@ -143,7 +143,7 @@ const AdminDashboard = () => {
     >
       <div className="container mx-auto px-6 py-6">
         <StickyHeader>
-          <h1 className="text-2xl font-bold">Administration ARCEP</h1>
+          <h1 className="text-2xl font-bold">Administration MZAKA</h1>
           <p className="text-sm text-muted-foreground">
             Gestion et validation de la plateforme MZAKA
           </p>

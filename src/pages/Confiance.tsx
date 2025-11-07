@@ -36,7 +36,7 @@ const Confiance = () => {
         {/* Hero with illustration */}
         <section className="relative h-96 overflow-hidden mb-12">
           <LazyIllustration 
-            src={getIllustrationPath('certification-ansut-illustration')!}
+            src={getIllustrationPath('verification-mzaka-illustration')!}
             alt="MZAKA - Plateforme de confiance"
             className="w-full h-full object-cover"
           />

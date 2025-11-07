@@ -14,34 +14,34 @@ interface Illustration {
 
 const ILLUSTRATIONS: Illustration[] = [
   {
-    filename: "famille-heureuse-cocody",
-    description: "Famille ivoirienne heureuse devant leur maison",
-    prompt: "Flat design vector illustration of a happy Ivorian family standing in front of their modern house in Cocody, Abidjan. Family of 4 people (parents and 2 children) smiling, contemporary West African home with orange and blue accent colors (#E67E22, #2C5F7F). Warm, welcoming atmosphere, clean composition, professional real estate marketing style. Ultra-realistic details, vibrant colors, 16:9 aspect ratio."
+    filename: "famille-heureuse-ouaga",
+    description: "Famille burkinabè heureuse devant leur maison",
+    prompt: "Flat design vector illustration of a happy Burkinabè family standing in front of their modern house in Ouagadougou. Family of 4 people (parents and 2 children) smiling, contemporary West African home with orange and blue accent colors (#E67E22, #2C5F7F). Warm, welcoming atmosphere, clean composition, professional real estate marketing style. Ultra-realistic details, vibrant colors, 16:9 aspect ratio."
   },
   {
     filename: "couple-visite-appartement",
     description: "Jeune couple visitant un appartement",
-    prompt: "Flat design illustration of a young Ivorian couple visiting an apartment with a real estate agent. Modern interior with large windows, natural light, agent showing the property on a tablet. Contemporary style, orange and blue accent colors (#E67E22, #2C5F7F), professional and trustworthy atmosphere. Clean lines, 16:9 aspect ratio."
+    prompt: "Flat design illustration of a young Burkinabè couple visiting an apartment with a real estate agent. Modern interior with large windows, natural light, agent showing the property on a tablet. Contemporary style, orange and blue accent colors (#E67E22, #2C5F7F), professional and trustworthy atmosphere. Clean lines, 16:9 aspect ratio."
   },
   {
     filename: "agent-immobilier-presentation",
     description: "Agent présentant un dossier sur tablette",
-    prompt: "Flat design illustration of a professional Ivorian real estate agent presenting a property dossier on a digital tablet. Modern office setting, confident posture, orange and blue brand colors (#E67E22, #2C5F7F). Professional, trustworthy, contemporary style. Vector-style, clean composition, 16:9 aspect ratio."
+    prompt: "Flat design illustration of a professional Burkinabè real estate agent presenting a property dossier on a digital tablet. Modern office setting, confident posture, orange and blue brand colors (#E67E22, #2C5F7F). Professional, trustworthy, contemporary style. Vector-style, clean composition, 16:9 aspect ratio."
   },
   {
-    filename: "quartier-anime-abidjan",
-    description: "Rue animée d'Abidjan",
-    prompt: "Flat design illustration of a vibrant Abidjan neighborhood street scene. Orange taxis, people in colorful wax fabric, local shops, modern buildings mixed with traditional architecture. Lively atmosphere, warm colors with orange and blue accents (#E67E22, #2C5F7F). West African urban life, dynamic composition, 16:9 aspect ratio."
+    filename: "quartier-anime-ouagadougou",
+    description: "Rue animée de Ouagadougou",
+    prompt: "Flat design illustration of a vibrant Ouagadougou neighborhood street scene. Green taxis, people in colorful wax fabric, local shops, modern buildings mixed with traditional architecture. Lively atmosphere, warm colors with orange and blue accents (#E67E22, #2C5F7F). West African urban life, dynamic composition, 16:9 aspect ratio."
   },
   {
     filename: "interieur-moderne-salon",
-    description: "Salon ivoirien moderne",
-    prompt: "Flat design illustration of a modern Ivorian living room interior. Contemporary furniture, large TV, West African decorative elements (wax patterns, local art), warm and welcoming atmosphere. Natural light from large windows, orange and blue accent colors (#E67E22, #2C5F7F). Cozy, professional real estate photography style, 16:9 aspect ratio."
+    description: "Salon burkinabè moderne",
+    prompt: "Flat design illustration of a modern Burkinabè living room interior. Contemporary furniture, large TV, West African decorative elements (wax patterns, local art), warm and welcoming atmosphere. Natural light from large windows, orange and blue accent colors (#E67E22, #2C5F7F). Cozy, professional real estate photography style, 16:9 aspect ratio."
   },
   {
-    filename: "vue-aerienne-abidjan",
-    description: "Skyline stylisé d'Abidjan",
-    prompt: "Minimalist flat design illustration of Abidjan skyline view. Recognizable landmarks including Plateau business district, Henri Konan Bédié Bridge. Stylized, elegant composition with orange and blue color scheme (#E67E22, #2C5F7F). Modern, clean lines, abstract geometric shapes, 16:9 aspect ratio."
+    filename: "vue-aerienne-ouagadougou",
+    description: "Skyline stylisé de Ouagadougou",
+    prompt: "Minimalist flat design illustration of Ouagadougou skyline view. Recognizable landmarks including Cathédrale de Ouagadougou, Monument des Martyrs. Stylized, elegant composition with orange and blue color scheme (#E67E22, #2C5F7F). Modern, clean lines, abstract geometric shapes, 16:9 aspect ratio."
   },
   {
     filename: "remise-cles-ceremonie",
@@ -59,9 +59,9 @@ const ILLUSTRATIONS: Illustration[] = [
     prompt: "Flat design illustration of a professional co-ownership meeting. Diverse group of Ivorian property owners and residents sitting around a modern conference table, discussing. Professional, collaborative atmosphere, orange and blue brand colors (#E67E22, #2C5F7F). Contemporary office setting, 16:9 aspect ratio."
   },
   {
-    filename: "certification-ansut-illustration",
-    description: "Document de certification ANSUT",
-    prompt: "Flat design illustration of an official ANSUT certification document with official stamp and seal. Professional, institutional style, green ANSUT color (#2ECC71) combined with orange and blue (#E67E22, #2C5F7F). Official government document aesthetic, trust and security, badge with stars, 16:9 aspect ratio."
+    filename: "verification-mzaka-illustration",
+    description: "Document de vérification MZAKA",
+    prompt: "Flat design illustration of an official MZAKA verification document with official stamp and seal. Professional, trusted platform style, orange and blue brand colors (#E67E22, #2C5F7F). Trust and security aesthetic, badge with checkmark, 16:9 aspect ratio."
   }
 ];
 
@@ -131,7 +131,7 @@ export const IllustrationGenerator = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Image className="h-5 w-5" />
-          Générateur d'Illustrations Ivoiriennes
+          Générateur d'Illustrations Burkinabè
         </CardTitle>
         <CardDescription>
           Générez automatiquement les 10 illustrations prioritaires avec Lovable AI
