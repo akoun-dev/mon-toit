@@ -8,13 +8,13 @@ const Footer = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 text-sm">
           
-          {/* Zone gauche : Logo + Copyright + Badge ANSUT */}
+  {/* Zone gauche : Logo + Copyright + Badge ARCEP */}
           <div className="flex items-center gap-4">
-            <img src={monToitLogo} alt="Mon Toit" className="h-6 w-auto brightness-0 invert" />
-            <span className="text-white/80">© 2025 Mon Toit</span>
+            <img src={monToitLogo} alt="MZAKA" className="h-6 w-auto brightness-0 invert" />
+            <span className="text-white/80">© 2025 MZAKA</span>
             <div className="flex items-center gap-1.5 px-2 py-1 bg-primary-900/50 border border-primary-700 rounded">
               <Shield className="h-3 w-3 text-white" />
-              <span className="text-xs">ANSUT</span>
+              <span className="text-xs">ARCEP</span>
             </div>
           </div>
 

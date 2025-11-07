@@ -1,24 +1,25 @@
 /**
- * MON TOIT - Footer Institutionnel
- * Conforme aux directives ANSUT et service public numérique
+ * MZAKA - Footer Institutionnel
+ * Conforme aux directives ARCEP et service public numérique
  */
 
 import { Link } from 'react-router-dom';
 import { Shield, ShieldCheck, Mail, Phone, MapPin, ExternalLink } from 'lucide-react';
 import monToitLogo from '@/assets/logo/mon-toit-logo.png';
+import { BRANDING } from '@/config/branding';
 
 export const InstitutionalFooter = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-gradient-to-br from-primary to-primary-700 text-white">
-      {/* Bandeau ANSUT */}
+      {/* Bandeau ARCEP */}
       <div className="bg-primary-900 py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center md:text-left">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-6 w-6 text-white" />
-              <span className="font-bold text-lg">Certifié ANSUT</span>
+              <span className="font-bold text-lg">Certifié ARCEP</span>
             </div>
             <span className="hidden md:inline text-white/60">•</span>
             <span className="text-white/90">Service Public du Numérique</span>
@@ -35,21 +36,21 @@ export const InstitutionalFooter = () => {
             <div className="flex items-center gap-3">
               <img 
                 src={monToitLogo} 
-                alt="Mon Toit" 
+                alt="MZAKA" 
                 className="h-10 w-auto brightness-0 invert" 
               />
               <div>
-                <h3 className="font-bold text-lg">Mon Toit</h3>
+                <h3 className="font-bold text-lg">MZAKA</h3>
                 <p className="text-xs text-white/60">Le logement en toute confiance</p>
               </div>
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
-              Plateforme immobilière certifiée ANSUT pour la recherche et la publication de logements en Côte d'Ivoire.
+              Plateforme immobilière certifiée ARCEP pour la recherche et la publication de logements au Burkina Faso.
             </p>
             <div className="flex items-start gap-2 text-xs text-white/60">
               <Shield className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
               <span>
-                Propulsé par la Direction de la Transformation Digitale et de l'Innovation (DTDI) – ANSUT
+                Propulsé par la Direction de la Transformation Digitale et de l'Innovation (DTDI) – ARCEP
               </span>
             </div>
           </div>
@@ -128,21 +129,21 @@ export const InstitutionalFooter = () => {
             <div className="space-y-3 text-sm text-white/80">
               <div className="flex items-start gap-2">
                 <Mail className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
-                <a href="mailto:contact@montoit.ci" className="hover:text-white transition-colors">
-                  contact@montoit.ci
+                <a href="mailto:contact@mzaka.bf" className="hover:text-white transition-colors">
+                  contact@mzaka.bf
                 </a>
               </div>
               <div className="flex items-start gap-2">
                 <Phone className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
-                <a href="tel:+2250700000000" className="hover:text-white transition-colors">
-                  +225 07 00 00 00 00
+                <a href="tel:+22600000000" className="hover:text-white transition-colors">
+                  +226 XX XX XX XX
                 </a>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
                 <span>
-                  Abidjan, Plateau<br />
-                  Côte d'Ivoire
+                  Ouagadougou<br />
+                  Burkina Faso
                 </span>
               </div>
             </div>
@@ -155,7 +156,7 @@ export const InstitutionalFooter = () => {
             
             {/* Copyright */}
             <div className="flex items-center gap-2">
-              <span>© {currentYear} Mon Toit</span>
+              <span>© {currentYear} MZAKA</span>
               <span className="hidden md:inline">•</span>
               <span className="hidden md:inline">Tous droits réservés</span>
             </div>
@@ -164,7 +165,7 @@ export const InstitutionalFooter = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-900/50 border border-primary-700 rounded-lg">
                 <ShieldCheck className="h-4 w-4 text-white" />
-                <span className="text-xs font-semibold text-white">ANSUT Certifié</span>
+                <span className="text-xs font-semibold text-white">ARCEP Certifié</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 bg-success/20 border border-success/30 rounded-lg">
                 <Shield className="h-4 w-4 text-success" />
@@ -172,14 +173,14 @@ export const InstitutionalFooter = () => {
               </div>
             </div>
 
-            {/* Lien ANSUT */}
+            {/* Lien ARCEP */}
             <a
-              href="https://ansut.ci"
+              href="https://arcep.bf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-white/60 hover:text-white transition-colors"
             >
-              <span className="text-xs">En savoir plus sur ANSUT</span>
+              <span className="text-xs">En savoir plus sur l'ARCEP</span>
               <ExternalLink className="h-3 w-3" />
             </a>
           </div>
@@ -189,7 +190,7 @@ export const InstitutionalFooter = () => {
         <div className="mt-6 pt-6 border-t border-white/10">
           <p className="text-xs text-white/50 text-center leading-relaxed">
             Cette plateforme s'inscrit dans le cadre de l'interopérabilité des services publics numériques
-            de la République de Côte d'Ivoire, conformément aux standards ANSUT.
+            de la République du Burkina Faso, conformément aux standards ARCEP.
           </p>
         </div>
       </div>

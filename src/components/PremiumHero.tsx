@@ -82,7 +82,7 @@ export const PremiumHero = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <Sparkles className="h-4 w-4" />
-            Plateforme N°1 en Côte d'Ivoire
+            Plateforme N°1 au Burkina Faso
           </motion.div>
 
           {/* Titre Principal avec Gradient */}
@@ -105,7 +105,7 @@ export const PremiumHero = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Location immobilière certifiée ANSUT • Baux sécurisés • Paiement en ligne
+            Location immobilière certifiée ARCEP • Baux sécurisés • Paiement en ligne
           </motion.p>
 
           {/* Formulaire de Recherche */}

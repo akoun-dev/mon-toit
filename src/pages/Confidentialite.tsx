@@ -5,11 +5,11 @@ const Confidentialite = () => {
     <LegalPage title="Politique de confidentialité" lastUpdated="5 octobre 2025">
       <h2>1. Collecte des données</h2>
       <p>
-        Mon Toit collecte les données personnelles suivantes :
+        MZAKA collecte les données personnelles suivantes :
       </p>
       <ul>
         <li>Données d'identification (nom, prénom, email, téléphone)</li>
-        <li>Données de vérification (ONECI, CNAM, photo faciale)</li>
+        <li>Données de vérification (documents d'identité, photo faciale)</li>
         <li>Données de navigation (logs, cookies)</li>
       </ul>
 
@@ -27,7 +27,7 @@ const Confidentialite = () => {
         Vos données ne sont jamais vendues. Elles peuvent être partagées avec :
       </p>
       <ul>
-        <li>ANSUT (pour certification des baux)</li>
+        <li>ARCEP (pour certification des baux)</li>
         <li>Partenaires de paiement (Mobile Money)</li>
         <li>Autorités légales (sur demande judiciaire)</li>
       </ul>
@@ -39,7 +39,7 @@ const Confidentialite = () => {
       </p>
 
       <h2>5. Vos droits</h2>
-      <p>Conformément à la loi 2013-450, vous pouvez :</p>
+      <p>Conformément à la Loi N°010-2004/AN du 20 avril 2004, vous pouvez :</p>
       <ul>
         <li>Accéder à vos données</li>
         <li>Rectifier vos informations</li>
@@ -49,7 +49,7 @@ const Confidentialite = () => {
 
       <h2>6. Contact</h2>
       <p>
-        Pour toute question : <a href="mailto:privacy@montoit.ci">privacy@montoit.ci</a>
+        Pour toute question : <a href="mailto:privacy@mzaka.bf">privacy@mzaka.bf</a>
       </p>
     </LegalPage>
   );

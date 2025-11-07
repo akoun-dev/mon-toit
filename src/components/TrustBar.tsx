@@ -12,11 +12,11 @@ const TrustBar = () => {
     },
     {
       icon: Award,
-      text: "100% ivoirien"
+      text: "100% burkinabè"
     },
     {
       icon: Shield,
-      text: "Certifié ANSUT"
+      text: "Certifié ARCEP"
     }
   ];
 

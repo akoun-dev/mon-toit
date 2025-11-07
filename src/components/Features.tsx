@@ -6,14 +6,15 @@ import { Badge } from "./ui/badge";
 import monToitLogo from "@/assets/logo/mon-toit-logo.png";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
+import { BRANDING } from "@/config/branding";
 
-// Configuration - ANSUT (organisme public porteur)
-const ANSUT_FULL_NAME = "Agence Nationale du Service Universel des Télécommunications/TIC";
-const ANSUT_SHORT_NAME = "ANSUT";
-const ANSUT_MINISTRY = "Ministère de la Transition Numérique et de la Digitalisation";
+// Configuration - ARCEP (organisme public porteur)
+const ARCEP_FULL_NAME = BRANDING.CERTIFIER_FULL_NAME;
+const ARCEP_SHORT_NAME = BRANDING.CERTIFIER_NAME;
+const ARCEP_MINISTRY = BRANDING.CERTIFIER_MINISTRY;
 
-// Configuration - Mon Toit (le produit/service)
-const PRODUCT_NAME = "Mon Toit";
+// Configuration - MZAKA (le produit/service)
+const PRODUCT_NAME = BRANDING.APP_NAME;
 const PRODUCT_TAGLINE = "Dossier de location numérique certifié par l'État";
 
 // Types
@@ -102,7 +103,7 @@ const features: Feature[] = [
   {
     icon: FileSignature,
     title: "Signature Électronique Sécurisée",
-    description: "Bail numérique conforme à la loi ivoirienne avec signature électronique certifiée et paiements Mobile Money intégrés",
+    description: "Bail numérique conforme à la législation burkinabè avec signature électronique certifiée et paiements Mobile Money intégrés",
     microKpi: "Signature en 5 min",
     target: "all",
     targetLabel: "Pour tous",
@@ -121,7 +122,7 @@ const features: Feature[] = [
   },
 ];
 
-const withoutMonToit: ComparisonItem[] = [
+const withoutMZAKA: ComparisonItem[] = [
   { text: "Dossiers papier incomplets", icon: X },
   { text: "Pas de vérification d'identité", icon: X },
   { text: "Espèces et chèques non sécurisés", icon: X },
@@ -129,12 +130,12 @@ const withoutMonToit: ComparisonItem[] = [
   { text: "Risque de fraude documentaire", icon: X },
 ];
 
-const withMonToit: ComparisonItem[] = [
+const withMZAKA: ComparisonItem[] = [
   { text: "Dossier numérique certifié par l'État", icon: CheckCircle },
   { text: "Vérification biométrique et KYC", icon: CheckCircle },
   { text: "Paiements Mobile Money tracés", icon: CheckCircle },
   { text: "Médiation par service public", icon: CheckCircle },
-  { text: "Documents authentifiés par l'ANSUT", icon: CheckCircle },
+  { text: "Documents authentifiés par l'ARCEP", icon: CheckCircle },
 ];
 
 // Sous-composants
@@ -311,7 +312,7 @@ const Features = () => {
                 <X className="h-6 w-6 text-destructive" aria-hidden="true" />
                 Location traditionnelle
               </h4>
-              <ComparisonList items={withoutMonToit} />
+              <ComparisonList items={withoutMZAKA} />
             </div>
 
             {/* Avec Mon Toit */}
@@ -327,7 +328,7 @@ const Features = () => {
                     Service Public
                   </Badge>
                 </div>
-                <ComparisonList items={withMonToit} positive />
+                <ComparisonList items={withMZAKA} positive />
               </div>
             </div>
           </div>
@@ -505,10 +506,10 @@ const Features = () => {
           
           <div className="space-y-2 pt-4 border-t border-muted">
             <p className="text-sm text-muted-foreground">
-              Un service de l'<span className="font-semibold">{ANSUT_SHORT_NAME}</span> • Conforme à la loi ivoirienne 2013-450
+              Un service de l'<span className="font-semibold">{ARCEP_SHORT_NAME}</span> • Conforme à la législation burkinabè
             </p>
             <p className="text-xs text-muted-foreground">
-              {ANSUT_FULL_NAME} • Sous tutelle du {ANSUT_MINISTRY}
+              {ARCEP_FULL_NAME} • Sous tutelle du {ARCEP_MINISTRY}
             </p>
           </div>
         </div>

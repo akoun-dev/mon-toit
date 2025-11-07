@@ -112,14 +112,14 @@ const Hero = () => {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 max-w-xl font-medium">
-            La première plateforme immobilière certifiée ANSUT en Côte d'Ivoire. 100% gratuit, 100% sécurisé.
+            La première plateforme immobilière certifiée ARCEP au Burkina Faso. 100% gratuit, 100% sécurisé.
           </p>
 
           {/* Search bar with integrated voice */}
           <div className="relative max-w-2xl mb-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Cocody, Yopougon, Marcory..."
+              placeholder="Ouagadougou, Bobo-Dioulasso, Koudougou..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -165,7 +165,7 @@ const Hero = () => {
           {/* Quick search chips - discreet */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium text-muted-foreground">Populaire :</span>
-            {['Cocody', 'Yopougon', 'Marcory'].map((location) => (
+            {['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou'].map((location) => (
               <button
                 key={location}
                 onClick={() => handleQuickSearch(location)}

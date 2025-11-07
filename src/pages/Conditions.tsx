@@ -6,7 +6,7 @@ const Conditions = () => {
       <h2>1. Objet</h2>
       <p>
         Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès 
-        et l'utilisation de la plateforme Mon Toit propulsée par ANSUT.
+        et l'utilisation de la plateforme MZAKA propulsée par l'ARCEP.
       </p>
 
       <h2>2. Inscription</h2>
@@ -17,8 +17,8 @@ const Conditions = () => {
 
       <h2>3. Vérification d'identité</h2>
       <p>
-        La plateforme utilise les services ONECI et CNAM pour vérifier l'identité 
-        des utilisateurs, conformément à la réglementation ivoirienne.
+        La plateforme utilise des services de vérification d'identité pour authentifier 
+        les utilisateurs, conformément à la réglementation burkinabè.
       </p>
 
       <h2>4. Obligations des utilisateurs</h2>
@@ -30,13 +30,13 @@ const Conditions = () => {
 
       <h2>5. Responsabilité</h2>
       <p>
-        Mon Toit agit en qualité d'intermédiaire. La responsabilité des transactions 
+        MZAKA agit en qualité d'intermédiaire. La responsabilité des transactions 
         incombe aux parties (locataire/propriétaire).
       </p>
 
       <h2>6. Modification des CGU</h2>
       <p>
-        Mon Toit se réserve le droit de modifier ces CGU à tout moment. 
+        MZAKA se réserve le droit de modifier ces CGU à tout moment. 
         Les utilisateurs seront notifiés par email.
       </p>
     </LegalPage>

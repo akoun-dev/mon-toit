@@ -43,12 +43,12 @@ export const CompactSearchHero = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border z-50">
                   <SelectItem value="all">Toutes les villes</SelectItem>
-                  <SelectItem value="Abidjan">Abidjan</SelectItem>
-                  <SelectItem value="Yopougon">Yopougon</SelectItem>
-                  <SelectItem value="Cocody">Cocody</SelectItem>
-                  <SelectItem value="Marcory">Marcory</SelectItem>
-                  <SelectItem value="Koumassi">Koumassi</SelectItem>
-                  <SelectItem value="Plateau">Plateau</SelectItem>
+                  <SelectItem value="Ouagadougou">Ouagadougou</SelectItem>
+                  <SelectItem value="Bobo-Dioulasso">Bobo-Dioulasso</SelectItem>
+                  <SelectItem value="Koudougou">Koudougou</SelectItem>
+                  <SelectItem value="Ouahigouya">Ouahigouya</SelectItem>
+                  <SelectItem value="Banfora">Banfora</SelectItem>
+                  <SelectItem value="Dédougou">Dédougou</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -123,7 +123,7 @@ export const CompactSearchHero = () => {
               
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Users className="h-4 w-4 text-primary" />
-                <span><strong className="text-foreground"><CountUp value={10000} suffix="+" /></strong> Ivoiriens</span>
+                <span><strong className="text-foreground"><CountUp value={10000} suffix="+" /></strong> Burkinabè</span>
               </div>
               
               <div className="flex items-center gap-2 text-muted-foreground">
@@ -132,8 +132,8 @@ export const CompactSearchHero = () => {
               </div>
               
               <div className="flex items-center gap-2 text-muted-foreground">
-                <FileSignature className="h-4 w-4 text-secondary" />
-                <span>Certifié ANSUT</span>
+                <ShieldCheck className="h-4 w-4 text-primary" />
+                <span>Certifié ARCEP</span>
               </div>
             </div>
             

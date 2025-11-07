@@ -12,7 +12,7 @@ const PreFooterCTA = () => {
             Prêt à <span className="text-primary">commencer</span> ?
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Rejoignez des milliers d'Ivoiriens qui font confiance à Mon Toit
+            Rejoignez des milliers de Burkinabè qui font confiance à MZAKA
           </p>
         </div>
 
@@ -39,7 +39,7 @@ const PreFooterCTA = () => {
             <ul className="space-y-3 mb-6">
               <li className="flex items-center gap-2 text-sm">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Dossier vérifié par l'ANSUT
+                Dossier vérifié par l'ARCEP
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />

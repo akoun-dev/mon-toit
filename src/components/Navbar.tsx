@@ -49,7 +49,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
             <picture>
               <img
                 src={monToitLogo}
-                alt="Mon Toit - Plateforme Immobilière Certifiée ANSUT"
+                alt="MZAKA - Plateforme Immobilière Certifiée ARCEP"
                 className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
                 loading="eager"
                 fetchPriority="high"
@@ -60,11 +60,11 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
             </picture>
             <div className="hidden sm:flex flex-col">
               <span className="text-2xl font-bold text-primary leading-tight">
-                Mon Toit
+                MZAKA
               </span>
               <span className="text-xs text-secondary leading-tight flex items-center gap-1 font-semibold">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Certifié ANSUT
+                Certifié ARCEP
               </span>
             </div>
             </Link>
