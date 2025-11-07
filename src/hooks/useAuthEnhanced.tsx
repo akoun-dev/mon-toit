@@ -30,7 +30,6 @@ const logLoginAttempt = async (email: string, success: boolean, errorMessage?: s
       .insert({
         email,
         success,
-        error_message: errorMessage || null,
         ip_address: null, // You can get this from a service if needed
         user_agent: navigator.userAgent
       });
