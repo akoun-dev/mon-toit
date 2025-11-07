@@ -8,9 +8,9 @@ const AboutPage = () => {
       <Navbar />
       <main className="flex-1 pt-20">
         <div className="container mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold mb-4">À propos de Mon Toit</h1>
+          <h1 className="text-4xl font-bold mb-4">À propos de MZAKA</h1>
           <p className="text-lg text-muted-foreground mb-8">
-            La plateforme immobilière certifiée par l'État ivoirien pour des locations sécurisées
+            La plateforme immobilière certifiée par l'État burkinabè pour des locations sécurisées
           </p>
         </div>
         <UnifiedTrustSection />

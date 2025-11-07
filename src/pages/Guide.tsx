@@ -39,7 +39,7 @@ const Guide = () => {
               Comment pouvons-nous <span className="text-gradient-secondary">vous aider</span> ?
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              Guides détaillés, FAQ et support pour profiter pleinement de Mon Toit
+              Guides détaillés, FAQ et support pour profiter pleinement de MZAKA
             </p>
           </div>
         </section>
@@ -220,7 +220,7 @@ const Guide = () => {
           <div className="mb-16">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-2">Questions fréquentes</h2>
-              <p className="text-muted-foreground">Tout ce que vous devez savoir sur Mon Toit</p>
+              <p className="text-muted-foreground">Tout ce que vous devez savoir sur MZAKA</p>
             </div>
             
             {/* Barre de recherche FAQ */}

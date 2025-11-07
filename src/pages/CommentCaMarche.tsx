@@ -24,7 +24,7 @@ const CommentCaMarche = () => {
                   <span className="text-gradient-animated">Comment ça marche ?</span>
                 </h1>
                 <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-                  Découvrez le processus simple et sécurisé de Mon Toit
+                  Découvrez le processus simple et sécurisé de MZAKA
                 </p>
               </div>
             </div>

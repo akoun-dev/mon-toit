@@ -19,19 +19,19 @@ const APropos = () => {
               <AkanPattern />
               <div className="relative z-10">
                 <h1 className="text-h1 text-center mb-4">
-                  <span className="text-gradient-primary">À propos</span> de Mon Toit
+                  <span className="text-gradient-primary">À propos</span> de MZAKA
                 </h1>
                 <p className="text-xl text-muted-foreground text-center">
-                  La plateforme de confiance pour l'immobilier en Côte d'Ivoire
+                  La plateforme de confiance pour l'immobilier au Burkina Faso
                 </p>
               </div>
             </div>
 
             <div className="prose prose-lg max-w-none mb-12">
               <p>
-                <strong>Mon Toit</strong> est une plateforme innovante propulsée par <strong>ANSUT</strong> 
-                (Agence Nationale du Service Universel des Télécommunications/TIC), 
-                dédiée à révolutionner le marché immobilier ivoirien.
+                <strong>MZAKA</strong> est une plateforme innovante propulsée par l'<strong>ARCEP</strong> 
+                (Autorité de Régulation des Communications Électroniques et des Postes), 
+                dédiée à révolutionner le marché immobilier burkinabè.
               </p>
               <p>
                 Notre mission est de créer un environnement sécurisé, transparent et efficace 
@@ -46,7 +46,7 @@ const APropos = () => {
                   <CardTitle>Sécurité garantie</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Vérification d'identité (ONECI, CNAM), certification ANSUT des baux, 
+                  Vérification d'identité, certification ARCEP des baux, 
                   et paiements sécurisés via Mobile Money.
                 </CardContent>
               </Card>
@@ -67,7 +67,7 @@ const APropos = () => {
                   <CardTitle>Conformité légale</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Conforme à la loi ivoirienne 2013-450 sur la protection des données 
+                  Conforme à la législation burkinabè sur la protection des données 
                   et aux réglementations immobilières.
                 </CardContent>
               </Card>

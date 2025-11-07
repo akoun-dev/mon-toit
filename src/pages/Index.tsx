@@ -14,12 +14,12 @@ const Index = () => {
   return (
     <MainLayout>
       <Helmet>
-        <title>Mon Toit - Location Immobilière Certifiée ANSUT en Côte d'Ivoire</title>
+        <title>MZAKA - Location Immobilière Certifiée ARCEP au Burkina Faso</title>
         <meta 
           name="description" 
-          content="Trouvez votre logement idéal en Côte d'Ivoire. Baux certifiés ANSUT, dossiers vérifiés, signature électronique. Plus de 3,500 logements à Abidjan, Yopougon, Cocody." 
+          content="Trouvez votre logement idéal au Burkina Faso. Baux certifiés ARCEP, dossiers vérifiés, signature électronique. Plus de 3,500 logements à Ouagadougou, Bobo-Dioulasso." 
         />
-        <link rel="canonical" href="https://montoit.ci" />
+        <link rel="canonical" href="https://mzaka.bf" />
       </Helmet>
 
       <main role="main">
@@ -40,7 +40,7 @@ const Index = () => {
                 Pas encore trouvé votre toit idéal ?
               </h2>
               <p className="text-sm text-muted-foreground mb-6">
-                Explorez plus de biens ou découvrez pourquoi 10 000+ Ivoiriens nous font confiance
+                Explorez plus de biens ou découvrez pourquoi 10 000+ Burkinabè nous font confiance
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <Button asChild size="lg" className="shadow-md min-w-[200px]">
@@ -52,7 +52,7 @@ const Index = () => {
                 <Button asChild variant="outline" size="lg" className="shadow-sm min-w-[200px]">
                   <Link to="/a-propos">
                     <ShieldCheck className="h-4 w-4 mr-2" />
-                    Pourquoi Mon Toit ?
+                    Pourquoi MZAKA ?
                   </Link>
                 </Button>
               </div>

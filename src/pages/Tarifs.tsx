@@ -167,19 +167,19 @@ const Tarifs = () => {
                     Pourquoi c'est gratuit pour les locataires ?
                   </h3>
                   <p className="text-muted-foreground">
-                    La certification ANSUT (vérification d'identité biométrique + constitution du dossier digital) 
-                    est 100% gratuite pour tous les locataires car financée par l'ANSUT dans le cadre du service universel. 
-                    Mon Toit se rémunère uniquement via les commissions sur les baux signés par les propriétaires.
+                    La certification ARCEP (vérification d'identité biométrique + constitution du dossier digital) 
+                    est 100% gratuite pour tous les locataires car financée par l'ARCEP dans le cadre du service universel. 
+                    MZAKA se rémunère uniquement via les commissions sur les baux signés par les propriétaires.
                   </p>
                 </div>
 
                 <div className="bg-white rounded-lg p-6 shadow-md">
                   <h3 className="font-bold text-lg mb-2 text-foreground">
-                    Comment Mon Toit finance son fonctionnement ?
+                    Comment MZAKA finance son fonctionnement ?
                   </h3>
                   <p className="text-muted-foreground">
-                    Mon Toit opère selon un modèle freemium transparent : l'ANSUT finance l'infrastructure (CAPEX) 
-                    et Mon Toit assure les opérations (OPEX) via des commissions sur les transactions, 
+                    MZAKA opère selon un modèle freemium transparent : l'ARCEP finance l'infrastructure (CAPEX) 
+                    et MZAKA assure les opérations (OPEX) via des commissions sur les transactions, 
                     de la publicité ciblée et des services premium pour les agences. Les locataires ne paient jamais.
                   </p>
                 </div>
@@ -202,7 +202,7 @@ const Tarifs = () => {
                 Prêt à commencer ?
               </h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Rejoignez des milliers d'utilisateurs qui font confiance à Mon Toit pour leurs démarches immobilières
+                Rejoignez des milliers d'utilisateurs qui font confiance à MZAKA pour leurs démarches immobilières
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="px-8">

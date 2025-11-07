@@ -101,9 +101,9 @@ const ResetPassword = () => {
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold text-primary">
             <Home className="h-8 w-8" />
-            Mon Toit
+            MZAKA
           </Link>
-          <p className="text-muted-foreground">Propulsé par ANSUT</p>
+          <p className="text-muted-foreground">Propulsé par ARCEP</p>
         </div>
 
         <Card>

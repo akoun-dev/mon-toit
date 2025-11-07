@@ -125,8 +125,8 @@ const CertificationFAQ = () => {
                     Combien coûte la certification ?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    La certification ANSUT est actuellement gratuite pour tous les utilisateurs de la plateforme 
-                    Mon Toit. C'est un service inclus pour garantir la sécurité et la légalité de toutes les 
+                    La certification ARCEP est actuellement gratuite pour tous les utilisateurs de la plateforme 
+                    MZAKA. C'est un service inclus pour garantir la sécurité et la légalité de toutes les 
                     transactions immobilières sur notre plateforme.
                   </AccordionContent>
                 </AccordionItem>
@@ -136,7 +136,7 @@ const CertificationFAQ = () => {
                     Quelle est la durée de validité de la certification ?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    La certification ANSUT est valide pour toute la durée du bail. Elle reste active tant que 
+                    La certification ARCEP est valide pour toute la durée du bail. Elle reste active tant que
                     le contrat de location est en cours. Si le bail est renouvelé ou modifié de manière 
                     substantielle, une nouvelle certification sera nécessaire.
                   </AccordionContent>
