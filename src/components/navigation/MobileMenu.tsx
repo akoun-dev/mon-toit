@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSign, Search, PlusCircle } from 'lucide-react';
+import { Menu, LayoutDashboard, User, LogOut, ShieldCheck, HelpCircle, DollarSign, Search, PlusCircle, Map, Building, FileText, BookOpen, Info, Mail, FileCheck } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -24,50 +25,104 @@ export const MobileMenu = () => {
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] overflow-y-auto bg-background">
-        <div className="flex flex-col gap-6 mt-8">
-          {/* Navigation Links */}
-          <div className="flex flex-col gap-1">
-            <Link
-              to="/recherche"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <Search className="h-5 w-5 text-primary" />
-              <span>Rechercher un bien</span>
-            </Link>
-            <Link
-              to="/publier"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <PlusCircle className="h-5 w-5 text-primary" />
-              <span>Publier une annonce</span>
-            </Link>
-            <Link
-              to="/certification"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary/5 border-l-2 border-primary hover:bg-primary/10 transition-colors"
-            >
-              <ShieldCheck className="h-5 w-5 text-primary" />
-              <span>Vérification MZAKA</span>
-            </Link>
-            <Link
-              to="/#comment-ca-marche"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <HelpCircle className="h-5 w-5 text-primary" />
-              <span>Comment ça marche</span>
-            </Link>
-            <Link
-              to="/tarifs"
-              onClick={handleNavClick}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
-            >
-              <DollarSign className="h-5 w-5 text-primary" />
-              <span>Tarifs</span>
-            </Link>
-          </div>
+        <div className="flex flex-col gap-4 mt-8">
+          {/* Navigation Accordéon */}
+          <Accordion type="single" collapsible className="w-full">
+            {/* Explorer */}
+            <AccordionItem value="explorer">
+              <AccordionTrigger className="px-3 py-2 hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <Search className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Explorer</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-1 pl-9">
+                  <Link to="/explorer" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Tous les biens
+                  </Link>
+                  <Link to="/carte-intelligente" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Carte interactive
+                  </Link>
+                  <Link to="/explorer?verified=true" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Biens vérifiés DONIA
+                  </Link>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Publier */}
+            <AccordionItem value="publier">
+              <AccordionTrigger className="px-3 py-2 hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <PlusCircle className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Publier</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-1 pl-9">
+                  <Link to="/publier" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Publier une annonce
+                  </Link>
+                  <Link to="/mes-biens" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Mes annonces
+                  </Link>
+                  <Link to="/my-mandates" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Mes mandats
+                  </Link>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Aide */}
+            <AccordionItem value="aide">
+              <AccordionTrigger className="px-3 py-2 hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Aide</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-1 pl-9">
+                  <Link to="/guide" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Guide complet
+                  </Link>
+                  <Link to="/guide#faq" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    FAQ
+                  </Link>
+                  <Link to="/confiance" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Sécurité
+                  </Link>
+                  <Link to="/certification-faq" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Certification
+                  </Link>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* À propos */}
+            <AccordionItem value="apropos">
+              <AccordionTrigger className="px-3 py-2 hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <Info className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">À propos</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-1 pl-9">
+                  <Link to="/a-propos" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Qui sommes-nous
+                  </Link>
+                  <Link to="/tarifs" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Tarifs
+                  </Link>
+                  <Link to="/contact" onClick={handleNavClick} className="py-2 text-sm hover:text-primary">
+                    Contact
+                  </Link>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
 
           {user && (
             <>
@@ -78,7 +133,7 @@ export const MobileMenu = () => {
                 <p className="text-xs text-muted-foreground mb-2">{user.email}</p>
                 {(profile?.cnib_verified || profile?.cnam_verified) && (
                 <Badge variant="outline" className="text-xs border-primary text-primary">
-                  ✓ Vérifié MZAKA
+                  ✓ Vérifié DONIA
                 </Badge>
                 )}
               </div>

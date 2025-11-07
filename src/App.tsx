@@ -69,6 +69,7 @@ import Confiance from "./pages/Confiance";
 import TiersDeConfianceDashboard from "./pages/TiersDeConfianceDashboard";
 import CertificationFAQ from "./pages/CertificationFAQ";
 import Tarifs from "./pages/Tarifs";
+import Contact from "./pages/Contact";
 import PopulateImages from "./pages/PopulateImages";
 import TestCryptoNeo from "./pages/TestCryptoNeo";
 import Guide from "./pages/Guide";
@@ -373,6 +374,7 @@ const AppContent = () => {
             <Route path="/mentions-legales" element={<MentionsLegales />} />
             <Route path="/certification-faq" element={<CertificationFAQ />} />
             <Route path="/tarifs" element={<Tarifs />} />
+            <Route path="/contact" element={<Contact />} />
             
             <Route 
               path="/populate-images" 

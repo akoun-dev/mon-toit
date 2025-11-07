@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, Search, PlusCircle, HelpCircle, FileText } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { User, LogOut, LayoutDashboard, ShieldCheck, Shield, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { NavigationMenu, NavigationMenuList } from "@/components/ui/navigation-menu";
+import { MegaMenuExplorer } from "@/components/navigation/MegaMenuExplorer";
+import { MegaMenuPublier } from "@/components/navigation/MegaMenuPublier";
+import { MegaMenuAide } from "@/components/navigation/MegaMenuAide";
+import { MegaMenuAPropos } from "@/components/navigation/MegaMenuAPropos";
 import { useAuth } from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
 import {
@@ -70,26 +75,16 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
             </Link>
           </div>
 
-          {/* Navigation Links - Simplified to 3 core items */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link 
-              to="/explorer" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
-            >
-              Explorer
-            </Link>
-            <Link 
-              to="/publier" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
-            >
-              Publier
-            </Link>
-            <Link 
-              to="/guide" 
-              className="text-sm font-medium text-foreground/80 hover:text-primary hover:underline decoration-2 underline-offset-4 transition-all duration-150"
-            >
-              Aide
-            </Link>
+          {/* Mega Menu Navigation */}
+          <div className="hidden md:flex items-center">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <MegaMenuExplorer />
+                <MegaMenuPublier />
+                <MegaMenuAide />
+                <MegaMenuAPropos />
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Right Side Actions */}
