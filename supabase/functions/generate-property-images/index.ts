@@ -34,7 +34,10 @@ serve(async (req) => {
         'Bobo-Dioulasso': 'colonial-era architecture blended with modern renovations, distinctive ochre-colored buildings with wide verandas',
         'Koudougou': 'sahel-style residential buildings with earthen walls and functional design, surrounded by acacia trees',
         'Ouahigouya': 'traditional Mossi architecture with modern touches, fortified compound walls, characteristic of northern Burkina',
-        'Banfora': 'tropical architecture adapted to savanna climate, buildings with large shaded areas, near natural landscapes'
+        'Banfora': 'tropical architecture adapted to savanna climate, buildings with large shaded areas, near natural landscapes',
+        'Fada N\'Gourma': 'eastern Burkina architecture with distinctive Gourma influence, laterite brick buildings with wide courtyards, traditional granaries visible, surrounded by shea trees and baobabs',
+        'Dori': 'northern Sahel architecture, low-rise earthen buildings adapted to desert climate, minimalist design with thick walls for insulation, sparse vegetation and sandy terrain',
+        'Tenkodogo': 'central-eastern style with blend of Mossi and Bissa influences, compact residential buildings with metal roofing, market town atmosphere with vibrant commercial activity'
       };
 
       const typeDescriptions: Record<string, string> = {

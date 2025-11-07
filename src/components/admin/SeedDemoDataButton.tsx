@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, startTransition } fr
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Database, Loader2, CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
+import { Database, Loader2, CheckCircle2, XCircle, RotateCcw, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import {
@@ -197,25 +197,53 @@ export const SeedDemoDataButton = () => {
 
       <CardContent className="space-y-4">
         <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <AlertDialogTrigger asChild>
+          <div className="flex gap-2">
             <Button
-              className="w-full"
+              variant="destructive"
+              size="sm"
+              onClick={async () => {
+                try {
+                  setStatus('seeding');
+                  setProgress(50);
+                  const { error } = await supabase.functions.invoke('clean-demo-data');
+                  if (error) throw error;
+                  toast.success('Données nettoyées avec succès');
+                  setStatus('success');
+                } catch (error: any) {
+                  console.error('Erreur nettoyage:', error);
+                  toast.error('Erreur lors du nettoyage');
+                  setStatus('error');
+                  setError(error.message);
+                } finally {
+                  setTimeout(() => resetAll(), 2000);
+                }
+              }}
               disabled={seeding}
-              onClick={() => setDialogOpen(true)}
+              className="gap-2"
             >
-              {seeding ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Génération en cours…
-                </>
-              ) : (
-                <>
-                  <Database className="mr-2 h-4 w-4" />
-                  Générer les données
-                </>
-              )}
+              <Trash2 className="h-4 w-4" />
+              Nettoyer
             </Button>
-          </AlertDialogTrigger>
+            <AlertDialogTrigger asChild>
+              <Button
+                className="flex-1"
+                disabled={seeding}
+                onClick={() => setDialogOpen(true)}
+              >
+                {seeding ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Génération en cours…
+                  </>
+                ) : (
+                  <>
+                    <Database className="mr-2 h-4 w-4" />
+                    Générer les données
+                  </>
+                )}
+              </Button>
+            </AlertDialogTrigger>
+          </div>
 
           <AlertDialogContent>
             <AlertDialogHeader>
