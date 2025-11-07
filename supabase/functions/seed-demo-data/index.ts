@@ -230,33 +230,50 @@ Deno.serve(async (req) => {
 
     // 2. CRÉER LES PROPRIÉTÉS
     const properties = [
-      // Jean-Paul Ouédraogo
+      // Jean-Paul Ouédraogo - OUAGADOUGOU
       { owner: 'jean-paul.ouedraogo@example.com', title: 'Villa Moderne 4 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 450000, bedrooms: 4, bathrooms: 3, surface: 250, status: 'disponible', moderation: 'approved' },
       { owner: 'jean-paul.ouedraogo@example.com', title: 'Appartement 3 Pièces', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 180000, bedrooms: 2, bathrooms: 1, surface: 85, status: 'disponible', moderation: 'approved' },
       { owner: 'jean-paul.ouedraogo@example.com', title: 'Studio Meublé', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'studio', rent: 120000, bedrooms: 0, bathrooms: 1, surface: 35, status: 'loue', moderation: 'approved' },
       
-      // Marie Kaboré
+      // BOBO-DIOULASSO (2ème ville)
+      { owner: 'jean-paul.ouedraogo@example.com', title: 'Villa Coloniale Rénovée', city: 'Bobo-Dioulasso', neighborhood: 'Lafiabougou', type: 'house', rent: 280000, bedrooms: 3, bathrooms: 2, surface: 180, status: 'disponible', moderation: 'approved' },
+      { owner: 'jean-paul.ouedraogo@example.com', title: 'Villa Traditionnelle Rénovée', city: 'Ouahigouya', neighborhood: 'Centre', type: 'house', rent: 110000, bedrooms: 3, bathrooms: 2, surface: 130, status: 'disponible', moderation: 'approved' },
+      
+      // Marie Kaboré - OUAGADOUGOU
       { owner: 'marie.kabore@example.com', title: 'Duplex Luxueux 5 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 550000, bedrooms: 5, bathrooms: 4, surface: 320, status: 'disponible', moderation: 'approved' },
       { owner: 'marie.kabore@example.com', title: 'Villa Familiale', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'house', rent: 280000, bedrooms: 3, bathrooms: 2, surface: 180, status: 'disponible', moderation: 'approved' },
       { owner: 'marie.kabore@example.com', title: 'Villa 4 Chambres avec Piscine', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 350000, bedrooms: 4, bathrooms: 3, surface: 220, status: 'loue', moderation: 'approved', hasPool: true },
       { owner: 'marie.kabore@example.com', title: 'Appartement 2 Pièces', city: 'Ouagadougou', neighborhood: 'Somgandé', type: 'apartment', rent: 95000, bedrooms: 1, bathrooms: 1, surface: 55, status: 'disponible', moderation: 'approved' },
       
-      // Ismaël Sawadogo
+      // BOBO-DIOULASSO
+      { owner: 'marie.kabore@example.com', title: 'Appartement Centre-Ville Bobo', city: 'Bobo-Dioulasso', neighborhood: 'Centre-Ville', type: 'apartment', rent: 150000, bedrooms: 2, bathrooms: 1, surface: 75, status: 'disponible', moderation: 'approved' },
+      { owner: 'marie.kabore@example.com', title: 'Résidence Touristique Banfora', city: 'Banfora', neighborhood: 'Quartier Commercial', type: 'house', rent: 160000, bedrooms: 3, bathrooms: 2, surface: 150, status: 'disponible', moderation: 'approved' },
+      
+      // Ismaël Sawadogo - OUAGADOUGOU
       { owner: 'ismael.sawadogo@example.com', title: 'Villa Contemporaine', city: 'Ouagadougou', neighborhood: 'Kossodo', type: 'house', rent: 380000, bedrooms: 4, bathrooms: 2, surface: 200, status: 'disponible', moderation: 'approved' },
       { owner: 'ismael.sawadogo@example.com', title: 'Appartement Économique', city: 'Ouagadougou', neighborhood: 'Zogona', type: 'apartment', rent: 75000, bedrooms: 2, bathrooms: 1, surface: 60, status: 'disponible', moderation: 'approved' },
       
-      // Immobilier BF
+      // KOUDOUGOU
+      { owner: 'ismael.sawadogo@example.com', title: 'Maison Familiale Koudougou', city: 'Koudougou', neighborhood: 'Secteur 1', type: 'house', rent: 120000, bedrooms: 3, bathrooms: 2, surface: 140, status: 'disponible', moderation: 'approved' },
+      
+      // Immobilier BF - OUAGADOUGOU
       { owner: 'contact@immobilier-bf.com', title: 'Penthouse Premium Vue Lagune', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 850000, bedrooms: 4, bathrooms: 4, surface: 280, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@immobilier-bf.com', title: 'Villa de Prestige', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 720000, bedrooms: 5, bathrooms: 4, surface: 350, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@immobilier-bf.com', title: 'Appartement Standing', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 320000, bedrooms: 3, bathrooms: 2, surface: 120, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@immobilier-bf.com', title: 'Duplex Moderne', city: 'Ouagadougou', neighborhood: 'Patte d\'Oie', type: 'apartment', rent: 480000, bedrooms: 4, bathrooms: 3, surface: 230, status: 'loue', moderation: 'approved' },
       { owner: 'contact@immobilier-bf.com', title: 'Villa Rénovation Complète', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 400000, bedrooms: 4, bathrooms: 3, surface: 210, status: 'disponible', moderation: 'approved' },
       
-      // Ouaga Prestige Immobilier
+      // BOBO-DIOULASSO
+      { owner: 'contact@immobilier-bf.com', title: 'Villa Moderne avec Jardin', city: 'Bobo-Dioulasso', neighborhood: 'Accart-Ville', type: 'house', rent: 350000, bedrooms: 4, bathrooms: 3, surface: 220, status: 'disponible', moderation: 'approved' },
+      
+      // Ouaga Prestige Immobilier - OUAGADOUGOU
       { owner: 'contact@ouaga-prestige.com', title: 'Maison Moderne', city: 'Ouagadougou', neighborhood: 'Bogodogo', type: 'house', rent: 250000, bedrooms: 3, bathrooms: 2, surface: 150, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@ouaga-prestige.com', title: 'Appartement Familial', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'apartment', rent: 160000, bedrooms: 3, bathrooms: 2, surface: 90, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@ouaga-prestige.com', title: 'Villa Neuve', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 420000, bedrooms: 4, bathrooms: 3, surface: 240, status: 'disponible', moderation: 'approved' },
       { owner: 'contact@ouaga-prestige.com', title: 'Appartement En Attente Modération', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'apartment', rent: 200000, bedrooms: 2, bathrooms: 1, surface: 75, status: 'disponible', moderation: 'pending' },
+      
+      // KOUDOUGOU
+      { owner: 'contact@ouaga-prestige.com', title: 'Appartement Neuf Koudougou', city: 'Koudougou', neighborhood: 'Secteur 3', type: 'apartment', rent: 95000, bedrooms: 2, bathrooms: 1, surface: 60, status: 'disponible', moderation: 'approved' },
     ];
 
     const propertyMap = new Map<string, string>();

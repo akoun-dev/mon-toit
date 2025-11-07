@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
-import { Loader2, Image as ImageIcon, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Image as ImageIcon, CheckCircle, XCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function PopulateImages() {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<'gemini-flash' | 'gemini-pro'>('gemini-flash');
+  const [batchSize, setBatchSize] = useState(10);
   const [progress, setProgress] = useState<{
     total: number;
     current: number;
@@ -39,7 +44,7 @@ export default function PopulateImages() {
         .from('properties')
         .select('id, title, property_type, city, neighborhood')
         .is('main_image', null)
-        .limit(10);
+        .limit(batchSize);
 
       if (fetchError) throw fetchError;
 
@@ -64,7 +69,9 @@ export default function PopulateImages() {
             body: {
               propertyId: property.id,
               propertyType: property.property_type,
-              city: property.city
+              city: property.city,
+              neighborhood: property.neighborhood,
+              model: selectedModel
             }
           });
 
@@ -117,11 +124,50 @@ export default function PopulateImages() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="model" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Modèle IA
+              </Label>
+              <Select value={selectedModel} onValueChange={(value: 'gemini-flash' | 'gemini-pro') => setSelectedModel(value)}>
+                <SelectTrigger id="model">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gemini-flash">Gemini Flash (Rapide, Recommandé)</SelectItem>
+                  <SelectItem value="gemini-pro">Gemini Pro (Haute qualité)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {selectedModel === 'gemini-flash' 
+                  ? '✨ Rapide et efficace, idéal pour la génération en masse' 
+                  : '🎨 Qualité supérieure, plus lent et coûteux'}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="batch">Nombre d'images à générer</Label>
+              <Input 
+                id="batch"
+                type="number" 
+                min={1} 
+                max={50} 
+                value={batchSize}
+                onChange={(e) => setBatchSize(Math.min(50, Math.max(1, Number(e.target.value))))}
+              />
+              <p className="text-xs text-muted-foreground">
+                Génère jusqu'à {batchSize} images pour les propriétés sans photo
+              </p>
+            </div>
+          </div>
+
           <div className="flex gap-4">
             <Button
               onClick={generateImagesForProperties}
               disabled={isGenerating}
               className="flex-1"
+              size="lg"
             >
               {isGenerating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isGenerating ? 'Génération en cours...' : 'Générer les images'}
@@ -129,6 +175,7 @@ export default function PopulateImages() {
             <Button
               variant="outline"
               onClick={() => navigate('/')}
+              size="lg"
             >
               Retour
             </Button>

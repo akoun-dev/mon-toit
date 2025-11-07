@@ -21,24 +21,53 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { propertyId, propertyType, city } = await req.json();
+    const { propertyId, propertyType, city, neighborhood } = await req.json();
 
     if (!propertyId || !propertyType || !city) {
       throw new Error("Missing required fields");
     }
 
-    // Créer le prompt pour la génération d'image
-    const typeDescriptions: Record<string, string> = {
-      'appartement': 'modern apartment building exterior with balconies',
-      'villa': 'luxury villa with garden and modern architecture',
-      'studio': 'contemporary studio apartment building',
-      'duplex': 'elegant duplex residence with two floors',
-      'maison': 'beautiful family house with yard'
+    // Descriptions contextuelles par ville
+    const getContextualPrompt = (propertyType: string, city: string, neighborhood?: string): string => {
+      const architectureStyles: Record<string, string> = {
+        'Ouagadougou': 'modern Burkinabè architecture with red clay walls and metal roofing, contemporary design mixed with traditional sahel elements',
+        'Bobo-Dioulasso': 'colonial-era architecture blended with modern renovations, distinctive ochre-colored buildings with wide verandas',
+        'Koudougou': 'sahel-style residential buildings with earthen walls and functional design, surrounded by acacia trees',
+        'Ouahigouya': 'traditional Mossi architecture with modern touches, fortified compound walls, characteristic of northern Burkina',
+        'Banfora': 'tropical architecture adapted to savanna climate, buildings with large shaded areas, near natural landscapes'
+      };
+
+      const typeDescriptions: Record<string, string> = {
+        'appartement': 'apartment building with multiple floors and balconies, typical of urban Burkina Faso',
+        'apartment': 'apartment building with multiple floors and balconies, typical of urban Burkina Faso',
+        'villa': 'standalone villa with compound walls and private courtyard',
+        'studio': 'modern studio complex with secure access',
+        'duplex': 'two-story duplex residence with external staircase',
+        'maison': 'family house with large front yard and mango trees',
+        'house': 'family house with large front yard and mango trees'
+      };
+
+      const contextDetails = [
+        'red laterite soil visible in surroundings',
+        'characteristic Burkinabè green taxis passing by',
+        'traditional market stalls in the background',
+        'acacia and mango trees providing shade',
+        'metal gates painted in bright colors',
+        'solar panels on some roofs',
+        'concrete walls with decorative patterns',
+        'wide dusty streets typical of Sahel cities'
+      ];
+
+      const randomDetails = contextDetails.sort(() => 0.5 - Math.random()).slice(0, 3).join(', ');
+      
+      const architectureStyle = architectureStyles[city] || architectureStyles['Ouagadougou'];
+      const typeDesc = typeDescriptions[propertyType] || 'residential property';
+      const locationDesc = neighborhood ? `${neighborhood}, ${city}` : city;
+
+      return `Professional real estate photograph of a ${typeDesc} in ${locationDesc}, Burkina Faso. Architecture: ${architectureStyle}. Setting: ${randomDetails}. Lighting: bright West African sunlight, clear blue sky typical of Sahel climate. Style: modern real estate photography, welcoming and authentic, showing true Burkinabè urban life. Quality: ultra high resolution, 16:9 aspect ratio, professional composition. IMPORTANT: Show REAL Burkinabè architectural elements - red clay, metal roofing, compound walls, not European-style buildings.`;
     };
 
-    const baseDesc = typeDescriptions[propertyType] || 'residential property';
-    const imagePrompt = `Generate a high-quality, professional real estate photograph of a ${baseDesc} in ${city}, Burkina Faso. The image should be bright, welcoming, with blue sky, showing the exterior facade. Style: professional real estate photography, well-lit, attractive, 16:9 aspect ratio. Ultra high resolution.`;
-
+    const imagePrompt = getContextualPrompt(propertyType, city, neighborhood);
     console.log("Generating image for property", propertyId, "with prompt:", imagePrompt);
 
     // Générer l'image avec Lovable AI
