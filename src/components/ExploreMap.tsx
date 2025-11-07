@@ -13,38 +13,38 @@ import { Badge } from "./ui/badge";
 const featuredProperties = [
   {
     id: "1",
-    title: "Appartement 3 pièces - Cocody",
-    city: "Cocody",
+    title: "Appartement 3 pièces - Ouaga 2000",
+    city: "Ouaga 2000",
     monthly_rent: 350000,
-    latitude: 5.3599,
-    longitude: -3.9889,
+    latitude: 12.3750,
+    longitude: -1.5050,
     main_image: null
   },
   {
     id: "2",
-    title: "Villa F4 - Plateau",
-    city: "Plateau",
+    title: "Villa F4 - Cissin",
+    city: "Cissin",
     monthly_rent: 550000,
-    latitude: 5.3244,
-    longitude: -4.0125,
+    latitude: 12.3800,
+    longitude: -1.5450,
     main_image: null
   },
   {
     id: "3",
-    title: "Studio moderne - Marcory",
-    city: "Marcory",
+    title: "Studio moderne - Somgandé",
+    city: "Somgandé",
     monthly_rent: 180000,
-    latitude: 5.2869,
-    longitude: -3.9967,
+    latitude: 12.3950,
+    longitude: -1.5300,
     main_image: null
   },
   {
     id: "4",
-    title: "Duplex 5 pièces - Riviera",
-    city: "Riviera",
+    title: "Duplex 5 pièces - Gounghin",
+    city: "Gounghin",
     monthly_rent: 650000,
-    latitude: 5.3736,
-    longitude: -3.9609,
+    latitude: 12.3550,
+    longitude: -1.5250,
     main_image: null
   }
 ];

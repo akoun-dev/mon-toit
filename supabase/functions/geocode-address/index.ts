@@ -36,7 +36,7 @@ serve(async (req) => {
     const searchQuery = encodeURIComponent(`${address}, ${city}, Burkina Faso`);
     
     // Call Mapbox Geocoding API
-    const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${MAPBOX_TOKEN}&country=CI&limit=1`;
+    const geocodeUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery}.json?access_token=${MAPBOX_TOKEN}&country=BF&limit=1`;
     
     const response = await fetch(geocodeUrl);
     
@@ -66,8 +66,8 @@ serve(async (req) => {
       console.log('No geocoding results, using default Ouagadougou coordinates');
       return new Response(
         JSON.stringify({
-          latitude: 5.3599,
-          longitude: -4.0305,
+          latitude: 12.3714,
+          longitude: -1.5197,
           formatted_address: `${address}, ${city}, Burkina Faso`
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
