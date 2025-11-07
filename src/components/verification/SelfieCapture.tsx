@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Camera, Loader2, X } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useFaceQualityDetection } from '@/hooks/useFaceQualityDetection';
+import { QualityOverlay } from './QualityOverlay';
+import { useEffect } from 'react';
 
 interface SelfieCaptureProps {
   method: 'local' | 'popup';
@@ -30,6 +33,18 @@ export const SelfieCapture = ({
   onCapture,
   onRemove,
 }: SelfieCaptureProps) => {
+  const quality = useFaceQualityDetection(videoRef);
+
+  useEffect(() => {
+    if (isCapturing && videoRef.current) {
+      quality.startAnalysis();
+    } else {
+      quality.stopAnalysis();
+    }
+
+    return () => quality.stopAnalysis();
+  }, [isCapturing, videoRef, quality]);
+
   return (
     <div className="space-y-3">
       <Label className="text-base font-semibold">
@@ -78,12 +93,18 @@ export const SelfieCapture = ({
                       muted
                       className="w-full h-64 object-cover"
                     />
+                    <QualityOverlay 
+                      quality={quality.quality}
+                      isActive={quality.isAnalyzing}
+                      isLoading={quality.isLoading}
+                    />
                   </div>
                   <div className="flex gap-2">
                     <Button
                       onClick={onCapture}
                       className="flex-1"
                       size="lg"
+                      disabled={quality.quality?.overallQuality !== 'good'}
                     >
                       <Camera className="mr-2 h-5 w-5" />
                       Capturer
