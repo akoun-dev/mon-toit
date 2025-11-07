@@ -20,7 +20,7 @@ const Confiance = () => {
     {
       icon: FileCheck,
       title: "Validation des annonces",
-      description: "Chaque bien est vérifié par l'équipe MZAKA avant publication.",
+      description: "Chaque bien est vérifié par l'équipe DONIA avant publication.",
     },
     {
       icon: Users,
@@ -36,14 +36,14 @@ const Confiance = () => {
         {/* Hero with illustration */}
         <section className="relative h-96 overflow-hidden mb-12">
           <LazyIllustration 
-            src={getIllustrationPath('verification-mzaka-illustration')!}
-            alt="MZAKA - Plateforme de confiance"
+            src={getIllustrationPath('verification-donia-illustration')!}
+            alt="DONIA - Plateforme de confiance"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80 flex items-center justify-center">
             <div className="container mx-auto px-4 text-center text-white">
               <h1 className="text-h1 mb-4">
-                <span className="text-gradient-animated">MZAKA, une plateforme de confiance</span>
+                <span className="text-gradient-animated">DONIA, une plateforme de confiance</span>
               </h1>
               <p className="text-lg max-w-2xl mx-auto opacity-95">
                 Vérification d'identité, sécurité des transactions, et protection des données 
@@ -56,9 +56,9 @@ const Confiance = () => {
         <section className="py-6 md:py-10">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="bg-gradient-primary/10 border-2 border-primary/20 rounded-xl p-8 mb-12">
-              <h2 className="text-2xl font-bold mb-4">Qu'est-ce que MZAKA ?</h2>
+              <h2 className="text-2xl font-bold mb-4">Qu'est-ce que DONIA ?</h2>
               <p className="text-muted-foreground mb-4">
-                MZAKA est une plateforme immobilière privée dédiée à révolutionner le marché 
+                DONIA est une plateforme immobilière privée dédiée à révolutionner le marché 
                 de la location au Burkina Faso. Notre mission est de créer un environnement 
                 sécurisé, transparent et efficace pour tous les acteurs de l'immobilier.
               </p>
@@ -90,7 +90,7 @@ const Confiance = () => {
             <div className="bg-muted/50 rounded-xl p-8 text-center">
               <h2 className="text-2xl font-bold mb-4">Une plateforme 100% burkinabè</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Développée au Burkina Faso, pour les Burkinabè. MZAKA s'adapte aux réalités 
+                Développée au Burkina Faso, pour les Burkinabè. DONIA s'adapte aux réalités 
                 locales et propose des solutions de paiement compatibles avec Mobile Money 
                 (Orange Money, Moov Africa).
               </p>
