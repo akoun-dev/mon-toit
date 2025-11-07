@@ -64,7 +64,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
               </span>
               <span className="text-xs text-secondary leading-tight flex items-center gap-1 font-semibold">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Certifié ARCEP
+                Plateforme sécurisée
               </span>
             </div>
             </Link>
@@ -116,7 +116,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                         {(profile?.oneci_verified || profile?.cnam_verified) && (
                           <Badge variant="outline" className="w-fit mt-1 text-xs border-primary text-primary">
-                            ✓ Certifié ARCEP
+                            ✓ Identité vérifiée
                           </Badge>
                         )}
                       </div>
@@ -179,9 +179,9 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link to="/admin/certifications" className="cursor-pointer flex items-center">
+                          <Link to="/admin/certifications" className="cursor-pointer flex items-center">
                               <Shield className="mr-3 h-4 w-4 text-primary" />
-                              <span>Certifications ARCEP</span>
+                              <span>Vérification des baux</span>
                               <CertificationNotificationBadge />
                             </Link>
                           </DropdownMenuItem>

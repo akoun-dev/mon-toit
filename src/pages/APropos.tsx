@@ -29,9 +29,8 @@ const APropos = () => {
 
             <div className="prose prose-lg max-w-none mb-12">
               <p>
-                <strong>MZAKA</strong> est une plateforme innovante propulsée par l'<strong>ARCEP</strong> 
-                (Autorité de Régulation des Communications Électroniques et des Postes), 
-                dédiée à révolutionner le marché immobilier burkinabè.
+                <strong>MZAKA</strong> est une plateforme immobilière privée 100% burkinabè, 
+                dédiée à révolutionner le marché de la location au Burkina Faso.
               </p>
               <p>
                 Notre mission est de créer un environnement sécurisé, transparent et efficace 
@@ -46,7 +45,7 @@ const APropos = () => {
                   <CardTitle>Sécurité garantie</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Vérification d'identité, certification ARCEP des baux, 
+                  Vérification d'identité par notre équipe, validation des baux, 
                   et paiements sécurisés via Mobile Money.
                 </CardContent>
               </Card>

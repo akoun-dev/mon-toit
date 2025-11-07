@@ -133,7 +133,7 @@ export const CompactSearchHero = () => {
               
               <div className="flex items-center gap-2 text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-primary" />
-                <span>Certifié ARCEP</span>
+                <span>Plateforme sécurisée</span>
               </div>
             </div>
             

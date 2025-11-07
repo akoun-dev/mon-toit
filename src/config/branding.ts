@@ -11,10 +11,21 @@ export const BRANDING = {
   APP_TAGLINE: "Le logement, en toute confiance",
   APP_DESCRIPTION: "Location sécurisée au Burkina Faso",
   
-  // Organisme certificateur
-  CERTIFIER_NAME: "ARCEP",
-  CERTIFIER_FULL_NAME: "Autorité de Régulation des Communications Électroniques et des Postes",
-  CERTIFIER_MINISTRY: "Ministère de la Transition Digitale, des Postes et des Télécommunications Numériques",
+  // Système de vérification interne (privé)
+  VERIFICATION_SYSTEM: {
+    name: "Vérification MZAKA",
+    badge: "Vérifié MZAKA",
+    description: "Baux vérifiés par notre équipe",
+    team: "équipe MZAKA",
+  },
+  
+  // Messages de confiance (sans référence État)
+  TRUST_MESSAGES: {
+    secure: "Plateforme sécurisée",
+    verified: "Identité vérifiée",
+    protected: "Données protégées",
+    burkinabe: "100% burkinabè",
+  },
   
   // Pays
   COUNTRY: "Burkina Faso",
@@ -31,7 +42,6 @@ export const BRANDING = {
   WEBSITE_DOMAIN: "mzaka.bf",
   VERIFY_DOMAIN: "verify.mzaka.bf",
   APP_DOMAIN: "app.mzaka.bf",
-  CERTIFIER_URL: "https://arcep.bf",
   
   // Legal
   DATA_PROTECTION_LAW: "Loi N°010-2004/AN du 20 avril 2004",

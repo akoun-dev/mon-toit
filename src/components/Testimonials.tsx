@@ -16,9 +16,9 @@ import { getIllustrationPath } from "@/lib/utils";
 const testimonials = [
   {
     name: "Kouadio Marc",
-    role: "Locataire certifié ARCEP",
+    role: "Locataire vérifié",
     location: "Secteur 15, Ouagadougou",
-    content: "J'ai trouvé mon appartement en 48h grâce à ma certification ARCEP. Les propriétaires me répondaient immédiatement car mon dossier était déjà complet et vérifié. Un gain de temps incroyable !",
+    content: "J'ai trouvé mon appartement en 48h grâce à mon profil vérifié MZAKA. Les propriétaires me répondaient immédiatement car mon dossier était déjà complet.",
     rating: 5,
     avatar: "KM",
     avatarGradient: "bg-gradient-to-br from-blue-600 to-blue-700",
@@ -93,11 +93,10 @@ const Testimonials = () => {
                   <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-lg p-8 md:p-12 shadow-lg border border-primary/10 relative transition-all duration-250 ease-in-out hover:shadow-xl hover:scale-[1.02] cursor-pointer">
                     <Quote className="absolute top-6 right-6 h-12 w-12 text-primary/10" />
                     
-                    {/* Badge Certifié ARCEP */}
                     {testimonial.isCertified && (
                       <div className="absolute top-6 left-6 inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <ShieldCheck className="h-3.5 w-3.5" />
-                        Certifié ARCEP
+                        Profil vérifié
                       </div>
                     )}
                     

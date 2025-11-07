@@ -8,14 +8,9 @@ import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
 import { BRANDING } from "@/config/branding";
 
-// Configuration - ARCEP (organisme public porteur)
-const ARCEP_FULL_NAME = BRANDING.CERTIFIER_FULL_NAME;
-const ARCEP_SHORT_NAME = BRANDING.CERTIFIER_NAME;
-const ARCEP_MINISTRY = BRANDING.CERTIFIER_MINISTRY;
-
-// Configuration - MZAKA (le produit/service)
+// Configuration - Messages de confiance
 const PRODUCT_NAME = BRANDING.APP_NAME;
-const PRODUCT_TAGLINE = "Dossier de location numérique certifié par l'État";
+const PRODUCT_TAGLINE = "Dossier de location numérique - Plateforme de confiance";
 
 // Types
 interface KPI {
@@ -131,11 +126,11 @@ const withoutMZAKA: ComparisonItem[] = [
 ];
 
 const withMZAKA: ComparisonItem[] = [
-  { text: "Dossier numérique certifié par l'État", icon: CheckCircle },
+  { text: "Dossier numérique vérifié", icon: CheckCircle },
   { text: "Vérification biométrique et KYC", icon: CheckCircle },
   { text: "Paiements Mobile Money tracés", icon: CheckCircle },
-  { text: "Médiation par service public", icon: CheckCircle },
-  { text: "Documents authentifiés par l'ARCEP", icon: CheckCircle },
+  { text: "Support et médiation MZAKA", icon: CheckCircle },
+  { text: "Documents sécurisés et authentifiés", icon: CheckCircle },
 ];
 
 // Sous-composants
@@ -208,7 +203,7 @@ const FeatureCard = memo(({ feature, index }: { feature: Feature; index: number 
           
           <div className="flex items-center gap-2 justify-center">
             <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-            <span className="text-xs text-primary font-semibold">Service public</span>
+            <span className="text-xs text-primary font-semibold">Plateforme sécurisée</span>
           </div>
         </div>
       </div>
@@ -255,8 +250,8 @@ const Features = () => {
             
             {/* Badges service public */}
             <div className="flex flex-wrap gap-2 justify-center">
-              <Badge variant="default" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 text-sm font-semibold">
-                🇨🇮 Service Public
+              <Badge variant="default" className="bg-primary hover:bg-primary/90 text-white px-4 py-1.5 text-sm font-semibold">
+                🇧🇫 100% Burkinabè
               </Badge>
               <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-sm font-semibold">
                 Gratuit pour locataires
@@ -275,12 +270,12 @@ const Features = () => {
             Créez votre dossier en ligne, obtenez une certification d'État et trouvez votre logement en toute confiance
           </p>
           
-          <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-1">
             <p className="text-sm text-primary font-semibold">
-              Un service de l'ARCEP
+              Plateforme de confiance
             </p>
             <p className="text-xs text-muted-foreground max-w-md">
-              Inspiré de DossierFacile (France) • Adapté au contexte burkinabè
+              Location sécurisée et transparente au Burkina Faso
             </p>
           </div>
         </header>
@@ -323,10 +318,10 @@ const Features = () => {
                     <CheckCircle className="h-6 w-6 text-green-600" aria-hidden="true" />
                     Avec {PRODUCT_NAME}
                   </h4>
-                  <Badge className="bg-blue-600 text-white border-0">
-                    <Shield className="h-3 w-3 mr-1" aria-hidden="true" />
-                    Service Public
-                  </Badge>
+            <Badge className="bg-primary text-white border-0">
+              <Shield className="h-3 w-3 mr-1" aria-hidden="true" />
+              Vérifié MZAKA
+            </Badge>
                 </div>
                 <ComparisonList items={withMZAKA} positive />
               </div>
@@ -334,29 +329,29 @@ const Features = () => {
           </div>
         </div>
 
-        {/* Section Transparence - Service Public */}
-        <div className="max-w-4xl mx-auto mb-16 bg-blue-50 border border-blue-200 rounded-xl p-8">
+        {/* Section Transparence */}
+        <div className="max-w-4xl mx-auto mb-16 bg-primary/5 border border-primary/20 rounded-xl p-8">
           <div className="flex items-start gap-4">
-            <Shield className="h-8 w-8 text-blue-600 flex-shrink-0 mt-1" />
+            <Shield className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-xl font-bold mb-3 text-foreground">
-                Un vrai service public
+                Plateforme de confiance
               </h3>
               <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Gratuit pour tous les locataires</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Aucune revente de données</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Hébergement au Burkina Faso</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <span>Conformité RGPD et législation burkinabè</span>
                 </div>
               </div>
@@ -381,7 +376,7 @@ const Features = () => {
               </div>
 
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
                   <div className="bg-blue-600 p-3 rounded-full">
                     <Users className="h-6 w-6 text-white" />
                   </div>
@@ -403,7 +398,7 @@ const Features = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Vérification ARCEP gratuite</span>
+                  <span className="text-foreground">Vérification MZAKA gratuite</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -425,7 +420,7 @@ const Features = () => {
               
               <div className="pt-4 border-t border-blue-200">
                 <p className="text-xs text-muted-foreground">
-                  💡 Financé par l'ARCEP dans le cadre du service universel
+                  💡 Gratuit pour tous les locataires - Financé par les commissions propriétaires
                 </p>
               </div>
             </div>
@@ -506,10 +501,10 @@ const Features = () => {
           
           <div className="space-y-2 pt-4 border-t border-muted">
             <p className="text-sm text-muted-foreground">
-              Un service de l'<span className="font-semibold">{ARCEP_SHORT_NAME}</span> • Conforme à la législation burkinabè
+              Plateforme 100% burkinabè • Conforme à la législation burkinabè
             </p>
             <p className="text-xs text-muted-foreground">
-              {ARCEP_FULL_NAME} • Sous tutelle du {ARCEP_MINISTRY}
+              Location sécurisée et transparente au Burkina Faso
             </p>
           </div>
         </div>

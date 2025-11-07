@@ -63,10 +63,10 @@ const CertificationBanner = () => {
               {/* Content */}
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Obtenez votre certification ARCEP
+                  Commencez avec MZAKA
                 </h3>
                 <p className="text-base text-muted-foreground mb-4 max-w-2xl">
-                  Déverrouillez toutes les fonctionnalités de la plateforme et rassurez les propriétaires en seulement <span className="font-bold text-primary">5 minutes</span>. C'est <span className="font-bold text-secondary">100% gratuit</span> !
+                  Déverrouillez toutes les fonctionnalités et rassurez les propriétaires en seulement <span className="font-bold text-primary">5 minutes</span>. C'est <span className="font-bold text-secondary">100% gratuit</span> !
                 </p>
                 
                 {/* Progress indicator */}

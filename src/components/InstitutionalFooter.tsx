@@ -13,16 +13,16 @@ export const InstitutionalFooter = () => {
 
   return (
     <footer className="bg-gradient-to-br from-primary to-primary-700 text-white">
-      {/* Bandeau ARCEP */}
+      {/* Bandeau confiance */}
       <div className="bg-primary-900 py-4">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center md:text-left">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-6 w-6 text-white" />
-              <span className="font-bold text-lg">Certifié ARCEP</span>
+              <span className="font-bold text-lg">Plateforme de confiance</span>
             </div>
             <span className="hidden md:inline text-white/60">•</span>
-            <span className="text-white/90">Service Public du Numérique</span>
+            <span className="text-white/90">Location sécurisée au Burkina Faso</span>
           </div>
         </div>
       </div>
@@ -45,14 +45,8 @@ export const InstitutionalFooter = () => {
               </div>
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
-              Plateforme immobilière certifiée ARCEP pour la recherche et la publication de logements au Burkina Faso.
+              Plateforme immobilière pour la recherche et la publication de logements au Burkina Faso. Sécurisée, transparente, 100% burkinabè.
             </p>
-            <div className="flex items-start gap-2 text-xs text-white/60">
-              <Shield className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
-              <span>
-                Propulsé par la Direction de la Transformation Digitale et de l'Innovation (DTDI) – ARCEP
-              </span>
-            </div>
           </div>
 
           {/* Colonne 2 : Navigation */}
@@ -165,32 +159,21 @@ export const InstitutionalFooter = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-900/50 border border-primary-700 rounded-lg">
                 <ShieldCheck className="h-4 w-4 text-white" />
-                <span className="text-xs font-semibold text-white">ARCEP Certifié</span>
+                <span className="text-xs font-semibold text-white">Plateforme Sécurisée</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 bg-success/20 border border-success/30 rounded-lg">
                 <Shield className="h-4 w-4 text-success" />
-                <span className="text-xs font-semibold text-white">100% Sécurisé</span>
+                <span className="text-xs font-semibold text-white">100% Burkinabè</span>
               </div>
             </div>
-
-            {/* Lien ARCEP */}
-            <a
-              href="https://arcep.bf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-white/60 hover:text-white transition-colors"
-            >
-              <span className="text-xs">En savoir plus sur l'ARCEP</span>
-              <ExternalLink className="h-3 w-3" />
-            </a>
           </div>
         </div>
 
-        {/* Mention interopérabilité */}
+        {/* Mention légale */}
         <div className="mt-6 pt-6 border-t border-white/10">
           <p className="text-xs text-white/50 text-center leading-relaxed">
-            Cette plateforme s'inscrit dans le cadre de l'interopérabilité des services publics numériques
-            de la République du Burkina Faso, conformément aux standards ARCEP.
+            MZAKA - Plateforme privée de location immobilière au Burkina Faso. 
+            Tous droits réservés. Données protégées conformément à la loi burkinabè.
           </p>
         </div>
       </div>

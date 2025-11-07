@@ -73,8 +73,8 @@ export const PreCertificationChecklist = ({ leaseId }: PreCertificationChecklist
         </CardTitle>
         <CardDescription>
           {validation.all_passed 
-            ? "Tous les critères sont remplis pour la certification ANSUT" 
-            : "Certains critères doivent être complétés avant la certification"}
+            ? "Tous les critères sont remplis pour la vérification MZAKA" 
+            : "Certains critères doivent être complétés avant la vérification"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -102,7 +102,7 @@ export const PreCertificationChecklist = ({ leaseId }: PreCertificationChecklist
         {!validation.all_passed && (
           <Alert>
             <AlertDescription>
-              Complétez les critères manquants avant de demander la certification ANSUT.
+              Complétez les critères manquants avant de demander la vérification MZAKA.
             </AlertDescription>
           </Alert>
         )}

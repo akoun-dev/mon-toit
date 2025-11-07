@@ -14,7 +14,7 @@ const pricingPlans = [
     features: [
       "Recherche illimitée de biens",
       "Candidatures en 1 clic",
-      "Certification ANSUT incluse",
+      "Profil vérifié",
       "Messagerie avec propriétaires",
       "Notifications en temps réel",
       "Tableau de bord personnel"
@@ -167,9 +167,9 @@ const Tarifs = () => {
                     Pourquoi c'est gratuit pour les locataires ?
                   </h3>
                   <p className="text-muted-foreground">
-                    La certification ARCEP (vérification d'identité biométrique + constitution du dossier digital) 
-                    est 100% gratuite pour tous les locataires car financée par l'ARCEP dans le cadre du service universel. 
-                    MZAKA se rémunère uniquement via les commissions sur les baux signés par les propriétaires.
+                    La vérification d'identité et la constitution du dossier digital sont 100% gratuites 
+                    pour tous les locataires. Ce service est inclus dans MZAKA. Notre plateforme se rémunère 
+                    uniquement via les commissions sur les baux signés par les propriétaires.
                   </p>
                 </div>
 
@@ -178,9 +178,9 @@ const Tarifs = () => {
                     Comment MZAKA finance son fonctionnement ?
                   </h3>
                   <p className="text-muted-foreground">
-                    MZAKA opère selon un modèle freemium transparent : l'ARCEP finance l'infrastructure (CAPEX) 
-                    et MZAKA assure les opérations (OPEX) via des commissions sur les transactions, 
-                    de la publicité ciblée et des services premium pour les agences. Les locataires ne paient jamais.
+                    MZAKA opère selon un modèle freemium transparent : nous assurons les opérations 
+                    via des commissions sur les transactions, de la publicité ciblée et des services 
+                    premium pour les agences. Les locataires ne paient jamais.
                   </p>
                 </div>
 

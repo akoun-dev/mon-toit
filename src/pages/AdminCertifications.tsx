@@ -17,10 +17,10 @@ const AdminCertifications = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-            Certifications ANSUT
+            Vérification des baux
           </h1>
           <p className="text-muted-foreground">
-            Gérez les demandes de certification des baux et suivez leur statut
+            Gérez les demandes de vérification et validez les baux soumis
           </p>
         </div>
 

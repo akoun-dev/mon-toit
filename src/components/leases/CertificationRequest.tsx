@@ -50,7 +50,7 @@ const CertificationRequest = ({ leaseId, certificationStatus, onRequestSubmitted
 
       toast({
         title: '✅ Demande envoyée avec succès',
-        description: 'Un agent ANSUT examinera votre dossier sous 2-5 jours ouvrables',
+        description: 'Notre équipe examinera votre dossier sous 2-5 jours ouvrables',
       });
 
       setOpen(false);
@@ -77,17 +77,17 @@ const CertificationRequest = ({ leaseId, certificationStatus, onRequestSubmitted
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Shield className="h-4 w-4" />
-          Demander la certification ANSUT
+          Demander la vérification MZAKA
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-secondary" />
-            Demande de Certification ANSUT
+            Demande de vérification MZAKA
           </DialogTitle>
           <DialogDescription>
-            La certification ANSUT garantit la conformité de votre bail avec les normes ivoiriennes
+            Notre équipe vérifie la conformité de votre bail avec les normes burkinabè
           </DialogDescription>
         </DialogHeader>
 
@@ -100,7 +100,7 @@ const CertificationRequest = ({ leaseId, certificationStatus, onRequestSubmitted
                 <li>Assurez-vous que le bail est signé par les deux parties</li>
                 <li>Vérifiez que toutes les informations sont correctes</li>
                 <li>La certification peut prendre 2-5 jours ouvrables</li>
-                <li>Un agent ANSUT examinera votre dossier complet</li>
+                <li>Notre équipe MZAKA examinera votre dossier complet</li>
               </ul>
               <p className="text-sm mt-2">
                 <Link to="/certification-faq" className="text-primary underline hover:text-primary/80">

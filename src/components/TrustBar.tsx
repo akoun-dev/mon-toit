@@ -4,7 +4,7 @@ const TrustBar = () => {
   const trustItems = [
     {
       icon: Globe,
-      text: "Service public"
+      text: "Plateforme burkinabè"
     },
     {
       icon: Lock,
@@ -16,7 +16,7 @@ const TrustBar = () => {
     },
     {
       icon: Shield,
-      text: "Certifié ARCEP"
+      text: "Plateforme sécurisée"
     }
   ];
 

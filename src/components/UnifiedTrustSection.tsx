@@ -14,8 +14,8 @@ const trustMetrics = [
 const coreFeatures = [
   {
     icon: ShieldCheck,
-    title: "Dossier Certifié",
-    description: "Vérification ARCEP en 48h avec certification d'État reconnue par tous les propriétaires",
+    title: "Dossier Vérifié",
+    description: "Vérification MZAKA en 48h avec profil validé reconnu par tous les propriétaires",
     bgColor: "bg-blue-600"
   },
   {
