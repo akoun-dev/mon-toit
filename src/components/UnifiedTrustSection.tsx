@@ -15,7 +15,7 @@ const coreFeatures = [
   {
     icon: ShieldCheck,
     title: "Dossier Vérifié",
-    description: "Vérification MZAKA en 48h avec profil validé reconnu par tous les propriétaires",
+    description: "Vérification DONIA en 48h avec profil validé reconnu par tous les propriétaires",
     bgColor: "bg-blue-600"
   },
   {
@@ -94,7 +94,7 @@ const UnifiedTrustSection = () => {
         <div className="mb-16">
           <div className="text-center mb-8">
             <h3 className="text-3xl font-bold text-foreground mb-2">
-              Pourquoi choisir MZAKA
+              Pourquoi choisir DONIA
             </h3>
             <p className="text-lg text-muted-foreground">
               Un service public au service de votre tranquillité

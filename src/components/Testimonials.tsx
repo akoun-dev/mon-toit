@@ -18,7 +18,7 @@ const testimonials = [
     name: "Kouadio Marc",
     role: "Locataire vérifié",
     location: "Secteur 15, Ouagadougou",
-    content: "J'ai trouvé mon appartement en 48h grâce à mon profil vérifié MZAKA. Les propriétaires me répondaient immédiatement car mon dossier était déjà complet.",
+    content: "J'ai trouvé mon appartement en 48h grâce à mon profil vérifié DONIA. Les propriétaires me répondaient immédiatement car mon dossier était déjà complet.",
     rating: 5,
     avatar: "KM",
     avatarGradient: "bg-gradient-to-br from-blue-600 to-blue-700",
@@ -28,7 +28,7 @@ const testimonials = [
     name: "Adjoua Sarah",
     role: "Propriétaire",
     location: "Zone 1, Ouagadougou",
-    content: "Fini les dossiers incomplets et les vérifications interminables. Avec MZAKA, je ne reçois que des candidatures sérieuses et certifiées. Le paiement Mobile Money est un vrai plus pour mes locataires.",
+    content: "Fini les dossiers incomplets et les vérifications interminables. Avec DONIA, je ne reçois que des candidatures sérieuses et certifiées. Le paiement Mobile Money est un vrai plus pour mes locataires.",
     rating: 5,
     avatar: "AS",
     avatarGradient: "bg-gradient-to-br from-primary to-orange-600",
@@ -65,7 +65,7 @@ const Testimonials = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex items-center">
               <div className="text-white p-8 max-w-xl">
                 <h2 className="text-3xl md:text-4xl font-bold mb-2">Ils ont trouvé leur toit</h2>
-                <p className="text-lg opacity-90">Des milliers de locataires satisfaits grâce à MZAKA</p>
+                <p className="text-lg opacity-90">Des milliers de locataires satisfaits grâce à DONIA</p>
               </div>
             </div>
           </div>

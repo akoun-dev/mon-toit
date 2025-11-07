@@ -319,17 +319,17 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                 </div>
               </div>
 
-              {/* Vérification MZAKA */}
+              {/* Vérification DONIA */}
               <div className="space-y-3">
                 <Label>Vérification</Label>
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="mzakaVerified"
+                    id="doniaVerified"
                     checked={filters.isMzakaVerified}
                     onCheckedChange={(checked) => handleFilterChange('isMzakaVerified', checked)}
                   />
-                  <Label htmlFor="mzakaVerified" className="font-normal cursor-pointer flex items-center gap-2">
-                    <span className="text-secondary">✓</span> Baux vérifiés MZAKA uniquement
+                  <Label htmlFor="doniaVerified" className="font-normal cursor-pointer flex items-center gap-2">
+                    <span className="text-secondary">✓</span> Baux vérifiés DONIA uniquement
                   </Label>
                 </div>
               </div>

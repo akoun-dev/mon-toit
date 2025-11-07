@@ -117,7 +117,7 @@ const features: Feature[] = [
   },
 ];
 
-const withoutMZAKA: ComparisonItem[] = [
+const withoutDONIA: ComparisonItem[] = [
   { text: "Dossiers papier incomplets", icon: X },
   { text: "Pas de vérification d'identité", icon: X },
   { text: "Espèces et chèques non sécurisés", icon: X },
@@ -125,11 +125,11 @@ const withoutMZAKA: ComparisonItem[] = [
   { text: "Risque de fraude documentaire", icon: X },
 ];
 
-const withMZAKA: ComparisonItem[] = [
+const withDONIA: ComparisonItem[] = [
   { text: "Dossier numérique vérifié", icon: CheckCircle },
   { text: "Vérification biométrique et KYC", icon: CheckCircle },
   { text: "Paiements Mobile Money tracés", icon: CheckCircle },
-  { text: "Support et médiation MZAKA", icon: CheckCircle },
+  { text: "Support et médiation DONIA", icon: CheckCircle },
   { text: "Documents sécurisés et authentifiés", icon: CheckCircle },
 ];
 
@@ -307,7 +307,7 @@ const Features = () => {
                 <X className="h-6 w-6 text-destructive" aria-hidden="true" />
                 Location traditionnelle
               </h4>
-              <ComparisonList items={withoutMZAKA} />
+              <ComparisonList items={withoutDONIA} />
             </div>
 
             {/* Avec Mon Toit */}
@@ -320,10 +320,10 @@ const Features = () => {
                   </h4>
             <Badge className="bg-primary text-white border-0">
               <Shield className="h-3 w-3 mr-1" aria-hidden="true" />
-              Vérifié MZAKA
+              Vérifié DONIA
             </Badge>
                 </div>
-                <ComparisonList items={withMZAKA} positive />
+                <ComparisonList items={withDONIA} positive />
               </div>
             </div>
           </div>
@@ -398,7 +398,7 @@ const Features = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Vérification MZAKA gratuite</span>
+                  <span className="text-foreground">Vérification DONIA gratuite</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />

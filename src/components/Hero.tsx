@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle2, Mic, MicOff } from "lucide-react";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import burkinaHome from "@/assets/hero/burkina-home.jpg";
 import heroFamilyHome from "@/assets/hero/hero-family-home.jpg";
 import heroSlide1 from "@/assets/hero/hero-slide-1.jpg";
 import heroSlide2 from "@/assets/hero/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero/hero-slide-3.jpg";
 import heroSlide4 from "@/assets/hero/hero-slide-4.jpg";
-import doniaHeroMain from "@/assets/hero/donia-hero-main.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Hero = () => {
 
   // Slideshow images
   const heroImages = [
-    doniaHeroMain,
+    burkinaHome,
     heroFamilyHome,
     heroSlide1,
     heroSlide2,

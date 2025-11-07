@@ -21,7 +21,7 @@ const reviews: Review[] = [
     name: "Konan M.",
     profession: "Ingénieur",
     photo: "https://ui-avatars.com/api/?name=Konan+Mensah&size=100&background=2C5F7F&color=fff",
-    quote: "La vérification MZAKA m'a vraiment rassuré. Fini les arnaques !",
+    quote: "La vérification DONIA m'a vraiment rassuré. Fini les arnaques !",
     rating: 5
   },
   {

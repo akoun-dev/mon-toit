@@ -108,7 +108,7 @@ const HowItWorks = () => {
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 text-foreground">Comment ça marche ?</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choisissez votre parcours et découvrez comment MZAKA simplifie vos démarches immobilières
+            Choisissez votre parcours et découvrez comment DONIA simplifie vos démarches immobilières
           </p>
         </div>
 

@@ -11,7 +11,7 @@ const UnifiedRoleSelection = () => {
       title: "Locataire",
       description: "Créez votre dossier de location en 5 minutes",
       benefits: [
-        "Dossier vérifié par MZAKA",
+        "Dossier vérifié par DONIA",
         "Accès illimité aux annonces",
         "Messagerie sécurisée",
         "Signature électronique incluse"
