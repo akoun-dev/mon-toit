@@ -20,6 +20,9 @@ const Footer = () => {
 
           {/* Zone centrale : Liens essentiels */}
           <nav className="flex flex-wrap justify-center gap-3 md:gap-6" aria-label="Footer navigation">
+            <Link to="/carte-nationale" className="text-white/70 hover:text-white transition-colors">
+              Carte Nationale
+            </Link>
             <Link to="/mentions-legales" className="text-white/70 hover:text-white transition-colors">
               Mentions légales
             </Link>

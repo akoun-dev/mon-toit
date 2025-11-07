@@ -83,6 +83,12 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                 <MegaMenuPublier />
                 <MegaMenuAide />
                 <MegaMenuAPropos />
+                <Link 
+                  to="/carte-nationale"
+                  className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Carte Nationale
+                </Link>
               </NavigationMenuList>
             </NavigationMenu>
           </div>

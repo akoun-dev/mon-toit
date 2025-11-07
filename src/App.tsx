@@ -79,6 +79,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import SmartMap from "./pages/SmartMap";
 import SmartMapV2 from "./pages/SmartMapV2";
+import NationalMap from "./pages/NationalMap";
 
 import MandatesHelp from "./pages/MandatesHelp";
 
@@ -128,6 +129,7 @@ const AppContent = () => {
             <Route path="/recherche" element={<Search />} />
             <Route path="/explorer" element={<Explorer />} />
             <Route path="/carte-intelligente" element={<SmartMapV2 />} />
+            <Route path="/carte-nationale" element={<NationalMap />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             <Route path="/a-propos" element={<AboutPage />} />
             <Route path="/property/:id" element={
