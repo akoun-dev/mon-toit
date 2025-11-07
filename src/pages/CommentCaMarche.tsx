@@ -82,7 +82,7 @@ const CommentCaMarche = () => {
                         <FileCheck className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-2">Comment se fait la vérification ANSUT ?</h3>
+                        <h3 className="font-semibold mb-2">Comment se fait la vérification MZAKA ?</h3>
                         <p className="text-sm text-muted-foreground">
                           Vérification d'identité via ONECI ou CNAM en 48h maximum. Totalement sécurisé et confidentiel.
                         </p>
@@ -116,7 +116,7 @@ const CommentCaMarche = () => {
                       <div>
                         <h3 className="font-semibold mb-2">Les baux sont-ils légalement valides ?</h3>
                         <p className="text-sm text-muted-foreground">
-                          Oui, certifiés ANSUT avec signature électronique légalement reconnue en Côte d'Ivoire.
+                          Oui, certifiés MZAKA avec signature électronique conforme aux normes burkinabè.
                         </p>
                       </div>
                     </div>

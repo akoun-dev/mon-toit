@@ -597,7 +597,7 @@ const Auth = () => {
                   </Button>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Shield className="h-3 w-3" />
-                    <span>Plateforme certifiée ANSUT</span>
+                    <span>Plateforme certifiée MZAKA</span>
                   </div>
                 </CardFooter>
               </form>

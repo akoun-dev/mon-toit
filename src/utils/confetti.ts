@@ -1,8 +1,8 @@
 import confetti from 'canvas-confetti';
 
 /**
- * Confetti pour certification ANSUT réussie
- * Couleurs: Or, Orange (couleurs ANSUT)
+ * Confetti pour certification MZAKA réussie
+ * Couleurs: Or, Orange (couleurs MZAKA)
  */
 export const celebrateCertification = () => {
   const duration = 3000;
@@ -22,7 +22,7 @@ export const celebrateCertification = () => {
 
     const particleCount = 50 * (timeLeft / duration);
 
-    // Confetti doré et orange (couleurs ANSUT)
+    // Confetti doré et orange (couleurs MZAKA)
     confetti({
       ...defaults,
       particleCount,

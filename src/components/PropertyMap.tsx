@@ -101,7 +101,7 @@ const PropertyMap = ({
       const el = document.createElement('div');
       el.className = 'property-marker';
       
-      // Enhanced marker styling with ANSUT colors - using safe DOM manipulation
+      // Enhanced marker styling with MZAKA colors - using safe DOM manipulation
       const markerContainer = document.createElement('div');
       markerContainer.className = 'relative group';
 

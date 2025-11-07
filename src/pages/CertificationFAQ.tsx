@@ -19,7 +19,7 @@ const CertificationFAQ = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary/10 rounded-full mb-4">
               <Shield className="h-8 w-8 text-secondary" />
             </div>
-            <h1 className="text-4xl font-bold mb-4">FAQ - Certification ANSUT</h1>
+            <h1 className="text-4xl font-bold mb-4">FAQ - Certification MZAKA</h1>
             <p className="text-muted-foreground text-lg">
               Tout ce que vous devez savoir sur la certification des baux immobiliers
             </p>
@@ -32,15 +32,14 @@ const CertificationFAQ = () => {
                   <AccordionTrigger className="text-left">
                     <div className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-secondary" />
-                      Qu'est-ce que la certification ANSUT ?
+                      Qu'est-ce que la certification MZAKA ?
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    La certification ANSUT est un label de qualité délivré par l'Agence Nationale de Sécurité 
-                    et d'Urbanisme du Territoire. Elle garantit que votre bail immobilier respecte toutes les 
-                    normes légales ivoiriennes et que les parties ont été correctement vérifiées. Un bail 
-                    certifié ANSUT offre une protection juridique renforcée et facilite les démarches 
-                    administratives.
+                    La certification MZAKA est un processus de vérification interne effectué par notre équipe. 
+                    Elle garantit que votre bail immobilier respecte toutes les normes légales burkinabè 
+                    et que les parties ont été correctement vérifiées. Un bail certifié MZAKA offre une 
+                    protection juridique renforcée et facilite les démarches administratives.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -72,7 +71,7 @@ const CertificationFAQ = () => {
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
                     Le processus de certification prend généralement entre 2 et 5 jours ouvrables. Ce délai 
-                    peut varier selon la complexité du dossier et la charge de travail des agents ANSUT. Vous 
+                    peut varier selon la complexité du dossier et la charge de travail de l'équipe MZAKA. Vous 
                     recevrez une notification par email dès que votre demande sera examinée et traitée.
                   </AccordionContent>
                 </AccordionItem>
@@ -85,7 +84,7 @@ const CertificationFAQ = () => {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    Pour qu'un bail soit éligible à la certification ANSUT, les conditions suivantes doivent 
+                    Pour qu'un bail soit éligible à la certification MZAKA, les conditions suivantes doivent 
                     être remplies :
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       <li>Le bail doit être signé par le propriétaire ET le locataire</li>
@@ -125,8 +124,8 @@ const CertificationFAQ = () => {
                     Combien coûte la certification ?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    La certification ARCEP est actuellement gratuite pour tous les utilisateurs de la plateforme 
-                    MZAKA. C'est un service inclus pour garantir la sécurité et la légalité de toutes les 
+                    La certification MZAKA est actuellement gratuite pour tous les utilisateurs de la plateforme. 
+                    C'est un service inclus pour garantir la sécurité et la légalité de toutes les 
                     transactions immobilières sur notre plateforme.
                   </AccordionContent>
                 </AccordionItem>
@@ -136,7 +135,7 @@ const CertificationFAQ = () => {
                     Quelle est la durée de validité de la certification ?
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
-                    La certification ARCEP est valide pour toute la durée du bail. Elle reste active tant que
+                    La certification MZAKA est valide pour toute la durée du bail. Elle reste active tant que
                     le contrat de location est en cours. Si le bail est renouvelé ou modifié de manière 
                     substantielle, une nouvelle certification sera nécessaire.
                   </AccordionContent>
@@ -168,7 +167,7 @@ const CertificationFAQ = () => {
                     </ul>
                     <p className="mt-2">
                       La vérification est effectuée automatiquement et prend généralement quelques minutes. 
-                      En cas de problème, un agent ANSUT examinera manuellement votre dossier.
+                      En cas de problème, un membre de l'équipe MZAKA examinera manuellement votre dossier.
                     </p>
                   </AccordionContent>
                 </AccordionItem>
@@ -210,7 +209,7 @@ const CertificationFAQ = () => {
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       <li>Consultez notre guide complet dans la section Documentation</li>
                       <li>Contactez notre support via la messagerie interne</li>
-                      <li>Envoyez un email à support@montoit.ci</li>
+                      <li>Envoyez un email à contact@mzaka.bf</li>
                       <li>Appelez notre hotline : +225 XX XX XX XX XX</li>
                     </ul>
                     <p className="mt-2">

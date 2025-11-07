@@ -130,9 +130,9 @@ const Guide = () => {
                     </p>
                   </div>
                   <div className="space-y-3">
-                    <h3 className="font-semibold">Étape 4 : Vérification ANSUT (Recommandé)</h3>
+                    <h3 className="font-semibold">Étape 4 : Vérification MZAKA (Recommandé)</h3>
                     <p className="text-sm text-muted-foreground">
-                      Complétez votre vérification d'identité (ONECI/CNI) et obtenez votre badge certifié ANSUT pour augmenter vos chances.
+                      Complétez votre vérification d'identité (ONECI/CNI) et obtenez votre badge certifié MZAKA pour augmenter vos chances.
                     </p>
                   </div>
                 </CardContent>
@@ -148,7 +148,7 @@ const Guide = () => {
                     Publier votre bien
                   </CardTitle>
                   <CardDescription>
-                    Louez en toute sécurité avec ANSUT
+                    Louez en toute sécurité avec MZAKA
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -167,13 +167,13 @@ const Guide = () => {
                   <div className="space-y-3">
                     <h3 className="font-semibold">Étape 3 : Validation de l'annonce</h3>
                     <p className="text-sm text-muted-foreground">
-                      Votre annonce sera vérifiée par ANSUT sous 24-48h. Vous recevrez une notification.
+                      Votre annonce sera vérifiée par l'équipe MZAKA sous 24-48h. Vous recevrez une notification.
                     </p>
                   </div>
                   <div className="space-y-3">
                     <h3 className="font-semibold">Étape 4 : Gérer les candidatures</h3>
                     <p className="text-sm text-muted-foreground">
-                      Consultez les profils des candidats certifiés ANSUT et leurs dossiers. Communiquez via la messagerie sécurisée.
+                      Consultez les profils des candidats certifiés MZAKA et leurs dossiers. Communiquez via la messagerie sécurisée.
                     </p>
                   </div>
                 </CardContent>
@@ -196,7 +196,7 @@ const Guide = () => {
                   <div className="space-y-3">
                     <h3 className="font-semibold">Compte agence certifié</h3>
                     <p className="text-sm text-muted-foreground">
-                      Créez un compte agence et complétez la vérification professionnelle ANSUT.
+                      Créez un compte agence et complétez la vérification professionnelle MZAKA.
                     </p>
                   </div>
                   <div className="space-y-3">
@@ -284,9 +284,9 @@ const Guide = () => {
               {/* Catégorie: Certification ANSUT */}
               {(() => {
                 const certifItems = [
-                  { id: 'c1', question: 'Qu\'est-ce que la certification ANSUT ?', answer: 'C\'est une vérification officielle de votre identité par l\'ANSUT (Agence Nationale des Systèmes d\'Urgence et de Télécommunications). Elle garantit votre sécurité et augmente votre crédibilité sur la plateforme.' },
+                  { id: 'c1', question: 'Qu\'est-ce que la certification MZAKA ?', answer: 'C\'est une vérification interne effectuée par notre équipe MZAKA. Elle garantit votre sécurité et augmente votre crédibilité sur la plateforme.' },
                   { id: 'c2', question: 'La certification est-elle obligatoire ?', answer: 'Non, mais elle est fortement recommandée ! Les profils certifiés ont accès à plus de fonctionnalités et inspirent davantage confiance. Pour les propriétaires, c\'est indispensable pour publier des annonces.' },
-                  { id: 'c3', question: 'Combien coûte la certification ?', answer: 'La certification ANSUT est totalement GRATUITE pour tous les utilisateurs. C\'est un service public financé par l\'État ivoirien.' },
+                  { id: 'c3', question: 'Combien coûte la certification ?', answer: 'La certification MZAKA est totalement GRATUITE pour tous les utilisateurs. C\'est un service inclus dans notre plateforme.' },
                   { id: 'c4', question: 'Combien de temps prend la vérification ?', answer: 'En moyenne 24-48 heures ouvrées. Vous recevrez un email dès que votre dossier sera traité. Assurez-vous que vos documents sont clairs et lisibles pour accélérer le processus.' }
                 ];
                 const filteredCertifItems = filterFAQItems(certifItems);
@@ -296,7 +296,7 @@ const Guide = () => {
                     <CardHeader>
                       <div className="flex items-center gap-2 mb-2">
                         <Shield className="h-5 w-5 text-primary" />
-                        <CardTitle>Certification ANSUT</CardTitle>
+                        <CardTitle>Certification MZAKA</CardTitle>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -466,7 +466,7 @@ const Guide = () => {
               <CardHeader>
                 <Shield className="h-12 w-12 mx-auto mb-3 text-primary" />
                 <CardTitle>FAQ Certification</CardTitle>
-                <CardDescription>Tout savoir sur la certification ANSUT</CardDescription>
+                <CardDescription>Tout savoir sur la certification MZAKA</CardDescription>
               </CardHeader>
               <CardContent>
                 <Button variant="outline" asChild className="w-full">

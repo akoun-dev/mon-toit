@@ -22,7 +22,7 @@ interface ReportData {
   platformActivity: { totalUsers: number; totalProperties: number; totalApplications: number };
   financialData?: {
     totalRevenue: number;
-    ansutCommission: number;
+    mzakaCommission: number;
     revenueByType: Record<string, number>;
     activeLeases: number;
   };
@@ -167,7 +167,7 @@ const AdvancedReporting = () => {
 
       // Calculate financial data
       const totalRevenue = leases?.reduce((sum, lease) => sum + Number(lease.monthly_rent || 0), 0) || 0;
-      const ansutCommission = totalRevenue * 0.05; // 5% commission
+      const mzakaCommission = totalRevenue * 0.05; // 5% commission
 
       const revenueByType: Record<string, number> = {};
       leases?.forEach(lease => {
@@ -264,7 +264,7 @@ const AdvancedReporting = () => {
         },
         financialData: {
           totalRevenue,
-          ansutCommission,
+          mzakaCommission,
           revenueByType,
           activeLeases: leases?.length || 0,
         },
@@ -792,12 +792,12 @@ const AdvancedReporting = () => {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Commission ANSUT (5%)</CardTitle>
+                <CardTitle className="text-sm font-medium">Commission MZAKA (5%)</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
-                  {(data.financialData?.ansutCommission || 0).toLocaleString('fr-FR')} FCFA
+                  {(data.financialData?.mzakaCommission || 0).toLocaleString('fr-FR')} FCFA
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">Par mois</p>
               </CardContent>

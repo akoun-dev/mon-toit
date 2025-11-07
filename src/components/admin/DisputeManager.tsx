@@ -146,8 +146,8 @@ const DisputeManager = () => {
 
       if (sendNotification && selectedDispute && (updates.status === 'resolved' || updates.status === 'closed')) {
         const message = updates.status === 'resolved' 
-          ? 'Le litige a été résolu par ANSUT.'
-          : 'Le litige a été fermé par ANSUT.';
+          ? 'Le litige a été résolu par l\'équipe MZAKA.'
+          : 'Le litige a été fermé par l\'équipe MZAKA.';
 
         await Promise.all([
           supabase.from('notifications').insert({

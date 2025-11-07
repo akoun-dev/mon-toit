@@ -301,7 +301,7 @@ export const SUCCESS_MESSAGES = {
   // Lease
   LEASE_CREATED: 'Bail créé avec succès',
   LEASE_SIGNED: 'Bail signé avec succès',
-  LEASE_CERTIFIED: 'Bail certifié par ANSUT',
+  LEASE_CERTIFIED: 'Bail certifié par MZAKA',
   
   // Messages
   MESSAGE_SENT: 'Message envoyé',

@@ -181,7 +181,7 @@ export function ModernAppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50 bg-gradient-to-b from-background via-background to-muted/20">
-      {/* Header avec logo et badge ANSUT */}
+      {/* Header avec logo et badge MZAKA */}
       <SidebarHeader className="border-b border-border/50 px-4 py-4 bg-gradient-to-r from-primary/5 to-secondary/5">
         <Link to="/" className="flex items-center gap-3">
           <motion.img 

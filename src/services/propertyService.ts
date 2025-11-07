@@ -101,7 +101,7 @@ export const propertyService = {
         return acc;
       }, [] as any[]);
 
-      logger.info('ANSUT certified properties found', { count: uniqueProperties.length });
+      logger.info('MZAKA certified properties found', { count: uniqueProperties.length });
       return uniqueProperties as Property[];
     }
 

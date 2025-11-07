@@ -399,7 +399,7 @@ const PlatformAnalytics = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-primary" />
-              Certification ANSUT
+              Certification MZAKA
             </CardTitle>
           </CardHeader>
           <CardContent>
