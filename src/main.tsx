@@ -8,7 +8,6 @@ import { migrateToSecureStorage, secureStorage } from '@/lib/secureStorage';
 import { isNativePlatform } from '@/lib/capacitorWrapper';
 import App from "./App.tsx";
 import "./index.css";
-import "./styles/design-system.css";
 
 // Initialize secure storage migration on app startup
 migrateToSecureStorage();
