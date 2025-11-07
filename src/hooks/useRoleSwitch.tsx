@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from './use-toast';
 import { logger } from '@/services/logger';
 
-type UserType = 'locataire' | 'proprietaire' | 'agence' | 'admin_ansut';
+type UserType = 'locataire' | 'proprietaire' | 'agence';
 
 export interface UserActiveRoles {
   user_id: string;
@@ -43,7 +43,7 @@ export const useRoleSwitch = () => {
       return;
     }
     
-    setActiveRoles(data);
+    setActiveRoles(data as unknown as UserActiveRoles);
   };
 
   const parseError = (error: any): RoleSwitchError => {

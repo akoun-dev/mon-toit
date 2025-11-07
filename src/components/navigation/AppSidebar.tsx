@@ -82,7 +82,7 @@ export function AppSidebar() {
   // Autres liens
   const otherLinks = [
     { to: "/guide", icon: HelpCircle, label: "Aide & Guide" },
-    { to: "/verification", icon: ShieldCheck, label: "Vérification ANSUT" },
+    { to: "/verification", icon: ShieldCheck, label: "Vérification MZAKA" },
   ];
 
   const settingsLinks = profile ? [
@@ -101,7 +101,7 @@ export function AppSidebar() {
           {open && (
             <div className="flex flex-col">
               <span className="text-sm font-bold text-primary">Mon Toit</span>
-              <span className="text-xs text-muted-foreground">Certifié ANSUT</span>
+              <span className="text-xs text-muted-foreground">Vérifié MZAKA</span>
             </div>
           )}
         </Link>

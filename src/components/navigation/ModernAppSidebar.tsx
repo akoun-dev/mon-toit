@@ -110,7 +110,7 @@ export function ModernAppSidebar() {
     { to: "/guide", icon: HelpCircle, label: "Guide", color: "text-gray-500" },
   ] : [
     { to: "/guide", icon: HelpCircle, label: "Aide & Guide", color: "text-gray-500" },
-    { to: "/verification", icon: ShieldCheck, label: "Vérification ANSUT", color: "text-primary" },
+    { to: "/verification", icon: ShieldCheck, label: "Vérification MZAKA", color: "text-primary" },
   ];
 
   const settingsLinks = profile ? [
@@ -197,7 +197,7 @@ export function ModernAppSidebar() {
                 Mon Toit
               </span>
               <CulturalBadge variant="kente" className="text-xs px-2 py-0.5">
-                Certifié ANSUT
+                Vérifié MZAKA
               </CulturalBadge>
             </div>
           )}

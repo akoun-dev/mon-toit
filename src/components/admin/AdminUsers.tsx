@@ -46,7 +46,6 @@ const AdminUsers = () => {
       'locataire': 'Locataire',
       'proprietaire': 'Propriétaire',
       'agence': 'Agence',
-      'admin_ansut': 'Admin ANSUT',
     };
 
     return <Badge variant="outline">{labels[userType] || userType}</Badge>;

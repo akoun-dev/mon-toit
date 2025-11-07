@@ -176,7 +176,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
           ? '❌ Certification refusée'
           : '⚠️ Modifications demandées',
         description: action === 'approve'
-          ? 'Le bail a été certifié par l\'ANSUT. Les parties ont été notifiées par email.'
+          ? 'Le bail a été vérifié par MZAKA. Les parties ont été notifiées par email.'
           : action === 'reject'
           ? 'La demande de certification a été refusée. Les parties ont été notifiées.'
           : 'Des modifications ont été demandées aux parties.',

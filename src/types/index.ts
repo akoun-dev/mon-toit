@@ -1,7 +1,7 @@
 // Centralized type definitions for Mon Toit
 
 // Database enums
-export type UserType = 'locataire' | 'proprietaire' | 'agence' | 'admin_ansut';
+export type UserType = 'locataire' | 'proprietaire' | 'agence';
 export type PropertyStatus = 'disponible' | 'loué' | 'en_attente' | 'retiré';
 export type ApplicationStatus = 'pending' | 'approved' | 'rejected' | 'withdrawn';
 export type VerificationStatus = 'pending' | 'verified' | 'rejected' | 'not_attempted';

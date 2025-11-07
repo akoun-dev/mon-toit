@@ -94,7 +94,7 @@ const AdminLeases = () => {
 
       toast({
         title: 'Succès',
-        description: 'Bail certifié par l\'ANSUT',
+        description: 'Bail vérifié par MZAKA',
       });
 
       fetchLeases();

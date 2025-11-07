@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type UserType = 'locataire' | 'proprietaire' | 'agence' | 'admin_ansut';
+type UserType = 'locataire' | 'proprietaire' | 'agence';
 
 const roleConfig = {
   locataire: {
@@ -60,7 +60,7 @@ export const RoleSwitcherCompact = () => {
 
   const filteredRoles = availableRoles.filter(
     (role): role is keyof typeof roleConfig => 
-      role !== 'admin_ansut' && role in roleConfig
+      role in roleConfig
   );
 
   // Switch pour 2 rôles

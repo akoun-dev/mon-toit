@@ -69,14 +69,6 @@ const Dashboard = () => {
         { title: 'Statistiques', icon: BarChart3, description: 'Performance globale', link: '/stats' },
       ],
     },
-    admin_ansut: {
-      title: 'Tableau de bord Admin ANSUT',
-      cards: [
-        { title: 'Utilisateurs', icon: Users, description: 'Gestion des utilisateurs', link: '/admin/users' },
-        { title: 'Propriétés', icon: Building2, description: 'Toutes les propriétés', link: '/admin/properties' },
-        { title: 'Rapports', icon: BarChart3, description: 'Statistiques globales', link: '/admin/reports' },
-      ],
-    },
   };
 
   const content = dashboardContent[profile.user_type];

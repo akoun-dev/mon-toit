@@ -49,7 +49,7 @@ export const MobileMenu = () => {
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-primary/5 border-l-2 border-primary hover:bg-primary/10 transition-colors"
             >
               <ShieldCheck className="h-5 w-5 text-primary" />
-              <span>Certification ANSUT</span>
+              <span>Vérification MZAKA</span>
             </Link>
             <Link
               to="/#comment-ca-marche"
@@ -77,9 +77,9 @@ export const MobileMenu = () => {
                 <p className="text-sm font-semibold text-foreground mb-1">{profile?.full_name}</p>
                 <p className="text-xs text-muted-foreground mb-2">{user.email}</p>
                 {(profile?.oneci_verified || profile?.cnam_verified) && (
-                  <Badge variant="outline" className="text-xs border-primary text-primary">
-                    ✓ Certifié ANSUT
-                  </Badge>
+                <Badge variant="outline" className="text-xs border-primary text-primary">
+                  ✓ Vérifié MZAKA
+                </Badge>
                 )}
               </div>
 

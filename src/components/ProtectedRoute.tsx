@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedUserTypes?: ('locataire' | 'proprietaire' | 'agence' | 'admin_ansut')[];
+  allowedUserTypes?: ('locataire' | 'proprietaire' | 'agence')[];
   requiredRoles?: string[];
   requireAll?: boolean;
 }

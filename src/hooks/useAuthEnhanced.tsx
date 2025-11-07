@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshProfile = async () => {
     if (user) {
       const profileData = await fetchProfile(user.id);
-      setProfile(profileData);
+      setProfile(profileData as Profile);
       const userRoles = await fetchUserRoles(user.id);
       setRoles(userRoles);
     }
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Defer profile fetching to avoid deadlock
           setTimeout(async () => {
             const profileData = await fetchProfile(session.user.id);
-            setProfile(profileData);
+            setProfile(profileData as Profile);
             const userRoles = await fetchUserRoles(session.user.id);
             setRoles(userRoles);
           }, 0);
@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (session?.user) {
         setTimeout(async () => {
           const profileData = await fetchProfile(session.user.id);
-          setProfile(profileData);
+          setProfile(profileData as Profile);
           const userRoles = await fetchUserRoles(session.user.id);
           setRoles(userRoles);
           setLoading(false);

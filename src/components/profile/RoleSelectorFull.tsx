@@ -7,7 +7,7 @@ import { Loader2, Home, Building2, Briefcase, Check, AlertCircle } from 'lucide-
 import { cn } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-type UserType = 'locataire' | 'proprietaire' | 'agence' | 'admin_ansut';
+type UserType = 'locataire' | 'proprietaire' | 'agence';
 
 const roleConfig = {
   locataire: {
@@ -67,7 +67,7 @@ export const RoleSelectorFull = () => {
 
   const filteredRoles = availableRoles.filter(
     (role): role is keyof typeof roleConfig => 
-      role !== 'admin_ansut' && role in roleConfig
+      role in roleConfig
   );
 
   return (
