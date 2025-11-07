@@ -130,7 +130,9 @@ const FaceVerification = ({ onSuccess, onSkip }: FaceVerificationProps) => {
     setVerificationResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('smile-id-verification', {
+      // Note: Ce composant est optionnel et moins utilisé
+      // Pour une implémentation complète NeoFace, voir CNIBForm.tsx
+      const { data, error } = await supabase.functions.invoke('neoface-verification', {
         body: {
           cniImageBase64: cniImage,
           selfieBase64: selfieImage,
@@ -142,8 +144,8 @@ const FaceVerification = ({ onSuccess, onSkip }: FaceVerificationProps) => {
       setVerificationResult(data);
 
       if (data.verified) {
-        toast.success('Vérification Smile ID réussie !', {
-          description: `Score : ${data.similarityScore}% | Liveness : ${data.livenessCheck ? '✓' : '✗'} | Match : ${data.selfieToIdMatch ? '✓' : '✗'}`
+        toast.success('Vérification biométrique réussie !', {
+          description: `Score de correspondance : ${data.similarityScore}%`
         });
         onSuccess?.();
       } else {
@@ -152,7 +154,7 @@ const FaceVerification = ({ onSuccess, onSkip }: FaceVerificationProps) => {
         });
       }
     } catch (error) {
-      logger.error('Smile ID verification error', { error });
+      logger.error('NeoFace verification error', { error });
       toast.error('Erreur lors de la vérification', {
         description: error instanceof Error ? error.message : 'Une erreur est survenue'
       });
@@ -176,7 +178,7 @@ const FaceVerification = ({ onSuccess, onSkip }: FaceVerificationProps) => {
           Vérification Faciale (Optionnel)
         </CardTitle>
             <CardDescription>
-              Vérification biométrique sécurisée propulsée par Smile ID
+              Vérification biométrique sécurisée
             </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

@@ -15,10 +15,7 @@ verify_jwt = true
 [functions.cnam-verification]
 verify_jwt = false
 
-[functions.face-verification]
-verify_jwt = false
-
-[functions.smile-id-verification]
+[functions.neoface-verification]
 verify_jwt = true
 
 [functions.cnib-verification]

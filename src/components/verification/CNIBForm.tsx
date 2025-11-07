@@ -120,6 +120,15 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  
+  // Nouveaux states pour NeoFace
+  const [isUploadingDocument, setIsUploadingDocument] = useState(false);
+  const [documentId, setDocumentId] = useState<string | null>(null);
+  const [selfieUrl, setSelfieUrl] = useState<string | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
+  const [pollingMessage, setPollingMessage] = useState('');
+  const [pollingTimeout, setPollingTimeout] = useState<NodeJS.Timeout | null>(null);
+  
   const [verificationResult, setVerificationResult] = useState<{
     verified: boolean;
     similarityScore: string;
@@ -143,8 +152,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         });
         streamRef.current = null;
       }
+      if (pollingTimeout) {
+        clearInterval(pollingTimeout);
+      }
     };
-  }, []);
+  }, [pollingTimeout]);
 
   const startCamera = async () => {
     try {
@@ -435,8 +447,13 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   }, []);
 
   const handleVerify = async () => {
-    if (!cniImage || !selfieImage) {
-      toast.error('Veuillez fournir les deux images');
+    if (!cniImage) {
+      toast.error('Veuillez fournir une photo de votre CNIB');
+      return;
+    }
+
+    if (!user) {
+      toast.error('Utilisateur non authentifié');
       return;
     }
 
@@ -444,44 +461,201 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     setVerificationResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('smile-id-verification', {
-        body: {
-          cniImageBase64: cniImage,
-          selfieBase64: selfieImage,
-        },
+      // ========================================
+      // ÉTAPE 1 : Upload CNIB vers Supabase Storage
+      // ========================================
+      setIsUploadingDocument(true);
+      setUploadProgress(20);
+      logger.info('📤 Upload CNIB vers Storage...');
+      
+      // Convertir base64 en Blob
+      const cniBlob = await fetch(cniImage).then(r => r.blob());
+      
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('verification-documents')
+        .upload(`cnib/${user.id}-${Date.now()}.jpg`, cniBlob, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+      
+      if (storageError) throw storageError;
+      
+      // Obtenir l'URL publique
+      const { data: { publicUrl } } = supabase.storage
+        .from('verification-documents')
+        .getPublicUrl(storageData.path);
+      
+      setUploadProgress(40);
+      logger.info('✅ CNIB uploadée', { url: publicUrl });
+      
+      // ========================================
+      // ÉTAPE 2 : Appeler NeoFace upload_document
+      // ========================================
+      logger.info('📡 Appel NeoFace upload_document...');
+      
+      const { data: uploadData, error: uploadError } = await supabase.functions.invoke('neoface-verification', {
+        body: { 
+          action: 'upload_document', 
+          cni_photo_url: publicUrl,
+          user_id: user.id 
+        }
       });
-
-      if (error) throw error;
-
-      setVerificationResult(data);
-
-      if (data.verified) {
-        // Update profile
-        await supabase
-          .from('profiles')
-          .update({ cnib_verified: true })
-          .eq('id', user?.id);
-
-        // 🎉 Célébration avec confetti
-        celebrateCertification();
-
-        toast.success('🎉 Certification DONIA réussie !', {
-          description: `Score de similarité : ${data.similarityScore}% • Vous êtes maintenant certifié DONIA`,
-          duration: 5000,
+      
+      if (uploadError) throw uploadError;
+      if (!uploadData.success) throw new Error(uploadData.error || 'Échec upload document');
+      
+      setDocumentId(uploadData.document_id);
+      setSelfieUrl(uploadData.selfie_url);
+      setUploadProgress(60);
+      setIsUploadingDocument(false);
+      
+      logger.info('✅ Document uploadé sur NeoFace', { 
+        document_id: uploadData.document_id,
+        selfie_url: uploadData.selfie_url 
+      });
+      
+      // ========================================
+      // ÉTAPE 3 : Ouvrir fenêtre selfie NeoFace
+      // ========================================
+      toast.success('📸 Fenêtre selfie ouverte', {
+        description: 'Prenez votre selfie dans la nouvelle fenêtre'
+      });
+      
+      const selfieWindow = window.open(uploadData.selfie_url, '_blank', 'width=600,height=800');
+      if (!selfieWindow) {
+        toast.error('Popup bloquée', {
+          description: 'Autorisez les popups et réessayez'
         });
-        onSubmit?.();
-      } else {
-        toast.error('Vérification échouée', {
-          description: data.message || data.resultText
-        });
+        throw new Error('Popup bloquée');
       }
+      
+      setUploadProgress(70);
+      
+      // ========================================
+      // ÉTAPE 4 : Polling du statut (toutes les 3 secondes)
+      // ========================================
+      setIsPolling(true);
+      setPollingMessage('En attente de votre selfie...');
+      logger.info('🔄 Début du polling...');
+      
+      let attempts = 0;
+      const maxAttempts = 100; // 5 minutes (100 * 3 secondes)
+      
+      const pollInterval = setInterval(async () => {
+        attempts++;
+        const minutes = Math.floor(attempts * 3 / 60);
+        const seconds = (attempts * 3 % 60).toString().padStart(2, '0');
+        setPollingMessage(`En attente de votre selfie... (${minutes}:${seconds})`);
+        
+        try {
+          const { data: statusData, error: statusError } = await supabase.functions.invoke('neoface-verification', {
+            body: { 
+              action: 'check_status', 
+              document_id: uploadData.document_id 
+            }
+          });
+          
+          if (statusError) {
+            logger.error('Erreur polling', { error: statusError });
+            return; // Continue polling
+          }
+          
+          logger.debug('Polling status', { status: statusData.status, attempt: attempts });
+          
+          if (statusData.status === 'verified') {
+            // ✅ SUCCÈS !
+            clearInterval(pollInterval);
+            setIsPolling(false);
+            setUploadProgress(100);
+            
+            setVerificationResult({
+              verified: true,
+              similarityScore: statusData.matching_score.toString(),
+              message: '✅ Vérification biométrique réussie !',
+              canRetry: false
+            });
+            
+            // 🎉 Célébration DONIA
+            celebrateCertification();
+            
+            toast.success('🎉 Certification DONIA réussie !', {
+              description: `Score de correspondance : ${statusData.matching_score}% • Vous êtes maintenant certifié DONIA`,
+              duration: 5000,
+            });
+            
+            logger.info('✅ Vérification NeoFace réussie', { 
+              matching_score: statusData.matching_score 
+            });
+            
+            onSubmit?.();
+            
+          } else if (statusData.status === 'failed') {
+            // ❌ ÉCHEC
+            clearInterval(pollInterval);
+            setIsPolling(false);
+            
+            setVerificationResult({
+              verified: false,
+              similarityScore: statusData.matching_score?.toString() || '0',
+              message: statusData.message || 'La vérification a échoué',
+              canRetry: true
+            });
+            
+            toast.error('Vérification échouée', {
+              description: statusData.message || 'Réessayez avec de meilleures conditions'
+            });
+            
+            logger.warn('❌ Vérification NeoFace échouée', { 
+              message: statusData.message 
+            });
+          }
+          // Si status === 'waiting', continue polling
+          
+        } catch (pollError) {
+          logger.error('Erreur durant le polling', { error: pollError });
+          // Continue polling malgré l'erreur
+        }
+        
+        // Timeout après maxAttempts
+        if (attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          setIsPolling(false);
+          
+          toast.error('Délai expiré', {
+            description: 'La vérification a pris trop de temps. Réessayez.'
+          });
+          
+          setVerificationResult({
+            verified: false,
+            similarityScore: '0',
+            message: 'Délai d\'attente expiré (5 minutes)',
+            canRetry: true
+          });
+        }
+        
+      }, 3000); // Polling toutes les 3 secondes
+      
+      // Stocker le timeout pour nettoyage
+      setPollingTimeout(pollInterval);
+      
     } catch (error) {
-      logger.error('CNIB Smile ID verification error', { error });
+      logger.error('Erreur vérification NeoFace', { error });
+      
+      setVerificationResult({
+        verified: false,
+        similarityScore: '0',
+        message: error instanceof Error ? error.message : 'Une erreur est survenue',
+        canRetry: true
+      });
+      
       toast.error('Erreur lors de la vérification', {
         description: error instanceof Error ? error.message : 'Une erreur est survenue'
       });
+      
     } finally {
       setIsVerifying(false);
+      setIsUploadingDocument(false);
+      setUploadProgress(0);
     }
   };
 
@@ -500,7 +674,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           Vérification CNIB (Burkinabè)
         </CardTitle>
         <CardDescription>
-          Vérification sécurisée via Smile ID avec votre CNIB
+          Vérification biométrique sécurisée avec votre CNIB
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -518,11 +692,38 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           </AlertDescription>
         </Alert>
 
+        {isUploadingDocument && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <div className="space-y-2">
+                <p className="font-medium">📤 Upload de votre CNIB en cours...</p>
+                <SimpleProgress value={uploadProgress} className="mt-2" />
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {isPolling && (
+          <Alert>
+            <AlertCircle className="h-4 w-4 animate-pulse" />
+            <AlertDescription>
+              <div className="space-y-2">
+                <p className="font-medium">⏳ {pollingMessage}</p>
+                <p className="text-sm text-muted-foreground">
+                  Une fenêtre s'est ouverte pour prendre votre selfie. 
+                  Si vous ne la voyez pas, vérifiez les popups bloquées.
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="grid md:grid-cols-2 gap-6">
           {/* CNI Upload */}
           <div className="space-y-3">
             <Label htmlFor="cni-upload" className="text-base font-semibold">
-              1. Photo de votre Carte Nationale d'Identité
+              1. Photo de votre Carte Nationale d'Identité Burkinabè (CNIB)
             </Label>
             <p className="text-sm text-muted-foreground">
               Téléchargez une photo claire du recto de votre CNIB
@@ -577,89 +778,20 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             )}
           </div>
 
-          {/* Selfie Capture */}
+          {/* Selfie Information */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">
-              2. Selfie de vérification
+              2. Selfie de vérification (automatique)
             </Label>
-            <p className="text-sm text-muted-foreground">
-              Prenez une photo de votre visage pour vérification biométrique
-            </p>
-            {selfieImage ? (
-              <div className="relative group">
-                <img 
-                  src={selfieImage} 
-                  alt="Selfie de vérification" 
-                  className="w-full h-48 object-cover rounded-lg border-2 border-primary shadow-sm"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => {
-                      setSelfieImage(null);
-                      setVerificationResult(null);
-                      stopCamera();
-                    }}
-                  >
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Retirer
-                  </Button>
-                </div>
-                <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3" />
-                  Capturé
-                </div>
-              </div>
-            ) : (isCapturing || isVideoLoading) ? (
-              <div className="space-y-2">
-                <div className="relative">
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    className="w-full h-48 object-cover rounded-lg border-2 border-primary"
-                  />
-                  {isVideoLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-lg">
-                      <div className="text-center text-white">
-                        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mx-auto mb-3" />
-                        <p className="text-sm font-medium">Chargement de la caméra...</p>
-                        <p className="text-xs text-white/70 mt-1">Patientez quelques secondes</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={captureSelfie} 
-                    className="flex-1"
-                    disabled={isVideoLoading}
-                  >
-                    {isVideoLoading ? 'Chargement...' : (
-                      <>
-                        <Camera className="mr-2 h-4 w-4" />
-                        Capturer
-                      </>
-                    )}
-                  </Button>
-                  <Button onClick={stopCamera} variant="outline">
-                    Annuler
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <Button
-                onClick={startCamera}
-                className="w-full h-48 flex flex-col gap-3 bg-muted/30"
-                variant="outline"
-              >
-                <Camera className="h-10 w-10 text-primary" />
-                <span className="font-medium">Ouvrir la caméra</span>
-                <span className="text-xs text-muted-foreground">Selfie en direct</span>
-              </Button>
-            )}
+            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg bg-muted/30">
+              <Camera className="h-10 w-10 mb-3 text-primary opacity-50" />
+              <p className="text-sm font-medium text-center px-4">
+                Le selfie sera capturé automatiquement dans une fenêtre sécurisée
+              </p>
+              <p className="text-xs text-muted-foreground mt-2 text-center px-4">
+                Après avoir uploadé votre CNIB, une fenêtre s'ouvrira pour capturer votre selfie
+              </p>
+            </div>
           </div>
         </div>
 
@@ -693,14 +825,14 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         <div className="flex flex-col gap-3">
           <Button
             onClick={handleVerify}
-            disabled={!cniImage || !selfieImage || isVerifying || uploadProgress > 0}
+            disabled={!cniImage || isVerifying || uploadProgress > 0 || isPolling}
             size="lg"
             className="w-full"
           >
-            {isVerifying ? (
+            {isVerifying || isPolling ? (
               <>
                 <RefreshCw className="mr-2 h-5 w-5 animate-spin" />
-                Vérification en cours...
+                {isPolling ? pollingMessage : 'Vérification en cours...'}
               </>
             ) : (
               <>
@@ -727,9 +859,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         <Alert className="bg-muted">
           <Shield className="h-4 w-4" />
           <AlertDescription className="text-xs">
-            <strong>Sécurité et confidentialité :</strong> Vos images sont transmises de manière sécurisée à Smile ID 
-            pour vérification biométrique. Elles ne sont <strong>jamais stockées</strong> sur nos serveurs. 
-            Seul le résultat de vérification (score de correspondance) est conservé dans votre profil.
+            <strong>Sécurité et confidentialité :</strong> Vos images sont transmises de manière sécurisée à NeoFace 
+            pour vérification biométrique. Seul le résultat de vérification (score de correspondance) est conservé dans votre profil.
+            La capture du selfie se fait dans une fenêtre sécurisée NeoFace qui s'ouvrira automatiquement.
           </AlertDescription>
         </Alert>
       </CardContent>

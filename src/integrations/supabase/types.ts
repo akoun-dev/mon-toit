@@ -3178,6 +3178,9 @@ export type Database = {
           face_verification_status: string | null
           face_verified_at: string | null
           id: string
+          neoface_document_id: string | null
+          neoface_matching_score: number | null
+          neoface_status: string | null
           score_updated_at: string | null
           tenant_score: number | null
           updated_at: string
@@ -3202,6 +3205,9 @@ export type Database = {
           face_verification_status?: string | null
           face_verified_at?: string | null
           id?: string
+          neoface_document_id?: string | null
+          neoface_matching_score?: number | null
+          neoface_status?: string | null
           score_updated_at?: string | null
           tenant_score?: number | null
           updated_at?: string
@@ -3226,6 +3232,9 @@ export type Database = {
           face_verification_status?: string | null
           face_verified_at?: string | null
           id?: string
+          neoface_document_id?: string | null
+          neoface_matching_score?: number | null
+          neoface_status?: string | null
           score_updated_at?: string | null
           tenant_score?: number | null
           updated_at?: string
@@ -3268,6 +3277,18 @@ export type Database = {
       }
     }
     Views: {
+      neoface_verification_stats: {
+        Row: {
+          avg_score: number | null
+          failed: number | null
+          max_score: number | null
+          min_score: number | null
+          successful: number | null
+          total_verifications: number | null
+          verification_date: string | null
+        }
+        Relationships: []
+      }
       profiles_public: {
         Row: {
           avatar_url: string | null
