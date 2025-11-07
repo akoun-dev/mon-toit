@@ -1,8 +1,8 @@
 /**
- * MON TOIT - Hero Section Professionnel
+ * MZAKA - Hero Section Professionnel
  * "Trouvez votre Toit Idéal"
  * 
- * Design UX/UI avec palette "Coucher de soleil ivoirien":
+ * Design UX/UI avec palette "Coucher de soleil burkinabè":
  * - Fond crème clair avec dégradé pastel subtil
  * - Titre orange vif pour impact visuel
  * - Motifs culturels Kente discrets

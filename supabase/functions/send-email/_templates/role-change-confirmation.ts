@@ -232,7 +232,7 @@ export const roleChangeConfirmationTemplate = (data: RoleChangeData): string => 
                       Cet email a été envoyé par <strong style="color: ${EMAIL_STYLES.colors.textDark};">Mon Toit</strong>
                     </p>
                     <p style="margin: 8px 0 0 0;">
-                      Votre plateforme de location immobilière en Côte d'Ivoire
+                      Votre plateforme de location immobilière au Burkina Faso
                     </p>
                   </td>
                 </tr>
@@ -277,6 +277,6 @@ SÉCURITÉ :
 Si vous n'êtes pas à l'origine de ce changement, veuillez contacter immédiatement notre support à support@montoit.ci
 
 ---
-Cet email a été envoyé par Mon Toit - Votre plateforme de location immobilière en Côte d'Ivoire.
+Cet email a été envoyé par Mon Toit - Votre plateforme de location immobilière au Burkina Faso.
   `.trim();
 };

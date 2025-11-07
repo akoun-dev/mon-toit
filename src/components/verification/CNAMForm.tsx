@@ -77,7 +77,7 @@ const CNAMForm = () => {
         <Label htmlFor="employerName">Nom de l'employeur</Label>
         <Input
           id="employerName"
-          placeholder="Orange Côte d'Ivoire"
+          placeholder="Orange Burkina Faso"
           value={formData.employerName}
           onChange={(e) => setFormData({ ...formData, employerName: e.target.value })}
           required

@@ -92,25 +92,25 @@ Deno.serve(async (req) => {
     // 1. CRÉER LES UTILISATEURS
     const users = [
       // Propriétaires individuels
-      { email: 'jean-paul.kouassi@example.com', name: 'Jean-Paul Kouassi', type: 'proprietaire', roles: ['user'], verifications: {} },
-      { email: 'marie.diabate@example.com', name: 'Marie Diabaté', type: 'proprietaire', roles: ['user'], verifications: {} },
-      { email: 'ismael.traore@example.com', name: 'Ismaël Traoré', type: 'proprietaire', roles: ['user'], verifications: {} },
+      { email: 'jean-paul.ouedraogo@example.com', name: 'Jean-Paul Ouédraogo', type: 'proprietaire', roles: ['user'], verifications: {} },
+      { email: 'marie.kabore@example.com', name: 'Marie Kaboré', type: 'proprietaire', roles: ['user'], verifications: {} },
+      { email: 'ismael.sawadogo@example.com', name: 'Ismaël Sawadogo', type: 'proprietaire', roles: ['user'], verifications: {} },
       
       // Agences
-      { email: 'contact@immobilier-ci.com', name: 'Immobilier CI', type: 'agence', roles: ['user'], verifications: {} },
-      { email: 'contact@abidjan-prestige.com', name: 'Abidjan Prestige Homes', type: 'agence', roles: ['user'], verifications: {} },
+      { email: 'contact@immobilier-bf.com', name: 'Immobilier BF', type: 'agence', roles: ['user'], verifications: {} },
+      { email: 'contact@ouaga-prestige.com', name: 'Ouaga Prestige Immobilier', type: 'agence', roles: ['user'], verifications: {} },
       
       // Locataires
-      { email: 'koffi.mensah@example.com', name: 'Koffi Mensah', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
-      { email: 'aminata.toure@example.com', name: 'Aminata Touré', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
-      { email: 'yao.kouadio@example.com', name: 'Yao Kouadio', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
-      { email: 'fanta.diarra@example.com', name: 'Fanta Diarra', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
-      { email: 'moussa.kone@example.com', name: 'Moussa Koné', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
-      { email: 'adjoua.assi@example.com', name: 'Adjoua Assi', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
-      { email: 'awa.bamba@example.com', name: 'Awa Bamba', type: 'locataire', roles: ['user'], verifications: {} },
-      { email: 'ibrahim.sanogo@example.com', name: 'Ibrahim Sanogo', type: 'locataire', roles: ['user'], verifications: {} },
-      { email: 'nguessan.kouame@example.com', name: "N'Guessan Kouamé", type: 'locataire', roles: ['user'], verifications: { oneci: 'pending' } },
-      { email: 'mariam.ouattara@example.com', name: 'Mariam Ouattara', type: 'locataire', roles: ['user'], verifications: { cnam: 'pending' } },
+      { email: 'abdoul.zongo@example.com', name: 'Abdoul Zongo', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
+      { email: 'aminata.compaore@example.com', name: 'Aminata Compaoré', type: 'locataire', roles: ['user'], verifications: { oneci: true } },
+      { email: 'moussa.sankara@example.com', name: 'Moussa Sankara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
+      { email: 'fatoumata.traore@example.com', name: 'Fatoumata Traoré', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true } },
+      { email: 'boureima.ouattara@example.com', name: 'Boureima Ouattara', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
+      { email: 'aicha.yameogo@example.com', name: 'Aïcha Yaméogo', type: 'locataire', roles: ['user'], verifications: { oneci: true, cnam: true, face: true } },
+      { email: 'rasmane.diallo@example.com', name: 'Rasmané Diallo', type: 'locataire', roles: ['user'], verifications: {} },
+      { email: 'alima.tall@example.com', name: 'Alima Tall', type: 'locataire', roles: ['user'], verifications: {} },
+      { email: 'souleymane.nikiema@example.com', name: 'Souleymane Nikiéma', type: 'locataire', roles: ['user'], verifications: { oneci: 'pending' } },
+      { email: 'mariam.nacanabo@example.com', name: 'Mariam Nacanabo', type: 'locataire', roles: ['user'], verifications: { cnam: 'pending' } },
       
       // Admins - utiliser 'proprietaire' comme type car admin role is managed separately
       { email: 'admin@mzaka.bf', name: 'Admin MZAKA', type: 'proprietaire', roles: ['user', 'admin', 'super_admin'], verifications: { oneci: true, cnam: true } },
@@ -230,33 +230,33 @@ Deno.serve(async (req) => {
 
     // 2. CRÉER LES PROPRIÉTÉS
     const properties = [
-      // Jean-Paul Kouassi
-      { owner: 'jean-paul.kouassi@example.com', title: 'Villa Moderne 4 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 450000, bedrooms: 4, bathrooms: 3, surface: 250, status: 'disponible', moderation: 'approved' },
-      { owner: 'jean-paul.kouassi@example.com', title: 'Appartement 3 Pièces', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 180000, bedrooms: 2, bathrooms: 1, surface: 85, status: 'disponible', moderation: 'approved' },
-      { owner: 'jean-paul.kouassi@example.com', title: 'Studio Meublé', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'studio', rent: 120000, bedrooms: 0, bathrooms: 1, surface: 35, status: 'loue', moderation: 'approved' },
+      // Jean-Paul Ouédraogo
+      { owner: 'jean-paul.ouedraogo@example.com', title: 'Villa Moderne 4 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 450000, bedrooms: 4, bathrooms: 3, surface: 250, status: 'disponible', moderation: 'approved' },
+      { owner: 'jean-paul.ouedraogo@example.com', title: 'Appartement 3 Pièces', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 180000, bedrooms: 2, bathrooms: 1, surface: 85, status: 'disponible', moderation: 'approved' },
+      { owner: 'jean-paul.ouedraogo@example.com', title: 'Studio Meublé', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'studio', rent: 120000, bedrooms: 0, bathrooms: 1, surface: 35, status: 'loue', moderation: 'approved' },
       
-      // Marie Diabaté
-      { owner: 'marie.diabate@example.com', title: 'Duplex Luxueux 5 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 550000, bedrooms: 5, bathrooms: 4, surface: 320, status: 'disponible', moderation: 'approved' },
-      { owner: 'marie.diabate@example.com', title: 'Villa Familiale', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'house', rent: 280000, bedrooms: 3, bathrooms: 2, surface: 180, status: 'disponible', moderation: 'approved' },
-      { owner: 'marie.diabate@example.com', title: 'Villa 4 Chambres avec Piscine', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 350000, bedrooms: 4, bathrooms: 3, surface: 220, status: 'loue', moderation: 'approved', hasPool: true },
-      { owner: 'marie.diabate@example.com', title: 'Appartement 2 Pièces', city: 'Ouagadougou', neighborhood: 'Somgandé', type: 'apartment', rent: 95000, bedrooms: 1, bathrooms: 1, surface: 55, status: 'disponible', moderation: 'approved' },
+      // Marie Kaboré
+      { owner: 'marie.kabore@example.com', title: 'Duplex Luxueux 5 Chambres', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 550000, bedrooms: 5, bathrooms: 4, surface: 320, status: 'disponible', moderation: 'approved' },
+      { owner: 'marie.kabore@example.com', title: 'Villa Familiale', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'house', rent: 280000, bedrooms: 3, bathrooms: 2, surface: 180, status: 'disponible', moderation: 'approved' },
+      { owner: 'marie.kabore@example.com', title: 'Villa 4 Chambres avec Piscine', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 350000, bedrooms: 4, bathrooms: 3, surface: 220, status: 'loue', moderation: 'approved', hasPool: true },
+      { owner: 'marie.kabore@example.com', title: 'Appartement 2 Pièces', city: 'Ouagadougou', neighborhood: 'Somgandé', type: 'apartment', rent: 95000, bedrooms: 1, bathrooms: 1, surface: 55, status: 'disponible', moderation: 'approved' },
       
-      // Ismaël Traoré
-      { owner: 'ismael.traore@example.com', title: 'Villa Contemporaine', city: 'Ouagadougou', neighborhood: 'Kossodo', type: 'house', rent: 380000, bedrooms: 4, bathrooms: 2, surface: 200, status: 'disponible', moderation: 'approved' },
-      { owner: 'ismael.traore@example.com', title: 'Appartement Économique', city: 'Ouagadougou', neighborhood: 'Zogona', type: 'apartment', rent: 75000, bedrooms: 2, bathrooms: 1, surface: 60, status: 'disponible', moderation: 'approved' },
+      // Ismaël Sawadogo
+      { owner: 'ismael.sawadogo@example.com', title: 'Villa Contemporaine', city: 'Ouagadougou', neighborhood: 'Kossodo', type: 'house', rent: 380000, bedrooms: 4, bathrooms: 2, surface: 200, status: 'disponible', moderation: 'approved' },
+      { owner: 'ismael.sawadogo@example.com', title: 'Appartement Économique', city: 'Ouagadougou', neighborhood: 'Zogona', type: 'apartment', rent: 75000, bedrooms: 2, bathrooms: 1, surface: 60, status: 'disponible', moderation: 'approved' },
       
-      // Immobilier CI
-      { owner: 'contact@immobilier-ci.com', title: 'Penthouse Premium Vue Lagune', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 850000, bedrooms: 4, bathrooms: 4, surface: 280, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@immobilier-ci.com', title: 'Villa de Prestige', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 720000, bedrooms: 5, bathrooms: 4, surface: 350, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@immobilier-ci.com', title: 'Appartement Standing', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 320000, bedrooms: 3, bathrooms: 2, surface: 120, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@immobilier-ci.com', title: 'Duplex Moderne', city: 'Ouagadougou', neighborhood: 'Patte d\'Oie', type: 'apartment', rent: 480000, bedrooms: 4, bathrooms: 3, surface: 230, status: 'loue', moderation: 'approved' },
-      { owner: 'contact@immobilier-ci.com', title: 'Villa Rénovation Complète', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 400000, bedrooms: 4, bathrooms: 3, surface: 210, status: 'disponible', moderation: 'approved' },
+      // Immobilier BF
+      { owner: 'contact@immobilier-bf.com', title: 'Penthouse Premium Vue Lagune', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'apartment', rent: 850000, bedrooms: 4, bathrooms: 4, surface: 280, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@immobilier-bf.com', title: 'Villa de Prestige', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 720000, bedrooms: 5, bathrooms: 4, surface: 350, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@immobilier-bf.com', title: 'Appartement Standing', city: 'Ouagadougou', neighborhood: 'Cissin', type: 'apartment', rent: 320000, bedrooms: 3, bathrooms: 2, surface: 120, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@immobilier-bf.com', title: 'Duplex Moderne', city: 'Ouagadougou', neighborhood: 'Patte d\'Oie', type: 'apartment', rent: 480000, bedrooms: 4, bathrooms: 3, surface: 230, status: 'loue', moderation: 'approved' },
+      { owner: 'contact@immobilier-bf.com', title: 'Villa Rénovation Complète', city: 'Ouagadougou', neighborhood: 'Ouaga 2000', type: 'house', rent: 400000, bedrooms: 4, bathrooms: 3, surface: 210, status: 'disponible', moderation: 'approved' },
       
-      // Abidjan Prestige Homes
-      { owner: 'contact@abidjan-prestige.com', title: 'Maison Moderne', city: 'Ouagadougou', neighborhood: 'Bogodogo', type: 'house', rent: 250000, bedrooms: 3, bathrooms: 2, surface: 150, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@abidjan-prestige.com', title: 'Appartement Familial', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'apartment', rent: 160000, bedrooms: 3, bathrooms: 2, surface: 90, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@abidjan-prestige.com', title: 'Villa Neuve', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 420000, bedrooms: 4, bathrooms: 3, surface: 240, status: 'disponible', moderation: 'approved' },
-      { owner: 'contact@abidjan-prestige.com', title: 'Appartement En Attente Modération', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'apartment', rent: 200000, bedrooms: 2, bathrooms: 1, surface: 75, status: 'disponible', moderation: 'pending' },
+      // Ouaga Prestige Immobilier
+      { owner: 'contact@ouaga-prestige.com', title: 'Maison Moderne', city: 'Ouagadougou', neighborhood: 'Bogodogo', type: 'house', rent: 250000, bedrooms: 3, bathrooms: 2, surface: 150, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@ouaga-prestige.com', title: 'Appartement Familial', city: 'Ouagadougou', neighborhood: 'Gounghin', type: 'apartment', rent: 160000, bedrooms: 3, bathrooms: 2, surface: 90, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@ouaga-prestige.com', title: 'Villa Neuve', city: 'Ouagadougou', neighborhood: 'Dapoya', type: 'house', rent: 420000, bedrooms: 4, bathrooms: 3, surface: 240, status: 'disponible', moderation: 'approved' },
+      { owner: 'contact@ouaga-prestige.com', title: 'Appartement En Attente Modération', city: 'Ouagadougou', neighborhood: 'Tampouy', type: 'apartment', rent: 200000, bedrooms: 2, bathrooms: 1, surface: 75, status: 'disponible', moderation: 'pending' },
     ];
 
     const propertyMap = new Map<string, string>();
@@ -298,35 +298,35 @@ Deno.serve(async (req) => {
     // 3. CRÉER LES CANDIDATURES
     const applications = [
       // OVERDUE (> 48h)
-      { property: 'Villa Moderne 4 Chambres', applicant: 'koffi.mensah@example.com', status: 'pending', score: 92, daysAgo: 3 },
-      { property: 'Penthouse Premium Vue Lagune', applicant: 'aminata.toure@example.com', status: 'pending', score: 88, daysAgo: 4 },
-      { property: 'Duplex Luxueux 5 Chambres', applicant: 'yao.kouadio@example.com', status: 'pending', score: 90, daysAgo: 5 },
+      { property: 'Villa Moderne 4 Chambres', applicant: 'abdoul.zongo@example.com', status: 'pending', score: 92, daysAgo: 3 },
+      { property: 'Penthouse Premium Vue Lagune', applicant: 'aminata.compaore@example.com', status: 'pending', score: 88, daysAgo: 4 },
+      { property: 'Duplex Luxueux 5 Chambres', applicant: 'moussa.sankara@example.com', status: 'pending', score: 90, daysAgo: 5 },
       
       // URGENT (< 48h)
-      { property: 'Appartement 3 Pièces', applicant: 'fanta.diarra@example.com', status: 'pending', score: 65, daysAgo: 1 },
-      { property: 'Appartement Standing', applicant: 'moussa.kone@example.com', status: 'pending', score: 58, daysAgo: 2 },
+      { property: 'Appartement 3 Pièces', applicant: 'fatoumata.traore@example.com', status: 'pending', score: 65, daysAgo: 1 },
+      { property: 'Appartement Standing', applicant: 'boureima.ouattara@example.com', status: 'pending', score: 58, daysAgo: 2 },
       
       // NORMALES
-      { property: 'Villa Familiale', applicant: 'adjoua.assi@example.com', status: 'pending', score: 75, daysAgo: 0.5 },
-      { property: 'Villa Contemporaine', applicant: 'awa.bamba@example.com', status: 'pending', score: 45, daysAgo: 0.3 },
-      { property: 'Appartement Économique', applicant: 'ibrahim.sanogo@example.com', status: 'pending', score: 42, daysAgo: 0.2 },
-      { property: 'Maison Moderne', applicant: 'nguessan.kouame@example.com', status: 'pending', score: 68, daysAgo: 0.8 },
-      { property: 'Villa Neuve', applicant: 'mariam.ouattara@example.com', status: 'pending', score: 55, daysAgo: 1.2 },
+      { property: 'Villa Familiale', applicant: 'aicha.yameogo@example.com', status: 'pending', score: 75, daysAgo: 0.5 },
+      { property: 'Villa Contemporaine', applicant: 'rasmane.diallo@example.com', status: 'pending', score: 45, daysAgo: 0.3 },
+      { property: 'Appartement Économique', applicant: 'alima.tall@example.com', status: 'pending', score: 42, daysAgo: 0.2 },
+      { property: 'Maison Moderne', applicant: 'souleymane.nikiema@example.com', status: 'pending', score: 68, daysAgo: 0.8 },
+      { property: 'Villa Neuve', applicant: 'mariam.nacanabo@example.com', status: 'pending', score: 55, daysAgo: 1.2 },
       
       // APPROVED
-      { property: 'Villa de Prestige', applicant: 'koffi.mensah@example.com', status: 'approved', score: 95, daysAgo: 10 },
-      { property: 'Appartement 2 Pièces', applicant: 'aminata.toure@example.com', status: 'approved', score: 82, daysAgo: 8 },
-      { property: 'Appartement Familial', applicant: 'yao.kouadio@example.com', status: 'approved', score: 88, daysAgo: 7 },
-      { property: 'Villa Contemporaine', applicant: 'fanta.diarra@example.com', status: 'approved', score: 70, daysAgo: 12 },
-      { property: 'Penthouse Premium Vue Lagune', applicant: 'moussa.kone@example.com', status: 'approved', score: 85, daysAgo: 9 },
-      { property: 'Maison Moderne', applicant: 'adjoua.assi@example.com', status: 'approved', score: 78, daysAgo: 6 },
-      { property: 'Duplex Luxueux 5 Chambres', applicant: 'koffi.mensah@example.com', status: 'approved', score: 92, daysAgo: 11 },
-      { property: 'Villa Familiale', applicant: 'aminata.toure@example.com', status: 'approved', score: 80, daysAgo: 14 },
+      { property: 'Villa de Prestige', applicant: 'abdoul.zongo@example.com', status: 'approved', score: 95, daysAgo: 10 },
+      { property: 'Appartement 2 Pièces', applicant: 'aminata.compaore@example.com', status: 'approved', score: 82, daysAgo: 8 },
+      { property: 'Appartement Familial', applicant: 'moussa.sankara@example.com', status: 'approved', score: 88, daysAgo: 7 },
+      { property: 'Villa Contemporaine', applicant: 'fatoumata.traore@example.com', status: 'approved', score: 70, daysAgo: 12 },
+      { property: 'Penthouse Premium Vue Lagune', applicant: 'boureima.ouattara@example.com', status: 'approved', score: 85, daysAgo: 9 },
+      { property: 'Maison Moderne', applicant: 'aicha.yameogo@example.com', status: 'approved', score: 78, daysAgo: 6 },
+      { property: 'Duplex Luxueux 5 Chambres', applicant: 'abdoul.zongo@example.com', status: 'approved', score: 92, daysAgo: 11 },
+      { property: 'Villa Familiale', applicant: 'aminata.compaore@example.com', status: 'approved', score: 80, daysAgo: 14 },
       
       // REJECTED
-      { property: 'Appartement Standing', applicant: 'awa.bamba@example.com', status: 'rejected', score: 35, daysAgo: 15 },
-      { property: 'Villa Neuve', applicant: 'ibrahim.sanogo@example.com', status: 'rejected', score: 30, daysAgo: 13 },
-      { property: 'Appartement Économique', applicant: 'nguessan.kouame@example.com', status: 'rejected', score: 40, daysAgo: 16 },
+      { property: 'Appartement Standing', applicant: 'rasmane.diallo@example.com', status: 'rejected', score: 35, daysAgo: 15 },
+      { property: 'Villa Neuve', applicant: 'alima.tall@example.com', status: 'rejected', score: 30, daysAgo: 13 },
+      { property: 'Appartement Économique', applicant: 'souleymane.nikiema@example.com', status: 'rejected', score: 40, daysAgo: 16 },
       { property: 'Duplex Moderne', applicant: 'mariam.ouattara@example.com', status: 'rejected', score: 38, daysAgo: 17 },
       { property: 'Villa Rénovation Complète', applicant: 'awa.bamba@example.com', status: 'rejected', score: 32, daysAgo: 18 },
       { property: 'Appartement 3 Pièces', applicant: 'ibrahim.sanogo@example.com', status: 'rejected', score: 28, daysAgo: 20 },
@@ -368,14 +368,14 @@ Deno.serve(async (req) => {
     // 4. CRÉER LES BAUX
     const leases = [
       // Actifs
-      { property: 'Studio Meublé', landlord: 'jean-paul.kouassi@example.com', tenant: 'koffi.mensah@example.com', daysAgo: 90, certified: false },
-      { property: 'Villa 4 Chambres avec Piscine', landlord: 'marie.diabate@example.com', tenant: 'aminata.toure@example.com', daysAgo: 60, certified: false },
-      { property: 'Villa Moderne 4 Chambres', landlord: 'jean-paul.kouassi@example.com', tenant: 'yao.kouadio@example.com', daysAgo: 45, certified: false },
-      { property: 'Appartement Familial', landlord: 'contact@abidjan-prestige.com', tenant: 'fanta.diarra@example.com', daysAgo: 30, certified: false },
+      { property: 'Studio Meublé', landlord: 'jean-paul.ouedraogo@example.com', tenant: 'abdoul.zongo@example.com', daysAgo: 90, certified: false },
+      { property: 'Villa 4 Chambres avec Piscine', landlord: 'marie.kabore@example.com', tenant: 'aminata.compaore@example.com', daysAgo: 60, certified: false },
+      { property: 'Villa Moderne 4 Chambres', landlord: 'jean-paul.ouedraogo@example.com', tenant: 'moussa.sankara@example.com', daysAgo: 45, certified: false },
+      { property: 'Appartement Familial', landlord: 'contact@ouaga-prestige.com', tenant: 'fatoumata.traore@example.com', daysAgo: 30, certified: false },
       
       // Certifiés ANSUT
-      { property: 'Villa 4 Chambres avec Piscine', landlord: 'marie.diabate@example.com', tenant: 'yao.kouadio@example.com', daysAgo: 120, certified: true, certifiedDaysAgo: 30 },
-      { property: 'Duplex Moderne', landlord: 'contact@immobilier-ci.com', tenant: 'koffi.mensah@example.com', daysAgo: 90, certified: true, certifiedDaysAgo: 20 },
+      { property: 'Villa 4 Chambres avec Piscine', landlord: 'marie.kabore@example.com', tenant: 'moussa.sankara@example.com', daysAgo: 120, certified: true, certifiedDaysAgo: 30 },
+      { property: 'Duplex Moderne', landlord: 'contact@immobilier-bf.com', tenant: 'abdoul.zongo@example.com', daysAgo: 90, certified: true, certifiedDaysAgo: 20 },
     ];
 
     for (const leaseData of leases) {
@@ -490,20 +490,20 @@ Deno.serve(async (req) => {
     console.log(`[${requestId}] Creating reviews...`);
     const reviews = [
       // Avis propriétaires -> locataires (après baux terminés)
-      { reviewer: 'jean-paul.kouassi@example.com', reviewee: 'koffi.mensah@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Locataire exemplaire, très soigneux et respectueux. Je recommande vivement !" },
-      { reviewer: 'marie.diabate@example.com', reviewee: 'aminata.toure@example.com', type: 'landlord_to_tenant', rating: 4, comment: "Bon locataire, quelques petits retards de paiement mais rien de grave." },
-      { reviewer: 'contact@immobilier-ci.com', reviewee: 'yao.kouadio@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Parfait ! Locataire sérieux et fiable." },
-      { reviewer: 'contact@abidjan-prestige.com', reviewee: 'fanta.diarra@example.com', type: 'landlord_to_tenant', rating: 4, comment: "Très bien, logement rendu en bon état." },
+      { reviewer: 'jean-paul.ouedraogo@example.com', reviewee: 'abdoul.zongo@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Locataire exemplaire, très soigneux et respectueux. Je recommande vivement !" },
+      { reviewer: 'marie.kabore@example.com', reviewee: 'aminata.compaore@example.com', type: 'landlord_to_tenant', rating: 4, comment: "Bon locataire, quelques petits retards de paiement mais rien de grave." },
+      { reviewer: 'contact@immobilier-bf.com', reviewee: 'moussa.sankara@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Parfait ! Locataire sérieux et fiable." },
+      { reviewer: 'contact@ouaga-prestige.com', reviewee: 'fatoumata.traore@example.com', type: 'landlord_to_tenant', rating: 4, comment: "Très bien, logement rendu en bon état." },
       
       // Avis locataires -> propriétaires
-      { reviewer: 'koffi.mensah@example.com', reviewee: 'jean-paul.kouassi@example.com', type: 'tenant_to_landlord', rating: 5, comment: "Propriétaire réactif et à l'écoute. Logement conforme à l'annonce." },
-      { reviewer: 'aminata.toure@example.com', reviewee: 'marie.diabate@example.com', type: 'tenant_to_landlord', rating: 3, comment: "Quelques problèmes de maintenance non résolus rapidement." },
-      { reviewer: 'yao.kouadio@example.com', reviewee: 'contact@immobilier-ci.com', type: 'tenant_to_landlord', rating: 5, comment: "Excellent service, très professionnel. Je recommande cette agence." },
-      { reviewer: 'fanta.diarra@example.com', reviewee: 'contact@abidjan-prestige.com', type: 'tenant_to_landlord', rating: 4, comment: "Bon propriétaire, appartement agréable et bien situé." },
+      { reviewer: 'abdoul.zongo@example.com', reviewee: 'jean-paul.ouedraogo@example.com', type: 'tenant_to_landlord', rating: 5, comment: "Propriétaire réactif et à l'écoute. Logement conforme à l'annonce." },
+      { reviewer: 'aminata.compaore@example.com', reviewee: 'marie.kabore@example.com', type: 'tenant_to_landlord', rating: 3, comment: "Quelques problèmes de maintenance non résolus rapidement." },
+      { reviewer: 'moussa.sankara@example.com', reviewee: 'contact@immobilier-bf.com', type: 'tenant_to_landlord', rating: 5, comment: "Excellent service, très professionnel. Je recommande cette agence." },
+      { reviewer: 'fatoumata.traore@example.com', reviewee: 'contact@ouaga-prestige.com', type: 'tenant_to_landlord', rating: 4, comment: "Bon propriétaire, appartement agréable et bien situé." },
       
       // Avis supplémentaires
-      { reviewer: 'marie.diabate@example.com', reviewee: 'yao.kouadio@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Client sérieux et fiable. Aucun problème durant toute la durée du bail." },
-      { reviewer: 'yao.kouadio@example.com', reviewee: 'marie.diabate@example.com', type: 'tenant_to_landlord', rating: 4, comment: "Propriétaire sympathique, quelques petits travaux à prévoir mais globalement satisfait." },
+      { reviewer: 'marie.kabore@example.com', reviewee: 'moussa.sankara@example.com', type: 'landlord_to_tenant', rating: 5, comment: "Client sérieux et fiable. Aucun problème durant toute la durée du bail." },
+      { reviewer: 'moussa.sankara@example.com', reviewee: 'marie.kabore@example.com', type: 'tenant_to_landlord', rating: 4, comment: "Propriétaire sympathique, quelques petits travaux à prévoir mais globalement satisfait." },
     ];
 
     for (const reviewData of reviews) {
@@ -527,26 +527,26 @@ Deno.serve(async (req) => {
     console.log(`[${requestId}] Creating search history...`);
     const searches = [
       { 
-        user: 'koffi.mensah@example.com', 
-        filters: { city: 'Abidjan', minPrice: 200000, maxPrice: 400000, bedrooms: 2, propertyType: 'apartment' },
+        user: 'abdoul.zongo@example.com', 
+        filters: { city: 'Ouagadougou', minPrice: 200000, maxPrice: 400000, bedrooms: 2, propertyType: 'apartment' },
         resultCount: 8,
         clicked: ['Penthouse Premium Vue Lagune', 'Villa de Prestige']
       },
       { 
-        user: 'aminata.toure@example.com', 
-        filters: { city: 'Abidjan', maxPrice: 300000, bedrooms: 3, isFurnished: true },
+        user: 'aminata.compaore@example.com', 
+        filters: { city: 'Ouagadougou', maxPrice: 300000, bedrooms: 3, isFurnished: true },
         resultCount: 5,
         clicked: ['Duplex Luxueux 5 Chambres']
       },
       { 
-        user: 'yao.kouadio@example.com', 
-        filters: { city: 'Bingerville', minPrice: 250000, propertyType: 'house', hasGarden: true },
+        user: 'moussa.sankara@example.com', 
+        filters: { city: 'Ouagadougou', minPrice: 250000, propertyType: 'house', hasGarden: true },
         resultCount: 4,
         clicked: ['Villa Familiale', 'Villa Neuve']
       },
       { 
-        user: 'fanta.diarra@example.com', 
-        filters: { city: 'Abidjan', neighborhood: 'Cocody', maxPrice: 500000, bedrooms: 4 },
+        user: 'fatoumata.traore@example.com', 
+        filters: { city: 'Ouagadougou', neighborhood: 'Ouaga 2000', maxPrice: 500000, bedrooms: 4 },
         resultCount: 12,
         clicked: ['Villa Moderne 4 Chambres', 'Appartement Standing']
       },

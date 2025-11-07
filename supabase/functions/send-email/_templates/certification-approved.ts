@@ -44,7 +44,7 @@ export const certificationApprovedTemplate = (data: CertificationApprovedData): 
               </div>
               <p style="color: #334155; font-size: 16px; line-height: 24px; margin: 16px 0;">
                 <strong>Ce que cela signifie :</strong><br>
-                ✓ Bail légalement reconnu en Côte d'Ivoire<br>
+                ✓ Bail légalement reconnu au Burkina Faso<br>
                 ✓ Protection juridique renforcée<br>
                 ✓ Conformité aux normes ANSUT<br>
                 ✓ Badge de confiance visible

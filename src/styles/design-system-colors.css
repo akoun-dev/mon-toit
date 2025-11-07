@@ -1,5 +1,5 @@
 /* Mon Toit - Enhanced Design System with Cultural Integration
- * This file consolidates all color definitions with enhanced visual harmony and Côte d'Ivoire cultural elements
+ * This file consolidates all color definitions with enhanced visual harmony and Burkina Faso cultural elements
  *
  * Color Palette:
  * 1. PRIMARY (Blue #2C5F7F) - Trust, professionalism, main brand color
@@ -10,7 +10,7 @@
  *
  * Cultural Integration Palette:
  * - Ivory Coast Gold: Economic prosperity and cultural pride
- * - Lagoon Blue: Connection to Abidjan's geography
+ * - Lagoon Blue: Connection to Ouagadougou's landscape
  * - Tropical Green: Forest regions and environmental heritage
  * - Terracotta: Artisanal traditions and earth tones
  * - Kente Patterns: Textile heritage inspiration
@@ -46,7 +46,7 @@
     --primary-foreground: 0 0% 100%;
     --primary-glow: 203 48% 42%;
 
-    /* SECONDARY - Abidjan Orange (#E67E22) */
+    /* SECONDARY - Ouagadougou Orange (#E67E22) */
     --secondary-50: 27 90% 96%;
     --secondary-100: 27 90% 88%;
     --secondary: 27 88% 52%; /* #E67E22 */
@@ -120,12 +120,12 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 27 88% 52%;
 
-    /* CÔTE D'IVOIRE CULTURAL PALETTE */
+    /* BURKINA FASO CULTURAL PALETTE */
 
-    /* Ivory Coast Flag Colors */
-    --ivory-orange: 30 100% 50%;        /* Orange vif du drapeau */
-    --ivory-white: 0 0% 100%;            /* Blanc pur */
-    --ivory-green: 142 76% 36%;          /* Vert du drapeau */
+    /* Burkina Faso Flag Colors */
+    --bf-red: 0 70% 44%;              /* Rouge du drapeau */
+    --bf-yellow: 45 96% 51%;          /* Jaune du drapeau */
+    --bf-green: 146 60% 29%;          /* Vert du drapeau */
 
     /* Cultural Heritage Colors */
     --ivory-coast-gold: 45 100% 51%;     /* Or Kente - Prospérité économique */

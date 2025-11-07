@@ -80,7 +80,7 @@ const Search = () => {
               </h1>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl">
-              Trouvez le logement idéal parmi {properties.length} annonces à Abidjan et environs
+              Trouvez le logement idéal parmi {properties.length} annonces à Ouagadougou et environs
             </p>
           </div>
 

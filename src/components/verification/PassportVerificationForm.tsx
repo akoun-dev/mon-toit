@@ -81,7 +81,7 @@ export default function PassportVerificationForm({ onSubmit }: PassportVerificat
       <div className="flex items-center gap-2 mb-4 text-muted-foreground">
         <Shield className="h-5 w-5" />
         <p className="text-sm">
-          Cette vérification est réservée aux ressortissants étrangers non-ivoiriens
+          Cette vérification est réservée aux ressortissants étrangers
         </p>
       </div>
 

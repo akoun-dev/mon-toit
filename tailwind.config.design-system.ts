@@ -50,11 +50,11 @@ export default {
           800: '#9A4A0A',
           900: '#7C3A08',
         },
-        // Couleurs du drapeau ivoirien (accents)
-        ci: {
-          orange: '#F77F00',
-          white: '#FFFFFF',
-          green: '#009E60',
+        // Couleurs du drapeau burkinabè (accents)
+        bf: {
+          red: '#C1121F',
+          yellow: '#F9B208',
+          green: '#146B3A',
         },
         // Couleurs fonctionnelles
         success: {

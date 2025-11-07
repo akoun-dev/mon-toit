@@ -171,7 +171,7 @@ serve(async (req) => {
           timestamp: new Date().toLocaleString('fr-FR', {
             dateStyle: 'long', 
             timeStyle: 'short',
-            timeZone: 'Africa/Abidjan'
+            timeZone: 'Africa/Ouagadougou'
           }),
           profileUrl: `${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '') || 'https://montoit.ci'}/profile`
         }

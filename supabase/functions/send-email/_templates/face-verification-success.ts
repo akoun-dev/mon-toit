@@ -78,8 +78,8 @@ export const faceVerificationSuccessTemplate = (data: { userName: string; simila
 
         <p style="color: #898989; font-size: 12px; line-height: 22px; margin: 32px 0 24px; text-align: center;">
           <a href="https://montoit.ci" target="_blank" style="color: #2754C5; text-decoration: underline;">
-            MonToit
-          </a>, la plateforme de location immobilière de confiance en Côte d'Ivoire.
+            MZAKA
+          </a>, la plateforme de location immobilière de confiance au Burkina Faso.
         </p>
       </td>
     </tr>

@@ -26,7 +26,7 @@ export default function PopulateImages() {
 
     const baseDesc = typeDescriptions[property.property_type] || 'residential property';
     
-    return `Generate a high-quality, professional real estate photograph of a ${baseDesc} in ${property.city}, Côte d'Ivoire. The image should be bright, welcoming, with blue sky, showing the exterior facade. Style: professional real estate photography, well-lit, attractive, 16:9 aspect ratio. Ultra high resolution.`;
+    return `Generate a high-quality, professional real estate photograph of a ${baseDesc} in ${property.city}, Burkina Faso. The image should be bright, welcoming, with blue sky, showing the exterior facade. Style: professional real estate photography, well-lit, attractive, 16:9 aspect ratio. Ultra high resolution.`;
   };
 
   const generateImagesForProperties = async () => {

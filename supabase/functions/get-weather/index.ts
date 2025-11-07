@@ -26,7 +26,7 @@ serve(async (req) => {
   }
 
   try {
-    const { city = 'Abidjan' } = await req.json();
+    const { city = 'Ouagadougou' } = await req.json();
     const apiKey = Deno.env.get('OPENWEATHER_API_KEY');
 
     // Fallback if no API key

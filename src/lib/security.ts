@@ -118,9 +118,9 @@ export class InputSanitizer {
     // Remove all non-digit characters
     const cleaned = phone.replace(/\D/g, '');
 
-    // Validate Côte d'Ivoire phone numbers
-    if (!/^22[0-9]{8}$/.test(cleaned)) {
-      throw new Error('Invalid Côte d\'Ivoire phone number format');
+    // Validate Burkina Faso phone numbers (format: +226 XX XX XX XX)
+    if (!/^226[0-9]{8}$/.test(cleaned)) {
+      throw new Error('Invalid Burkina Faso phone number format');
     }
 
     return cleaned;

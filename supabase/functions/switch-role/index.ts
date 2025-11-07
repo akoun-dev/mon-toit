@@ -214,7 +214,7 @@ serve(async (req) => {
           timestamp: new Date().toLocaleString('fr-FR', { 
             dateStyle: 'long', 
             timeStyle: 'short',
-            timeZone: 'Africa/Abidjan'
+            timeZone: 'Africa/Ouagadougou'
           }),
           dashboardUrl
         }

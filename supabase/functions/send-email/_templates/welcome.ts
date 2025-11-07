@@ -29,7 +29,7 @@ export const welcomeTemplate = (data: WelcomeEmailData): string => {
                 Bonjour ${userName},
               </p>
               <p style="color: #334155; font-size: 16px; line-height: 24px; margin: 16px 0;">
-                Nous sommes ravis de vous accueillir sur MonToit ANSUT, la plateforme de location immobilière certifiée en Côte d'Ivoire.
+                Nous sommes ravis de vous accueillir sur MZAKA, la plateforme de location immobilière certifiée au Burkina Faso.
               </p>
               <div style="background-color: #f1f5f9; border-radius: 8px; padding: 20px; margin: 24px 0;">
                 <p style="color: #334155; font-size: 15px; line-height: 22px; margin: 8px 0;">
@@ -58,8 +58,8 @@ export const welcomeTemplate = (data: WelcomeEmailData): string => {
               </div>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
               <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
-                MonToit ANSUT - Plateforme certifiée de location immobilière<br>
-                Côte d'Ivoire
+                MZAKA - Plateforme certifiée de location immobilière<br>
+                Burkina Faso
               </p>
             </td>
           </tr>

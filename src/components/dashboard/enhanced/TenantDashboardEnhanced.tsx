@@ -476,7 +476,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
                 Guides de Quartier de Ouagadougou
               </CardTitle>
               <CardDescription>
-                Découvrez les quartiers d'Abidjan
+                Découvrez les quartiers de Ouagadougou
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -148,7 +148,7 @@ serve(async (req) => {
         base64File,
         fileName: `bail_${leaseId}_${userType}.pdf`,
         signReason: `Signature électronique ${userType === 'landlord' ? 'du propriétaire' : 'du locataire'}`,
-        location: lease.properties?.city || 'Abidjan'
+        location: lease.properties?.city || 'Ouagadougou'
       })
     });
 

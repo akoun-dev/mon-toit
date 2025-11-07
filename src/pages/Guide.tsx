@@ -391,7 +391,7 @@ const Guide = () => {
                     <AccordionItem value="s1">
                       <AccordionTrigger>Mes données sont-elles protégées ?</AccordionTrigger>
                       <AccordionContent>
-                        Absolument. Nous respectons la loi ivoirienne 2013-450 sur la protection des données. Vos informations personnelles sont chiffrées et jamais partagées sans votre consentement. Voir notre <Link to="/confidentialite" className="text-primary underline">Politique de confidentialité</Link>.
+                        Absolument. Nous respectons la Loi N°010-2004/AN du 20 avril 2004 relative à la protection des données personnelles au Burkina Faso. Vos informations personnelles sont chiffrées et jamais partagées sans votre consentement. Voir notre <Link to="/confidentialite" className="text-primary underline">Politique de confidentialité</Link>.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="s2">

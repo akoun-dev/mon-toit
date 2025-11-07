@@ -37,7 +37,7 @@ serve(async (req) => {
     };
 
     const baseDesc = typeDescriptions[propertyType] || 'residential property';
-    const imagePrompt = `Generate a high-quality, professional real estate photograph of a ${baseDesc} in ${city}, Côte d'Ivoire. The image should be bright, welcoming, with blue sky, showing the exterior facade. Style: professional real estate photography, well-lit, attractive, 16:9 aspect ratio. Ultra high resolution.`;
+    const imagePrompt = `Generate a high-quality, professional real estate photograph of a ${baseDesc} in ${city}, Burkina Faso. The image should be bright, welcoming, with blue sky, showing the exterior facade. Style: professional real estate photography, well-lit, attractive, 16:9 aspect ratio. Ultra high resolution.`;
 
     console.log("Generating image for property", propertyId, "with prompt:", imagePrompt);
 

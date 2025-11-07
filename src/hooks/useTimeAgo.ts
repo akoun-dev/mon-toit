@@ -16,7 +16,7 @@ export const useTimeAgo = (date: string | Date) => {
     const timeStr = past.toLocaleTimeString('fr-FR', { 
       hour: '2-digit', 
       minute: '2-digit',
-      timeZone: 'Africa/Abidjan'
+      timeZone: 'Africa/Ouagadougou'
     });
     return `Hier à ${timeStr}`;
   } else if (diffDays < 7) {
@@ -26,7 +26,7 @@ export const useTimeAgo = (date: string | Date) => {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
-      timeZone: 'Africa/Abidjan'
+      timeZone: 'Africa/Ouagadougou'
     });
   }
 };

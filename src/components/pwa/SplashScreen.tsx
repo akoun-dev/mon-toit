@@ -5,7 +5,7 @@ import { Home } from 'lucide-react';
 /**
  * Splash Screen affiché au démarrage de la PWA
  * - Logo animé
- * - Gradient ivoirien
+ * - Gradient burkinabè
  * - Disparaît après 2 secondes
  * - Uniquement en mode standalone (PWA installée)
  */

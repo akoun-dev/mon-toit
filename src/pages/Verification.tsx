@@ -46,7 +46,7 @@ const Verification = () => {
           <Tabs defaultValue="oneci" className="mt-8">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="oneci">
-                ONECI (Ivoiriens)
+                CNIB (Burkinabè)
               </TabsTrigger>
               <TabsTrigger value="face">
                 Vérification Faciale
