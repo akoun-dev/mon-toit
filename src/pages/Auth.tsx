@@ -345,7 +345,7 @@ const Auth = () => {
               
               <div className="space-y-4">
                 <h1 className="text-4xl font-bold text-foreground">
-                  Bienvenue sur MZAKA
+                  Bienvenue sur DONIA
                 </h1>
                 <p className="text-lg text-muted-foreground">
                   Plateforme immobilière de confiance au Burkina Faso
@@ -384,7 +384,7 @@ const Auth = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Connexion</CardTitle>
-                <CardDescription>Connectez-vous à votre compte MZAKA</CardDescription>
+                <CardDescription>Connectez-vous à votre compte DONIA</CardDescription>
                 {userTypeFromUrl && (
                   <p className="text-xs text-muted-foreground mt-2 bg-muted/50 p-2 rounded">
                     💡 <strong>Vous avez déjà un compte ?</strong> Connectez-vous puis gérez vos rôles depuis <Link to="/profil" className="text-primary hover:underline font-medium">votre profil</Link>
