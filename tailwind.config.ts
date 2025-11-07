@@ -77,7 +77,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Nunito Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       fontSize: {

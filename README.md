@@ -1,6 +1,6 @@
-# 🏠 Mon Toit - Plateforme Immobilière Certifiée ANSUT
+# 🇧🇫 MZAKA-BF - Plateforme Immobilière Burkina Faso
 
-**La première plateforme immobilière certifiée en Côte d'Ivoire**
+**Plateforme immobilière et baux électroniques certifiés Infosec**
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SOMET1010/mon-toit)
 

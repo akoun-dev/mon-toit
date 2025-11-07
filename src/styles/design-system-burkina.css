@@ -1,0 +1,185 @@
+/* MZAKA-BF - Burkina Faso Design System
+ * Plateforme immobilière et baux électroniques
+ *
+ * Palette Burkina Faso:
+ * 1. PRIMARY (Rouge #C1121F) - Drapeau, dynamisme, force
+ * 2. SECONDARY (Vert #146B3A) - Nature, espoir, fertilité
+ * 3. ACCENT (Or #F9B208) - Richesses minérales, étoile du drapeau
+ * 4. BACKGROUND (Beige #F5EDE0) - Savane, terre burkinabè
+ * 5. FOREGROUND (Noir #1E1E1E) - Texte principal
+ *
+ * Usage:
+ * - Boutons primaires: Rouge
+ * - Boutons secondaires: Vert
+ * - Accents/highlights: Or
+ * - Badges Faso Arzeka: Or + Vert
+ * - Messages success: Vert
+ * - Messages erreur: Rouge
+ */
+
+:root {
+  /* Base colors - Burkina Faso */
+  --background: 36 44% 93%; /* #F5EDE0 Beige savane */
+  --foreground: 0 0% 12%; /* #1E1E1E Noir */
+
+  --card: 0 0% 100%; /* Blanc pur pour cartes */
+  --card-foreground: 0 0% 12%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 12%;
+
+  /* PRIMARY - Rouge Burkina (#C1121F) */
+  --primary-50: 352 76% 96%;
+  --primary-100: 352 76% 90%;
+  --primary: 352 84% 41%; /* #C1121F */
+  --primary-500: 352 84% 41%;
+  --primary-700: 352 84% 35%;
+  --primary-900: 352 84% 29%;
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 352 84% 51%;
+
+  /* SECONDARY - Vert Burkina (#146B3A) */
+  --secondary-50: 150 65% 95%;
+  --secondary-100: 150 65% 85%;
+  --secondary: 150 65% 25%; /* #146B3A */
+  --secondary-500: 150 65% 25%;
+  --secondary-700: 150 65% 20%;
+  --secondary-900: 150 65% 15%;
+  --secondary-foreground: 0 0% 100%;
+
+  /* ACCENT - Or Burkina (#F9B208) */
+  --accent-50: 42 96% 96%;
+  --accent-100: 42 96% 88%;
+  --accent: 42 96% 50%; /* #F9B208 */
+  --accent-500: 42 96% 50%;
+  --accent-700: 42 96% 44%;
+  --accent-900: 42 96% 38%;
+  --accent-foreground: 0 0% 12%;
+
+  /* SUCCESS - Vert succès */
+  --success: 150 65% 25%;
+  --success-foreground: 0 0% 100%;
+
+  /* WARNING - Or alerte */
+  --warning: 42 96% 50%;
+  --warning-foreground: 0 0% 12%;
+
+  /* DESTRUCTIVE - Rouge danger */
+  --destructive: 352 84% 41%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Neutral colors */
+  --muted: 36 20% 88%;
+  --muted-foreground: 0 0% 40%;
+
+  --border: 36 15% 85%;
+  --input: 36 15% 85%;
+  --ring: 352 84% 41%; /* Rouge focus */
+
+  --radius: 0.75rem;
+
+  /* Faso Arzeka Brand Colors */
+  --faso-arzeka-primary: 42 96% 50%; /* Or */
+  --faso-arzeka-secondary: 150 65% 25%; /* Vert */
+  --faso-arzeka-text: 0 0% 12%;
+
+  /* Infosec Signature Colors */
+  --infosec-primary: 352 84% 41%; /* Rouge */
+  --infosec-secondary: 0 0% 12%; /* Noir */
+  --infosec-verified: 150 65% 25%; /* Vert */
+
+  /* Gradients Burkina */
+  --gradient-primary: linear-gradient(135deg, hsl(352 84% 41%), hsl(352 84% 51%));
+  --gradient-secondary: linear-gradient(135deg, hsl(150 65% 25%), hsl(150 65% 35%));
+  --gradient-accent: linear-gradient(135deg, hsl(42 96% 50%), hsl(42 96% 60%));
+  --gradient-hero: linear-gradient(135deg, hsl(352 84% 41% / 0.95), hsl(150 65% 25% / 0.85));
+  --gradient-faso-arzeka: linear-gradient(135deg, hsl(42 96% 50%), hsl(150 65% 25%));
+  --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(352 84% 41% / 0.03) 100%);
+
+  /* Shadows Burkina */
+  --shadow-primary: 0 10px 40px -10px hsl(352 84% 41% / 0.3);
+  --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.08);
+  --shadow-soft: 0 2px 20px -2px hsl(352 84% 41% / 0.15);
+  --shadow-glass: 0 8px 32px 0 hsl(352 84% 41% / 0.15);
+  --shadow-elevated: 0 10px 40px -10px hsl(352 84% 41% / 0.3);
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Sidebar */
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 0 0% 12%;
+  --sidebar-primary: 352 84% 41%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 36 20% 95%;
+  --sidebar-accent-foreground: 0 0% 12%;
+  --sidebar-border: 36 15% 85%;
+  --sidebar-ring: 352 84% 41%;
+
+  /* Status Colors */
+  --status-available: 150 65% 25%; /* Vert */
+  --status-pending: 42 96% 50%; /* Or */
+  --status-rented: 0 0% 45%; /* Gris */
+  --status-signed: 150 65% 25%; /* Vert certifié */
+}
+
+.dark {
+  --background: 0 0% 10%;
+  --foreground: 0 0% 98%;
+
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 0 0% 12%;
+  --popover-foreground: 0 0% 98%;
+
+  /* PRIMARY - Rouge plus clair en dark mode */
+  --primary: 352 84% 55%;
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 352 84% 65%;
+
+  /* SECONDARY - Vert plus clair en dark mode */
+  --secondary: 150 65% 40%;
+  --secondary-foreground: 0 0% 100%;
+
+  /* ACCENT - Or en dark mode */
+  --accent: 42 96% 60%;
+  --accent-foreground: 0 0% 12%;
+
+  --success: 150 65% 40%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 42 96% 60%;
+  --warning-foreground: 0 0% 12%;
+
+  --destructive: 352 84% 55%;
+  --destructive-foreground: 0 0% 100%;
+
+  --muted: 0 0% 18%;
+  --muted-foreground: 0 0% 65%;
+
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 352 84% 55%;
+
+  --sidebar-background: 0 0% 12%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 352 84% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 18%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 0 0% 20%;
+  --sidebar-ring: 352 84% 55%;
+
+  /* Gradients dark mode */
+  --gradient-primary: linear-gradient(135deg, hsl(352 84% 55%), hsl(352 84% 65%));
+  --gradient-secondary: linear-gradient(135deg, hsl(150 65% 40%), hsl(150 65% 50%));
+  --gradient-hero: linear-gradient(135deg, hsl(352 84% 55% / 0.95), hsl(150 65% 40% / 0.85));
+  --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(352 84% 55% / 0.05) 100%);
+
+  --shadow-primary: 0 10px 40px -10px hsl(352 84% 55% / 0.4);
+  --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.3);
+  --shadow-soft: 0 2px 20px -2px hsl(352 84% 55% / 0.2);
+  --shadow-glass: 0 8px 32px 0 hsl(352 84% 55% / 0.25);
+  --shadow-elevated: 0 10px 40px -10px hsl(352 84% 55% / 0.4);
+}
