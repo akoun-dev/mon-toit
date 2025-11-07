@@ -1,5 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useCamera } from '@/hooks/useCamera';
+import { usePolling } from '@/hooks/usePolling';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -25,9 +27,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
   const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('popup');
   const [cniImage, setCniImage] = useState<string | null>(null);
-  const [selfieImage, setSelfieImage] = useState<string | null>(null);
-  const [isCapturing, setIsCapturing] = useState(false);
-  const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   
@@ -35,9 +34,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const [isUploadingDocument, setIsUploadingDocument] = useState(false);
   const [documentId, setDocumentId] = useState<string | null>(null);
   const [selfieUrl, setSelfieUrl] = useState<string | null>(null);
-  const [isPolling, setIsPolling] = useState(false);
-  const [pollingMessage, setPollingMessage] = useState('');
-  const [pollingTimeout, setPollingTimeout] = useState<NodeJS.Timeout | null>(null);
   
   const [verificationResult, setVerificationResult] = useState<{
     verified: boolean;
@@ -47,221 +43,79 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     resultText?: string;
   } | null>(null);
   
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  // Hook caméra
+  const camera = useCamera();
+  const {
+    isCapturing,
+    isVideoLoading,
+    capturedImage: selfieImage,
+    videoRef,
+    canvasRef,
+    startCamera,
+    stopCamera,
+    capture: captureSelfie,
+    reset: resetCamera
+  } = camera;
 
-  // Nettoyage lors du démontage du composant
-  useEffect(() => {
-    return () => {
-      logger.debug('Nettoyage composant CNIBForm');
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => {
-          track.stop();
-          logger.debug('Track arrêté', { label: track.label });
-        });
-        streamRef.current = null;
-      }
-      if (pollingTimeout) {
-        clearInterval(pollingTimeout);
-      }
-    };
-  }, [pollingTimeout]);
-
-  const startCamera = async () => {
-    try {
-      logger.info('Démarrage de la caméra');
-      setIsVideoLoading(true);
-      
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('L\'API MediaDevices n\'est pas supportée par ce navigateur');
-      }
-
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        } 
-      });
-      
-      logger.debug('Stream vidéo obtenu', { settings: stream.getVideoTracks()[0].getSettings() });
-      
-      if (!videoRef.current) {
-        throw new Error('Référence vidéo non disponible');
-      }
-
-      const video = videoRef.current;
-      streamRef.current = stream;
-      
-      // IMPORTANT: Définir srcObject APRÈS avoir configuré les événements
-      const playPromise = new Promise<void>((resolve, reject) => {
-        const onCanPlay = () => {
-          logger.debug('Vidéo prête (canplay)', {
-            width: video.videoWidth,
-            height: video.videoHeight,
-            readyState: video.readyState
-          });
-          
-          if (video.videoWidth > 0 && video.videoHeight > 0) {
-            setIsCapturing(true);
-            setIsVideoLoading(false);
-            logger.info('Caméra prête à capturer');
-            toast.success('Caméra activée !', { 
-              description: 'Positionnez votre visage au centre' 
-            });
-            resolve();
-          }
-        };
-
-        const onError = (e: Event) => {
-          logger.error('Erreur vidéo', { error: e });
-          reject(new Error('Erreur de chargement de la vidéo'));
-        };
-
-        // Utiliser 'canplay' au lieu de 'loadedmetadata' (plus fiable)
-        video.addEventListener('canplay', onCanPlay, { once: true });
-        video.addEventListener('error', onError, { once: true });
-        
-        // Timeout de sécurité
-        setTimeout(() => {
-          video.removeEventListener('canplay', onCanPlay);
-          video.removeEventListener('error', onError);
-          
-          // Vérifier manuellement si la vidéo est prête
-          if (video.readyState >= 2 && video.videoWidth > 0) {
-            logger.debug('Timeout mais vidéo prête', {
-              readyState: video.readyState,
-              width: video.videoWidth,
-              height: video.videoHeight
-            });
-            setIsCapturing(true);
-            setIsVideoLoading(false);
-            toast.success('Caméra activée !');
-            resolve();
-          } else {
-            logger.error('Timeout: vidéo non prête', {
-              readyState: video.readyState,
-              width: video.videoWidth,
-              height: video.videoHeight
-            });
-            reject(new Error('La vidéo n\'a pas pu se charger'));
-          }
-        }, 5000);
-      });
-
-      // Assigner le stream à la vidéo
-      video.srcObject = stream;
-      
-      // Forcer le play (nécessaire sur certains navigateurs)
-      try {
-        await video.play();
-        logger.debug('video.play() appelé avec succès');
-      } catch (playError) {
-        logger.warn('video.play() a échoué (peut-être déjà en lecture)', { error: playError });
-      }
-
-      await playPromise;
-    } catch (error) {
-      logger.error('Error accessing camera', { error });
-      setIsVideoLoading(false);
-      setIsCapturing(false);
-      
-      let errorMessage = 'Impossible d\'accéder à la caméra';
-      let errorDescription = 'Vérifiez vos permissions et réessayez';
-      
-      if (error instanceof Error) {
-        if (error.name === 'NotAllowedError') {
-          errorMessage = 'Autorisation caméra refusée';
-          errorDescription = 'Autorisez l\'accès à la caméra dans les paramètres de votre navigateur';
-        } else if (error.name === 'NotFoundError') {
-          errorMessage = 'Aucune caméra trouvée';
-          errorDescription = 'Vérifiez qu\'une caméra est connectée à votre appareil';
-        } else if (error.name === 'NotReadableError') {
-          errorMessage = 'La caméra est déjà utilisée';
-          errorDescription = 'Fermez les autres applications utilisant la caméra';
-        } else if (error.message.includes('Timeout') || error.message.includes('charger')) {
-          errorMessage = 'La caméra n\'a pas pu se charger';
-          errorDescription = 'Réessayez ou rechargez la page';
+  // Hook polling
+  const polling = usePolling(
+    async (documentId: string) => {
+      const { data, error } = await supabase.functions.invoke('neoface-verification', {
+        body: { 
+          action: 'check_status', 
+          document_id: documentId 
         }
-      }
+      });
       
-      toast.error(errorMessage, { description: errorDescription });
-      
-      // Nettoyer le stream en cas d'erreur
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => {
-          track.stop();
-          logger.debug('Track arrêté (erreur)', { label: track.label });
+      if (error) throw error;
+      return data;
+    },
+    {
+      interval: 3000,
+      maxAttempts: 100,
+      onSuccess: (data) => {
+        setUploadProgress(100);
+        setVerificationResult({
+          verified: true,
+          similarityScore: data.matching_score.toString(),
+          message: '✅ Vérification biométrique réussie !',
+          canRetry: false
         });
-        streamRef.current = null;
+        celebrateCertification();
+        toast.success('🎉 Certification DONIA réussie !', {
+          description: `Score de correspondance : ${data.matching_score}% • Vous êtes maintenant certifié DONIA`,
+          duration: 5000,
+        });
+        logger.info('✅ Vérification NeoFace réussie', { matching_score: data.matching_score });
+        onSubmit?.();
+      },
+      onError: (data) => {
+        setVerificationResult({
+          verified: false,
+          similarityScore: data.matching_score?.toString() || '0',
+          message: data.message || 'La vérification a échoué',
+          canRetry: true
+        });
+        toast.error('Vérification échouée', {
+          description: data.message || 'Réessayez avec de meilleures conditions'
+        });
+        logger.warn('❌ Vérification NeoFace échouée', { message: data.message });
+      },
+      onTimeout: () => {
+        toast.error('Délai expiré', {
+          description: 'La vérification a pris trop de temps. Réessayez.'
+        });
+        setVerificationResult({
+          verified: false,
+          similarityScore: '0',
+          message: 'Délai d\'attente expiré (5 minutes)',
+          canRetry: true
+        });
       }
     }
-  };
+  );
 
-  const stopCamera = useCallback(() => {
-    logger.debug('Arrêt de la caméra');
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setIsCapturing(false);
-    setIsVideoLoading(false);
-  }, []);
-
-  const captureSelfie = () => {
-    logger.debug('Tentative de capture du selfie');
-    
-    if (!videoRef.current || !canvasRef.current) {
-      toast.error('Erreur de capture', { description: 'Références vidéo manquantes' });
-      return;
-    }
-
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    
-    // Vérifier que la vidéo a des dimensions valides
-    if (video.videoWidth === 0 || video.videoHeight === 0) {
-      logger.error('Dimensions vidéo invalides', {
-        width: video.videoWidth,
-        height: video.videoHeight
-      });
-      toast.error('Vidéo non prête', { 
-        description: 'Attendez que la caméra charge complètement' 
-      });
-      return;
-    }
-
-    // Vérifier que le stream est actif
-    if (!streamRef.current || streamRef.current.getTracks().length === 0) {
-      logger.error('Aucun stream actif');
-      toast.error('Caméra inactive', { 
-        description: 'Relancez la caméra et réessayez' 
-      });
-      return;
-    }
-
-    logger.debug('Capture du selfie', {
-      width: video.videoWidth,
-      height: video.videoHeight
-    });
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.drawImage(video, 0, 0);
-      const imageData = canvas.toDataURL('image/jpeg', 0.8);
-      setSelfieImage(imageData);
-      stopCamera();
-      logger.info('Selfie capturé avec succès');
-      toast.success('Selfie capturé !');
-    } else {
-      logger.error('Impossible d\'obtenir le contexte canvas');
-      toast.error('Erreur de capture', { description: 'Impossible de traiter l\'image' });
-    }
-  };
+  const { isPolling, message: pollingMessage, startPolling, stopPolling } = polling;
 
   const handleCniUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -538,111 +392,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       setUploadProgress(70);
       
       // ========================================
-      // ÉTAPE 4 : Polling du statut (toutes les 3 secondes)
+      // ÉTAPE 4 : Démarrer le polling du statut
       // ========================================
-      setIsPolling(true);
-      setPollingMessage('En attente de votre selfie...');
-      logger.info('🔄 Début du polling...');
-      
-      let attempts = 0;
-      const maxAttempts = 100; // 5 minutes (100 * 3 secondes)
-      
-      const pollInterval = setInterval(async () => {
-        attempts++;
-        const minutes = Math.floor(attempts * 3 / 60);
-        const seconds = (attempts * 3 % 60).toString().padStart(2, '0');
-        setPollingMessage(`En attente de votre selfie... (${minutes}:${seconds})`);
-        
-        try {
-          const { data: statusData, error: statusError } = await supabase.functions.invoke('neoface-verification', {
-            body: { 
-              action: 'check_status', 
-              document_id: uploadData.document_id 
-            }
-          });
-          
-          if (statusError) {
-            logger.error('Erreur polling', { error: statusError });
-            return; // Continue polling
-          }
-          
-          logger.debug('Polling status', { status: statusData.status, attempt: attempts });
-          
-          if (statusData.status === 'verified') {
-            // ✅ SUCCÈS !
-            clearInterval(pollInterval);
-            setIsPolling(false);
-            setUploadProgress(100);
-            
-            setVerificationResult({
-              verified: true,
-              similarityScore: statusData.matching_score.toString(),
-              message: '✅ Vérification biométrique réussie !',
-              canRetry: false
-            });
-            
-            // 🎉 Célébration DONIA
-            celebrateCertification();
-            
-            toast.success('🎉 Certification DONIA réussie !', {
-              description: `Score de correspondance : ${statusData.matching_score}% • Vous êtes maintenant certifié DONIA`,
-              duration: 5000,
-            });
-            
-            logger.info('✅ Vérification NeoFace réussie', { 
-              matching_score: statusData.matching_score 
-            });
-            
-            onSubmit?.();
-            
-          } else if (statusData.status === 'failed') {
-            // ❌ ÉCHEC
-            clearInterval(pollInterval);
-            setIsPolling(false);
-            
-            setVerificationResult({
-              verified: false,
-              similarityScore: statusData.matching_score?.toString() || '0',
-              message: statusData.message || 'La vérification a échoué',
-              canRetry: true
-            });
-            
-            toast.error('Vérification échouée', {
-              description: statusData.message || 'Réessayez avec de meilleures conditions'
-            });
-            
-            logger.warn('❌ Vérification NeoFace échouée', { 
-              message: statusData.message 
-            });
-          }
-          // Si status === 'waiting', continue polling
-          
-        } catch (pollError) {
-          logger.error('Erreur durant le polling', { error: pollError });
-          // Continue polling malgré l'erreur
-        }
-        
-        // Timeout après maxAttempts
-        if (attempts >= maxAttempts) {
-          clearInterval(pollInterval);
-          setIsPolling(false);
-          
-          toast.error('Délai expiré', {
-            description: 'La vérification a pris trop de temps. Réessayez.'
-          });
-          
-          setVerificationResult({
-            verified: false,
-            similarityScore: '0',
-            message: 'Délai d\'attente expiré (5 minutes)',
-            canRetry: true
-          });
-        }
-        
-      }, 3000); // Polling toutes les 3 secondes
-      
-      // Stocker le timeout pour nettoyage
-      setPollingTimeout(pollInterval);
+      startPolling(uploadData.document_id);
       
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
@@ -667,9 +419,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
   const reset = () => {
     setCniImage(null);
-    setSelfieImage(null);
     setVerificationResult(null);
-    stopCamera();
+    resetCamera();
+    stopPolling();
   };
 
   return (
@@ -755,7 +507,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             onStopCamera={stopCamera}
             onCapture={captureSelfie}
             onRemove={() => {
-              setSelfieImage(null);
+              resetCamera();
               setVerificationResult(null);
             }}
           />
