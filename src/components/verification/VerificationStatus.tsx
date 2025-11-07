@@ -9,7 +9,7 @@ import { TenantScoreBadge } from '@/components/ui/tenant-score-badge';
 import { TenantScoreExplanation } from './TenantScoreExplanation';
 
 interface VerificationData {
-  oneci_status: string;
+  cnib_status: string;
   cnam_status: string;
   cnib_verified: boolean;
   cnam_verified: boolean;
@@ -91,13 +91,13 @@ const VerificationStatus = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {getStatusIcon(verification?.oneci_status || 'pending')}
+              {getStatusIcon(verification?.cnib_status || 'pending')}
               <div>
-                <h3 className="font-semibold">Vérification ONECI</h3>
-                <p className="text-sm text-muted-foreground">Carte Nationale d'Identité</p>
+                <h3 className="font-semibold">Vérification CNIB</h3>
+                <p className="text-sm text-muted-foreground">Carte Nationale d'Identité Burkinabè</p>
               </div>
             </div>
-            {getStatusBadge(verification?.oneci_status || 'pending')}
+            {getStatusBadge(verification?.cnib_status || 'pending')}
           </div>
 
           <div className="flex items-center justify-between">
@@ -105,7 +105,7 @@ const VerificationStatus = () => {
               {getStatusIcon(verification?.face_verification_status || 'pending')}
               <div>
                 <h3 className="font-semibold">Vérification Faciale</h3>
-                <p className="text-sm text-muted-foreground">Vérification biométrique</p>
+                <p className="text-sm text-muted-foreground">Reconnaissance biométrique NeoFace</p>
               </div>
             </div>
             {getStatusBadge(verification?.face_verification_status || 'pending')}
