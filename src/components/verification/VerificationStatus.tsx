@@ -41,7 +41,8 @@ const VerificationStatus = () => {
       } else {
         logger.info('VerificationStatus - Verification data fetched', { hasData: !!data, userId: user.id });
         // RPC returns an array, take first element
-        setVerification(data && data.length > 0 ? data[0] : null);
+        const verificationData = data && data.length > 0 ? data[0] : null;
+        setVerification(verificationData as VerificationData | null);
       }
       setLoading(false);
     };
