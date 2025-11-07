@@ -3638,12 +3638,12 @@ export type Database = {
           avatar_url: string
           cnam_employer: string
           cnam_status: string
+          cnib_number: string
+          cnib_status: string
           created_at: string
           email: string
           full_name: string
           has_pending: boolean
-          oneci_cni_number: string
-          oneci_status: string
           user_id: string
         }[]
       }
@@ -3842,7 +3842,7 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: {
           cnam_data: Json
-          oneci_data: Json
+          cnib_data: Json
           user_id: string
         }[]
       }
@@ -3879,10 +3879,10 @@ export type Database = {
           city: string
           cnam_status: string
           cnam_verified_at: string
+          cnib_status: string
+          cnib_verified_at: string
           created_at: string
           full_name: string
-          oneci_status: string
-          oneci_verified_at: string
           updated_at: string
           user_id: string
           user_type: Database["public"]["Enums"]["user_type"]
