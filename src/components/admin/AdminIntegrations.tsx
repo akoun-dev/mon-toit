@@ -285,7 +285,7 @@ const AdminIntegrations = () => {
               <div className="bg-muted p-4 rounded-lg space-y-2">
                 <h4 className="font-medium text-sm">Comment obtenir votre clé API Brevo ?</h4>
                 <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                  <li>Connectez-vous à votre compte Brevo (contact@mzaka.bf)</li>
+                  <li>Connectez-vous à votre compte Brevo (contact@donia.bf)</li>
                   <li>Accédez à Paramètres → Clés API SMTP & API</li>
                   <li>Créez une nouvelle clé API ou copiez une clé existante</li>
                   <li>Collez-la dans le champ ci-dessus</li>

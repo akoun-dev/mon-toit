@@ -19,7 +19,7 @@
     },
     "enterOTP": "Code OTP sõng",
     "success": "Gãsem tũud-sõngame",
-    "legalFooter": "Sebgame {{city}}, {{date}}\n\nNe Burkĩna Faso Code Civil la Code de l'Urbanisme.\nGãsem elektronik tũud-sõngame ne Infosec (Certificat N° {{certId}}).\n\nSɩng-gomame bʋʋd https://verify.mzaka.bf/{{verifyId}}"
+    "legalFooter": "Sebgame {{city}}, {{date}}\n\nNe Burkĩna Faso Code Civil la Code de l'Urbanisme.\nGãsem elektronik tũud-sõngame ne Infosec (Certificat N° {{certId}}).\n\nSɩng-gomame bʋʋd https://verify.donia.bf/{{verifyId}}"
   },
   "verification": {
     "title": "Gãsem sɩng-gomame",

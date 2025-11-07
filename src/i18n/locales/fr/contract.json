@@ -19,7 +19,7 @@
     },
     "enterOTP": "Entrez le code OTP",
     "success": "Document signé avec succès",
-    "legalFooter": "Fait à {{city}}, le {{date}}\n\nEn conformité avec le Code Civil burkinabé et le Code de l'Urbanisme.\nDocument signé électroniquement via Infosec (Certificat N° {{certId}}).\n\nVérifiez l'authenticité sur https://verify.mzaka.bf/{{verifyId}}"
+    "legalFooter": "Fait à {{city}}, le {{date}}\n\nEn conformité avec le Code Civil burkinabé et le Code de l'Urbanisme.\nDocument signé électroniquement via Infosec (Certificat N° {{certId}}).\n\nVérifiez l'authenticité sur https://verify.donia.bf/{{verifyId}}"
   },
   "verification": {
     "title": "Vérification de document",

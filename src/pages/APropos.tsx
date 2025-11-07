@@ -14,22 +14,28 @@ const APropos = () => {
       <main className="flex-1 pt-24">
         <div className="container mx-auto px-4 py-10">
           <div className="max-w-4xl mx-auto">
-            {/* Hero avec pattern culturel */}
-            <div className="relative mb-12">
-              <AkanPattern />
-              <div className="relative z-10">
-                <h1 className="text-h1 text-center mb-4">
-                  <span className="text-gradient-primary">À propos</span> de MZAKA
-                </h1>
-                <p className="text-xl text-muted-foreground text-center">
-                  La plateforme de confiance pour l'immobilier au Burkina Faso
-                </p>
+            {/* Hero avec illustration burkinabè */}
+            <section className="relative h-96 overflow-hidden mb-12 rounded-2xl">
+              <img 
+                src="/src/assets/illustrations/burkinabe/ivorian-family-house.jpg"
+                alt="DONIA - À propos"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80 flex items-center justify-center">
+                <div className="container mx-auto px-4 text-center text-white">
+                  <h1 className="text-h1 mb-4">
+                    <span className="text-gradient-animated">À propos de DONIA</span>
+                  </h1>
+                  <p className="text-xl max-w-2xl mx-auto opacity-95">
+                    La plateforme de confiance pour l'immobilier au Burkina Faso
+                  </p>
+                </div>
               </div>
-            </div>
+            </section>
 
             <div className="prose prose-lg max-w-none mb-12">
               <p>
-                <strong>MZAKA</strong> est une plateforme immobilière privée 100% burkinabè, 
+                <strong>DONIA</strong> est une plateforme immobilière privée 100% burkinabè, 
                 dédiée à révolutionner le marché de la location au Burkina Faso.
               </p>
               <p>

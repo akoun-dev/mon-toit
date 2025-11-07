@@ -465,8 +465,8 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
         // 🎉 Célébration avec confetti
         celebrateCertification();
 
-        toast.success('🎉 Certification MZAKA réussie !', {
-          description: `Score de similarité : ${data.similarityScore}% • Vous êtes maintenant certifié MZAKA`,
+        toast.success('🎉 Certification DONIA réussie !', {
+          description: `Score de similarité : ${data.similarityScore}% • Vous êtes maintenant certifié DONIA`,
           duration: 5000,
         });
         onSubmit?.();

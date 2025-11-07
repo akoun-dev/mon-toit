@@ -73,7 +73,7 @@ export const PreCertificationChecklist = ({ leaseId }: PreCertificationChecklist
         </CardTitle>
         <CardDescription>
           {validation.all_passed 
-            ? "Tous les critères sont remplis pour la vérification MZAKA" 
+            ? "Tous les critères sont remplis pour la vérification DONIA" 
             : "Certains critères doivent être complétés avant la vérification"}
         </CardDescription>
       </CardHeader>
@@ -102,7 +102,7 @@ export const PreCertificationChecklist = ({ leaseId }: PreCertificationChecklist
         {!validation.all_passed && (
           <Alert>
             <AlertDescription>
-              Complétez les critères manquants avant de demander la vérification MZAKA.
+              Complétez les critères manquants avant de demander la vérification DONIA.
             </AlertDescription>
           </Alert>
         )}

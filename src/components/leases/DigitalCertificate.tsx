@@ -81,7 +81,7 @@ export const DigitalCertificate = () => {
           Certificat Numérique CryptoNeo
         </CardTitle>
         <CardDescription>
-          Requis pour la signature électronique vérifiée par MZAKA
+          Requis pour la signature électronique vérifiée par DONIA
         </CardDescription>
       </CardHeader>
 

@@ -176,7 +176,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
           ? '❌ Certification refusée'
           : '⚠️ Modifications demandées',
         description: action === 'approve'
-          ? 'Le bail a été vérifié par MZAKA. Les parties ont été notifiées par email.'
+          ? 'Le bail a été vérifié par DONIA. Les parties ont été notifiées par email.'
           : action === 'reject'
           ? 'La demande de certification a été refusée. Les parties ont été notifiées.'
           : 'Des modifications ont été demandées aux parties.',
@@ -219,7 +219,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-secondary" />
-            Examen de vérification MZAKA
+            Examen de vérification DONIA
           </DialogTitle>
           <DialogDescription>
             Examinez le dossier complet avant de vérifier le bail

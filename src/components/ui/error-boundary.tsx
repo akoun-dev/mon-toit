@@ -37,7 +37,7 @@ interface State {
 }
 
 /**
- * Composant ErrorBoundary robuste pour la plateforme Mon Toit
+ * Composant ErrorBoundary robuste pour la plateforme DONIA
  * Capture les erreurs React, les rapporte à Sentry, et fournit une expérience utilisateur de qualité
  */
 class ErrorBoundary extends Component<Props, State> {
@@ -338,10 +338,10 @@ class ErrorBoundary extends Component<Props, State> {
                 <p>Si l'erreur persiste, contactez notre support technique:</p>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Badge variant="secondary">
-                    support@mon-toit.ci
+                    support@donia.bf
                   </Badge>
                   <Badge variant="outline">
-                    +225 27 22 00 00 00
+                    +226 XX XX XX XX
                   </Badge>
                 </div>
               </div>

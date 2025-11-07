@@ -77,14 +77,14 @@ const CertificationRequest = ({ leaseId, certificationStatus, onRequestSubmitted
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Shield className="h-4 w-4" />
-          Demander la vérification MZAKA
+          Demander la vérification DONIA
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-secondary" />
-            Demande de vérification MZAKA
+            Demande de vérification DONIA
           </DialogTitle>
           <DialogDescription>
             Notre équipe vérifie la conformité de votre bail avec les normes burkinabè
@@ -100,7 +100,7 @@ const CertificationRequest = ({ leaseId, certificationStatus, onRequestSubmitted
                 <li>Assurez-vous que le bail est signé par les deux parties</li>
                 <li>Vérifiez que toutes les informations sont correctes</li>
                 <li>La certification peut prendre 2-5 jours ouvrables</li>
-                <li>Notre équipe MZAKA examinera votre dossier complet</li>
+                <li>Notre équipe DONIA examinera votre dossier complet</li>
               </ul>
               <p className="text-sm mt-2">
                 <Link to="/certification-faq" className="text-primary underline hover:text-primary/80">

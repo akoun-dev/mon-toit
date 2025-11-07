@@ -92,7 +92,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
         hasVideo: undefined,
         has360View: undefined,
         hasVirtualTour: undefined,
-        isMzakaVerified: undefined,
+        isDoniaVerified: undefined,
       });
     }
   };
@@ -386,7 +386,7 @@ const MobileFilters = ({ onFilterChange, onReset, currentFilters = {} }: MobileF
                     { key: 'hasVideo', label: 'Avec vidéo' },
                     { key: 'has360View', label: 'Vue 360°' },
                     { key: 'hasVirtualTour', label: 'Visite virtuelle' },
-                    { key: 'isMzakaVerified', label: 'Vérifié MZAKA' },
+                    { key: 'isDoniaVerified', label: 'Vérifié DONIA' },
                   ].map(({ key, label }) => (
                     <Button
                       key={key}

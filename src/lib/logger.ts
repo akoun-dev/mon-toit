@@ -40,20 +40,20 @@ export const devLog = {
  */
 export const prodLog = {
   log: (...args: unknown[]) => {
-    console.log('[Mon Toit]', ...args);
+    console.log('[DONIA]', ...args);
   },
 
   warn: (...args: unknown[]) => {
-    console.warn('[Mon Toit]', ...args);
+    console.warn('[DONIA]', ...args);
   },
   
   error: (error: Error | string, context?: string) => {
     if (IS_PRODUCTION) {
       // En production, log simple sans stack trace
-      console.error('[Mon Toit]', context || 'Erreur', typeof error === 'string' ? error : error.message);
+      console.error('[DONIA]', context || 'Erreur', typeof error === 'string' ? error : error.message);
     } else {
       // En dev, log complet
-      console.error('[Mon Toit]', context || 'Erreur', error);
+      console.error('[DONIA]', context || 'Erreur', error);
     }
   },
 };

@@ -250,7 +250,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await logLoginAttempt(email, true);
         toast({
           title: "Connexion réussie",
-          description: "Bienvenue sur Mon Toit !",
+          description: "Bienvenue sur DONIA !",
         });
       }
 
@@ -279,7 +279,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         toast({
           title: "Déconnexion",
-          description: "À bientôt sur Mon Toit !",
+          description: "À bientôt sur DONIA !",
         });
       } else {
         logger.error('Error during sign out', { error });

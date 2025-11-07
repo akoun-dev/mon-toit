@@ -59,9 +59,9 @@ const ILLUSTRATIONS: Illustration[] = [
     prompt: "Flat design illustration of a professional co-ownership meeting. Diverse group of Ivorian property owners and residents sitting around a modern conference table, discussing. Professional, collaborative atmosphere, orange and blue brand colors (#E67E22, #2C5F7F). Contemporary office setting, 16:9 aspect ratio."
   },
   {
-    filename: "verification-mzaka-illustration",
-    description: "Document de vérification MZAKA",
-    prompt: "Flat design illustration of an official MZAKA verification document with official stamp and seal. Professional, trusted platform style, orange and blue brand colors (#E67E22, #2C5F7F). Trust and security aesthetic, badge with checkmark, 16:9 aspect ratio."
+    filename: "verification-donia-illustration",
+    description: "Document de vérification DONIA",
+    prompt: "Flat design illustration of an official DONIA verification document with official stamp and seal. Professional, trusted platform style, orange and blue brand colors (#E67E22, #2C5F7F). Trust and security aesthetic, badge with checkmark, 16:9 aspect ratio."
   }
 ];
 

@@ -30,7 +30,7 @@ export const certificationRejectedTemplate = (data: CertificationRejectedData): 
                 Bonjour ${userName},
               </p>
                <p style="color: #334155; font-size: 16px; line-height: 24px; margin: 16px 0;">
-                 Votre demande de vérification MZAKA pour <strong>${propertyTitle}</strong> n'a pas été approuvée.
+                 Votre demande de vérification DONIA pour <strong>${propertyTitle}</strong> n'a pas été approuvée.
                </p>
               <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 20px; margin: 24px 0;">
                 <h2 style="color: #991b1b; font-size: 16px; font-weight: 600; margin: 0 0 8px;">Raison :</h2>
@@ -49,7 +49,7 @@ export const certificationRejectedTemplate = (data: CertificationRejectedData): 
               </div>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
                <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
-                 MZAKA - Support<br>
+                 DONIA - Support<br>
                  Besoin d'aide ? Contactez notre équipe
                </p>
             </td>

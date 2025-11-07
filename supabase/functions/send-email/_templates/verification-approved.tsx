@@ -51,7 +51,7 @@ export const VerificationApprovedEmail = ({
         </Link>
 
         <Text style={footer}>
-          Mon Toit - Plateforme de location immobilière
+          DONIA - Plateforme Immobilière du Burkina Faso
         </Text>
       </Container>
     </Body>

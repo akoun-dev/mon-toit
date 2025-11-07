@@ -109,10 +109,10 @@ export const InstallPWA = () => {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-lg mb-1">
-                Installer Mon Toit
+                Installer DONIA
               </h3>
               <p className="text-sm text-white/90">
-                Accédez rapidement à Mon Toit depuis votre écran d'accueil. 
+                Accédez rapidement à DONIA depuis votre écran d'accueil. 
                 Expérience rapide et hors ligne.
               </p>
             </div>

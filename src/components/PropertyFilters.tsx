@@ -27,7 +27,7 @@ export interface PropertyFilters {
   has360View?: boolean;
   hasVirtualTour?: boolean;
   status?: string;
-  isMzakaVerified?: boolean;
+  isDoniaVerified?: boolean;
   addedPeriod?: 'today' | 'week' | 'month' | 'all';
 }
 
@@ -325,8 +325,8 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="doniaVerified"
-                    checked={filters.isMzakaVerified}
-                    onCheckedChange={(checked) => handleFilterChange('isMzakaVerified', checked)}
+                    checked={filters.isDoniaVerified}
+                    onCheckedChange={(checked) => handleFilterChange('isDoniaVerified', checked)}
                   />
                   <Label htmlFor="doniaVerified" className="font-normal cursor-pointer flex items-center gap-2">
                     <span className="text-secondary">✓</span> Baux vérifiés DONIA uniquement

@@ -19,7 +19,7 @@
     },
     "enterOTP": "Code OTP don",
     "success": "Sɛbɛn tɔgɔ sɛbɛra",
-    "legalFooter": "Kɛra {{city}}, {{date}}\n\nK'a bɛn Burkina Faso Code Civil ni Code de l'Urbanisme ye.\nSɛbɛn tɔgɔ sɛbɛra elektronik fɛ ni Infosec ye (Certificat N° {{certId}}).\n\nA lajɛ https://verify.mzaka.bf/{{verifyId}}"
+    "legalFooter": "Kɛra {{city}}, {{date}}\n\nK'a bɛn Burkina Faso Code Civil ni Code de l'Urbanisme ye.\nSɛbɛn tɔgɔ sɛbɛra elektronik fɛ ni Infosec ye (Certificat N° {{certId}}).\n\nA lajɛ https://verify.donia.bf/{{verifyId}}"
   },
   "verification": {
     "title": "Sɛbɛn lajɛli",

@@ -86,7 +86,7 @@ export class PWAInstaller {
         </svg>
       </div>
       <div class="install-prompt-content">
-        <div class="install-prompt-title">Installer Mon Toit</div>
+        <div class="install-prompt-title">Installer DONIA</div>
         <div class="install-prompt-description">Accédez à votre plateforme immobilière préférée hors ligne</div>
       </div>
       <button class="install-prompt-button">Installer</button>
@@ -164,7 +164,7 @@ export class PWAInstaller {
         </svg>
       </div>
       <div class="install-prompt-content">
-        <div class="install-prompt-title">Installer Mon Toit</div>
+        <div class="install-prompt-title">Installer DONIA</div>
         <div class="install-prompt-description">
           Appuyez sur <strong>Partager</strong> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="18" cy="5" r="3"></circle>
@@ -193,9 +193,9 @@ export class PWAInstaller {
 }
 
 export class PWACacheManager {
-  private static CACHE_NAME = 'mon-toit-v1';
-  private static STATIC_CACHE = 'mon-toit-static-v1';
-  private static IMAGE_CACHE = 'mon-toit-images-v1';
+  private static CACHE_NAME = 'donia-v1';
+  private static STATIC_CACHE = 'donia-static-v1';
+  private static IMAGE_CACHE = 'donia-images-v1';
 
   /**
    * Initialize caching strategies

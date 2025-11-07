@@ -25,7 +25,7 @@ export const CertificationRejectedEmail = ({
 }: CertificationRejectedEmailProps) => (
   <Html>
     <Head />
-    <Preview>Vérification MZAKA non approuvée - {propertyTitle}</Preview>
+    <Preview>Vérification DONIA non approuvée - {propertyTitle}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>Certification non approuvée</Heading>
@@ -33,7 +33,7 @@ export const CertificationRejectedEmail = ({
         <Text style={text}>Bonjour {userName},</Text>
         
         <Text style={text}>
-          Votre demande de vérification MZAKA pour <strong>{propertyTitle}</strong> n'a pas été approuvée.
+          Votre demande de vérification DONIA pour <strong>{propertyTitle}</strong> n'a pas été approuvée.
         </Text>
 
         <Section style={box}>
@@ -55,7 +55,7 @@ export const CertificationRejectedEmail = ({
         <Hr style={hr} />
         
         <Text style={footer}>
-          MZAKA - Support<br />
+          DONIA - Support<br />
           Besoin d'aide ? Contactez notre équipe
         </Text>
       </Container>

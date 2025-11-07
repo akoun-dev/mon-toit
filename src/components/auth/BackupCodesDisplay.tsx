@@ -10,7 +10,7 @@ interface BackupCodesDisplayProps {
 
 export const BackupCodesDisplay = ({ codes, onDownload }: BackupCodesDisplayProps) => {
   const handleDownload = () => {
-    const content = `Codes de récupération 2FA - Mon Toit
+    const content = `Codes de récupération 2FA - DONIA
 
 IMPORTANT : Conservez ces codes en lieu sûr !
 Ces codes vous permettront de vous connecter si vous perdez l'accès à votre application d'authentification.
@@ -26,7 +26,7 @@ Généré le : ${new Date().toLocaleString('fr-FR')}
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `montoit-backup-codes-${Date.now()}.txt`;
+    a.download = `donia-backup-codes-${Date.now()}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
