@@ -26,6 +26,7 @@ import {
   Settings,
   Bell,
   Image,
+  Activity,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -45,6 +46,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, badges }: AdminSidebarPro
       label: 'Principal',
       items: [
         { id: 'overview', label: 'Vue d\'ensemble', icon: LayoutDashboard },
+        { id: 'realtime', label: 'Dashboard Temps Réel', icon: Activity },
       ]
     },
     {

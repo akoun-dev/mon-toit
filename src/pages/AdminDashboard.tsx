@@ -31,6 +31,7 @@ import { CertificateManager } from '@/components/admin/CertificateManager';
 import { PropertyAlertsMonitor } from '@/components/admin/PropertyAlertsMonitor';
 import { ReportGenerator } from '@/components/admin/ReportGenerator';
 import { IllustrationGenerator } from '@/components/admin/IllustrationGenerator';
+import { RealtimeDashboard } from '@/components/admin/RealtimeDashboard';
 import { supabase } from '@/lib/supabase';
 
 const AdminDashboard = () => {
@@ -150,6 +151,11 @@ const AdminDashboard = () => {
             <SeedDemoDataButton />
             <AdminStats />
           </div>
+        )}
+
+        {/* Dashboard Temps Réel */}
+        {activeTab === 'realtime' && (
+          <RealtimeDashboard />
         )}
 
         {/* Certifications */}
