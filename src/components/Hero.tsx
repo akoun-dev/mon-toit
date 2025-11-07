@@ -107,12 +107,11 @@ const Hero = () => {
         <div className="max-w-2xl lg:max-w-xl animate-fade-in-slow">
           {/* Main Title - Bold and Large */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-foreground leading-tight tracking-tight">
-            Trouvez votre logement idéal en{" "}
-            <span className="text-[#E67E22]">48h</span>
+            Trouvez votre <span className="text-primary">maison</span> en toute confiance
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 max-w-xl font-medium">
-            Plateforme immobilière 100% burkinabè. Sécurisée, gratuite et transparente.
+            DONIA - Le logement simple, sûr et 100% burkinabè. Développé par Infosec Burkina avec le Trésor public (Faso Arzeka).
           </p>
 
           {/* Search bar with integrated voice */}

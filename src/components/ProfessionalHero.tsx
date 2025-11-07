@@ -1,12 +1,12 @@
 /**
- * MZAKA - Hero Section Professionnel
- * "Trouvez votre Toit Idéal"
+ * DONIA - Hero Section Professionnel
+ * "Votre maison, en toute confiance"
  * 
- * Design UX/UI avec palette "Coucher de soleil burkinabè":
+ * Design UX/UI avec palette Burkina Faso:
  * - Fond crème clair avec dégradé pastel subtil
- * - Titre orange vif pour impact visuel
- * - Motifs culturels Kente discrets
- * - Badge ARCEP en tant que sponsor (pas identité dominante)
+ * - Titre rouge vif (couleur drapeau) pour impact visuel
+ * - Motifs culturels Faso Dan Fani discrets
+ * - Partenaires: Infosec Burkina + Faso Arzeka
  */
 
 import { useState } from 'react';
@@ -54,47 +54,47 @@ export const ProfessionalHero = () => {
       {/* Overlay crème pour lisibilité (75% opacité) */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/75 via-background-sand/70 to-background-light/75" />
       
-      {/* Motifs géométriques Kente - subtils mais visibles */}
+      {/* Motifs géométriques Faso Dan Fani - textile burkinabè */}
       <div className="absolute inset-0 opacity-[0.06]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="kente-subtle" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-              {/* Lignes verticales */}
-              <line x1="10" y1="0" x2="10" y2="100" stroke="#E07A5F" strokeWidth="2" />
-              <line x1="30" y1="0" x2="30" y2="100" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="50" y1="0" x2="50" y2="100" stroke="#FF6B35" strokeWidth="3" />
-              <line x1="70" y1="0" x2="70" y2="100" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="90" y1="0" x2="90" y2="100" stroke="#E07A5F" strokeWidth="2" />
+            <pattern id="faso-dan-fani" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+              {/* Lignes verticales - Rouge et Or */}
+              <line x1="10" y1="0" x2="10" y2="100" stroke="#C1121F" strokeWidth="2" />
+              <line x1="30" y1="0" x2="30" y2="100" stroke="#F9B208" strokeWidth="1" />
+              <line x1="50" y1="0" x2="50" y2="100" stroke="#146B3A" strokeWidth="3" />
+              <line x1="70" y1="0" x2="70" y2="100" stroke="#F9B208" strokeWidth="1" />
+              <line x1="90" y1="0" x2="90" y2="100" stroke="#C1121F" strokeWidth="2" />
               
-              {/* Lignes horizontales */}
-              <line x1="0" y1="10" x2="100" y2="10" stroke="#E07A5F" strokeWidth="2" />
-              <line x1="0" y1="30" x2="100" y2="30" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="0" y1="50" x2="100" y2="50" stroke="#FF6B35" strokeWidth="3" />
-              <line x1="0" y1="70" x2="100" y2="70" stroke="#E07A5F" strokeWidth="1" />
-              <line x1="0" y1="90" x2="100" y2="90" stroke="#E07A5F" strokeWidth="2" />
+              {/* Lignes horizontales - Vert et Or */}
+              <line x1="0" y1="10" x2="100" y2="10" stroke="#146B3A" strokeWidth="2" />
+              <line x1="0" y1="30" x2="100" y2="30" stroke="#F9B208" strokeWidth="1" />
+              <line x1="0" y1="50" x2="100" y2="50" stroke="#C1121F" strokeWidth="3" />
+              <line x1="0" y1="70" x2="100" y2="70" stroke="#F9B208" strokeWidth="1" />
+              <line x1="0" y1="90" x2="100" y2="90" stroke="#146B3A" strokeWidth="2" />
               
-              {/* Motifs en losange */}
-              <polygon points="50,20 60,30 50,40 40,30" fill="#E07A5F" opacity="0.4" />
-              <polygon points="50,60 60,70 50,80 40,70" fill="#FF6B35" opacity="0.4" />
+              {/* Motifs en losange - Étoile du drapeau */}
+              <polygon points="50,20 60,30 50,40 40,30" fill="#F9B208" opacity="0.4" />
+              <polygon points="50,60 60,70 50,80 40,70" fill="#C1121F" opacity="0.4" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#kente-subtle)" />
+          <rect width="100%" height="100%" fill="url(#faso-dan-fani)" />
         </svg>
       </div>
       
-      {/* Symboles Adinkra flottants - très discrets */}
+      {/* Symboles étoile (drapeau burkinabè) - très discrets */}
       <div className="hidden md:block absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#E07A5F" strokeWidth="3" />
-          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#E07A5F" strokeWidth="3" />
-          <circle cx="50" cy="50" r="15" fill="#E07A5F" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#F9B208" strokeWidth="3" />
+          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#F9B208" strokeWidth="3" />
+          <circle cx="50" cy="50" r="15" fill="#F9B208" />
         </svg>
       </div>
       
       <div className="hidden md:block absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
         <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#FF6B35" strokeWidth="3" />
-          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#FF6B35" />
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#C1121F" strokeWidth="3" />
+          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#C1121F" />
         </svg>
       </div>
 
@@ -102,7 +102,7 @@ export const ProfessionalHero = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
           
-          {/* Badge confiance */}
+          {/* Badge confiance DONIA */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ export const ProfessionalHero = () => {
           >
             <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium shadow-sm border border-gray-200">
               <ShieldCheck className="h-4 w-4 mr-2 text-primary" />
-              Plateforme sécurisée
+              Plateforme sécurisée DONIA
             </Badge>
           </motion.div>
 
@@ -125,7 +125,7 @@ export const ProfessionalHero = () => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0">
               Trouvez votre{' '}
               <span className="text-primary relative">
-                Toit Idéal
+                maison
                 <svg
                   className="absolute -bottom-2 left-0 w-full h-3 text-primary/30"
                   viewBox="0 0 200 12"
@@ -143,7 +143,7 @@ export const ProfessionalHero = () => {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium px-4 sm:px-0">
-              Explorez une vaste sélection de biens immobiliers à Ouagadougou et partout au Burkina Faso
+              Explorez une vaste sélection de biens immobiliers vérifiés DONIA à Ouagadougou et partout au Burkina Faso
             </p>
           </motion.div>
 
@@ -252,7 +252,7 @@ export const ProfessionalHero = () => {
               {/* Message de confiance */}
               <p className="text-xs sm:text-sm text-gray-600 text-center pt-2 flex flex-wrap items-center justify-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-success" />
-                100% gratuit • Sécurisé • 100% Burkinabè
+                Paiement Faso Arzeka sécurisé • 100% Burkinabè • Infosec Burkina
               </p>
             </div>
           </motion.div>
@@ -266,7 +266,7 @@ export const ProfessionalHero = () => {
           >
             <div className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">3500+</div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens disponibles</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Biens vérifiés DONIA</div>
             </div>
             <div className="text-center">
               <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">10000+</div>

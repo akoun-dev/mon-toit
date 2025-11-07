@@ -1,6 +1,7 @@
 /**
- * MZAKA - Mobile Hero
+ * DONIA - Mobile Hero
  * Version mobile du Hero avec palette Burkina Faso
+ * Développé par Infosec Burkina avec Faso Arzeka
  * Optimisé pour petits écrans (<768px)
  */
 
@@ -37,7 +38,7 @@ export const MobileHero = () => {
       {/* Overlay crème pour lisibilité */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background-sand/75 to-background-light/80" />
       
-      {/* Motifs Kente subtils */}
+      {/* Motifs Faso Dan Fani subtils - textile burkinabè */}
       <div className="absolute inset-0 opacity-[0.04]">
         <div 
           className="w-full h-full"
@@ -46,8 +47,8 @@ export const MobileHero = () => {
               45deg,
               transparent,
               transparent 10px,
-              rgba(224, 122, 95, 0.3) 10px,
-              rgba(224, 122, 95, 0.3) 20px
+              rgba(193, 18, 31, 0.3) 10px,
+              rgba(193, 18, 31, 0.3) 20px
             )`
           }}
         />
@@ -61,17 +62,17 @@ export const MobileHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Badge 100% Burkinabè */}
+          {/* Badge DONIA */}
           <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-3 py-1.5 text-xs font-medium shadow-sm border border-gray-200">
             <ShieldCheck className="h-3 w-3 mr-1.5 text-primary" />
-            100% Burkinabè
+            DONIA - 100% Burkinabè
           </Badge>
 
           {/* Titre */}
           <h1 className="text-3xl font-extrabold text-gray-900 leading-tight px-2">
             Trouvez votre{' '}
             <span className="text-primary relative inline-block">
-              Toit Idéal
+              maison
               <svg
                 className="absolute -bottom-1 left-0 w-full h-2 text-primary/30"
                 viewBox="0 0 200 8"
@@ -90,7 +91,7 @@ export const MobileHero = () => {
 
           {/* Sous-titre */}
           <p className="text-sm text-gray-600 max-w-sm font-medium px-2">
-            Explorez une vaste sélection de biens immobiliers à Ouagadougou
+            Logements vérifiés DONIA à Ouagadougou. Paiement sécurisé Faso Arzeka.
           </p>
 
           {/* Formulaire de recherche */}
@@ -159,7 +160,7 @@ export const MobileHero = () => {
               {/* Message de confiance */}
               <p className="text-xs text-gray-600 text-center pt-1 flex flex-wrap items-center justify-center gap-1.5">
                 <ShieldCheck className="h-3 w-3 text-success" />
-                100% gratuit • Sécurisé
+                Infosec Burkina • Faso Arzeka
               </p>
             </div>
           </div>

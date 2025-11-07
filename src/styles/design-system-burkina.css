@@ -1,20 +1,22 @@
-/* MZAKA-BF - Burkina Faso Design System
+/* DONIA - Burkina Faso Design System
  * Plateforme immobilière et baux électroniques
+ * Développé par Infosec Burkina avec le Trésor public (Faso Arzeka)
  *
- * Palette Burkina Faso:
- * 1. PRIMARY (Rouge #C1121F) - Drapeau, dynamisme, force
- * 2. SECONDARY (Vert #146B3A) - Nature, espoir, fertilité
- * 3. ACCENT (Or #F9B208) - Richesses minérales, étoile du drapeau
- * 4. BACKGROUND (Beige #F5EDE0) - Savane, terre burkinabè
+ * Palette Burkina Faso - Couleurs du drapeau:
+ * 1. PRIMARY (Rouge Faso #C1121F) - Drapeau, dynamisme, force
+ * 2. SECONDARY (Vert Sahel #146B3A) - Nature, espoir, fertilité
+ * 3. ACCENT (Or Soleil #F9B208) - Richesses minérales, étoile du drapeau
+ * 4. BACKGROUND (Beige Terre #F5EDE0) - Savane, terre burkinabè
  * 5. FOREGROUND (Noir #1E1E1E) - Texte principal
  *
  * Usage:
- * - Boutons primaires: Rouge
- * - Boutons secondaires: Vert
- * - Accents/highlights: Or
+ * - Boutons primaires: Rouge Faso
+ * - Boutons secondaires: Vert Sahel
+ * - Accents/highlights: Or Soleil
  * - Badges Faso Arzeka: Or + Vert
- * - Messages success: Vert
- * - Messages erreur: Rouge
+ * - Messages success: Vert Sahel
+ * - Messages erreur: Rouge Faso
+ * - Motifs: Faso Dan Fani (textile burkinabè)
  */
 
 :root {
