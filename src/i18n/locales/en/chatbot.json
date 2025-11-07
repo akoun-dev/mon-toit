@@ -1,18 +1,22 @@
 {
-  "name": "YiriBot",
-  "greeting": "Hello! I'm YiriBot, your MZAKA-BF assistant 🇧🇫",
-  "placeholder": "Ask me a question...",
+  "name": "DONIA KOUMAN",
+  "short_name": "Kouman",
+  "greeting": "👋 Hello! I'm DONIA KOUMAN, the voice of the house 🏠 How can I help you?",
+  "placeholder": "Ask Kouman a question...",
+  "tagline": "The voice of the house",
+  "meaning": "The house that speaks (Dioula)",
   "intents": {
-    "createContract": "Create a lease",
+    "createProfile": "Create my profile",
+    "searchProperty": "Find housing",
     "generateReceipt": "Generate a receipt",
-    "payTreasury": "Pay via Treasury",
-    "verifyDocument": "Verify a document"
+    "payTreasury": "Pay via Faso Arzeka",
+    "verifyDocument": "Verify a lease"
   },
   "responses": {
-    "help": "I can help you:\n• Create an electronic lease\n• Generate receipts\n• Make payments via Faso Arzeka\n• Verify document authenticity",
-    "createContractGuide": "To create a lease, follow these steps:\n1️⃣ Select the property\n2️⃣ Pay lease fees via Faso Arzeka\n3️⃣ Sign electronically with Infosec",
-    "paymentGuide": "To pay via Faso Arzeka:\n• Web: Use the online portal\n• App: Open the mobile application\n• USSD: Dial *700# from your phone"
+    "help": "I can help you:\n• Find housing in Ouagadougou\n• Create your tenant profile\n• Generate receipts\n• Pay via Faso Arzeka\n• Verify lease authenticity",
+    "searchGuide": "To find your ideal home:\n1️⃣ Choose your neighborhood (Ouaga 2000, Cissin, Somgandé...)\n2️⃣ Set your budget\n3️⃣ Filter by type (studio, 2BR, villa...)\n4️⃣ Contact the owner",
+    "paymentGuide": "To pay via Faso Arzeka:\n• Web: Online portal\n• App: Mobile application\n• USSD: Dial *700# from your phone"
   },
-  "voiceMode": "Voice mode enabled",
-  "textMode": "Text mode enabled"
+  "voiceMode": "Voice mode enabled 🎤",
+  "textMode": "Text mode enabled ✍️"
 }

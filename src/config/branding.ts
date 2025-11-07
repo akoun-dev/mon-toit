@@ -27,11 +27,46 @@ export const BRANDING = {
     team: "équipe DONIA",
   },
   
-  // Chatbot
-  CHATBOT_NAME: "DONIABot",
-  CHATBOT_PERSONALITY: "Bienveillante, pédagogique, nationale",
-  CHATBOT_VOICE: "Féminine, calme, accent burkinabè léger",
-  CHATBOT_LANGUAGES: ["Français", "Dioula", "Anglais"],
+  // Chatbot DONIA KOUMAN
+  CHATBOT: {
+    name_full: "DONIA KOUMAN",
+    name_short: "Kouman",
+    meaning: {
+      donia: "maison / refuge / abri (dioula)",
+      kouman: "parole / discours / échange (mandingue)",
+      combined: "La maison qui parle"
+    },
+    tagline_fr: "La voix de la maison",
+    tagline_dioula: "So ka kuma",
+    personality: "Chaleureuse, respectueuse, pédagogique",
+    voice: {
+      gender: "féminine",
+      tone: "douce",
+      accent: "burkinabè léger"
+    },
+    languages: ["Français", "Dioula", "Anglais"],
+    capabilities: [
+      "Répondre aux questions sur logement/bail/quittance",
+      "Guider les utilisateurs étape par étape",
+      "Aider au paiement via Faso Arzeka",
+      "Générer/lire documents PDF à voix haute",
+      "Vérifier un bail par numéro de référence",
+      "Envoyer rappels automatiques (WhatsApp/SMS)"
+    ],
+    visual: {
+      icon: "bulle dorée avec onde sonore",
+      colors: {
+        primary: "#F9B208", // Or Soleil
+        secondary: "#146B3A", // Vert Sahel
+        tertiary: "#F5EDE0", // Beige Terre
+        text: "#2C2C2C" // Gris Charbon
+      },
+      font: {
+        title: "Poppins Bold",
+        body: "Nunito Sans Regular"
+      }
+    }
+  },
   
   // Messages de confiance
   TRUST_MESSAGES: {

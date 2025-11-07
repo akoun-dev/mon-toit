@@ -1,18 +1,22 @@
 {
-  "name": "YiriBot",
-  "greeting": "I ni ce! N tɔgɔ ye YiriBot, i ka MZAKA-BF dɛmɛbaga 🇧🇫",
-  "placeholder": "Ɲininkali kɛ...",
+  "name": "DONIA KOUMAN",
+  "short_name": "Kouman",
+  "greeting": "👋 I ni ce! N tɔgɔ ye DONIA KOUMAN, so ka kuma 🏠 I bɛ se ka n ɲininkali bi?",
+  "placeholder": "Ɲininkali kɛ Kouman ma...",
+  "tagline": "So ka kuma",
+  "meaning": "So min bɛ kuma (dioula)",
   "intents": {
-    "createContract": "Sɛbɛn dilan",
+    "createProfile": "N ka dossier dilan",
+    "searchProperty": "So ɲini",
     "generateReceipt": "Kɛlɛ dilan",
-    "payTreasury": "Sara kɛ tɔnba fɛ",
-    "verifyDocument": "Sɛbɛn lajɛ"
+    "payTreasury": "Sara kɛ Faso Arzeka fɛ",
+    "verifyDocument": "Bail lajɛ"
   },
   "responses": {
-    "help": "N bɛ se ka i dɛmɛ:\n• Elektronik sɛbɛn dilan\n• Kɛlɛw dilan\n• Sara kɛ ni Faso Arzeka ye\n• Sɛbɛnw lajɛli",
-    "createContractGuide": "Walasa ka sɛbɛn dilan, nin taabolo in kɛ:\n1️⃣ So sugandi\n2️⃣ Sɛbɛn sara sara ni Faso Arzeka ye\n3️⃣ Elektronik tɔgɔ sɛbɛ ni Infosec ye",
-    "paymentGuide": "Walasa ka sara kɛ ni Faso Arzeka ye:\n• Web: Portal baara kɛ ni ye\n• App: Telefɔni application da wuli\n• USSD: Composez *700# i ka telefɔni la"
+    "help": "N bɛ se ka i dɛmɛ walasa ka:\n• So sɔrɔ Ouagadougou\n• I ka dossier dilan\n• Kɛlɛw dilan\n• Sara kɛ Faso Arzeka fɛ\n• Bail tiɲɛni lajɛ",
+    "searchGuide": "Walasa ka i ka so ɲuman sɔrɔ:\n1️⃣ I ka sigida sugandi (Ouaga 2000, Cissin, Somgandé...)\n2️⃣ I ka wariko labɛn\n3️⃣ I ka so kɛcogo sugandi (studio, F2, villa...)\n4️⃣ So tigɛ fɔ",
+    "paymentGuide": "Walasa ka sara kɛ Faso Arzeka fɛ:\n• Web : Portail en ligne\n• App : Telefɔni application\n• USSD : *700# bɔ i ka telefɔni la"
   },
-  "voiceMode": "Kuma mode wulira",
-  "textMode": "Sɛbɛn mode wulira"
+  "voiceMode": "Kuma mode wulira 🎤",
+  "textMode": "Sɛbɛn mode wulira ✍️"
 }

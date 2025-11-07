@@ -1,18 +1,22 @@
 {
-  "name": "YiriBot",
-  "greeting": "N yaa soaba! Mam YiriBot, fo MZAKA-BF sõalem-neer 🇧🇫",
-  "placeholder": "N sũulem kẽese...",
+  "name": "DONIA KOUMAN",
+  "short_name": "Kouman",
+  "greeting": "👋 N yaa soaba! Mam DONIA KOUMAN, yir ka nong 🏠 Ma sõnd fo sõalem bi?",
+  "placeholder": "N sũulem Kouman...",
+  "tagline": "Yir ka nong",
+  "meaning": "Yir ka nong-kãens (dioula)",
   "intents": {
-    "createContract": "Sɛbr sebgame",
+    "createProfile": "Ma dossier sebgame",
+    "searchProperty": "Yir nyoogame",
     "generateReceipt": "Sõng-gãsem sebgame",
-    "payTreasury": "Sõng ne Tʋʋm-soabã",
-    "verifyDocument": "Gãsem sɩng-gomame"
+    "payTreasury": "Sõng ne Faso Arzeka",
+    "verifyDocument": "Bail sɩng-gomame"
   },
   "responses": {
-    "help": "Mam sõnd fo sõalem:\n• Elektronik sɛbr sebgame\n• Sõng-gãsem sebgame\n• Sõngre ne Faso Arzeka\n• Gãsem sɩng-gomame",
-    "createContractGuide": "Sɛbr sebgame, seb-wẽndã sugr:\n1️⃣ Noom yʋʋs\n2️⃣ Sɛb sõngr sõng ne Faso Arzeka\n3️⃣ Elektronik tũud-sõng ne Infosec",
-    "paymentGuide": "Sõng ne Faso Arzeka:\n• Web: Portal pʋge\n• App: Telefon application pʋge\n• USSD: Composez *700# fo telefon bʋʋdã"
+    "help": "Ma sõnd fo sõalem:\n• Yir sũur Ouagadougou\n• Fo dossier sebgame\n• Sõng-gãsem sebgame\n• Sõngre ne Faso Arzeka\n• Bail tiɲɛni sɩng-gomame",
+    "searchGuide": "Fo yir bɛɛsem sũugr:\n1️⃣ Fo wã sugr (Ouaga 2000, Cissin, Somgandé...)\n2️⃣ Fo sõngr labɛn\n3️⃣ Yir tãab sugr (studio, F2, villa...)\n4️⃣ Yir-noom ne",
+    "paymentGuide": "Sõngre ne Faso Arzeka:\n• Web : Portal pʋge\n• App : Telefon application\n• USSD : *700# bɔlg fo telefon bʋʋdã"
   },
-  "voiceMode": "Nong-mode pʋgame",
-  "textMode": "Seb-mode pʋgame"
+  "voiceMode": "Nong-mode pʋgame 🎤",
+  "textMode": "Seb-mode pʋgame ✍️"
 }
