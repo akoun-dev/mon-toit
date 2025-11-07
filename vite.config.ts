@@ -148,7 +148,7 @@ export default defineConfig(({ mode }) => ({
     target: 'es2020',
     rollupOptions: {
       output: {
-        inlineDynamicImports: true,
+        inlineDynamicImports: false,
         chunkFileNames: () => {
           return `assets/[name]-[hash].js`;
         },

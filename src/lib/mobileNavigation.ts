@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
 
 // Types for TypeScript, actual modules loaded dynamically
-type ImpactStyle = any;
+import type { ImpactStyle } from '@capacitor/haptics';
 
 export interface NavigationState {
   canGoBack: boolean;
@@ -54,7 +54,10 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
   const triggerHaptics = useCallback(async (style: any = 0) => {
     if (config.enableHaptics && Capacitor.isNativePlatform()) {
       try {
-        const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+        const HapticsModule = await import('@capacitor/haptics');
+        const Haptics = HapticsModule.Haptics;
+        const { ImpactStyle } = HapticsModule;
+        
         const impactStyle = style || ImpactStyle.Light;
         await Haptics.impact({ style: impactStyle });
       } catch (error) {
@@ -93,7 +96,9 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     // Handle keyboard visibility
     if (currentState.isKeyboardVisible) {
       try {
-        const { Keyboard } = await import('@capacitor/keyboard');
+        const KeyboardModule = await import('@capacitor/keyboard');
+        const Keyboard = KeyboardModule.Keyboard;
+        
         await Keyboard.hide();
         setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
         await triggerHaptics(0); // Light impact
@@ -118,7 +123,9 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     // If at root, try to exit app
     if (currentState.currentRoute === '/' || currentState.currentRoute === '/accueil') {
       try {
-        const { App: CapacitorApp } = await import('@capacitor/app');
+        const AppModule = await import('@capacitor/app');
+        const CapacitorApp = AppModule.App;
+        
         await CapacitorApp.exitApp();
         return true;
       } catch (error) {
@@ -208,8 +215,11 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     let keyboardHideListener: any;
 
     (async () => {
-      const { App: CapacitorApp } = await import('@capacitor/app');
-      const { Keyboard } = await import('@capacitor/keyboard');
+      const AppModule = await import('@capacitor/app');
+      const CapacitorApp = AppModule.App;
+      
+      const KeyboardModule = await import('@capacitor/keyboard');
+      const Keyboard = KeyboardModule.Keyboard;
 
       // Handle back button
       backButtonListener = await CapacitorApp.addListener('backButton', async () => {
@@ -283,7 +293,10 @@ export function useBottomNavigation() {
 
     if (Capacitor.isNativePlatform()) {
       try {
-        const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+        const HapticsModule = await import('@capacitor/haptics');
+        const Haptics = HapticsModule.Haptics;
+        const { ImpactStyle } = HapticsModule;
+        
         await Haptics.impact({ style: ImpactStyle.Light });
       } catch (error) {
         console.warn('Haptics not available:', error);

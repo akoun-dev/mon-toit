@@ -9,8 +9,7 @@ import React from 'react';
 import { Capacitor } from '@capacitor/core';
 
 // Types imported for TypeScript, actual modules loaded dynamically
-type ImpactStyle = any;
-type NotificationType = any;
+import type { ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 export interface BrowserOptions {
   toolbarColor?: string;
@@ -82,8 +81,12 @@ export class MobileBrowserService {
 
     try {
       // Dynamic imports for native platform
-      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
-      const { Browser } = await import('@capacitor/browser');
+      const HapticsModule = await import('@capacitor/haptics');
+      const Haptics = HapticsModule.Haptics;
+      const { ImpactStyle } = HapticsModule;
+      
+      const BrowserModule = await import('@capacitor/browser');
+      const Browser = BrowserModule.Browser;
       
       await Haptics.impact({ style: ImpactStyle.Light });
 
@@ -128,8 +131,12 @@ export class MobileBrowserService {
     }
 
     try {
-      const { Browser } = await import('@capacitor/browser');
-      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      const BrowserModule = await import('@capacitor/browser');
+      const Browser = BrowserModule.Browser;
+      
+      const HapticsModule = await import('@capacitor/haptics');
+      const Haptics = HapticsModule.Haptics;
+      const { ImpactStyle } = HapticsModule;
       
       await Browser.close();
       this.isOpen = false;
@@ -197,12 +204,15 @@ export class MobileBrowserService {
   ): Promise<void> {
     let mapUrl: string;
 
-    // Try to open in Google Maps first
-    if (Capacitor.getPlatform() === 'android') {
-      mapUrl = `geo:${latitude},${longitude}?q=${latitude},${longitude}`;
+    // Platform-specific map URLs
+    const platform = Capacitor.getPlatform();
+    if (platform === 'android') {
+      mapUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    } else if (platform === 'ios') {
+      mapUrl = `http://maps.apple.com/?q=${latitude},${longitude}`;
     } else {
-      // iOS - use Apple Maps or Google Maps
-      mapUrl = `maps://maps.google.com/maps?q=${latitude},${longitude}`;
+      // Web fallback
+      mapUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
     }
 
     // Add address to URL if provided
@@ -272,8 +282,12 @@ export class MobileBrowserService {
     }
 
     try {
-      const { Share } = await import('@capacitor/share');
-      const { Haptics, NotificationType } = await import('@capacitor/haptics');
+      const ShareModule = await import('@capacitor/share');
+      const Share = ShareModule.Share;
+      
+      const HapticsModule = await import('@capacitor/haptics');
+      const Haptics = HapticsModule.Haptics;
+      const { NotificationType } = HapticsModule;
       
       await Share.share({
         title: 'Lien partagé depuis Mon Toit',
@@ -376,18 +390,12 @@ export function useMobileBrowser() {
 
   const browserService = MobileBrowserService.getInstance();
 
+  // Initialize state from service
   React.useEffect(() => {
-    const checkBrowserStatus = () => {
-      setIsOpen(browserService.isBrowserOpen());
-      setCurrentUrl(browserService.getCurrentUrl());
-      setHistory(browserService.getHistory());
-    };
-
-    // Check status periodically
-    const interval = setInterval(checkBrowserStatus, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+    setIsOpen(browserService.isBrowserOpen());
+    setCurrentUrl(browserService.getCurrentUrl());
+    setHistory(browserService.getHistory());
+  }, [browserService]);
 
   const openUrl = async (url: string, options?: BrowserOptions) => {
     await browserService.openUrl(url, options);
