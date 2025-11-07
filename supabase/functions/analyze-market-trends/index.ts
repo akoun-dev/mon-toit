@@ -39,8 +39,8 @@ serve(async (req) => {
 
     console.log('Analyzing market trends', user ? `for user: ${user.id}` : '(anonymous)');
 
-    // Villes par défaut pour les utilisateurs anonymes
-    const DEFAULT_CITIES = ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo'];
+    // Villes par défaut pour les utilisateurs anonymes (Burkina Faso)
+    const DEFAULT_CITIES = ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou', 'Ouahigouya', 'Banfora'];
     const searchedCities = new Set<string>();
 
     if (user) {

@@ -9,7 +9,6 @@ verify_jwt = false
 [functions.fa_status]
 verify_jwt = true
 
-
 [functions.cnam-verification]
 verify_jwt = false
 
@@ -19,7 +18,7 @@ verify_jwt = false
 [functions.smile-id-verification]
 verify_jwt = true
 
-[functions.oneci-verification]
+[functions.oni-verification]
 verify_jwt = false
 
 [functions.mobile-money-payment]

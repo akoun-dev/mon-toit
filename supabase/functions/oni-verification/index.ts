@@ -12,18 +12,18 @@ serve(async (req) => {
   }
 
   try {
-    const { cniNumber, lastName, firstName, birthDate } = await req.json();
+    const { cnibNumber, lastName, firstName, birthDate } = await req.json();
     const authHeader = req.headers.get('Authorization')!;
 
     // Anonymize sensitive data in logs
-    const cniHash = cniNumber ? `CNI_${cniNumber.slice(-4)}` : 'N/A';
-    console.log('ONECI Verification Request:', { 
-      cniHash, 
+    const cnibHash = cnibNumber ? `CNIB_${cnibNumber.slice(-4)}` : 'N/A';
+    console.log('ONI Verification Request:', { 
+      cnibHash, 
       timestamp: new Date().toISOString() 
     });
 
     // Validation des champs requis
-    if (!cniNumber || !lastName || !firstName || !birthDate) {
+    if (!cnibNumber || !lastName || !firstName || !birthDate) {
       return new Response(
         JSON.stringify({ 
           valid: false,
@@ -34,13 +34,14 @@ serve(async (req) => {
       );
     }
 
-    // Validation du format CNI (CI + 9 ou 10 chiffres)
-    const cniRegex = /^CI\d{9,10}$/;
-    if (!cniRegex.test(cniNumber)) {
+    // Validation du format CNIB (Burkina Faso - format générique B suivi de 10 chiffres)
+    // ⚠️ À ADAPTER selon le format réel de la CNIB burkinabè
+    const cnibRegex = /^B\d{10}$/;
+    if (!cnibRegex.test(cnibNumber)) {
       return new Response(
         JSON.stringify({ 
           valid: false,
-          error: 'Le format du numéro CNI est invalide. Format attendu : CI suivi de 9 ou 10 chiffres (ex: CI1234567890).',
+          error: 'Le format du numéro CNIB est invalide. Format attendu : B suivi de 10 chiffres (ex: B1234567890).',
           status: 'VALIDATION_ERROR'
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -75,37 +76,37 @@ serve(async (req) => {
     }
 
     // Check DEMO mode or real API
-    const DEMO_MODE = Deno.env.get('ONECI_DEMO_MODE') === 'true';
-    const ONECI_API_KEY = Deno.env.get('ONECI_API_KEY');
+    const DEMO_MODE = Deno.env.get('ONI_DEMO_MODE') === 'true';
+    const ONI_API_KEY = Deno.env.get('ONI_API_KEY');
 
     let isValid = false;
     let holderData: any = {
       lastName: lastName.toUpperCase(),
       firstName,
       birthDate,
-      birthPlace: 'Abidjan',
-      nationality: 'Ivoirienne',
+      birthPlace: 'Ouagadougou',
+      nationality: 'Burkinabè',
       issueDate: '2020-01-15',
       expiryDate: '2030-01-15'
     };
 
     if (DEMO_MODE) {
       // Mode DEMO: Always validate with a flag
-      console.log('[DEMO MODE] ONECI verification - Auto-approving');
+      console.log('[DEMO MODE] ONI verification - Auto-approving');
       isValid = true;
       holderData = { ...holderData, isDemoMode: true };
-    } else if (ONECI_API_KEY) {
-      // Real ONECI API call (to be implemented later)
-      console.log('[PRODUCTION] Calling real ONECI API');
+    } else if (ONI_API_KEY) {
+      // Real ONI API call (to be implemented later)
+      console.log('[PRODUCTION] Calling real ONI API');
       // TODO: Implement real API call
       isValid = true; // Temporary
     } else {
       // Neither DEMO nor API configured → error 503
-      console.error('[ERROR] ONECI service not configured - DEMO_MODE and API_KEY both missing');
+      console.error('[ERROR] ONI service not configured - DEMO_MODE and API_KEY both missing');
       return new Response(
         JSON.stringify({
           valid: false,
-          error: 'Le service de vérification d\'identité ONECI est temporairement indisponible. Veuillez réessayer dans quelques instants.',
+          error: 'Le service de vérification d\'identité ONI est temporairement indisponible. Veuillez réessayer dans quelques instants.',
           status: 'SERVICE_UNAVAILABLE'
         }),
         { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -136,9 +137,9 @@ serve(async (req) => {
         .from('user_verifications')
         .upsert({
           user_id: user.id,
-          oneci_status: 'pending_review',
-          oneci_data: holderData,
-          oneci_cni_number: cniNumber,
+          cnib_status: 'pending_review',
+          cnib_data: holderData,
+          cnib_number: cnibNumber,
           updated_at: new Date().toISOString()
         }, { 
           onConflict: 'user_id' 
@@ -149,7 +150,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           valid: true,
-          cniNumber,
+          cnibNumber,
           holder: holderData,
           status: 'PENDING_REVIEW',
           message: 'Vérification soumise. En attente de validation par un administrateur.',
@@ -161,14 +162,14 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           valid: false,
-          error: 'CNI non trouvée dans la base ONECI',
+          error: 'CNIB non trouvée dans la base nationale ONI',
           status: 'FAILED'
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
   } catch (error) {
-    console.error('Error in oneci-verification:', error);
+    console.error('Error in oni-verification:', error);
     
     // Determine HTTP status code and user-friendly message based on error type
     let statusCode = 500;
@@ -180,9 +181,9 @@ serve(async (req) => {
         statusCode = 401;
         errorMessage = 'Votre session a expiré. Veuillez vous reconnecter et réessayer.';
         errorStatus = 'AUTH_ERROR';
-      } else if (error.message.includes('Format CNI') || error.message.includes('invalid')) {
+      } else if (error.message.includes('Format CNIB') || error.message.includes('invalid')) {
         statusCode = 400;
-        errorMessage = 'Les informations fournies sont incorrectes. Vérifiez le format de votre numéro CNI.';
+        errorMessage = 'Les informations fournies sont incorrectes. Vérifiez le format de votre numéro CNIB.';
         errorStatus = 'VALIDATION_ERROR';
       } else if (error.message.includes('network') || error.message.includes('timeout')) {
         statusCode = 503;
@@ -191,7 +192,7 @@ serve(async (req) => {
       }
       
       // Log detailed error for debugging (server-side only)
-      console.error('[ONECI Verification Error Details]', {
+      console.error('[ONI Verification Error Details]', {
         message: error.message,
         stack: error.stack,
         statusCode,

@@ -58,7 +58,7 @@ export interface Profile {
   bio: string | null;
   city: string | null;
   is_verified: boolean;
-  oneci_verified: boolean;
+  cnib_verified: boolean;
   cnam_verified: boolean;
   face_verified: boolean;
   created_at: string;
@@ -87,7 +87,7 @@ export interface ApplicationWithDetails extends Application {
   profiles: {
     full_name: string;
     phone: string | null;
-    oneci_verified: boolean;
+    cnib_verified: boolean;
     cnam_verified: boolean;
   };
   user_verifications?: UserVerification[];
@@ -96,18 +96,18 @@ export interface ApplicationWithDetails extends Application {
 export interface UserVerification {
   id: string;
   user_id: string;
-  oneci_status: VerificationStatus;
+  cnib_status: VerificationStatus;
   cnam_status: VerificationStatus;
   face_verification_status: VerificationStatus;
   tenant_score: number | null;
-  oneci_cni_number: string | null;
-  oneci_data: any | null;
+  cnib_number: string | null;
+  cnib_data: any | null;
   cnam_data: any | null;
   cnam_social_security_number: string | null;
   cnam_employer: string | null;
   face_similarity_score: number | null;
   face_verification_attempts: number;
-  oneci_verified_at: string | null;
+  cnib_verified_at: string | null;
   cnam_verified_at: string | null;
   face_verified_at: string | null;
   score_updated_at: string | null;

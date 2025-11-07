@@ -26,7 +26,7 @@ export const useCurrentTime = (): CurrentTimeReturn => {
     const timeOptions: Intl.DateTimeFormatOptions = {
       hour: '2-digit',
       minute: '2-digit',
-      timeZone: 'Africa/Abidjan',
+      timeZone: 'Africa/Ouagadougou',
       ...(options?.includeSeconds && { second: '2-digit' })
     };
     
@@ -38,7 +38,7 @@ export const useCurrentTime = (): CurrentTimeReturn => {
       weekday: 'short',
       day: '2-digit',
       month: 'short',
-      timeZone: 'Africa/Abidjan'
+      timeZone: 'Africa/Ouagadougou'
     });
   }, [currentTime]);
 

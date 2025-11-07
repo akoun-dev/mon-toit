@@ -7,10 +7,10 @@ import type { Database } from '@/integrations/supabase/types';
 
 // Database enums
 export type VerificationStatus = 'not_submitted' | 'pending_review' | 'verified' | 'rejected';
-export type VerificationType = 'oneci' | 'cnam' | 'passport';
+export type VerificationType = 'cnib' | 'cnam' | 'passport';
 
 // Verification data structures
-export interface ONECIData {
+export interface CNIBData {
   lastName: string;
   firstName: string;
   birthDate: string;
@@ -37,13 +37,13 @@ export interface PassportData {
 // Verification entities
 export interface VerificationWithUser {
   user_id: string;
-  oneci_status: VerificationStatus;
+  cnib_status: VerificationStatus;
   cnam_status: VerificationStatus;
   passport_status: VerificationStatus;
-  oneci_data: ONECIData | null;
+  cnib_data: CNIBData | null;
   cnam_data: CNAMData | null;
   passport_data: PassportData | null;
-  oneci_cni_number: string | null;
+  cnib_number: string | null;
   cnam_employer: string | null;
   passport_number: string | null;
   passport_nationality: string | null;

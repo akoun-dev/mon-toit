@@ -1704,12 +1704,12 @@ export type Database = {
           bio: string | null
           city: string | null
           cnam_verified: boolean | null
+          cnib_verified: boolean | null
           created_at: string
           face_verified: boolean | null
           full_name: string
           id: string
           is_verified: boolean | null
-          oneci_verified: boolean | null
           phone: string | null
           ui_density: string | null
           updated_at: string
@@ -1720,12 +1720,12 @@ export type Database = {
           bio?: string | null
           city?: string | null
           cnam_verified?: boolean | null
+          cnib_verified?: boolean | null
           created_at?: string
           face_verified?: boolean | null
           full_name: string
           id: string
           is_verified?: boolean | null
-          oneci_verified?: boolean | null
           phone?: string | null
           ui_density?: string | null
           updated_at?: string
@@ -1736,12 +1736,12 @@ export type Database = {
           bio?: string | null
           city?: string | null
           cnam_verified?: boolean | null
+          cnib_verified?: boolean | null
           created_at?: string
           face_verified?: boolean | null
           full_name?: string
           id?: string
           is_verified?: boolean | null
-          oneci_verified?: boolean | null
           phone?: string | null
           ui_density?: string | null
           updated_at?: string
@@ -3168,16 +3168,16 @@ export type Database = {
           cnam_social_security_number: string | null
           cnam_status: string | null
           cnam_verified_at: string | null
+          cnib_data: Json | null
+          cnib_number: string | null
+          cnib_status: string | null
+          cnib_verified_at: string | null
           created_at: string
           face_similarity_score: number | null
           face_verification_attempts: number | null
           face_verification_status: string | null
           face_verified_at: string | null
           id: string
-          oneci_cni_number: string | null
-          oneci_data: Json | null
-          oneci_status: string | null
-          oneci_verified_at: string | null
           score_updated_at: string | null
           tenant_score: number | null
           updated_at: string
@@ -3192,16 +3192,16 @@ export type Database = {
           cnam_social_security_number?: string | null
           cnam_status?: string | null
           cnam_verified_at?: string | null
+          cnib_data?: Json | null
+          cnib_number?: string | null
+          cnib_status?: string | null
+          cnib_verified_at?: string | null
           created_at?: string
           face_similarity_score?: number | null
           face_verification_attempts?: number | null
           face_verification_status?: string | null
           face_verified_at?: string | null
           id?: string
-          oneci_cni_number?: string | null
-          oneci_data?: Json | null
-          oneci_status?: string | null
-          oneci_verified_at?: string | null
           score_updated_at?: string | null
           tenant_score?: number | null
           updated_at?: string
@@ -3216,16 +3216,16 @@ export type Database = {
           cnam_social_security_number?: string | null
           cnam_status?: string | null
           cnam_verified_at?: string | null
+          cnib_data?: Json | null
+          cnib_number?: string | null
+          cnib_status?: string | null
+          cnib_verified_at?: string | null
           created_at?: string
           face_similarity_score?: number | null
           face_verification_attempts?: number | null
           face_verification_status?: string | null
           face_verified_at?: string | null
           id?: string
-          oneci_cni_number?: string | null
-          oneci_data?: Json | null
-          oneci_status?: string | null
-          oneci_verified_at?: string | null
           score_updated_at?: string | null
           tenant_score?: number | null
           updated_at?: string
