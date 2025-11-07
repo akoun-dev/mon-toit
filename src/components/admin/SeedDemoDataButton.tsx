@@ -205,17 +205,45 @@ export const SeedDemoDataButton = () => {
                 try {
                   setStatus('seeding');
                   setProgress(50);
-                  const { error } = await supabase.functions.invoke('clean-demo-data');
+                  const { data, error } = await supabase.functions.invoke('clean-demo-data');
                   if (error) throw error;
-                  toast.success('Données nettoyées avec succès');
+                  
+                  // Afficher un rapport détaillé
+                  const report = data as any;
+                  if (report?.deleted) {
+                    const total = report.deleted.profiles || 0;
+                    const cutoffDate = report.cutoff_date?.split('T')[0] || '';
+                    const protectedNames = report.protected_users_names?.join(', ') || 'utilisateurs protégés';
+                    
+                    toast.success(
+                      `${total} utilisateur(s) supprimé(s) (avant ${cutoffDate})`,
+                      { description: `✓ ${protectedNames} préservé(s)` }
+                    );
+                    
+                    // Afficher les stats dans le composant
+                    setStats({
+                      users: total,
+                      properties: report.deleted.properties || 0,
+                      applications: report.deleted.rental_applications || 0,
+                      messages: report.deleted.messages || 0,
+                      leases: report.deleted.leases || 0,
+                      favorites: report.deleted.favorites || 0,
+                      searches: 0,
+                      reviews: report.deleted.reviews || 0,
+                      overdueApplications: 0
+                    });
+                  } else {
+                    toast.success('Données nettoyées avec succès');
+                  }
                   setStatus('success');
+                  setProgress(100);
                 } catch (error: any) {
                   console.error('Erreur nettoyage:', error);
-                  toast.error('Erreur lors du nettoyage');
+                  toast.error('Erreur lors du nettoyage : ' + (error.message || 'Erreur inconnue'));
                   setStatus('error');
                   setError(error.message);
                 } finally {
-                  setTimeout(() => resetAll(), 2000);
+                  setTimeout(() => resetAll(), 5000);
                 }
               }}
               disabled={seeding}
