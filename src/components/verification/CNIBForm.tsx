@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { logger } from '@/services/logger';
 import { supabase } from '@/lib/supabase';
@@ -114,6 +115,7 @@ interface CNIBFormProps {
 
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
+  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('popup');
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -446,6 +448,102 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     event.target.value = '';
   }, []);
 
+  const handleLocalVerify = async () => {
+    if (!cniImage || !selfieImage) {
+      toast.error('Veuillez fournir une photo de votre CNIB et un selfie');
+      return;
+    }
+
+    if (!user) {
+      toast.error('Utilisateur non authentifié');
+      return;
+    }
+
+    setIsVerifying(true);
+    setVerificationResult(null);
+
+    try {
+      setUploadProgress(20);
+      logger.info('🚀 Début vérification locale avec caméra navigateur');
+      
+      // Upload CNIB vers Storage
+      const cniBlob = await fetch(cniImage).then(r => r.blob());
+      
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('verification-documents')
+        .upload(`${user.id}/cnib-${Date.now()}.jpg`, cniBlob, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+      
+      if (storageError) throw storageError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('verification-documents')
+        .getPublicUrl(storageData.path);
+      
+      setUploadProgress(40);
+      logger.info('✅ CNIB uploadée', { url: publicUrl });
+      
+      // Appeler edge function avec action local_verification
+      const { data: verificationData, error: verificationError } = await supabase.functions.invoke('neoface-verification', {
+        body: { 
+          action: 'local_verification',
+          cni_photo_url: publicUrl,
+          selfie_base64: selfieImage,
+          user_id: user.id
+        }
+      });
+      
+      setUploadProgress(80);
+      
+      if (verificationError) throw verificationError;
+      if (!verificationData.success) throw new Error(verificationData.error || 'Échec de la vérification');
+      
+      setUploadProgress(100);
+      
+      // Résultat immédiat
+      setVerificationResult({
+        verified: verificationData.verified,
+        similarityScore: verificationData.matching_score.toString(),
+        message: verificationData.verified ? '✅ Vérification biométrique réussie !' : 'La vérification a échoué',
+        canRetry: !verificationData.verified
+      });
+      
+      if (verificationData.verified) {
+        celebrateCertification();
+        toast.success('🎉 Certification DONIA réussie !', {
+          description: `Score de correspondance : ${verificationData.matching_score}% • Vous êtes maintenant certifié DONIA`,
+          duration: 5000,
+        });
+        onSubmit?.();
+      } else {
+        toast.error('Vérification échouée', {
+          description: verificationData.message || 'Réessayez avec de meilleures conditions'
+        });
+      }
+      
+      logger.info('✅ Vérification locale terminée', { verified: verificationData.verified });
+      
+    } catch (error) {
+      logger.error('Erreur vérification locale', { error });
+      
+      setVerificationResult({
+        verified: false,
+        similarityScore: '0',
+        message: error instanceof Error ? error.message : 'Une erreur est survenue',
+        canRetry: true
+      });
+      
+      toast.error('Erreur lors de la vérification', {
+        description: error instanceof Error ? error.message : 'Une erreur est survenue'
+      });
+    } finally {
+      setIsVerifying(false);
+      setUploadProgress(0);
+    }
+  };
+
   const handleVerify = async () => {
     if (!cniImage) {
       toast.error('Veuillez fournir une photo de votre CNIB');
@@ -692,6 +790,25 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           </AlertDescription>
         </Alert>
 
+        {/* Sélecteur de méthode de capture */}
+        <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+          <Label className="text-base font-semibold">Méthode de capture du selfie</Label>
+          <RadioGroup value={captureMethod} onValueChange={(value) => setCaptureMethod(value as 'local' | 'popup')}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="popup" id="popup" />
+              <Label htmlFor="popup" className="font-normal cursor-pointer">
+                NeoFace Popup (recommandé) - Fenêtre sécurisée automatique
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="local" id="local" />
+              <Label htmlFor="local" className="font-normal cursor-pointer">
+                Caméra locale - Capture directe dans le navigateur
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
         {isUploadingDocument && (
           <Alert>
             <AlertCircle className="h-4 w-4" />
@@ -778,20 +895,92 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             )}
           </div>
 
-          {/* Selfie Information */}
+          {/* Selfie Capture */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">
-              2. Selfie de vérification (automatique)
+              2. Selfie de vérification
             </Label>
-            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg bg-muted/30">
-              <Camera className="h-10 w-10 mb-3 text-primary opacity-50" />
-              <p className="text-sm font-medium text-center px-4">
-                Le selfie sera capturé automatiquement dans une fenêtre sécurisée
-              </p>
-              <p className="text-xs text-muted-foreground mt-2 text-center px-4">
-                Après avoir uploadé votre CNIB, une fenêtre s'ouvrira pour capturer votre selfie
-              </p>
-            </div>
+            
+            {captureMethod === 'popup' ? (
+              <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg bg-muted/30">
+                <Camera className="h-10 w-10 mb-3 text-primary opacity-50" />
+                <p className="text-sm font-medium text-center px-4">
+                  Le selfie sera capturé automatiquement dans une fenêtre sécurisée
+                </p>
+                <p className="text-xs text-muted-foreground mt-2 text-center px-4">
+                  Après avoir uploadé votre CNIB, une fenêtre s'ouvrira pour capturer votre selfie
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {!isCapturing && !selfieImage && (
+                  <Button 
+                    onClick={startCamera} 
+                    variant="outline" 
+                    className="w-full"
+                    disabled={isVideoLoading || isVerifying}
+                  >
+                    <Camera className="mr-2 h-4 w-4" />
+                    {isVideoLoading ? 'Chargement...' : 'Démarrer la caméra'}
+                  </Button>
+                )}
+                
+                {isCapturing && (
+                  <div className="space-y-2">
+                    <video 
+                      ref={videoRef} 
+                      autoPlay 
+                      playsInline 
+                      className="w-full h-48 object-cover rounded-lg border-2 border-primary"
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={captureSelfie} 
+                        className="flex-1"
+                        size="sm"
+                      >
+                        <Camera className="mr-2 h-4 w-4" />
+                        Capturer mon selfie
+                      </Button>
+                      <Button 
+                        onClick={stopCamera} 
+                        variant="outline"
+                        size="sm"
+                      >
+                        Annuler
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
+                {selfieImage && (
+                  <div className="relative group">
+                    <img 
+                      src={selfieImage} 
+                      alt="Selfie capturé" 
+                      className="w-full h-48 object-cover rounded-lg border-2 border-primary shadow-sm"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          setSelfieImage(null);
+                          setVerificationResult(null);
+                        }}
+                      >
+                        <XCircle className="mr-2 h-4 w-4" />
+                        Retirer
+                      </Button>
+                    </div>
+                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      Capturé
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -824,8 +1013,14 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
         <div className="flex flex-col gap-3">
           <Button
-            onClick={handleVerify}
-            disabled={!cniImage || isVerifying || uploadProgress > 0 || isPolling}
+            onClick={captureMethod === 'local' ? handleLocalVerify : handleVerify}
+            disabled={
+              !cniImage || 
+              (captureMethod === 'local' && !selfieImage) || 
+              isVerifying || 
+              uploadProgress > 0 || 
+              isPolling
+            }
             size="lg"
             className="w-full"
           >
@@ -837,7 +1032,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             ) : (
               <>
                 <Shield className="mr-2 h-5 w-5" />
-                Vérifier mon identité CNIB
+                {captureMethod === 'local' 
+                  ? 'Vérifier avec caméra locale' 
+                  : 'Vérifier avec NeoFace popup'}
               </>
             )}
           </Button>
