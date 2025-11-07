@@ -33,17 +33,23 @@ export const SelfieCapture = ({
   onCapture,
   onRemove,
 }: SelfieCaptureProps) => {
-  const quality = useFaceQualityDetection(videoRef);
+  const { 
+    quality: qualityMetrics, 
+    isAnalyzing, 
+    isLoading,
+    startAnalysis,
+    stopAnalysis 
+  } = useFaceQualityDetection(videoRef);
 
   useEffect(() => {
     if (isCapturing && videoRef.current) {
-      quality.startAnalysis();
+      startAnalysis();
     } else {
-      quality.stopAnalysis();
+      stopAnalysis();
     }
 
-    return () => quality.stopAnalysis();
-  }, [isCapturing, videoRef, quality]);
+    return () => stopAnalysis();
+  }, [isCapturing, startAnalysis, stopAnalysis]);
 
   return (
     <div className="space-y-3">
@@ -94,9 +100,9 @@ export const SelfieCapture = ({
                       className="w-full h-64 object-cover"
                     />
                     <QualityOverlay 
-                      quality={quality.quality}
-                      isActive={quality.isAnalyzing}
-                      isLoading={quality.isLoading}
+                      quality={qualityMetrics}
+                      isActive={isAnalyzing}
+                      isLoading={isLoading}
                     />
                   </div>
                   <div className="flex gap-2">
@@ -104,7 +110,7 @@ export const SelfieCapture = ({
                       onClick={onCapture}
                       className="flex-1"
                       size="lg"
-                      disabled={quality.quality?.overallQuality !== 'good'}
+                      disabled={qualityMetrics?.overallQuality !== 'good'}
                     >
                       <Camera className="mr-2 h-5 w-5" />
                       Capturer
