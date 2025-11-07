@@ -459,7 +459,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
         // Update profile
         await supabase
           .from('profiles')
-          .update({ oneci_verified: true })
+          .update({ cnib_verified: true })
           .eq('id', user?.id);
 
         // 🎉 Célébration avec confetti

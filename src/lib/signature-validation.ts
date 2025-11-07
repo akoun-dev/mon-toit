@@ -12,17 +12,17 @@ export const canSignElectronically = async (
   leaseId: string
 ): Promise<ValidationResult> => {
   try {
-    // 1. Verify user ONECI verification
+    // 1. Verify user CNIB verification
     const { data: profile } = await supabase
       .from('profiles')
-      .select('oneci_verified')
+      .select('cnib_verified')
       .eq('id', userId)
       .single();
 
-    if (!profile?.oneci_verified) {
+    if (!profile?.cnib_verified) {
       return {
         canSign: false,
-        reason: 'Identité ONECI non vérifiée. Veuillez compléter la vérification.'
+        reason: 'Identité CNIB non vérifiée. Veuillez compléter la vérification.'
       };
     }
 

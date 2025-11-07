@@ -11,7 +11,7 @@ const CertificationBanner = () => {
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Check if user needs certification
-  const needsCertification = user && !profile?.oneci_verified && !profile?.cnam_verified;
+  const needsCertification = user && !profile?.cnib_verified && !profile?.cnam_verified;
   
   // Check localStorage for dismissed state
   useEffect(() => {

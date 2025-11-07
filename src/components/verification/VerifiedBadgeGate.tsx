@@ -33,13 +33,13 @@ export const VerifiedBadgeGate = ({
   const isVerified = (() => {
     switch (requiredVerification) {
       case 'oneci':
-        return profile.oneci_verified;
+        return profile.cnib_verified;
       case 'face':
         return profile.face_verified;
       case 'cnam':
         return profile.cnam_verified;
       case 'complete':
-        return profile.oneci_verified && profile.face_verified;
+        return profile.cnib_verified && profile.face_verified;
       default:
         return false;
     }

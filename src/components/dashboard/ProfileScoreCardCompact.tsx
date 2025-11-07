@@ -31,7 +31,7 @@ export const ProfileScoreCardCompact = () => {
   }, [user]);
 
   const verificationCount = [
-    profile?.oneci_verified,
+    profile?.cnib_verified,
     profile?.face_verified,
   ].filter(Boolean).length;
   
@@ -70,7 +70,7 @@ export const ProfileScoreCardCompact = () => {
             <span className="font-semibold">{verificationCount}/2</span>
           </div>
           <div className="flex gap-1">
-            <div className={`flex-1 h-1.5 rounded-full ${profile?.oneci_verified ? 'bg-green-600' : 'bg-muted'}`} />
+            <div className={`flex-1 h-1.5 rounded-full ${profile?.cnib_verified ? 'bg-green-600' : 'bg-muted'}`} />
             <div className={`flex-1 h-1.5 rounded-full ${profile?.face_verified ? 'bg-green-600' : 'bg-muted'}`} />
           </div>
         </div>

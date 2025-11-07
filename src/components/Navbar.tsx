@@ -114,7 +114,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-semibold text-foreground">{profile?.full_name}</p>
                         <p className="text-xs text-muted-foreground">{user.email}</p>
-                        {(profile?.oneci_verified || profile?.cnam_verified) && (
+                        {(profile?.cnib_verified || profile?.cnam_verified) && (
                           <Badge variant="outline" className="w-fit mt-1 text-xs border-primary text-primary">
                             ✓ Identité vérifiée
                           </Badge>

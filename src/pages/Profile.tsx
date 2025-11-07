@@ -223,7 +223,7 @@ const Profile = () => {
                     <TenantScoreBadge score={tenantScore} size="lg" />
                     <TenantScoreExplanation
                       currentScore={tenantScore}
-                      oneciVerified={profile.oneci_verified}
+                      oneciVerified={profile.cnib_verified}
                       faceVerified={profile.face_verified}
                     />
                   </div>
@@ -248,8 +248,8 @@ const Profile = () => {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm">Vérification ONECI (Identité)</span>
-                {profile.oneci_verified ? (
+                <span className="text-sm">Vérification CNIB (Identité)</span>
+                {profile.cnib_verified ? (
                   <div className="flex items-center gap-1 text-green-600">
                     <CheckCircle2 className="h-4 w-4" />
                     <span className="text-sm font-medium">Vérifié</span>

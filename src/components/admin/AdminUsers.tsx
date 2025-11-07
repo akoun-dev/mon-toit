@@ -12,7 +12,7 @@ type User = {
   user_type: string;
   city: string | null;
   is_verified: boolean;
-  oneci_verified: boolean;
+  cnib_verified: boolean;
   cnam_verified: boolean;
   created_at: string;
 };
@@ -69,7 +69,7 @@ const AdminUsers = () => {
               <TableHead>Nom</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Ville</TableHead>
-              <TableHead>ONECI</TableHead>
+              <TableHead>CNIB</TableHead>
               <TableHead>CNAM</TableHead>
               <TableHead>Vérifié</TableHead>
               <TableHead>Date d'inscription</TableHead>
@@ -89,7 +89,7 @@ const AdminUsers = () => {
                   <TableCell>{getUserTypeBadge(user.user_type)}</TableCell>
                   <TableCell>{user.city || '-'}</TableCell>
                   <TableCell>
-                    {user.oneci_verified ? (
+                    {user.cnib_verified ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
                     ) : (
                       <XCircle className="h-5 w-5 text-muted-foreground" />

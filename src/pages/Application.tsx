@@ -213,7 +213,7 @@ const Application = () => {
 
   // Update step based on document count and verification status
   useEffect(() => {
-    if (profile?.oneci_verified || verification?.oneci_status === 'verified') {
+    if (profile?.cnib_verified || verification?.cnib_status === 'verified') {
       if (documents.length > 0) {
         setCurrentStep(2); // Review step
       } else {
@@ -252,13 +252,13 @@ const Application = () => {
         <FormProgressIndicator steps={applicationSteps} currentStep={currentStep} className="mt-6" />
 
         <div className="space-y-6">
-          {/* ONECI Verification Required Alert */}
-          {!profile?.oneci_verified && verification?.oneci_status !== 'verified' && (
+          {/* CNIB Verification Required Alert */}
+          {!profile?.cnib_verified && verification?.cnib_status !== 'verified' && (
             <Alert className="border-primary/50 bg-primary/5">
               <Shield className="h-4 w-4" />
-              <AlertTitle>Vérification ONECI recommandée</AlertTitle>
+              <AlertTitle>Vérification CNIB recommandée</AlertTitle>
               <AlertDescription>
-                Complétez votre vérification d'identité ONECI pour renforcer votre candidature. 
+                Complétez votre vérification d'identité CNIB pour renforcer votre candidature. 
                 Les propriétaires accordent plus de confiance aux profils vérifiés.
               </AlertDescription>
             </Alert>
@@ -280,7 +280,7 @@ const Application = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-3">
-                  {profile?.oneci_verified ? (
+                  {profile?.cnib_verified ? (
                     <div className="p-2 rounded-full bg-green-500/10">
                       <CheckCircle className="h-5 w-5 text-green-600" />
                     </div>
@@ -290,11 +290,11 @@ const Application = () => {
                     </div>
                   )}
                   <div>
-                    <p className="font-medium">Vérification ONECI</p>
+                    <p className="font-medium">Vérification CNIB</p>
                     <p className="text-xs text-muted-foreground">Carte d'identité nationale</p>
                   </div>
                 </div>
-                {!profile?.oneci_verified && (
+                {!profile?.cnib_verified && (
                   <Button variant="outline" size="sm" onClick={() => navigate('/verification')} className="rounded-xl">
                     Vérifier
                   </Button>

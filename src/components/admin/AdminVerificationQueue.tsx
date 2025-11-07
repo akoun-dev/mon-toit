@@ -38,13 +38,13 @@ export default function AdminVerificationQueue() {
 
       const enrichedData = (data || []).map((verification: any): VerificationWithUser => ({
         user_id: verification.user_id,
-        oneci_status: verification.oneci_status as VerificationStatus,
+        cnib_status: verification.cnib_status as VerificationStatus,
         cnam_status: verification.cnam_status as VerificationStatus,
         passport_status: 'not_submitted' as VerificationStatus,
-        oneci_data: verification.oneci_data as any,
+        cnib_data: verification.cnib_data as any,
         cnam_data: verification.cnam_data as any,
         passport_data: null,
-        oneci_cni_number: verification.oneci_cni_number,
+        cnib_number: verification.cnib_number,
         cnam_employer: verification.cnam_employer,
         passport_number: null,
         passport_nationality: null,
@@ -151,7 +151,7 @@ export default function AdminVerificationQueue() {
         <Tabs defaultValue="oneci_cnam" className="w-full">
           <div className="flex items-center justify-between mb-4">
             <TabsList>
-              <TabsTrigger value="oneci_cnam">ONECI & CNAM ({verifications.length})</TabsTrigger>
+              <TabsTrigger value="cnib_cnam">CNIB & CNAM ({verifications.length})</TabsTrigger>
               <TabsTrigger value="passport">Passeports ({passportVerifications.length})</TabsTrigger>
             </TabsList>
             <Button onClick={fetchPendingVerifications} variant="outline">
@@ -159,9 +159,9 @@ export default function AdminVerificationQueue() {
             </Button>
           </div>
 
-          <TabsContent value="oneci_cnam" className="space-y-4">
+          <TabsContent value="cnib_cnam" className="space-y-4">
             <div className="mb-4">
-              <h2 className="text-2xl font-bold">Vérifications ONECI & CNAM</h2>
+              <h2 className="text-2xl font-bold">Vérifications CNIB & CNAM</h2>
               <p className="text-muted-foreground">
                 {verifications.length} vérification{verifications.length > 1 ? 's' : ''} en attente de validation
               </p>
@@ -199,30 +199,30 @@ export default function AdminVerificationQueue() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* ONECI Verification */}
-                  {verification.oneci_status === 'pending_review' && (
+                  {/* CNIB Verification */}
+                  {verification.cnib_status === 'pending_review' && (
                     <div className="border rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Shield className="h-5 w-5 text-primary" />
-                          <span className="font-semibold">Vérification ONECI</span>
+                          <span className="font-semibold">Vérification CNIB</span>
                         </div>
-                        {getStatusBadge(verification.oneci_status)}
+                        {getStatusBadge(verification.cnib_status)}
                       </div>
                       
-                      {verification.oneci_data && (
+                      {verification.cnib_data && (
                         <div className="bg-muted/50 rounded p-3 space-y-1 text-sm">
-                          <div><strong>CNI:</strong> {verification.oneci_cni_number}</div>
-                          <div><strong>Nom:</strong> {verification.oneci_data.lastName}</div>
-                          <div><strong>Prénom:</strong> {verification.oneci_data.firstName}</div>
-                          <div><strong>Date de naissance:</strong> {verification.oneci_data.birthDate}</div>
+                          <div><strong>CNIB:</strong> {verification.cnib_number}</div>
+                          <div><strong>Nom:</strong> {verification.cnib_data.lastName}</div>
+                          <div><strong>Prénom:</strong> {verification.cnib_data.firstName}</div>
+                          <div><strong>Date de naissance:</strong> {verification.cnib_data.birthDate}</div>
                         </div>
                       )}
 
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          onClick={() => setSelectedVerification({ userId: verification.user_id, type: 'oneci', action: 'approve' })}
+                          onClick={() => setSelectedVerification({ userId: verification.user_id, type: 'cnib', action: 'approve' })}
                           className="flex-1"
                         >
                           <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -231,7 +231,7 @@ export default function AdminVerificationQueue() {
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => setSelectedVerification({ userId: verification.user_id, type: 'oneci', action: 'reject' })}
+                          onClick={() => setSelectedVerification({ userId: verification.user_id, type: 'cnib', action: 'reject' })}
                           className="flex-1"
                         >
                           <XCircle className="mr-2 h-4 w-4" />

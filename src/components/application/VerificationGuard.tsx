@@ -25,8 +25,8 @@ interface VerificationGuardProps {
 type VerificationStatus = 'pending' | 'pending_review' | 'verified' | 'rejected';
 
 interface UserVerification {
-  oneci_status: VerificationStatus;
-  oneci_verified_at: string | null;
+  cnib_status: VerificationStatus;
+  cnib_verified_at: string | null;
 }
 
 type ComponentStatus = 'loading' | 'not_verified' | 'pending' | 'verified' | 'error';
@@ -45,10 +45,10 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
   const verificationStatus = useMemo((): ComponentStatus => {
     if (loading) return 'loading';
     if (error) return 'error';
-    if (profile?.oneci_verified || (profile as any)?.passport_verified || verification?.oneci_status === 'verified') return 'verified';
-    if (verification?.oneci_status === 'pending' || verification?.oneci_status === 'pending_review') return 'pending';
+    if (profile?.cnib_verified || (profile as any)?.passport_verified || verification?.cnib_status === 'verified') return 'verified';
+    if (verification?.cnib_status === 'pending' || verification?.cnib_status === 'pending_review') return 'pending';
     return 'not_verified';
-  }, [loading, error, profile?.oneci_verified, (profile as any)?.passport_verified, verification?.oneci_status]);
+  }, [loading, error, profile?.cnib_verified, (profile as any)?.passport_verified, verification?.cnib_status]);
 
   const isVerified = verificationStatus === 'verified';
   const isPending = verificationStatus === 'pending';
@@ -61,7 +61,7 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
       setError(null);
       const { data, error: fetchError } = await supabase
         .from('user_verifications')
-        .select('oneci_status, oneci_verified_at')
+        .select('cnib_status, cnib_verified_at')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -240,7 +240,7 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
             )}
 
             {/* Message de rejet */}
-            {verification?.oneci_status === 'rejected' && (
+            {verification?.cnib_status === 'rejected' && (
               <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Vérification refusée</AlertTitle>
@@ -255,7 +255,7 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
               <div className="border rounded-lg p-6 bg-muted/20">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Shield className="h-5 w-5" />
-                  Vérification ONECI
+                  Vérification CNIB
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Complétez le formulaire ci-dessous pour vérifier votre identité. 

@@ -42,7 +42,7 @@ export const ProfileScoreCard = () => {
       profile.city,
       profile.bio,
       profile.avatar_url,
-      profile.oneci_verified,
+      profile.cnib_verified,
       profile.face_verified,
     ];
     
@@ -54,7 +54,7 @@ export const ProfileScoreCard = () => {
     if (!profile) return { count: 0, total: 2 };
     
     const verifications = [
-      profile.oneci_verified,
+      profile.cnib_verified,
       profile.face_verified,
     ];
     
@@ -115,11 +115,11 @@ export const ProfileScoreCard = () => {
             </span>
           </div>
           <div className="flex gap-2">
-            <div className={`flex-1 h-2 rounded-full ${profile?.oneci_verified ? 'bg-green-600' : 'bg-muted'}`} />
+            <div className={`flex-1 h-2 rounded-full ${profile?.cnib_verified ? 'bg-green-600' : 'bg-muted'}`} />
             <div className={`flex-1 h-2 rounded-full ${profile?.face_verified ? 'bg-green-600' : 'bg-muted'}`} />
           </div>
           <div className="flex gap-1 text-xs text-muted-foreground">
-            <span>ONECI</span>
+            <span>CNIB</span>
             <span>•</span>
             <span>Face ID</span>
           </div>
@@ -131,7 +131,7 @@ export const ProfileScoreCard = () => {
           <AlertDescription className="text-xs">
             <strong>Comment améliorer votre score :</strong>
             <ul className="mt-2 space-y-1 list-disc list-inside">
-              {!profile?.oneci_verified && <li>Vérifiez votre identité ONECI (+40 points)</li>}
+              {!profile?.cnib_verified && <li>Vérifiez votre identité CNIB (+40 points)</li>}
               {!profile?.face_verified && <li>Effectuez la vérification faciale (+30 points)</li>}
               {!profile?.phone && <li>Ajoutez votre numéro de téléphone (+5 points)</li>}
               {!profile?.bio && <li>Complétez votre biographie (+10 points)</li>}

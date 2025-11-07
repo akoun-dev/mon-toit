@@ -76,7 +76,7 @@ export const MobileMenu = () => {
               <div className="px-3">
                 <p className="text-sm font-semibold text-foreground mb-1">{profile?.full_name}</p>
                 <p className="text-xs text-muted-foreground mb-2">{user.email}</p>
-                {(profile?.oneci_verified || profile?.cnam_verified) && (
+                {(profile?.cnib_verified || profile?.cnam_verified) && (
                 <Badge variant="outline" className="text-xs border-primary text-primary">
                   ✓ Vérifié MZAKA
                 </Badge>
