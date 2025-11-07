@@ -6,7 +6,7 @@
  * - Fond crème clair avec dégradé pastel subtil
  * - Titre orange vif pour impact visuel
  * - Motifs culturels Kente discrets
- * - Badge ANSUT en tant que sponsor (pas identité dominante)
+ * - Badge ARCEP en tant que sponsor (pas identité dominante)
  */
 
 import { useState } from 'react';
@@ -102,7 +102,7 @@ export const ProfessionalHero = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
           
-          {/* Badge ANSUT - discret, en tant que sponsor */}
+          {/* Badge ARCEP - discret, en tant que sponsor */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,8 +110,8 @@ export const ProfessionalHero = () => {
             className="flex justify-center"
           >
             <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 text-sm font-medium shadow-sm border border-gray-200">
-              <ShieldCheck className="h-4 w-4 mr-2 text-ansut-blue" />
-              Certifié ANSUT
+              <ShieldCheck className="h-4 w-4 mr-2 text-arcep-blue" />
+              Certifié ARCEP
             </Badge>
           </motion.div>
 
@@ -143,7 +143,7 @@ export const ProfessionalHero = () => {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium px-4 sm:px-0">
-              Explorez une vaste sélection de biens immobiliers à Abidjan et partout en Côte d'Ivoire
+              Explorez une vaste sélection de biens immobiliers à Ouagadougou et partout au Burkina Faso
             </p>
           </motion.div>
 
@@ -252,7 +252,7 @@ export const ProfessionalHero = () => {
               {/* Message de confiance */}
               <p className="text-xs sm:text-sm text-gray-600 text-center pt-2 flex flex-wrap items-center justify-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-success" />
-                100% gratuit • Sécurisé • Certifié ANSUT
+                100% gratuit • Sécurisé • Certifié ARCEP
               </p>
             </div>
           </motion.div>

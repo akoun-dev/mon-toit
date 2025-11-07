@@ -212,7 +212,7 @@ export const PremiumHero = () => {
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
                 <span className="text-lg">
-                  <strong className="font-bold"><CountUp value={10000} suffix="+" /></strong> Ivoiriens
+                  <strong className="font-bold"><CountUp value={10000} suffix="+" /></strong> Burkinabè
                 </span>
               </div>
               

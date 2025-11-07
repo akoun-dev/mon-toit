@@ -277,10 +277,10 @@ const Features = () => {
           
           <div className="flex flex-col items-center gap-1">
             <p className="text-sm text-primary font-semibold">
-              Un service de l'ANSUT
+              Un service de l'ARCEP
             </p>
             <p className="text-xs text-muted-foreground max-w-md">
-              Inspiré de DossierFacile (France) • Adapté au contexte ivoirien
+              Inspiré de DossierFacile (France) • Adapté au contexte burkinabè
             </p>
           </div>
         </header>
@@ -353,11 +353,11 @@ const Features = () => {
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Hébergement en Côte d'Ivoire</span>
+                  <span>Hébergement au Burkina Faso</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span>Conformité RGPD et loi ivoirienne</span>
+                  <span>Conformité RGPD et législation burkinabè</span>
                 </div>
               </div>
             </div>
@@ -403,7 +403,7 @@ const Features = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Vérification ANSUT gratuite</span>
+                  <span className="text-foreground">Vérification ARCEP gratuite</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -425,7 +425,7 @@ const Features = () => {
               
               <div className="pt-4 border-t border-blue-200">
                 <p className="text-xs text-muted-foreground">
-                  💡 Financé par l'ANSUT dans le cadre du service universel
+                  💡 Financé par l'ARCEP dans le cadre du service universel
                 </p>
               </div>
             </div>

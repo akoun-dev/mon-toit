@@ -11,7 +11,7 @@ const UnifiedRoleSelection = () => {
       title: "Locataire",
       description: "Créez votre dossier de location en 5 minutes",
       benefits: [
-        "Dossier vérifié par l'ANSUT",
+        "Dossier vérifié par l'ARCEP",
         "Accès illimité aux annonces",
         "Messagerie sécurisée",
         "Signature électronique incluse"

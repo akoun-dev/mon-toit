@@ -1,6 +1,6 @@
 /**
- * MON TOIT - Mobile Hero
- * Version mobile du Hero avec palette "Coucher de soleil ivoirien"
+ * MZAKA - Mobile Hero
+ * Version mobile du Hero avec palette Burkina Faso
  * Optimisé pour petits écrans (<768px)
  */
 

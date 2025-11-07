@@ -21,7 +21,7 @@ const reviews: Review[] = [
     name: "Konan M.",
     profession: "Ingénieur",
     photo: "https://ui-avatars.com/api/?name=Konan+Mensah&size=100&background=2C5F7F&color=fff",
-    quote: "La certification ANSUT m'a vraiment rassuré. Fini les arnaques et les faux propriétaires !",
+    quote: "La certification ARCEP m'a vraiment rassuré. Fini les arnaques et les faux propriétaires !",
     rating: 5
   },
   {
@@ -43,7 +43,7 @@ const UserReviews = () => {
             Ce que disent nos utilisateurs
           </h2>
           <p className="text-lg text-muted-foreground">
-            Rejoignez des milliers d'Ivoiriens satisfaits
+            Rejoignez des milliers de Burkinabè satisfaits
           </p>
         </div>
 

@@ -17,7 +17,7 @@ interface Message {
 
 const QUICK_SUGGESTIONS = [
   "Comment créer mon dossier ?",
-  "Qu'est-ce qu'ANSUT ?",
+  "Qu'est-ce que l'ARCEP ?",
   "Comment publier un bien ?",
   "Quels sont les tarifs ?",
 ];
@@ -28,7 +28,7 @@ export const SarahChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "👋 Bonjour ! Je suis SUTA, votre assistant Mon Toit. Comment puis-je vous aider aujourd'hui ?"
+      content: "👋 Bonjour ! Je suis SUTA, votre assistant MZAKA. Comment puis-je vous aider aujourd'hui ?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -212,7 +212,7 @@ export const SarahChatbot = () => {
             <div className="flex-1">
               <h3 className="font-semibold">SUTA</h3>
               <p className="text-xs opacity-90">
-                {useVoice ? (isPlaying ? "🔊 En train de parler..." : "🎤 Mode vocal activé") : "Assistant Mon Toit"}
+                {useVoice ? (isPlaying ? "🔊 En train de parler..." : "🎤 Mode vocal activé") : "Assistant MZAKA"}
               </p>
             </div>
             <Button

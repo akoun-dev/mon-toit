@@ -116,7 +116,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                         {(profile?.oneci_verified || profile?.cnam_verified) && (
                           <Badge variant="outline" className="w-fit mt-1 text-xs border-primary text-primary">
-                            ✓ Certifié ANSUT
+                            ✓ Certifié ARCEP
                           </Badge>
                         )}
                       </div>
@@ -181,7 +181,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
                           <DropdownMenuItem asChild>
                             <Link to="/admin/certifications" className="cursor-pointer flex items-center">
                               <Shield className="mr-3 h-4 w-4 text-primary" />
-                              <span>Certifications ANSUT</span>
+                              <span>Certifications ARCEP</span>
                               <CertificationNotificationBadge />
                             </Link>
                           </DropdownMenuItem>

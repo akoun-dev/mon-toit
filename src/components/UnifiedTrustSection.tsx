@@ -15,7 +15,7 @@ const coreFeatures = [
   {
     icon: ShieldCheck,
     title: "Dossier Certifié",
-    description: "Vérification ANSUT en 48h avec certification d'État reconnue par tous les propriétaires",
+    description: "Vérification ARCEP en 48h avec certification d'État reconnue par tous les propriétaires",
     bgColor: "bg-blue-600"
   },
   {
@@ -27,7 +27,7 @@ const coreFeatures = [
   {
     icon: FileSignature,
     title: "Signature Numérique",
-    description: "Bail électronique conforme à la loi ivoirienne avec paiements Mobile Money intégrés",
+    description: "Bail électronique conforme à la législation burkinabè avec paiements Mobile Money intégrés",
     bgColor: "bg-secondary"
   },
 ];
@@ -45,7 +45,7 @@ const featuredTestimonials = [
     name: "Konan M.",
     profession: "Ingénieur",
     photo: "https://ui-avatars.com/api/?name=Konan+Mensah&size=100&background=2C5F7F&color=fff",
-    quote: "La certification ANSUT m'a vraiment rassuré. Fini les arnaques !",
+    quote: "La certification ARCEP m'a vraiment rassuré. Fini les arnaques !",
     rating: 5
   },
 ];
@@ -94,7 +94,7 @@ const UnifiedTrustSection = () => {
         <div className="mb-16">
           <div className="text-center mb-8">
             <h3 className="text-3xl font-bold text-foreground mb-2">
-              Pourquoi choisir Mon Toit
+              Pourquoi choisir MZAKA
             </h3>
             <p className="text-lg text-muted-foreground">
               Un service public au service de votre tranquillité
@@ -135,7 +135,7 @@ const UnifiedTrustSection = () => {
               Ils nous font confiance
             </h3>
             <p className="text-lg text-muted-foreground">
-              Rejoignez des milliers d'Ivoiriens satisfaits
+              Rejoignez des milliers de Burkinabè satisfaits
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
