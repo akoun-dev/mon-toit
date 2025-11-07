@@ -15,17 +15,17 @@ interface GeolocationReturn {
   refresh: () => Promise<void>;
 }
 
-const ABIDJAN_NEIGHBORHOODS = [
-  { name: 'Cocody', lat: 5.3599, lng: -3.9889, bounds: { latMin: 5.32, latMax: 5.40, lngMin: -4.02, lngMax: -3.95 } },
-  { name: 'Plateau', lat: 5.3244, lng: -4.0125, bounds: { latMin: 5.31, latMax: 5.34, lngMin: -4.03, lngMax: -4.00 } },
-  { name: 'Marcory', lat: 5.2869, lng: -3.9967, bounds: { latMin: 5.27, latMax: 5.31, lngMin: -4.01, lngMax: -3.98 } },
-  { name: 'Yopougon', lat: 5.3456, lng: -4.0889, bounds: { latMin: 5.30, latMax: 5.39, lngMin: -4.15, lngMax: -4.05 } },
-  { name: 'Abobo', lat: 5.4167, lng: -4.0167, bounds: { latMin: 5.38, latMax: 5.45, lngMin: -4.05, lngMax: -3.98 } },
-  { name: 'Adjamé', lat: 5.3500, lng: -4.0333, bounds: { latMin: 5.33, latMax: 5.37, lngMin: -4.05, lngMax: -4.01 } },
-  { name: 'Treichville', lat: 5.2889, lng: -4.0089, bounds: { latMin: 5.27, latMax: 5.31, lngMin: -4.03, lngMax: -4.00 } },
-  { name: 'Koumassi', lat: 5.3000, lng: -3.9500, bounds: { latMin: 5.28, latMax: 5.32, lngMin: -3.97, lngMax: -3.93 } },
-  { name: 'Port-Bouët', lat: 5.2500, lng: -3.9333, bounds: { latMin: 5.23, latMax: 5.27, lngMin: -3.96, lngMax: -3.91 } },
-  { name: 'Attécoubé', lat: 5.3333, lng: -4.0500, bounds: { latMin: 5.31, latMax: 5.36, lngMin: -4.08, lngMax: -4.03 } }
+const OUAGADOUGOU_NEIGHBORHOODS = [
+  { name: 'Ouaga 2000', lat: 12.3750, lng: -1.5050, bounds: { latMin: 12.365, latMax: 12.385, lngMin: -1.520, lngMax: -1.490 } },
+  { name: 'Cissin', lat: 12.3800, lng: -1.5450, bounds: { latMin: 12.370, latMax: 12.390, lngMin: -1.560, lngMax: -1.530 } },
+  { name: 'Tampouy', lat: 12.3900, lng: -1.4950, bounds: { latMin: 12.380, latMax: 12.400, lngMin: -1.510, lngMax: -1.480 } },
+  { name: 'Gounghin', lat: 12.3550, lng: -1.5250, bounds: { latMin: 12.345, latMax: 12.365, lngMin: -1.540, lngMax: -1.510 } },
+  { name: 'Dapoya', lat: 12.3650, lng: -1.5100, bounds: { latMin: 12.355, latMax: 12.375, lngMin: -1.520, lngMax: -1.500 } },
+  { name: 'Somgandé', lat: 12.3950, lng: -1.5300, bounds: { latMin: 12.385, latMax: 12.405, lngMin: -1.540, lngMax: -1.520 } },
+  { name: 'Kossodo', lat: 12.4100, lng: -1.4800, bounds: { latMin: 12.400, latMax: 12.420, lngMin: -1.490, lngMax: -1.470 } },
+  { name: 'Zogona', lat: 12.3600, lng: -1.5300, bounds: { latMin: 12.350, latMax: 12.370, lngMin: -1.540, lngMax: -1.520 } },
+  { name: 'Patte d\'Oie', lat: 12.3850, lng: -1.5500, bounds: { latMin: 12.375, latMax: 12.395, lngMin: -1.560, lngMax: -1.540 } },
+  { name: 'Bogodogo', lat: 12.3450, lng: -1.4900, bounds: { latMin: 12.335, latMax: 12.355, lngMin: -1.500, lngMax: -1.480 } }
 ];
 
 const CACHE_KEY = 'user_location';
@@ -33,7 +33,7 @@ const CACHE_TIMESTAMP_KEY = 'user_location_timestamp';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 const detectNeighborhood = (lat: number, lng: number): string | undefined => {
-  for (const neighborhood of ABIDJAN_NEIGHBORHOODS) {
+  for (const neighborhood of OUAGADOUGOU_NEIGHBORHOODS) {
     if (
       lat >= neighborhood.bounds.latMin &&
       lat <= neighborhood.bounds.latMax &&
@@ -48,8 +48,8 @@ const detectNeighborhood = (lat: number, lng: number): string | undefined => {
 
 export const useGeolocation = (): GeolocationReturn => {
   const [location, setLocation] = useState<GeolocationData>({
-    city: 'Abidjan',
-    country: 'Côte d\'Ivoire',
+    city: 'Ouagadougou',
+    country: 'Burkina Faso',
     neighborhood: undefined
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -85,8 +85,8 @@ export const useGeolocation = (): GeolocationReturn => {
         const neighborhood = detectNeighborhood(latitude, longitude);
         
         const locationData: GeolocationData = {
-          city: 'Abidjan',
-          country: 'Côte d\'Ivoire',
+          city: 'Ouagadougou',
+          country: 'Burkina Faso',
           neighborhood,
           latitude,
           longitude
@@ -97,15 +97,15 @@ export const useGeolocation = (): GeolocationReturn => {
         localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
       } else {
         setLocation({ 
-          city: 'Abidjan',
-          country: 'Côte d\'Ivoire'
+          city: 'Ouagadougou',
+          country: 'Burkina Faso'
         });
       }
     } catch (err) {
       setError(err as Error);
       setLocation({ 
-        city: 'Abidjan',
-        country: 'Côte d\'Ivoire'
+        city: 'Ouagadougou',
+        country: 'Burkina Faso'
       });
     } finally {
       setIsLoading(false);

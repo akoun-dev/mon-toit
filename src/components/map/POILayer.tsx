@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { POI_CATEGORIES } from '@/data/abidjanPOI';
+import { POI_CATEGORIES } from '@/data/ouagadougouPOI';
 import { motion } from 'framer-motion';
 import { Layers } from 'lucide-react';
 

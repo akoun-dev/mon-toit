@@ -73,7 +73,7 @@ const SmartMap = () => {
                   Carte Intelligente
                 </Badge>
                 <h1 className="text-h1 mb-4">
-                  Explorez <span className="text-gradient-primary">Abidjan</span> intelligemment
+                  Explorez <span className="text-gradient-primary">Ouagadougou</span> intelligemment
                 </h1>
                 <p className="text-body-lg text-muted-foreground">
                   Découvrez les biens immobiliers avec notre carte interactive avancée : 

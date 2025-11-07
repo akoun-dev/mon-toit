@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { KentePattern } from '@/components/ui/african-patterns';
-import type { Neighborhood } from '@/data/abidjanNeighborhoods';
+import type { Neighborhood } from '@/data/ouagadougouNeighborhoods';
 
 const SmartMapV2 = () => {
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ const SmartMapV2 = () => {
                   Carte Intelligente V2
                 </Badge>
                 <h1 className="text-h1 mb-4">
-                  Explorez <span className="text-gradient-primary">Abidjan</span> intelligemment
+                  Explorez <span className="text-gradient-primary">Ouagadougou</span> intelligemment
                 </h1>
                 <p className="text-body-lg text-muted-foreground">
                   Découvrez les biens avec clustering, heatmap, POI, zones de quartiers et analyse complète

@@ -32,7 +32,7 @@ const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const AUTO_REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
 /**
- * Hook to fetch weather data for Abidjan with localStorage caching
+ * Hook to fetch weather data for Ouagadougou with localStorage caching
  * Cache duration: 30 minutes
  * Auto-refresh: every 30 minutes
  * Falls back to default sunny weather if API fails
@@ -69,7 +69,7 @@ export const useWeather = (): WeatherReturn => {
       }
 
       const { data, error: apiError } = await supabase.functions.invoke('get-weather', {
-        body: { city: 'Abidjan' }
+        body: { city: 'Ouagadougou' }
       });
 
       if (apiError) {

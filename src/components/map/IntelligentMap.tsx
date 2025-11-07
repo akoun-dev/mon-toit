@@ -78,7 +78,7 @@ export const IntelligentMap = ({
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: MAP_STYLES[mapStyle],
-        center: [-4.0305, 5.3599], // Abidjan
+        center: [-1.5197, 12.3714], // Ouagadougou
         zoom: 11,
       });
 

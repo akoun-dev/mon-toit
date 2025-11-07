@@ -9,10 +9,10 @@ import { Locate, Map, Satellite, Layers, ZoomIn, ZoomOut } from 'lucide-react';
 import { logger } from '@/services/logger';
 import { secureStorage } from '@/lib/secureStorage';
 import { motion } from 'framer-motion';
-import { ABIDJAN_POI, POI_CATEGORIES } from '@/data/abidjanPOI';
-import { ABIDJAN_NEIGHBORHOODS, getPriceColor } from '@/data/abidjanNeighborhoods';
+import { OUAGADOUGOU_POI, POI_CATEGORIES } from '@/data/ouagadougouPOI';
+import { OUAGADOUGOU_NEIGHBORHOODS, getPriceColor } from '@/data/ouagadougouNeighborhoods';
 import type { POIType } from './POILayer';
-import type { Neighborhood } from '@/data/abidjanNeighborhoods';
+import type { Neighborhood } from '@/data/ouagadougouNeighborhoods';
 
 interface EnhancedMapProps {
   properties: MapProperty[];
@@ -89,7 +89,7 @@ export const EnhancedMap = ({
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: MAP_STYLES[mapStyle],
-        center: [-4.0305, 5.3599], // Abidjan
+        center: [-1.5197, 12.3714], // Ouagadougou
         zoom: 11,
       });
 
@@ -395,7 +395,7 @@ export const EnhancedMap = ({
     poiMarkers.current = [];
 
     // Filter POI by active layers
-    const filteredPOI = ABIDJAN_POI.filter(poi => activePOILayers.includes(poi.type));
+    const filteredPOI = OUAGADOUGOU_POI.filter(poi => activePOILayers.includes(poi.type));
 
     filteredPOI.forEach(poi => {
       const category = POI_CATEGORIES[poi.type];
@@ -455,7 +455,7 @@ export const EnhancedMap = ({
   useEffect(() => {
     if (!map.current || !mapReady || !showNeighborhoods) return;
 
-    ABIDJAN_NEIGHBORHOODS.forEach((neighborhood, index) => {
+    OUAGADOUGOU_NEIGHBORHOODS.forEach((neighborhood, index) => {
       const sourceId = `neighborhood-${neighborhood.id}`;
       const layerId = `neighborhood-layer-${neighborhood.id}`;
       const labelLayerId = `neighborhood-label-${neighborhood.id}`;

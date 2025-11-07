@@ -16,13 +16,16 @@ interface LocationPickerProps {
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicHNvbWV0IiwiYSI6ImNtYTgwZ2xmMzEzdWcyaXM2ZG45d3A4NmEifQ.MYXzdc5CREmcvtBLvfV0Lg';
 
 const CITY_COORDINATES: Record<string, [number, number]> = {
-  'Abidjan': [-4.0083, 5.3600],
-  'Yamoussoukro': [-5.2767, 6.8276],
-  'Bouaké': [-5.0300, 7.6900],
-  'Daloa': [-6.4503, 6.8770],
-  'San-Pédro': [-6.6361, 4.7485],
-  'Korhogo': [-5.6300, 9.4500],
-  'Man': [-7.5542, 7.4125],
+  'Ouagadougou': [-1.5197, 12.3714],
+  'Bobo-Dioulasso': [-4.2979, 11.1775],
+  'Koudougou': [-2.3625, 12.2525],
+  'Ouahigouya': [-2.4217, 13.5828],
+  'Banfora': [-4.7617, 10.6342],
+  'Dédougou': [-3.4608, 12.4631],
+  'Kaya': [-1.0819, 13.0928],
+  'Tenkodogo': [-0.3706, 11.7806],
+  'Fada N\'Gourma': [0.3581, 12.0614],
+  'Houndé': [-3.5167, 11.5000],
 };
 
 export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city }: LocationPickerProps) => {
@@ -36,10 +39,10 @@ export const LocationPicker = ({ onLocationSelect, initialLat, initialLng, city 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Get initial position from city or default to Abidjan
+    // Get initial position from city or default to Ouagadougou
     const cityCoords = city ? CITY_COORDINATES[city] : null;
     const initialCoords: [number, number] = 
-      coordinates || cityCoords || CITY_COORDINATES['Abidjan'];
+      coordinates || cityCoords || CITY_COORDINATES['Ouagadougou'];
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
     

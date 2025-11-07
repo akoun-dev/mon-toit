@@ -473,7 +473,7 @@ export const TenantDashboardEnhanced: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
-                Guides de Quartier
+                Guides de Quartier de Ouagadougou
               </CardTitle>
               <CardDescription>
                 Découvrez les quartiers d'Abidjan

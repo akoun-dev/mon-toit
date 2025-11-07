@@ -256,10 +256,10 @@ export function LeaseTemplateManager() {
   const renderPreview = (template: LeaseTemplate) => {
     const sampleData: Record<string, string> = {
       landlord_name: "Jean DUPONT",
-      landlord_address: "123 Avenue de la République, Abidjan",
-      landlord_phone: "+225 07 12 34 56 78",
+      landlord_address: "123 Avenue de la République, Ouagadougou",
+      landlord_phone: "+226 70 12 34 56",
       tenant_name: "Marie KOUASSI",
-      tenant_address: "456 Boulevard Latrille, Abidjan",
+      tenant_address: "456 Boulevard Kwamé N'Krumah, Ouagadougou",
       tenant_phone: "+225 05 98 76 54 32",
       property_address: "Cocody Riviera Golf, Villa 789",
       property_type: "Villa",

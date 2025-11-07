@@ -7,7 +7,7 @@ import { Badge } from "./ui/badge";
 
 /**
  * Mock featured properties data for map demonstration
- * These are example properties located in different neighborhoods of Abidjan
+ * These are example properties located in different neighborhoods of Ouagadougou
  * In production, this would be fetched from the database
  */
 const featuredProperties = [
@@ -51,7 +51,7 @@ const featuredProperties = [
 
 /**
  * ExploreMap component displays an interactive map with featured properties
- * and current weather information for Abidjan
+ * and current weather information for Ouagadougou
  */
 const ExploreMap = () => {
   const { weather } = useWeather();
@@ -98,7 +98,7 @@ const ExploreMap = () => {
           </h2>
           
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Explorez la carte interactive d'Abidjan et trouvez votre futur logement dans le quartier de vos rêves
+            Explorez la carte interactive de Ouagadougou et trouvez votre futur logement dans le quartier de vos rêves
           </p>
         </div>
 
@@ -106,7 +106,7 @@ const ExploreMap = () => {
           {/* Weather Badge */}
           <Badge className="absolute top-4 right-4 z-10 bg-background/90 backdrop-blur-sm border border-border/50 shadow-md flex items-center gap-2 text-sm px-3 py-2">
             <WeatherIcon className="h-4 w-4 text-warning" />
-            <span>{weather.temperature}°C à Abidjan - {getWeatherMessage()}</span>
+            <span>{weather.temperature}°C à Ouagadougou - {getWeatherMessage()}</span>
           </Badge>
 
           <div className="h-[60vh] md:h-[700px]">

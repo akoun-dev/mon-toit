@@ -40,7 +40,7 @@ interface EnhancedSearchInterfaceProps {
 
 export const EnhancedSearchInterface: React.FC<EnhancedSearchInterfaceProps> = ({
   onSearch,
-  placeholder = "Rechercher un bien à Abidjan...",
+  placeholder = "Rechercher un bien à Ouagadougou...",
   className,
   compact = false,
   showFilters = true

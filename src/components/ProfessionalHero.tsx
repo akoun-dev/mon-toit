@@ -42,11 +42,11 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Illustration Abidjan */}
+      {/* Image de fond - Illustration Ouagadougou */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
+          backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80)',
           backgroundPosition: 'center 60%' // Meilleur cadrage sur mobile
         }}
       />
@@ -180,11 +180,11 @@ export const ProfessionalHero = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Toutes les villes</SelectItem>
-                      <SelectItem value="Abidjan">Abidjan</SelectItem>
-                      <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
-                      <SelectItem value="Bouaké">Bouaké</SelectItem>
-                      <SelectItem value="San-Pédro">San-Pédro</SelectItem>
-                      <SelectItem value="Daloa">Daloa</SelectItem>
+                      <SelectItem value="Ouagadougou">Ouagadougou</SelectItem>
+                      <SelectItem value="Bobo-Dioulasso">Bobo-Dioulasso</SelectItem>
+                      <SelectItem value="Koudougou">Koudougou</SelectItem>
+                      <SelectItem value="Ouahigouya">Ouahigouya</SelectItem>
+                      <SelectItem value="Banfora">Banfora</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -321,16 +321,16 @@ export const SUCCESS_MESSAGES = {
 // ============= 7. CITIES & LOCALIZATION =============
 
 export const CITIES = [
-  'Abidjan',
-  'Yamoussoukro',
-  'Bouaké',
-  'Daloa',
-  'San-Pedro',
-  'Korhogo',
-  'Man',
-  'Gagnoa',
-  'Divo',
-  'Abengourou',
+  'Ouagadougou',
+  'Bobo-Dioulasso',
+  'Koudougou',
+  'Ouahigouya',
+  'Banfora',
+  'Dédougou',
+  'Kaya',
+  'Tenkodogo',
+  'Fada N\'Gourma',
+  'Houndé',
 ] as const;
 
 export type City = typeof CITIES[number];
@@ -339,7 +339,7 @@ export const MAP_CONFIG = {
   DEFAULT_ZOOM: 13,
   MAX_ZOOM: 18,
   MIN_ZOOM: 5,
-  DEFAULT_CENTER: { lat: 5.3600, lng: -4.0083 }, // Abidjan
+  DEFAULT_CENTER: { lat: 12.3714, lng: -1.5197 }, // Ouagadougou
   SEARCH_RADIUS_KM: 10,
   MAX_SEARCH_RADIUS_KM: 50,
 } as const;

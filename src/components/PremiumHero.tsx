@@ -33,7 +33,7 @@ export const PremiumHero = () => {
     <section className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Image de fond avec overlay */}
       <div className="absolute inset-0 z-0">
-        {/* Image d'Abidjan (Unsplash placeholder) */}
+        {/* Image de Ouagadougou (Unsplash placeholder) */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -126,12 +126,11 @@ export const PremiumHero = () => {
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-border z-50">
                     <SelectItem value="all">Toutes les villes</SelectItem>
-                    <SelectItem value="Abidjan">Abidjan</SelectItem>
-                    <SelectItem value="Yopougon">Yopougon</SelectItem>
-                    <SelectItem value="Cocody">Cocody</SelectItem>
-                    <SelectItem value="Marcory">Marcory</SelectItem>
-                    <SelectItem value="Koumassi">Koumassi</SelectItem>
-                    <SelectItem value="Plateau">Plateau</SelectItem>
+                    <SelectItem value="Ouagadougou">Ouagadougou</SelectItem>
+                    <SelectItem value="Bobo-Dioulasso">Bobo-Dioulasso</SelectItem>
+                    <SelectItem value="Koudougou">Koudougou</SelectItem>
+                    <SelectItem value="Ouahigouya">Ouahigouya</SelectItem>
+                    <SelectItem value="Banfora">Banfora</SelectItem>
                   </SelectContent>
                 </Select>
 

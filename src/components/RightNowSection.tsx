@@ -72,7 +72,7 @@ const RightNowSection = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-8">
           <h2 className="text-h3 mb-2">
-            📍 En ce moment à <span className="text-primary">Abidjan</span>
+            📍 En ce moment à <span className="text-primary">Ouagadougou</span>
           </h2>
           <p className="text-muted-foreground flex items-center justify-center gap-2">
             <WeatherIcon className="h-4 w-4" />

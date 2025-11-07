@@ -225,9 +225,9 @@ export const SeedDemoDataButton = () => {
                   Cette action va créer un ensemble complet de données de test incluant :
                   <ul className="list-disc list-inside mt-2 space-y-1">
                     <li>≈ 17 utilisateurs (propriétaires, agences, locataires, admins)</li>
-                    <li>≈ 18 propriétés dans différents quartiers d'Abidjan</li>
+                    <li>≈ 18 propriétés dans différents quartiers de Ouagadougou</li>
                     <li>≈ 25 candidatures (dont 3 en retard)</li>
-                    <li>≈ 4 baux (dont 2 certifiés ANSUT)</li>
+                    <li>≈ 4 baux vérifiés</li>
                     <li>Favoris, messages et avis</li>
                   </ul>
                   <p className="mt-2 text-sm">

@@ -246,10 +246,11 @@ export const PropertyAlertsSettings = () => {
                         <SelectValue placeholder="Sélectionner une ville" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Abidjan">Abidjan</SelectItem>
-                        <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
-                        <SelectItem value="Bouaké">Bouaké</SelectItem>
-                        <SelectItem value="San-Pédro">San-Pédro</SelectItem>
+                        <SelectItem value="Ouagadougou">Ouagadougou</SelectItem>
+                        <SelectItem value="Bobo-Dioulasso">Bobo-Dioulasso</SelectItem>
+                        <SelectItem value="Koudougou">Koudougou</SelectItem>
+                        <SelectItem value="Ouahigouya">Ouahigouya</SelectItem>
+                        <SelectItem value="Banfora">Banfora</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
