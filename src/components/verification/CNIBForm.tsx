@@ -9,10 +9,13 @@ import { toast } from 'sonner';
 import { logger } from '@/services/logger';
 import { supabase } from '@/lib/supabase';
 import { celebrateCertification } from '@/utils/confetti';
-import { Camera, Upload, CheckCircle, XCircle, AlertCircle, Shield, RefreshCw } from 'lucide-react';
+import { AlertCircle, Shield } from 'lucide-react';
 import { compressImage, validateImage, SimpleProgress, MAX_IMAGE_SIZE } from '@/utils/imageUtils';
 import { VerificationResultDisplay } from './VerificationResultDisplay';
 import { VerificationInstructions } from './VerificationInstructions';
+import { CNIUploadZone } from './CNIUploadZone';
+import { SelfieCapture } from './SelfieCapture';
+import { VerificationButtons } from './VerificationButtons';
 
 interface CNIBFormProps {
   onSubmit?: () => void;
@@ -730,151 +733,32 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         )}
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* CNI Upload */}
-          <div className="space-y-3">
-            <Label htmlFor="cni-upload" className="text-base font-semibold">
-              1. Photo de votre Carte Nationale d'Identité Burkinabè (CNIB)
-            </Label>
-            <p className="text-sm text-muted-foreground">
-              Téléchargez une photo claire du recto de votre CNIB
-            </p>
-            {cniImage ? (
-              <div className="relative group">
-                <img 
-                  src={cniImage} 
-                  alt="Carte Nationale d'Identité" 
-                  className="w-full h-48 object-cover rounded-lg border-2 border-primary shadow-sm"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => {
-                      setCniImage(null);
-                      setVerificationResult(null);
-                    }}
-                  >
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Retirer
-                  </Button>
-                </div>
-                <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3" />
-                  Chargée
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <label 
-                  htmlFor="cni-upload"
-                  className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-all bg-muted/30"
-                >
-                  <Upload className="h-10 w-10 mb-3 text-primary" />
-                  <span className="text-sm font-medium">Cliquez pour télécharger</span>
-                  <span className="text-xs text-muted-foreground mt-1">JPG, PNG (max 5MB)</span>
-                  <input
-                    id="cni-upload"
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png"
-                    className="hidden"
-                    onChange={handleCniUpload}
-                    aria-label="Télécharger photo de CNI"
-                  />
-                </label>
-                {uploadProgress > 0 && uploadProgress < 100 && (
-                  <SimpleProgress value={uploadProgress} />
-                )}
-              </div>
-            )}
-          </div>
+          <CNIUploadZone
+            image={cniImage}
+            uploadProgress={uploadProgress}
+            onUpload={handleCniUpload}
+            onRemove={() => {
+              setCniImage(null);
+              setVerificationResult(null);
+            }}
+            disabled={isVerifying}
+          />
 
-          {/* Selfie Capture */}
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">
-              2. Selfie de vérification
-            </Label>
-            
-            {captureMethod === 'popup' ? (
-              <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg bg-muted/30">
-                <Camera className="h-10 w-10 mb-3 text-primary opacity-50" />
-                <p className="text-sm font-medium text-center px-4">
-                  Le selfie sera capturé automatiquement dans une fenêtre sécurisée
-                </p>
-                <p className="text-xs text-muted-foreground mt-2 text-center px-4">
-                  Après avoir uploadé votre CNIB, une fenêtre s'ouvrira pour capturer votre selfie
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {!isCapturing && !selfieImage && (
-                  <Button 
-                    onClick={startCamera} 
-                    variant="outline" 
-                    className="w-full"
-                    disabled={isVideoLoading || isVerifying}
-                  >
-                    <Camera className="mr-2 h-4 w-4" />
-                    {isVideoLoading ? 'Chargement...' : 'Démarrer la caméra'}
-                  </Button>
-                )}
-                
-                {isCapturing && (
-                  <div className="space-y-2">
-                    <video 
-                      ref={videoRef} 
-                      autoPlay 
-                      playsInline 
-                      className="w-full h-48 object-cover rounded-lg border-2 border-primary"
-                    />
-                    <div className="flex gap-2">
-                      <Button 
-                        onClick={captureSelfie} 
-                        className="flex-1"
-                        size="sm"
-                      >
-                        <Camera className="mr-2 h-4 w-4" />
-                        Capturer mon selfie
-                      </Button>
-                      <Button 
-                        onClick={stopCamera} 
-                        variant="outline"
-                        size="sm"
-                      >
-                        Annuler
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                
-                {selfieImage && (
-                  <div className="relative group">
-                    <img 
-                      src={selfieImage} 
-                      alt="Selfie capturé" 
-                      className="w-full h-48 object-cover rounded-lg border-2 border-primary shadow-sm"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setSelfieImage(null);
-                          setVerificationResult(null);
-                        }}
-                      >
-                        <XCircle className="mr-2 h-4 w-4" />
-                        Retirer
-                      </Button>
-                    </div>
-                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                      <CheckCircle className="h-3 w-3" />
-                      Capturé
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <SelfieCapture
+            method={captureMethod}
+            selfieImage={selfieImage}
+            isCapturing={isCapturing}
+            isVideoLoading={isVideoLoading}
+            isVerifying={isVerifying}
+            videoRef={videoRef}
+            onStartCamera={startCamera}
+            onStopCamera={stopCamera}
+            onCapture={captureSelfie}
+            onRemove={() => {
+              setSelfieImage(null);
+              setVerificationResult(null);
+            }}
+          />
         </div>
 
         <canvas ref={canvasRef} className="hidden" />
@@ -883,47 +767,16 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           <VerificationResultDisplay result={verificationResult} />
         )}
 
-        <div className="flex flex-col gap-3">
-          <Button
-            onClick={captureMethod === 'local' ? handleLocalVerify : handleVerify}
-            disabled={
-              !cniImage || 
-              (captureMethod === 'local' && !selfieImage) || 
-              isVerifying || 
-              uploadProgress > 0 || 
-              isPolling
-            }
-            size="lg"
-            className="w-full"
-          >
-            {isVerifying || isPolling ? (
-              <>
-                <RefreshCw className="mr-2 h-5 w-5 animate-spin" />
-                {isPolling ? pollingMessage : 'Vérification en cours...'}
-              </>
-            ) : (
-              <>
-                <Shield className="mr-2 h-5 w-5" />
-                {captureMethod === 'local' 
-                  ? 'Vérifier avec caméra locale' 
-                  : 'Vérifier avec NeoFace popup'}
-              </>
-            )}
-          </Button>
-          
-          {(cniImage || selfieImage || verificationResult) && (
-            <Button 
-              onClick={reset} 
-              variant="outline" 
-              size="lg" 
-              className="w-full"
-              disabled={isVerifying}
-            >
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Recommencer la vérification
-            </Button>
-          )}
-        </div>
+        <VerificationButtons
+          captureMethod={captureMethod}
+          canVerify={!!(cniImage && (captureMethod === 'popup' || selfieImage)) && uploadProgress === 0}
+          isVerifying={isVerifying}
+          isPolling={isPolling}
+          pollingMessage={pollingMessage}
+          hasContent={!!(cniImage || selfieImage || verificationResult)}
+          onVerify={captureMethod === 'local' ? handleLocalVerify : handleVerify}
+          onReset={reset}
+        />
 
         <Alert className="bg-muted">
           <Shield className="h-4 w-4" />
