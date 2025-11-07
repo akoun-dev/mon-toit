@@ -1,11 +1,11 @@
-import './i18n/config';
 import React from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
+import './i18n/config';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
-import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
