@@ -25,22 +25,22 @@ export const CertificationApprovedEmail = ({
 }: CertificationApprovedEmailProps) => (
   <Html>
     <Head />
-    <Preview>🎉 Certification ANSUT approuvée - {propertyTitle}</Preview>
+    <Preview>🎉 Vérification MZAKA approuvée - {propertyTitle}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>🎉 Certification ANSUT approuvée !</Heading>
+        <Heading style={h1}>🎉 Vérification MZAKA approuvée !</Heading>
         
         <Text style={text}>Félicitations {userName},</Text>
         
         <Text style={text}>
-          Votre bail pour <strong>{propertyTitle}</strong> a été certifié par ANSUT.
+          Votre bail pour <strong>{propertyTitle}</strong> a été vérifié par MZAKA.
         </Text>
 
         <Section style={box}>
-          <Text style={boxTitle}>✨ Badge Certifié ANSUT</Text>
+          <Text style={boxTitle}>✨ Badge Vérifié MZAKA</Text>
           <Text style={boxText}>
-            Votre bail bénéficie maintenant de la certification officielle ANSUT,
-            garantissant sa validité légale et la protection de toutes les parties.
+            Votre bail bénéficie maintenant de la vérification MZAKA,
+            garantissant sa validité et la protection de toutes les parties.
           </Text>
           <Text style={boxText}>
             <strong>Loyer mensuel :</strong> {monthlyRent.toLocaleString()} FCFA
@@ -49,9 +49,9 @@ export const CertificationApprovedEmail = ({
 
         <Text style={text}>
           <strong>Ce que cela signifie :</strong><br />
-          ✓ Bail légalement reconnu en Côte d'Ivoire<br />
-          ✓ Protection juridique renforcée<br />
-          ✓ Conformité aux normes ANSUT<br />
+          ✓ Bail reconnu au Burkina Faso<br />
+          ✓ Protection renforcée<br />
+          ✓ Vérifié par l'équipe MZAKA<br />
           ✓ Badge de confiance visible
         </Text>
 
@@ -62,7 +62,7 @@ export const CertificationApprovedEmail = ({
         <Hr style={hr} />
         
         <Text style={footer}>
-          MonToit ANSUT - Certifications<br />
+          MZAKA - Vérifications<br />
           Votre bail est maintenant protégé
         </Text>
       </Container>

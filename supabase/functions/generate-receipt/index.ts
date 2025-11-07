@@ -96,7 +96,7 @@ ${payment.properties?.address || ''}, ${payment.properties?.city || ''}
 
 =====================================
 Ce reçu est généré automatiquement par Mon Toit
-Propulsé par ANSUT
+Propulsé par MZAKA
     `.trim();
 
     // Convertir en base64 (en production, utiliser une vraie lib PDF)

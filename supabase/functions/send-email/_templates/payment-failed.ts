@@ -53,10 +53,10 @@ export const paymentFailedTemplate = (data: PaymentFailedData): string => {
                 </a>
               </div>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
-              <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
-                MonToit ANSUT<br>
-                Besoin d'aide ? Contactez notre support
-              </p>
+               <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
+                 MZAKA<br>
+                 Besoin d'aide ? Contactez notre support
+               </p>
             </td>
           </tr>
         </table>

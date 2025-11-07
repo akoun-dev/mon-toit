@@ -58,10 +58,10 @@ export const PaymentConfirmationEmail = ({
 
         <Hr style={hr} />
         
-        <Text style={footer}>
-          MonToit ANSUT - Paiements sécurisés<br />
-          En cas de question, contactez-nous
-        </Text>
+          <Text style={footer}>
+            MZAKA - Paiements sécurisés<br />
+            En cas de question, contactez-nous
+          </Text>
       </Container>
     </Body>
   </Html>

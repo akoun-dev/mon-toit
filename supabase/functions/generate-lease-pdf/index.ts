@@ -21,7 +21,7 @@ interface LeaseData {
   end_date: string;
   tenant_signed_at: string | null;
   landlord_signed_at: string | null;
-  ansut_certified_at: string | null;
+  verified_at: string | null;
   certification_status: string;
   properties: {
     title: string;
@@ -198,10 +198,10 @@ serve(async (req) => {
     yPos += 15;
 
     // Certification badge if applicable
-    if (leaseData.ansut_certified_at) {
+    if (leaseData.verified_at) {
       pdf.setFontSize(12);
       pdf.setTextColor(34, 139, 34);
-      pdf.text('✓ CERTIFIÉ ANSUT', pageWidth / 2, yPos, { align: 'center' });
+      pdf.text('✓ BAIL VÉRIFIÉ MZAKA', pageWidth / 2, yPos, { align: 'center' });
       pdf.setTextColor(0, 0, 0);
       yPos += 10;
     }
@@ -238,16 +238,16 @@ serve(async (req) => {
       yPos += 6;
     }
 
-    if (leaseData.ansut_certified_at) {
+    if (leaseData.verified_at) {
       yPos += 10;
       pdf.setFontSize(12);
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(34, 139, 34);
-      pdf.text('✓ CERTIFIÉ ANSUT', 25, yPos);
+      pdf.text('✓ BAIL VÉRIFIÉ MZAKA', 25, yPos);
       yPos += 6;
       pdf.setFontSize(10);
       pdf.setFont('helvetica', 'normal');
-      pdf.text(`Date de certification: ${new Date(leaseData.ansut_certified_at).toLocaleString('fr-FR')}`, 25, yPos);
+      pdf.text(`Date de vérification: ${new Date(leaseData.verified_at).toLocaleString('fr-FR')}`, 25, yPos);
       pdf.setTextColor(0, 0, 0);
     }
 
@@ -255,7 +255,7 @@ serve(async (req) => {
     const pageHeight = pdf.internal.pageSize.getHeight();
     pdf.setFontSize(8);
     pdf.setTextColor(128, 128, 128);
-    pdf.text('Généré par MonToit ANSUT - Plateforme de location certifiée', pageWidth / 2, pageHeight - 15, { align: 'center' });
+    pdf.text('Généré par MZAKA - Plateforme de location sécurisée', pageWidth / 2, pageHeight - 15, { align: 'center' });
     pdf.text(`Document généré le ${new Date().toLocaleString('fr-FR')}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
 
     // Convertir le PDF en bytes

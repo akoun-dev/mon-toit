@@ -48,10 +48,10 @@ export const NewMessageEmail = ({
 
         <Hr style={hr} />
         
-        <Text style={footer}>
-          MonToit ANSUT - Messagerie<br />
-          Pour vous désabonner de ces notifications, modifiez vos préférences
-        </Text>
+          <Text style={footer}>
+            MZAKA - Messagerie<br />
+            Pour vous désabonner de ces notifications, modifiez vos préférences
+          </Text>
       </Container>
     </Body>
   </Html>

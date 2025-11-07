@@ -20,16 +20,16 @@ interface WelcomeEmailProps {
 export const WelcomeEmail = ({ userName, userType }: WelcomeEmailProps) => (
   <Html>
     <Head />
-    <Preview>Bienvenue sur MonToit ANSUT - Votre plateforme de location certifiée</Preview>
+    <Preview>Bienvenue sur MZAKA - Votre plateforme de location sécurisée</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Bienvenue sur MonToit ANSUT ! 🏠</Heading>
+        <Heading style={h1}>Bienvenue sur MZAKA ! 🏠</Heading>
         
         <Text style={text}>Bonjour {userName},</Text>
         
         <Text style={text}>
-          Nous sommes ravis de vous accueillir sur MonToit ANSUT, la plateforme de location
-          immobilière certifiée en Côte d'Ivoire.
+          Nous sommes ravis de vous accueillir sur MZAKA, la plateforme de location
+          immobilière au Burkina Faso.
         </Text>
 
         <Section style={box}>
@@ -38,9 +38,9 @@ export const WelcomeEmail = ({ userName, userType }: WelcomeEmailProps) => (
             vous avez accès à :
           </Text>
           <Text style={boxText}>
-            ✓ Des baux certifiés ANSUT<br />
+            ✓ Des baux vérifiés par l'équipe MZAKA<br />
             ✓ Paiements sécurisés par Mobile Money<br />
-            ✓ Vérification d'identité ONECI/CNAM<br />
+            ✓ Vérification d'identité CNIB/CNAM<br />
             ✓ Messagerie intégrée<br />
             ✓ Tableau de bord complet
           </Text>
@@ -51,7 +51,7 @@ export const WelcomeEmail = ({ userName, userType }: WelcomeEmailProps) => (
         </Text>
         <Text style={text}>
           1. Complétez votre profil<br />
-          2. Vérifiez votre identité (ONECI/CNAM)<br />
+          2. Vérifiez votre identité (CNIB/CNAM)<br />
           3. {userType === "bailleur" ? "Publiez votre premier bien" : "Recherchez votre logement idéal"}
         </Text>
 
@@ -62,8 +62,8 @@ export const WelcomeEmail = ({ userName, userType }: WelcomeEmailProps) => (
         <Hr style={hr} />
         
         <Text style={footer}>
-          MonToit ANSUT - Plateforme certifiée de location immobilière<br />
-          Côte d'Ivoire
+          MZAKA - Plateforme de location immobilière<br />
+          Burkina Faso
         </Text>
       </Container>
     </Body>

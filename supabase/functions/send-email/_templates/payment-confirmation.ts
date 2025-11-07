@@ -48,10 +48,10 @@ export const paymentConfirmationTemplate = (data: PaymentConfirmationData): stri
                 Un reçu détaillé est disponible dans votre espace "Paiements".
               </p>
               <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
-              <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
-                MonToit ANSUT - Paiements sécurisés<br>
-                En cas de question, contactez-nous
-              </p>
+               <p style="color: #64748b; font-size: 12px; line-height: 16px; text-align: center; margin: 0;">
+                 MZAKA - Paiements sécurisés<br>
+                 En cas de question, contactez-nous
+               </p>
             </td>
           </tr>
         </table>

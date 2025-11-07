@@ -60,10 +60,10 @@ export const PaymentFailedEmail = ({
 
         <Hr style={hr} />
         
-        <Text style={footer}>
-          MonToit ANSUT<br />
-          Besoin d'aide ? Contactez notre support
-        </Text>
+          <Text style={footer}>
+            MZAKA<br />
+            Besoin d'aide ? Contactez notre support
+          </Text>
       </Container>
     </Body>
   </Html>

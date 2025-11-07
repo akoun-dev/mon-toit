@@ -105,7 +105,7 @@ serve(async (req) => {
         lastName,
         email: user.email,
         phone: profile.phone,
-        organisation: 'ANSUT',
+        organisation: 'MZAKA',
         typePiece: 'CNI',
         hashPiece,
         base64: oneciData.photo_base64

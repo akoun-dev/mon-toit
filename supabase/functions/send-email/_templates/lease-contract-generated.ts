@@ -21,9 +21,9 @@ export const leaseContractGeneratedTemplate = (data: LeaseContractGeneratedData)
         <title>Contrat de bail généré</title>
       </head>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">MonToit ANSUT</h1>
-        </div>
+         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+           <h1 style="color: white; margin: 0; font-size: 28px;">MZAKA</h1>
+         </div>
         
         <div style="background-color: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
           <h2 style="color: #667eea; margin-top: 0;">Bonjour ${data.recipientName},</h2>
@@ -51,12 +51,12 @@ export const leaseContractGeneratedTemplate = (data: LeaseContractGeneratedData)
           </div>
           
           <div style="background-color: #fff; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #667eea;">📋 Prochaines étapes</h3>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-              <li>Conservez une copie de ce contrat en lieu sûr</li>
-              <li>Vous pouvez demander la certification ANSUT pour plus de sécurité</li>
-              <li>Accédez à vos paiements depuis votre tableau de bord</li>
-            </ul>
+             <h3 style="margin-top: 0; color: #667eea;">📋 Prochaines étapes</h3>
+             <ul style="margin: 10px 0; padding-left: 20px;">
+               <li>Conservez une copie de ce contrat en lieu sûr</li>
+               <li>Vous pouvez demander la vérification MZAKA pour plus de sécurité</li>
+               <li>Accédez à vos paiements depuis votre tableau de bord</li>
+             </ul>
           </div>
           
           <p style="text-align: center; margin-top: 30px;">
@@ -68,10 +68,10 @@ export const leaseContractGeneratedTemplate = (data: LeaseContractGeneratedData)
           
           <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
           
-          <p style="font-size: 14px; color: #666; text-align: center;">
-            Cet email a été envoyé automatiquement par MonToit ANSUT.<br>
-            Pour toute question, contactez notre support.
-          </p>
+           <p style="font-size: 14px; color: #666; text-align: center;">
+             Cet email a été envoyé automatiquement par MZAKA.<br>
+             Pour toute question, contactez notre support.
+           </p>
         </div>
       </body>
     </html>

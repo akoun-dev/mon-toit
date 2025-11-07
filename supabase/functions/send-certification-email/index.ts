@@ -110,10 +110,10 @@ serve(async (req) => {
         body: {
           to: recipient.email,
           subject: template === 'certification-approved'
-            ? '✅ Bail certifié par ANSUT'
+            ? '✅ Bail vérifié par MZAKA'
             : template === 'certification-rejected'
-            ? '❌ Modifications requises pour la certification'
-            : '📋 Demande de certification soumise',
+            ? '❌ Modifications requises pour la vérification'
+            : '📋 Demande de vérification soumise',
           template,
           data: templateData,
         },
