@@ -10,104 +10,9 @@ import { logger } from '@/services/logger';
 import { supabase } from '@/lib/supabase';
 import { celebrateCertification } from '@/utils/confetti';
 import { Camera, Upload, CheckCircle, XCircle, AlertCircle, Shield, RefreshCw } from 'lucide-react';
-
-// Configuration
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
-const IMAGE_QUALITY = 0.85;
-const MAX_IMAGE_DIMENSION = 1920;
-
-// Simple progress bar component
-const SimpleProgress = ({ value, className }: { value: number; className?: string }) => (
-  <div className={`relative h-2 w-full overflow-hidden rounded-full bg-secondary ${className}`}>
-    <div 
-      className="h-full bg-primary transition-all duration-300 ease-in-out"
-      style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
-      role="progressbar"
-      aria-valuenow={value}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    />
-  </div>
-);
-
-// Fonction utilitaire pour compresser une image
-const compressImage = async (
-  base64: string,
-  maxWidth: number = MAX_IMAGE_DIMENSION,
-  quality: number = IMAGE_QUALITY
-): Promise<string> => {
-  logger.debug('Compression image démarrée');
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      let { width, height } = img;
-
-      logger.debug('Dimensions originales image', { width, height });
-
-      // Calculer les nouvelles dimensions en gardant le ratio
-      if (width > maxWidth || height > maxWidth) {
-        if (width > height) {
-          height = (height / width) * maxWidth;
-          width = maxWidth;
-        } else {
-          width = (width / height) * maxWidth;
-          height = maxWidth;
-        }
-        logger.debug('Nouvelles dimensions', { width, height });
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        reject(new Error('Impossible de créer le contexte canvas'));
-        return;
-      }
-
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, width, height);
-      
-      const compressed = canvas.toDataURL('image/jpeg', quality);
-      const originalSize = (base64.length * 3) / 4 / 1024 / 1024;
-      const compressedSize = (compressed.length * 3) / 4 / 1024 / 1024;
-      const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(1);
-      
-      logger.debug('Compression terminée', {
-        original: `${originalSize.toFixed(2)}MB`,
-        compressed: `${compressedSize.toFixed(2)}MB`,
-        reduction: `${reduction}%`
-      });
-      
-      resolve(compressed);
-    };
-    img.onerror = () => {
-      logger.error('Erreur chargement image pour compression');
-      reject(new Error('Erreur de chargement de l\'image'));
-    };
-    img.src = base64;
-  });
-};
-
-// Fonction de validation d'image
-const validateImage = (file: File): { valid: boolean; error?: string } => {
-  logger.debug('Validation fichier', {
-    name: file.name,
-    type: file.type,
-    size: `${(file.size / 1024 / 1024).toFixed(2)}MB`
-  });
-  
-  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    return { valid: false, error: 'Format non supporté. Utilisez JPG ou PNG.' };
-  }
-  if (file.size > MAX_IMAGE_SIZE) {
-    return { valid: false, error: `Taille maximale: ${MAX_IMAGE_SIZE / 1024 / 1024}MB` };
-  }
-  return { valid: true };
-};
+import { compressImage, validateImage, SimpleProgress, MAX_IMAGE_SIZE } from '@/utils/imageUtils';
+import { VerificationResultDisplay } from './VerificationResultDisplay';
+import { VerificationInstructions } from './VerificationInstructions';
 
 interface CNIBFormProps {
   onSubmit?: () => void;
@@ -776,19 +681,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Instructions importantes :</strong>
-            <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
-              <li>Téléchargez une photo <strong>claire et nette</strong> de votre CNIB burkinabè</li>
-              <li>Assurez-vous que <strong>toutes les informations</strong> sur la CNI sont lisibles</li>
-              <li>Prenez un selfie avec un <strong>bon éclairage</strong> (lumière naturelle de préférence)</li>
-              <li>Regardez <strong>directement la caméra</strong>, expression neutre</li>
-              <li>Retirez <strong>lunettes, masque, chapeau</strong> ou tout accessoire</li>
-            </ul>
-          </AlertDescription>
-        </Alert>
+        <VerificationInstructions />
 
         {/* Sélecteur de méthode de capture */}
         <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
@@ -987,28 +880,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         <canvas ref={canvasRef} className="hidden" />
 
         {verificationResult && (
-          <Alert variant={verificationResult.verified ? "default" : "destructive"}>
-            {verificationResult.verified ? (
-              <CheckCircle className="h-4 w-4" />
-            ) : (
-              <XCircle className="h-4 w-4" />
-            )}
-            <AlertDescription>
-              <div className="space-y-2">
-                <p className="font-medium">{verificationResult.message}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Score de similarité :</span>
-                  <SimpleProgress value={parseFloat(verificationResult.similarityScore)} className="flex-1" />
-                  <span className="text-sm font-bold">{verificationResult.similarityScore}%</span>
-                </div>
-                {!verificationResult.verified && verificationResult.canRetry && (
-                  <p className="text-sm">
-                    Vous pouvez réessayer avec de meilleures conditions.
-                  </p>
-                )}
-              </div>
-            </AlertDescription>
-          </Alert>
+          <VerificationResultDisplay result={verificationResult} />
         )}
 
         <div className="flex flex-col gap-3">
