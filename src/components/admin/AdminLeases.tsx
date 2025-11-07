@@ -16,7 +16,7 @@ type Lease = {
   monthly_rent: number;
   status: string;
   lease_type: string;
-  ansut_certified_at: string | null;
+  verified_at: string | null;
   certification_status: 'not_requested' | 'pending' | 'certified' | 'rejected';
   certification_requested_at: string | null;
   created_at: string;
@@ -51,7 +51,7 @@ const AdminLeases = () => {
           monthly_rent,
           status,
           lease_type,
-          ansut_certified_at,
+          verified_at,
           certification_status,
           certification_requested_at,
           created_at,
@@ -85,7 +85,7 @@ const AdminLeases = () => {
       const { error } = await supabase
         .from('leases')
         .update({ 
-          ansut_certified_at: new Date().toISOString(),
+          verified_at: new Date().toISOString(),
           status: 'active'
         })
         .eq('id', leaseId);
@@ -170,7 +170,7 @@ const AdminLeases = () => {
                   <TableCell>
                     <LeaseVerificationBadge 
                       status={lease.certification_status}
-                      verifiedAt={lease.ansut_certified_at}
+                      verifiedAt={lease.verified_at}
                     />
                   </TableCell>
                   <TableCell className="text-right">

@@ -28,7 +28,7 @@ const CertificationStats = () => {
     try {
       const { data: leases, error } = await supabase
         .from('leases')
-        .select('certification_status, certification_requested_at, ansut_certified_at, certification_notes');
+        .select('certification_status, certification_requested_at, verified_at, certification_notes');
 
       if (error) throw error;
 
@@ -40,10 +40,10 @@ const CertificationStats = () => {
       const totalPending = leases.filter(l => l.certification_status === 'pending').length;
 
       const processingTimes = leases
-        .filter(l => l.certification_requested_at && l.ansut_certified_at)
+        .filter(l => l.certification_requested_at && l.verified_at)
         .map(l => {
           const requested = new Date(l.certification_requested_at!);
-          const certified = new Date(l.ansut_certified_at!);
+          const certified = new Date(l.verified_at!);
           return (certified.getTime() - requested.getTime()) / (1000 * 60 * 60 * 24);
         });
 
@@ -56,8 +56,8 @@ const CertificationStats = () => {
 
       const thisMonthCertified = leases.filter(l => 
         l.certification_status === 'certified' && 
-        l.ansut_certified_at &&
-        new Date(l.ansut_certified_at) >= thirtyDaysAgo
+        l.verified_at &&
+        new Date(l.verified_at) >= thirtyDaysAgo
       ).length;
 
       const rejectionNotes = leases

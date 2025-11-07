@@ -977,11 +977,9 @@ export type Database = {
       }
       leases: {
         Row: {
-          ansut_certified_at: string | null
           certification_notes: string | null
           certification_requested_at: string | null
           certification_status: string | null
-          certified_by: string | null
           charges_amount: number | null
           created_at: string
           cryptoneo_operation_id: string | null
@@ -1005,13 +1003,13 @@ export type Database = {
           tenant_signature_operation_id: string | null
           tenant_signed_at: string | null
           updated_at: string
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
-          ansut_certified_at?: string | null
           certification_notes?: string | null
           certification_requested_at?: string | null
           certification_status?: string | null
-          certified_by?: string | null
           charges_amount?: number | null
           created_at?: string
           cryptoneo_operation_id?: string | null
@@ -1035,13 +1033,13 @@ export type Database = {
           tenant_signature_operation_id?: string | null
           tenant_signed_at?: string | null
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
-          ansut_certified_at?: string | null
           certification_notes?: string | null
           certification_requested_at?: string | null
           certification_status?: string | null
-          certified_by?: string | null
           charges_amount?: number | null
           created_at?: string
           cryptoneo_operation_id?: string | null
@@ -1065,6 +1063,8 @@ export type Database = {
           tenant_signature_operation_id?: string | null
           tenant_signed_at?: string | null
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {

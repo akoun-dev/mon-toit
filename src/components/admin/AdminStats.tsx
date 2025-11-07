@@ -29,7 +29,7 @@ const AdminStats = () => {
         supabase.from('properties').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('leases').select('id', { count: 'exact', head: true }),
-        supabase.from('leases').select('id', { count: 'exact', head: true }).not('ansut_certified_at', 'is', null),
+        supabase.from('leases').select('id', { count: 'exact', head: true }).not('verified_at', 'is', null),
       ]);
 
       const pendingProps = await supabase

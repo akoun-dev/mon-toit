@@ -39,7 +39,7 @@ interface Lease {
   end_date: string;
   tenant_signed_at: string | null;
   landlord_signed_at: string | null;
-  ansut_certified_at: string | null;
+  verified_at: string | null;
   certification_status: 'not_requested' | 'pending' | 'certified' | 'rejected';
   certification_requested_at: string | null;
   document_url: string | null;
@@ -191,7 +191,7 @@ export default function Leases() {
     return (
                       <LeaseVerificationBadge 
                         status={lease.certification_status}
-                        verifiedAt={lease.ansut_certified_at}
+                        verifiedAt={lease.verified_at}
                       />
     );
   };
@@ -318,12 +318,12 @@ export default function Leases() {
                           : "En attente"}
                       </span>
                     </div>
-                    {lease.ansut_certified_at && (
+                    {lease.verified_at && (
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="h-4 w-4 text-green-500" />
                         <span>
                           Vérifié MZAKA le{" "}
-                          {new Date(lease.ansut_certified_at).toLocaleDateString()}
+                          {new Date(lease.verified_at).toLocaleDateString()}
                         </span>
                       </div>
                     )}

@@ -38,7 +38,7 @@ interface LeaseDetails {
   certification_notes: string | null;
   landlord_signed_at: string | null;
   tenant_signed_at: string | null;
-  ansut_certified_at: string | null;
+  verified_at: string | null;
   property: {
     title: string;
     address: string;
@@ -125,14 +125,14 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
       const updateData: {
         certification_status: 'certified' | 'rejected' | 'in_review';
         certification_notes: string | null;
-        ansut_certified_at?: string;
+        verified_at?: string;
       } = {
         certification_status: status,
         certification_notes: adminNotes.trim() || null,
       };
 
       if (action === 'approve') {
-        updateData.ansut_certified_at = new Date().toISOString();
+        updateData.verified_at = new Date().toISOString();
       }
 
       const { error } = await supabase
@@ -231,7 +231,7 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
           <div>
             <LeaseVerificationBadge 
               status={lease.certification_status}
-              verifiedAt={lease.ansut_certified_at}
+              verifiedAt={lease.verified_at}
               variant="detailed"
             />
           </div>

@@ -131,8 +131,8 @@ export interface Lease {
   tenant_signed_at: string | null;
   certification_status: string;
   certification_requested_at: string | null;
-  ansut_certified_at: string | null;
-  certified_by: string | null;
+  verified_at: string | null;
+  verified_by: string | null;
   certification_notes: string | null;
   document_url: string | null;
   created_at: string;
