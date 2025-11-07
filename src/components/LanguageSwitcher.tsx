@@ -25,7 +25,7 @@ export const LanguageSwitcher = ({ variant = 'select' }: LanguageSwitcherProps) 
 
   const handleChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
-    localStorage.setItem('mzaka-bf-language', langCode);
+    localStorage.setItem('donia-bf-language', langCode);
   };
 
   if (variant === 'button') {

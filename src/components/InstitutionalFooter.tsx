@@ -1,5 +1,5 @@
 /**
- * MZAKA - Footer Institutionnel
+ * DONIA - Footer Institutionnel
  * Plateforme privée de confiance
  */
 
@@ -36,11 +36,11 @@ export const InstitutionalFooter = () => {
             <div className="flex items-center gap-3">
               <img 
                 src={monToitLogo} 
-                alt="MZAKA" 
+                alt="DONIA" 
                 className="h-10 w-auto brightness-0 invert" 
               />
               <div>
-                <h3 className="font-bold text-lg">MZAKA</h3>
+                <h3 className="font-bold text-lg">DONIA</h3>
                 <p className="text-xs text-white/60">Le logement en toute confiance</p>
               </div>
             </div>
@@ -123,8 +123,8 @@ export const InstitutionalFooter = () => {
             <div className="space-y-3 text-sm text-white/80">
               <div className="flex items-start gap-2">
                 <Mail className="h-4 w-4 mt-0.5 flex-shrink-0 text-secondary" />
-                <a href="mailto:contact@mzaka.bf" className="hover:text-white transition-colors">
-                  contact@mzaka.bf
+                <a href="mailto:contact@donia.bf" className="hover:text-white transition-colors">
+                  contact@donia.bf
                 </a>
               </div>
               <div className="flex items-start gap-2">
@@ -150,7 +150,7 @@ export const InstitutionalFooter = () => {
             
             {/* Copyright */}
             <div className="flex items-center gap-2">
-              <span>© {currentYear} MZAKA</span>
+              <span>© {currentYear} DONIA</span>
               <span className="hidden md:inline">•</span>
               <span className="hidden md:inline">Tous droits réservés</span>
             </div>
@@ -172,7 +172,7 @@ export const InstitutionalFooter = () => {
         {/* Mention légale */}
         <div className="mt-6 pt-6 border-t border-white/10">
           <p className="text-xs text-white/50 text-center leading-relaxed">
-            MZAKA - Plateforme privée de location immobilière au Burkina Faso. 
+            DONIA - Plateforme privée de location immobilière au Burkina Faso. 
             Tous droits réservés. Données protégées conformément à la loi burkinabè.
           </p>
         </div>

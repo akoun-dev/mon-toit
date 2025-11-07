@@ -9,7 +9,7 @@ import heroSlide1 from "@/assets/hero/hero-slide-1.jpg";
 import heroSlide2 from "@/assets/hero/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero/hero-slide-3.jpg";
 import heroSlide4 from "@/assets/hero/hero-slide-4.jpg";
-import heroImage from "@/assets/hero/image.png";
+import doniaHeroMain from "@/assets/hero/donia-hero-main.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Hero = () => {
 
   // Slideshow images
   const heroImages = [
-    heroImage,
+    doniaHeroMain,
     heroFamilyHome,
     heroSlide1,
     heroSlide2,

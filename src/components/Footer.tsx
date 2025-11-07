@@ -10,8 +10,8 @@ const Footer = () => {
           
   {/* Zone gauche : Logo + Copyright + Badge ARCEP */}
           <div className="flex items-center gap-4">
-            <img src={monToitLogo} alt="MZAKA" className="h-6 w-auto brightness-0 invert" />
-            <span className="text-white/80">© 2025 MZAKA</span>
+            <img src={monToitLogo} alt="DONIA" className="h-6 w-auto brightness-0 invert" />
+            <span className="text-white/80">© 2025 DONIA</span>
             <div className="flex items-center gap-1.5 px-2 py-1 bg-primary-900/50 border border-primary-700 rounded">
               <Shield className="h-3 w-3 text-white" />
               <span className="text-xs">100% Burkinabè</span>
