@@ -3374,6 +3374,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      add_role: {
+        Args: {
+          new_role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Returns: undefined
+      }
       admin_get_guest_messages: {
         Args: { p_limit?: number; p_property_id?: string }
         Returns: {
@@ -3834,6 +3841,13 @@ export type Database = {
         }[]
       }
       get_user_phone: { Args: { target_user_id: string }; Returns: string }
+      get_user_roles: {
+        Args: { target_user_id: string }
+        Returns: {
+          granted_at: string
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
       get_user_subscription_tier: {
         Args: { p_user_id: string }
         Returns: Database["public"]["Enums"]["subscription_tier"]
@@ -3924,6 +3938,13 @@ export type Database = {
           p_review_notes: string
           p_user_id: string
           p_verification_type: string
+        }
+        Returns: undefined
+      }
+      remove_role: {
+        Args: {
+          old_role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
         }
         Returns: undefined
       }

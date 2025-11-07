@@ -1,5 +1,8 @@
 project_id = "tivilnibujikyxdrdrgd"
 
+[functions.clean-demo-data]
+verify_jwt = true
+
 [functions.fa_init]
 verify_jwt = true
 
