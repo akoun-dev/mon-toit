@@ -328,6 +328,186 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          intent: string | null
+          metadata: Json | null
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          metadata?: Json | null
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          metadata?: Json | null
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_sessions: {
+        Row: {
+          context: Json | null
+          ended_at: string | null
+          id: string
+          language: string | null
+          last_activity_at: string
+          started_at: string
+          user_id: string | null
+        }
+        Insert: {
+          context?: Json | null
+          ended_at?: string | null
+          id?: string
+          language?: string | null
+          last_activity_at?: string
+          started_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          context?: Json | null
+          ended_at?: string | null
+          id?: string
+          language?: string | null
+          last_activity_at?: string
+          started_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      contract_signatures: {
+        Row: {
+          contract_id: string
+          created_at: string
+          hash_sha256: string
+          id: string
+          ip_addr: string | null
+          metadata: Json | null
+          method: string
+          signed_at: string
+          signer_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          hash_sha256: string
+          id?: string
+          ip_addr?: string | null
+          metadata?: Json | null
+          method: string
+          signed_at?: string
+          signer_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          hash_sha256?: string
+          id?: string
+          ip_addr?: string | null
+          metadata?: Json | null
+          method?: string
+          signed_at?: string
+          signer_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_signatures_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracts: {
+        Row: {
+          created_at: string
+          deposit_cfa: number | null
+          end_date: string
+          id: string
+          metadata: Json | null
+          monthly_rent_cfa: number
+          owner_id: string | null
+          pdf_url: string | null
+          property_id: string | null
+          start_date: string
+          status: string
+          tenant_id: string | null
+          terminated_at: string | null
+          termination_reason: string | null
+          updated_at: string
+          verify_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          deposit_cfa?: number | null
+          end_date: string
+          id?: string
+          metadata?: Json | null
+          monthly_rent_cfa: number
+          owner_id?: string | null
+          pdf_url?: string | null
+          property_id?: string | null
+          start_date: string
+          status?: string
+          tenant_id?: string | null
+          terminated_at?: string | null
+          termination_reason?: string | null
+          updated_at?: string
+          verify_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          deposit_cfa?: number | null
+          end_date?: string
+          id?: string
+          metadata?: Json | null
+          monthly_rent_cfa?: number
+          owner_id?: string | null
+          pdf_url?: string | null
+          property_id?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string | null
+          terminated_at?: string | null
+          termination_reason?: string | null
+          updated_at?: string
+          verify_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       digital_certificates: {
         Row: {
           certificate_data: Json
@@ -525,6 +705,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fa_callbacks: {
+        Row: {
+          id: string
+          processed: boolean | null
+          raw_payload: Json
+          received_at: string
+          reference: string
+          signature_ok: boolean | null
+          status_after: string
+        }
+        Insert: {
+          id?: string
+          processed?: boolean | null
+          raw_payload: Json
+          received_at?: string
+          reference: string
+          signature_ok?: boolean | null
+          status_after: string
+        }
+        Update: {
+          id?: string
+          processed?: boolean | null
+          raw_payload?: Json
+          received_at?: string
+          reference?: string
+          signature_ok?: boolean | null
+          status_after?: string
+        }
+        Relationships: []
       }
       geographic_alerts: {
         Row: {
@@ -1289,6 +1499,62 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_intents_fa: {
+        Row: {
+          amount_cfa: number
+          channel: string | null
+          contract_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          paid_at: string | null
+          purpose: string
+          redirect_url: string | null
+          reference: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_cfa: number
+          channel?: string | null
+          contract_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          purpose: string
+          redirect_url?: string | null
+          reference: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_cfa?: number
+          channel?: string | null
+          contract_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          purpose?: string
+          redirect_url?: string | null
+          reference?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_intents_fa_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -1686,6 +1952,57 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      receipts: {
+        Row: {
+          amount_cfa: number
+          contract_id: string | null
+          created_at: string
+          id: string
+          issued_at: string | null
+          month_year: string
+          payment_id: string | null
+          pdf_url: string | null
+          qr_id: string | null
+        }
+        Insert: {
+          amount_cfa: number
+          contract_id?: string | null
+          created_at?: string
+          id?: string
+          issued_at?: string | null
+          month_year: string
+          payment_id?: string | null
+          pdf_url?: string | null
+          qr_id?: string | null
+        }
+        Update: {
+          amount_cfa?: number
+          contract_id?: string | null
+          created_at?: string
+          id?: string
+          issued_at?: string | null
+          month_year?: string
+          payment_id?: string | null
+          pdf_url?: string | null
+          qr_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receipts_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipts_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recommendation_cache: {
         Row: {
@@ -3073,10 +3390,7 @@ export type Database = {
           updated_at: string
         }[]
       }
-      admin_has_2fa_enabled: {
-        Args: { _admin_id: string }
-        Returns: boolean
-      }
+      admin_has_2fa_enabled: { Args: { _admin_id: string }; Returns: boolean }
       agency_can_create_for_owner: {
         Args: { _agency_id: string; _owner_id: string }
         Returns: boolean
@@ -3089,10 +3403,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      alert_suspicious_sensitive_access: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      alert_suspicious_sensitive_access: { Args: never; Returns: undefined }
       approve_verification: {
         Args: {
           p_review_notes?: string
@@ -3101,14 +3412,8 @@ export type Database = {
         }
         Returns: undefined
       }
-      auto_expire_mandates: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      auto_process_overdue_applications: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      auto_expire_mandates: { Args: never; Returns: undefined }
+      auto_process_overdue_applications: { Args: never; Returns: undefined }
       block_ip: {
         Args: {
           _duration_hours?: number
@@ -3127,7 +3432,7 @@ export type Database = {
         Returns: boolean
       }
       check_admin_mfa_compliance: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           account_created_at: string
           full_name: string
@@ -3156,36 +3461,18 @@ export type Database = {
         Args: { _email: string; _ip_address: string }
         Returns: Json
       }
-      check_mfa_rate_limit: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      check_mfa_rate_limit: { Args: never; Returns: boolean }
       check_usage_limit: {
         Args: { p_resource_type: string; p_user_id: string }
         Returns: boolean
       }
-      cleanup_expired_rate_limits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_expired_recommendations: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_expired_subscriptions: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_audit_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_guest_messages: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_expired_rate_limits: { Args: never; Returns: undefined }
+      cleanup_expired_recommendations: { Args: never; Returns: undefined }
+      cleanup_expired_subscriptions: { Args: never; Returns: undefined }
+      cleanup_old_audit_logs: { Args: never; Returns: undefined }
+      cleanup_old_guest_messages: { Args: never; Returns: undefined }
       detect_ddos_pattern: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           endpoints_targeted: string[]
           first_request: string
@@ -3196,7 +3483,7 @@ export type Database = {
         }[]
       }
       detect_mass_actions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           action_count: number
           admin_id: string
@@ -3205,7 +3492,7 @@ export type Database = {
         }[]
       }
       detect_overdue_rents: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           due_date: string
           landlord_id: string
@@ -3222,7 +3509,7 @@ export type Database = {
         }[]
       }
       detect_suspicious_sensitive_data_access: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           access_count: number
           admin_id: string
@@ -3233,10 +3520,9 @@ export type Database = {
           last_access: string
         }[]
       }
-      generate_receipt_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_fa_reference: { Args: never; Returns: string }
+      generate_receipt_number: { Args: never; Returns: string }
+      generate_verify_id: { Args: never; Returns: string }
       get_alert_statistics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: {
@@ -3270,7 +3556,7 @@ export type Database = {
         Returns: Json
       }
       get_mfa_metrics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admins_with_2fa: number
           percentage_with_2fa: number
@@ -3280,7 +3566,7 @@ export type Database = {
         }[]
       }
       get_my_disputes: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           assigned_to: string
           attachments: Json
@@ -3301,7 +3587,7 @@ export type Database = {
         }[]
       }
       get_my_verification_status: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_review_notes: string
           admin_reviewed_at: string
@@ -3336,7 +3622,7 @@ export type Database = {
         }[]
       }
       get_passport_verifications_list: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           full_name: string
@@ -3347,7 +3633,7 @@ export type Database = {
         }[]
       }
       get_pending_verifications_list: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           avatar_url: string
           cnam_employer: string
@@ -3547,10 +3833,7 @@ export type Database = {
           transaction_id: string
         }[]
       }
-      get_user_phone: {
-        Args: { target_user_id: string }
-        Returns: string
-      }
+      get_user_phone: { Args: { target_user_id: string }; Returns: string }
       get_user_subscription_tier: {
         Args: { p_user_id: string }
         Returns: Database["public"]["Enums"]["subscription_tier"]
@@ -3564,7 +3847,7 @@ export type Database = {
         }[]
       }
       get_verification_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           avg_processing_time_hours: number
           avg_tenant_score: number
@@ -3577,7 +3860,7 @@ export type Database = {
         }[]
       }
       get_verifications_for_admin_review: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_review_notes: string
           cnam_status: string
@@ -3591,7 +3874,7 @@ export type Database = {
         }[]
       }
       get_verifications_for_review: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           city: string
           cnam_status: string
@@ -3612,10 +3895,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_page_visit: {
-        Args: { p_route: string }
-        Returns: undefined
-      }
+      increment_page_visit: { Args: { p_route: string }; Returns: undefined }
       increment_usage: {
         Args: {
           p_increment?: number
@@ -3624,22 +3904,13 @@ export type Database = {
         }
         Returns: undefined
       }
-      is_trusted_third_party: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_trusted_third_party: { Args: { _user_id: string }; Returns: boolean }
       log_mfa_attempt: {
         Args: { _attempt_type?: string; _success: boolean }
         Returns: undefined
       }
-      mark_overdue_applications: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      notify_mfa_compliance: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      mark_overdue_applications: { Args: never; Returns: undefined }
+      notify_mfa_compliance: { Args: never; Returns: undefined }
       pre_validate_lease_for_certification: {
         Args: { p_lease_id: string }
         Returns: Json
@@ -3656,22 +3927,13 @@ export type Database = {
         }
         Returns: undefined
       }
-      require_admin_mfa: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      require_admin_mfa: { Args: never; Returns: boolean }
       save_integration_secret: {
         Args: { p_encrypted_config: Json; p_integration_name: string }
         Returns: undefined
       }
-      unblock_ip: {
-        Args: { _ip_address: string }
-        Returns: boolean
-      }
-      verify_backup_code: {
-        Args: { _backup_code: string }
-        Returns: boolean
-      }
+      unblock_ip: { Args: { _ip_address: string }; Returns: boolean }
+      verify_backup_code: { Args: { _backup_code: string }; Returns: boolean }
       verify_user_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
