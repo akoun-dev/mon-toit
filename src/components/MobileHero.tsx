@@ -70,9 +70,9 @@ export const MobileHero = () => {
 
           {/* Titre */}
           <h1 className="text-3xl font-extrabold text-gray-900 leading-tight px-2">
-            Trouvez votre{' '}
+            Location au{' '}
             <span className="text-primary relative inline-block">
-              maison
+              Burkina Faso
               <svg
                 className="absolute -bottom-1 left-0 w-full h-2 text-primary/30"
                 viewBox="0 0 200 8"
@@ -91,7 +91,7 @@ export const MobileHero = () => {
 
           {/* Sous-titre */}
           <p className="text-sm text-gray-600 max-w-sm font-medium px-2">
-            Logements vérifiés DONIA à Ouagadougou. Paiement sécurisé Faso Arzeka.
+            3,500+ logements vérifiés à Ouagadougou et dans tout le pays
           </p>
 
           {/* Formulaire de recherche */}

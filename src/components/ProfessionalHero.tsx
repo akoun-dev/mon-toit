@@ -42,12 +42,12 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Illustration Ouagadougou */}
+      {/* Image de fond - Architecture burkinabè authentique */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80)',
-          backgroundPosition: 'center 60%' // Meilleur cadrage sur mobile
+          backgroundImage: 'url(https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=1920&q=80)',
+          backgroundPosition: 'center 40%'
         }}
       />
       
@@ -123,9 +123,9 @@ export const ProfessionalHero = () => {
             className="space-y-4"
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0">
-              Trouvez votre{' '}
+              Trouvez votre logement au{' '}
               <span className="text-primary relative">
-                maison
+                Burkina Faso
                 <svg
                   className="absolute -bottom-2 left-0 w-full h-3 text-primary/30"
                   viewBox="0 0 200 12"
@@ -143,7 +143,7 @@ export const ProfessionalHero = () => {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto font-medium px-4 sm:px-0">
-              Explorez une vaste sélection de biens immobiliers vérifiés DONIA à Ouagadougou et partout au Burkina Faso
+              Plus de 3,500 biens vérifiés à Ouagadougou, Bobo-Dioulasso, Koudougou, Ouahigouya et Banfora
             </p>
           </motion.div>
 
