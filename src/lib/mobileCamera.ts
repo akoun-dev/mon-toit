@@ -7,10 +7,15 @@
 
 import React from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Camera, CameraSource, CameraResultType, Photo, ImageOptions } from '@capacitor/camera';
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
-import { Share } from '@capacitor/share';
+
+// Types imported for TypeScript, actual modules loaded dynamically
+type CameraSource = any;
+type CameraResultType = any;
+type Photo = any;
+type ImageOptions = any;
+type Directory = any;
+type ImpactStyle = any;
+type NotificationType = any;
 
 export interface CameraOptions {
   quality?: number;
@@ -67,6 +72,10 @@ export class MobileCameraService {
     }
 
     try {
+      // Dynamic imports for native platform
+      const { Haptics, ImpactStyle, NotificationType } = await import('@capacitor/haptics');
+      const { Camera, CameraSource, CameraResultType } = await import('@capacitor/camera');
+      
       // Trigger haptic feedback
       await Haptics.impact({ style: ImpactStyle.Light });
 
@@ -113,6 +122,9 @@ export class MobileCameraService {
     }
 
     try {
+      const { Camera, CameraSource, CameraResultType } = await import('@capacitor/camera');
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      
       const cameraOptions: ImageOptions = {
         quality: 90,
         allowEditing: false,
@@ -152,6 +164,9 @@ export class MobileCameraService {
     }
 
     try {
+      const { Camera, CameraSource, CameraResultType } = await import('@capacitor/camera');
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      
       const cameraOptions: ImageOptions = {
         quality: 100,
         allowEditing: true,
@@ -188,6 +203,9 @@ export class MobileCameraService {
     }
 
     try {
+      const { Camera, CameraSource, CameraResultType } = await import('@capacitor/camera');
+      const { Haptics, NotificationType } = await import('@capacitor/haptics');
+      
       // For now, use camera with video-specific options
       const cameraOptions: ImageOptions = {
         quality: 85,
@@ -251,6 +269,7 @@ export class MobileCameraService {
 
       // This is a simplified approach - in a real app, you'd want to
       // get actual file size from the filesystem
+      const { Filesystem, Directory } = await import('@capacitor/filesystem');
       const stat = await Filesystem.stat({
         path,
         directory: Directory.Documents,
@@ -300,6 +319,7 @@ export class MobileCameraService {
       // Delete from filesystem if needed
       if (photo.fileName) {
         try {
+          const { Filesystem, Directory } = await import('@capacitor/filesystem');
           await Filesystem.deleteFile({
             path: photo.fileName,
             directory: Directory.Documents,
@@ -313,6 +333,7 @@ export class MobileCameraService {
       this.photos.splice(photoIndex, 1);
 
       // Trigger haptic feedback
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
       await Haptics.impact({ style: ImpactStyle.Medium });
 
       return true;
@@ -332,6 +353,9 @@ export class MobileCameraService {
         return false;
       }
 
+      const { Share } = await import('@capacitor/share');
+      const { Haptics, NotificationType } = await import('@capacitor/haptics');
+      
       await Share.share({
         title: `Photo du bien immobilier - ${photo.fileName}`,
         text: 'Découvrez ce bien immobilier sur Mon Toit',
@@ -353,7 +377,10 @@ export class MobileCameraService {
    */
   async clearAllPhotos(): Promise<void> {
     this.photos = [];
-    await Haptics.impact({ style: ImpactStyle.Heavy });
+    if (Capacitor.isNativePlatform()) {
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      await Haptics.impact({ style: ImpactStyle.Heavy });
+    }
   }
 
   /**
@@ -361,6 +388,7 @@ export class MobileCameraService {
    */
   async checkCameraPermissions(): Promise<boolean> {
     try {
+      const { Camera } = await import('@capacitor/camera');
       const permission = await Camera.checkPermissions();
       return permission.camera === 'granted' && permission.photos === 'granted';
     } catch (error) {
@@ -374,6 +402,7 @@ export class MobileCameraService {
    */
   async requestCameraPermissions(): Promise<boolean> {
     try {
+      const { Camera } = await import('@capacitor/camera');
       const permission = await Camera.requestPermissions();
       return permission.camera === 'granted' && permission.photos === 'granted';
     } catch (error) {

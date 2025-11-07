@@ -7,9 +7,10 @@
 
 import React from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
-import { Share } from '@capacitor/share';
+
+// Types imported for TypeScript, actual modules loaded dynamically
+type ImpactStyle = any;
+type NotificationType = any;
 
 export interface BrowserOptions {
   toolbarColor?: string;
@@ -80,6 +81,10 @@ export class MobileBrowserService {
     }
 
     try {
+      // Dynamic imports for native platform
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      const { Browser } = await import('@capacitor/browser');
+      
       await Haptics.impact({ style: ImpactStyle.Light });
 
       const browserOptions: BrowserOptions = {
@@ -123,6 +128,9 @@ export class MobileBrowserService {
     }
 
     try {
+      const { Browser } = await import('@capacitor/browser');
+      const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+      
       await Browser.close();
       this.isOpen = false;
       this.currentUrl = null;
@@ -264,6 +272,9 @@ export class MobileBrowserService {
     }
 
     try {
+      const { Share } = await import('@capacitor/share');
+      const { Haptics, NotificationType } = await import('@capacitor/haptics');
+      
       await Share.share({
         title: 'Lien partagé depuis Mon Toit',
         text: 'Découvrez ce lien sur Mon Toit',

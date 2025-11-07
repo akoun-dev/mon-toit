@@ -6,12 +6,11 @@
  */
 
 import { Capacitor } from '@capacitor/core';
-import { App as CapacitorApp } from '@capacitor/app';
-import { StatusBar } from '@capacitor/status-bar';
-import { Keyboard } from '@capacitor/keyboard';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
+
+// Types for TypeScript, actual modules loaded dynamically
+type ImpactStyle = any;
 
 export interface NavigationState {
   canGoBack: boolean;
@@ -52,10 +51,12 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
   /**
    * Trigger haptic feedback
    */
-  const triggerHaptics = useCallback(async (style: ImpactStyle = ImpactStyle.Light) => {
+  const triggerHaptics = useCallback(async (style: any = 0) => {
     if (config.enableHaptics && Capacitor.isNativePlatform()) {
       try {
-        await Haptics.impact({ style });
+        const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
+        const impactStyle = style || ImpactStyle.Light;
+        await Haptics.impact({ style: impactStyle });
       } catch (error) {
         console.warn('Haptics not available:', error);
       }
@@ -76,7 +77,7 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     if (config.customBackButtonHandler) {
       const handled = config.customBackButtonHandler(currentState.currentRoute);
       if (handled) {
-        await triggerHaptics(ImpactStyle.Medium);
+        await triggerHaptics(1); // Medium impact
         return true;
       }
     }
@@ -85,16 +86,17 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
     if (currentState.isModalOpen) {
       // Close modal first
       setNavigationState(prev => ({ ...prev, isModalOpen: false }));
-      await triggerHaptics(ImpactStyle.Light);
+      await triggerHaptics(0); // Light impact
       return true;
     }
 
     // Handle keyboard visibility
     if (currentState.isKeyboardVisible) {
       try {
+        const { Keyboard } = await import('@capacitor/keyboard');
         await Keyboard.hide();
         setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
-        await triggerHaptics(ImpactStyle.Light);
+        await triggerHaptics(0); // Light impact
         return true;
       } catch (error) {
         console.warn('Failed to hide keyboard:', error);
@@ -109,13 +111,14 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
       const previousRoute = history[history.length - 1];
 
       navigate(previousRoute);
-      await triggerHaptics(ImpactStyle.Medium);
+      await triggerHaptics(1); // Medium impact
       return true;
     }
 
     // If at root, try to exit app
     if (currentState.currentRoute === '/' || currentState.currentRoute === '/accueil') {
       try {
+        const { App: CapacitorApp } = await import('@capacitor/app');
         await CapacitorApp.exitApp();
         return true;
       } catch (error) {
@@ -160,7 +163,7 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
 
     // Trigger haptics if enabled
     if (options?.triggerHaptics !== false) {
-      await triggerHaptics(ImpactStyle.Light);
+      await triggerHaptics(0); // Light impact
     }
   }, [location.pathname, navigate, triggerHaptics]);
 
@@ -198,35 +201,46 @@ export function useMobileNavigation(config: MobileNavigationConfig = {
       return;
     }
 
-    // Handle back button
-    const backButtonListener = CapacitorApp.addListener('backButton', async () => {
-      await handleBackButton();
-    });
+    // Dynamic imports and setup listeners
+    let backButtonListener: any;
+    let appStateListener: any;
+    let keyboardShowListener: any;
+    let keyboardHideListener: any;
 
-    // Handle app state changes
-    const appStateListener = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
-      if (isActive) {
-        console.log('App is active');
-      } else {
-        console.log('App is inactive');
-      }
-    });
+    (async () => {
+      const { App: CapacitorApp } = await import('@capacitor/app');
+      const { Keyboard } = await import('@capacitor/keyboard');
 
-    // Handle keyboard events
-    const keyboardShowListener = Keyboard.addListener('keyboardWillShow', () => {
-      setNavigationState(prev => ({ ...prev, isKeyboardVisible: true }));
-    });
-    
-    const keyboardHideListener = Keyboard.addListener('keyboardWillHide', () => {
-      setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
-    });
+      // Handle back button
+      backButtonListener = await CapacitorApp.addListener('backButton', async () => {
+        await handleBackButton();
+      });
+
+      // Handle app state changes
+      appStateListener = await CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) {
+          console.log('App is active');
+        } else {
+          console.log('App is inactive');
+        }
+      });
+
+      // Handle keyboard events
+      keyboardShowListener = await Keyboard.addListener('keyboardWillShow', () => {
+        setNavigationState(prev => ({ ...prev, isKeyboardVisible: true }));
+      });
+      
+      keyboardHideListener = await Keyboard.addListener('keyboardWillHide', () => {
+        setNavigationState(prev => ({ ...prev, isKeyboardVisible: false }));
+      });
+    })();
 
     // Cleanup listeners
     return () => {
-      backButtonListener.then(listener => listener.remove());
-      appStateListener.then(listener => listener.remove());
-      keyboardShowListener.then(listener => listener.remove());
-      keyboardHideListener.then(listener => listener.remove());
+      if (backButtonListener) backButtonListener.remove();
+      if (appStateListener) appStateListener.remove();
+      if (keyboardShowListener) keyboardShowListener.remove();
+      if (keyboardHideListener) keyboardHideListener.remove();
     };
   }, [handleBackButton, mobileNavigate]);
 
@@ -269,6 +283,7 @@ export function useBottomNavigation() {
 
     if (Capacitor.isNativePlatform()) {
       try {
+        const { Haptics, ImpactStyle } = await import('@capacitor/haptics');
         await Haptics.impact({ style: ImpactStyle.Light });
       } catch (error) {
         console.warn('Haptics not available:', error);
