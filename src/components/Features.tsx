@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { memo } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import monToitLogo from "@/assets/logo/mon-toit-logo.png";
+import doniaLogo from "@/assets/logo/donia-logo.png";
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
 import { BRANDING } from "@/config/branding";
@@ -238,13 +238,13 @@ const Features = () => {
       aria-labelledby="features-heading"
     >
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
-        {/* Header - Mon Toit en avant */}
+        {/* Header - DONIA en avant */}
         <header className="text-center mb-16">
           <div className="flex flex-col items-center justify-center gap-3 mb-6">
-            {/* Logo Mon Toit - PRINCIPAL */}
+            {/* Logo DONIA - PRINCIPAL */}
             <img 
-              src={monToitLogo} 
-              alt="Mon Toit - Dossier de location numérique certifié" 
+              src={doniaLogo} 
+              alt="DONIA - Dossier de location numérique certifié" 
               className="h-14 md:h-16" 
             />
             
@@ -301,7 +301,7 @@ const Features = () => {
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Sans Mon Toit */}
+            {/* Sans la plateforme */}
             <div className="bg-gray-100 rounded-lg p-8 shadow-sm">
               <h4 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
                 <X className="h-6 w-6 text-destructive" aria-hidden="true" />
@@ -310,7 +310,7 @@ const Features = () => {
               <ComparisonList items={withoutDONIA} />
             </div>
 
-            {/* Avec Mon Toit */}
+            {/* Avec DONIA */}
             <div className="bg-white rounded-lg p-8 shadow-lg border-2 border-primary/20 relative overflow-hidden">
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-6">

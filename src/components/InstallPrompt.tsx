@@ -19,7 +19,7 @@ const InstallPrompt = () => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-primary-foreground text-sm">
-              Installez Mon Toit
+              Installez DONIA
             </p>
             <p className="text-xs text-primary-foreground/80">
               Accès rapide et expérience optimisée

@@ -1,6 +1,6 @@
 import { Shield, Facebook, Linkedin, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
-import monToitLogo from "@/assets/logo/mon-toit-logo.png";
+import doniaLogo from "@/assets/logo/donia-logo.png";
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
           
   {/* Zone gauche : Logo + Copyright + Badge ARCEP */}
           <div className="flex items-center gap-4">
-            <img src={monToitLogo} alt="DONIA" className="h-6 w-auto brightness-0 invert" />
+            <img src={doniaLogo} alt="DONIA" className="h-6 w-auto brightness-0 invert" />
             <span className="text-white/80">© 2025 DONIA</span>
             <div className="flex items-center gap-1.5 px-2 py-1 bg-primary-900/50 border border-primary-700 rounded">
               <Shield className="h-3 w-3 text-white" />
@@ -37,7 +37,7 @@ const Footer = () => {
           {/* Zone droite : Icônes réseaux sociaux */}
           <div className="flex gap-4" aria-label="Réseaux sociaux">
             <a 
-              href="https://facebook.com/montoit" 
+              href="https://facebook.com/donia.bf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white transition-colors"
@@ -46,7 +46,7 @@ const Footer = () => {
               <Facebook className="h-5 w-5" />
             </a>
             <a 
-              href="https://twitter.com/montoit" 
+              href="https://twitter.com/donia_bf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white transition-colors"
@@ -55,7 +55,7 @@ const Footer = () => {
               <Twitter className="h-5 w-5" />
             </a>
             <a 
-              href="https://linkedin.com/company/montoit" 
+              href="https://linkedin.com/company/donia-bf" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white transition-colors"

@@ -31,8 +31,8 @@ export const illustrationPaths = {
   // Réunion copropriété - Admin, Agence Dashboard
   'co-ownership-meeting': '/src/assets/illustrations/burkinabe/co-ownership-meeting.png',
   
-  // Vérification MZAKA - Confiance, CertificationBanner
-  'verification-mzaka-illustration': '/src/assets/illustrations/burkinabe/verification-mzaka-illustration.png',
+  // Vérification DONIA - Confiance, CertificationBanner
+  'verification-donia-illustration': '/src/assets/illustrations/burkinabe/verification-donia-illustration.png',
 } as const;
 
 export type IllustrationKey = keyof typeof illustrationPaths;

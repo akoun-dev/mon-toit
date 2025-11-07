@@ -1,15 +1,15 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ci.montoit.app',
-  appName: 'Mon Toit',
+  appId: 'bf.donia.app',
+  appName: 'DONIA',
   webDir: 'dist',
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
     // Security: Restrict navigation to app domains
     allowNavigation: [
-      'https://montoit.ci',
+      'https://donia.bf',
       'https://*.supabase.co',
       'https://api.mapbox.com',
       'https://tiles.mapbox.com',
@@ -21,7 +21,7 @@ const config: CapacitorConfig = {
   },
   // iOS configuration
   ios: {
-    scheme: 'montoit',
+    scheme: 'donia',
     // Build configuration
     contentInset: 'automatic',
     // WebView configuration
@@ -64,7 +64,7 @@ const config: CapacitorConfig = {
     },
     // App plugin configuration
     App: {
-      appendUserAgent: ' MonToit-Secure-App/1.0',
+      appendUserAgent: ' DONIA-Secure-App/1.0',
       handleUrlOpen: true,
       allowNavigation: true,
     },
@@ -105,7 +105,7 @@ const config: CapacitorConfig = {
     },
     // Preferences plugin configuration
     Preferences: {
-      group: 'montoit.storage',
+      group: 'donia.storage',
     },
     // Browser plugin configuration
     Browser: {

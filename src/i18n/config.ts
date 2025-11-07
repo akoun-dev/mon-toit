@@ -96,7 +96,7 @@ export const initI18n = () => {
       detection: {
         order: ['localStorage', 'navigator'],
         caches: ['localStorage'],
-        lookupLocalStorage: 'mzaka-bf-language',
+        lookupLocalStorage: 'donia-bf-language',
       },
     });
   

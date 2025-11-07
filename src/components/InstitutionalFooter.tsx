@@ -5,7 +5,7 @@
 
 import { Link } from 'react-router-dom';
 import { Shield, ShieldCheck, Mail, Phone, MapPin, ExternalLink } from 'lucide-react';
-import monToitLogo from '@/assets/logo/mon-toit-logo.png';
+import doniaLogo from '@/assets/logo/donia-logo.png';
 import { BRANDING } from '@/config/branding';
 
 export const InstitutionalFooter = () => {
@@ -35,7 +35,7 @@ export const InstitutionalFooter = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img 
-                src={monToitLogo} 
+                src={doniaLogo} 
                 alt="DONIA" 
                 className="h-10 w-auto brightness-0 invert" 
               />

@@ -46,7 +46,7 @@ const OnboardingModal = () => {
 
         <DialogHeader>
           <DialogTitle className="text-3xl md:text-4xl font-bold text-center">
-            Bienvenue sur Mon Toit ! 👋
+            Bienvenue sur DONIA ! 👋
           </DialogTitle>
           <DialogDescription className="text-lg text-center mt-2">
             Que souhaitez-vous faire aujourd'hui ?
