@@ -3,9 +3,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { AdminLayout } from '@/components/layout/AdminLayout';
 import { StickyHeader } from '@/components/ui/sticky-header';
-import { Shield } from 'lucide-react';
+import { Shield, RefreshCw } from 'lucide-react';
+import { queryClient } from '@/lib/queryClient';
+import { toast } from 'sonner';
 import AdminStats from '@/components/admin/AdminStats';
 import AdminProperties from '@/components/admin/AdminProperties';
 import AdminUsers from '@/components/admin/AdminUsers';
@@ -41,6 +44,19 @@ const AdminDashboard = () => {
   const [openDisputes, setOpenDisputes] = useState(0);
   const [pendingProperties, setPendingProperties] = useState(0);
   const [overdueApplications, setOverdueApplications] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefreshData = async () => {
+    setIsRefreshing(true);
+    try {
+      await queryClient.invalidateQueries();
+      toast.success('Données actualisées avec succès');
+    } catch (error) {
+      toast.error('Erreur lors de l\'actualisation des données');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const fetchPendingCount = async () => {
@@ -139,10 +155,24 @@ const AdminDashboard = () => {
     >
       <div className="container mx-auto px-6 py-6">
         <StickyHeader>
-          <h1 className="text-2xl font-bold">Administration DONIA</h1>
-          <p className="text-sm text-muted-foreground">
-            Gestion et validation de la plateforme DONIA
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Administration DONIA</h1>
+              <p className="text-sm text-muted-foreground">
+                Gestion et validation de la plateforme DONIA
+              </p>
+            </div>
+            <Button
+              onClick={handleRefreshData}
+              disabled={isRefreshing}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Rafraîchir les données
+            </Button>
+          </div>
         </StickyHeader>
 
         {/* Vue d'ensemble */}
