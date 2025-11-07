@@ -1,25 +1,27 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from 'react-i18next';
 import { LazyIllustration } from "@/components/illustrations/LazyIllustration";
 import { getIllustrationPath } from "@/lib/utils";
 import { type IllustrationKey } from "@/assets/illustrations/ivorian/illustrationPaths";
 
 export const WelcomeBanner = () => {
   const { profile } = useAuth();
+  const { t } = useTranslation('dashboard');
 
   if (!profile) return null;
 
-  const roleConfig: Record<string, { illustration: IllustrationKey; message: string }> = {
+  const roleConfig: Record<string, { illustration: IllustrationKey; messageKey: string }> = {
     locataire: {
       illustration: "apartment-visit",
-      message: "Trouvez votre logement idéal en Côte d'Ivoire"
+      messageKey: "tenant.message"
     },
     proprietaire: {
       illustration: "ivorian-family-house",
-      message: "Gérez vos biens en toute simplicité"
+      messageKey: "owner.message"
     },
     agence: {
       illustration: "real-estate-agent",
-      message: "Développez votre activité immobilière"
+      messageKey: "agency.message"
     }
   };
 
@@ -31,10 +33,10 @@ export const WelcomeBanner = () => {
       <div className="grid md:grid-cols-[1fr,300px] gap-6 p-6 md:p-8">
         <div className="space-y-3">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Bienvenue, {profile.full_name?.split(' ')[0]} 👋
+            {t('welcome', { name: profile.full_name?.split(' ')[0] })}
           </h1>
           <p className="text-lg text-muted-foreground">
-            {config.message}
+            {t(config.messageKey)}
           </p>
         </div>
         

@@ -1,0 +1,32 @@
+{
+  "title": "Gestion",
+  "welcome": "I ni ce, {{name}} 👋",
+  "tenant": {
+    "title": "Dugukolo gestion",
+    "message": "I ka so ɲuman sɔrɔ Burkina Faso",
+    "myApplications": "N ka ɲininiw",
+    "myContracts": "N ka sɛbɛnw",
+    "myPayments": "N ka saraw"
+  },
+  "owner": {
+    "title": "So tigɛ gestion",
+    "message": "I ka sow ɲɛnabɔ nɔgɔya la",
+    "myProperties": "N ka sow",
+    "applications": "Ɲininiw",
+    "contracts": "Sɛbɛnw",
+    "revenue": "Sara"
+  },
+  "agency": {
+    "title": "Baara yɔrɔ gestion",
+    "message": "I ka baara yiriwa",
+    "portfolio": "I ka sow",
+    "clients": "Kiliyanw",
+    "mandates": "Baara ɲɛnabɔliw"
+  },
+  "stats": {
+    "totalProperties": "So bɛɛ",
+    "activeContracts": "Sɛbɛn minw bɛ baara la",
+    "pendingApplications": "Ɲinini minw bɛ makɔnɔ",
+    "monthlyRevenue": "Kalo sara"
+  }
+}

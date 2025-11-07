@@ -1,0 +1,42 @@
+{
+  "title": "Dugukolo sɛbɛn",
+  "create": "Sɛbɛn dilan",
+  "sign": "Tɔgɔ sɛbɛ",
+  "download": "Minɛ",
+  "verify": "Lajɛ ko a tɛmɛnen",
+  "status": {
+    "draft": "Sɛbɛn kɔrɔ",
+    "awaiting_signature": "Ka makɔnɔ tɔgɔ sɛbɛn na",
+    "active": "Ka baara",
+    "expired": "A bannen",
+    "terminated": "A dabanna"
+  },
+  "signature": {
+    "title": "Elektronik tɔgɔ sɛbɛn",
+    "method": {
+      "otp": "Code OTP (SMS/Email)",
+      "certificate": "Infosec certificat"
+    },
+    "enterOTP": "Code OTP don",
+    "success": "Sɛbɛn tɔgɔ sɛbɛra",
+    "legalFooter": "Kɛra {{city}}, {{date}}\n\nK'a bɛn Burkina Faso Code Civil ni Code de l'Urbanisme ye.\nSɛbɛn tɔgɔ sɛbɛra elektronik fɛ ni Infosec ye (Certificat N° {{certId}}).\n\nA lajɛ https://verify.mzaka.bf/{{verifyId}}"
+  },
+  "verification": {
+    "title": "Sɛbɛn lajɛli",
+    "valid": "✓ Sɛbɛn tɛmɛnen - Tɔgɔ sɛbɛra mɔgɔ {{count}} fɛ",
+    "invalid": "✗ Sɛbɛn yɛlɛmanen walima tɛmɛnen tɛ",
+    "details": "Tɔgɔ sɛbɛn kunnafoniw",
+    "hash": "SHA-256 taamasiɲɛ",
+    "signers": "Tɔgɔ sɛbɛlaw",
+    "timestamp": "Waati"
+  },
+  "fields": {
+    "startDate": "Daminɛ don",
+    "endDate": "A laban don",
+    "monthlyRent": "Kalo sara (FCFA)",
+    "deposit": "Sara daminɛ (FCFA)",
+    "property": "So min bɛ ɲɛ",
+    "tenant": "Dugukolo",
+    "owner": "So tigɛ"
+  }
+}

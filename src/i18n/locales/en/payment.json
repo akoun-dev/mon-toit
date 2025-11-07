@@ -1,0 +1,38 @@
+{
+  "title": "Payment",
+  "provider": "Payment method",
+  "fasoArzeka": {
+    "title": "Pay with Faso Arzeka",
+    "subtitle": "Secure payment via the Treasury of Burkina Faso",
+    "reference": "Reference",
+    "amount": "Amount (FCFA)",
+    "channel": {
+      "title": "Choose a channel",
+      "web": "Website",
+      "app": "Mobile app",
+      "ussd": "USSD code *700#"
+    },
+    "instructions": {
+      "web": "You will be redirected to the Faso Arzeka payment portal",
+      "app": "Open the Faso Arzeka app and enter the reference",
+      "ussd": "Dial *700# and follow the instructions with the reference"
+    },
+    "status": {
+      "created": "Created",
+      "pending": "Pending",
+      "paid": "Paid",
+      "failed": "Failed",
+      "expired": "Expired"
+    },
+    "confirmationMessage": "Payment confirmed by the Treasury of Burkina Faso"
+  },
+  "purpose": {
+    "BAIL_FEE": "Lease fee",
+    "RENT": "Monthly rent",
+    "RECEIPT_SINGLE": "Single receipt",
+    "RECEIPT_PACK": "Receipt pack"
+  },
+  "history": "Payment history",
+  "receipt": "Receipt",
+  "downloadReceipt": "Download receipt"
+}

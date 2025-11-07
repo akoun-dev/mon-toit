@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "explore": "Explore",
+    "publish": "Publish",
+    "help": "Help",
+    "properties": "Properties",
+    "favorites": "Favorites",
+    "messages": "Messages",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "send": "Send",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "published": "Published"
+  },
+  "roles": {
+    "tenant": "Tenant",
+    "owner": "Owner",
+    "agency": "Agency",
+    "admin": "Administrator"
+  },
+  "welcome": "Welcome",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "noData": "No data available"
+}

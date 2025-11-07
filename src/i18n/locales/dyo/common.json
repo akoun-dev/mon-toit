@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "home": "So",
+    "search": "Nyini",
+    "explore": "Lajɛ",
+    "publish": "Bila",
+    "help": "Dɛmɛ",
+    "properties": "Sow",
+    "favorites": "N ka diyara",
+    "messages": "Kibaaruw",
+    "dashboard": "Gestion",
+    "profile": "N ka kunnafoni",
+    "logout": "Bɔ",
+    "login": "Don"
+  },
+  "actions": {
+    "save": "Mara",
+    "cancel": "Bali",
+    "delete": "Bɔ",
+    "edit": "Yɛlɛma",
+    "view": "Lajɛ",
+    "download": "Minɛ",
+    "upload": "Bila",
+    "send": "Ci",
+    "submit": "Bila",
+    "confirm": "Dafa",
+    "back": "Segin",
+    "next": "Taga ɲɛ",
+    "finish": "Ban",
+    "search": "Nyini",
+    "filter": "Sugandi",
+    "reset": "Daminɛ"
+  },
+  "status": {
+    "active": "Ka baara",
+    "inactive": "Tɛ baara la",
+    "pending": "Ka makɔnɔ",
+    "approved": "Sɔnna",
+    "rejected": "Banna",
+    "draft": "Sɛbɛn kɔrɔ",
+    "published": "Bilama"
+  },
+  "roles": {
+    "tenant": "Dugukolo",
+    "owner": "So tigɛ",
+    "agency": "Baara yɔrɔ",
+    "admin": "Kunnafoni tigɛ"
+  },
+  "welcome": "I ni ce",
+  "loading": "A bɛ baara la...",
+  "error": "Fili",
+  "success": "A kɛra",
+  "noData": "Kunnafoni si tɛ"
+}

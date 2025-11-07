@@ -23,6 +23,7 @@ import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { RoleSwitcherCompact } from "@/components/navigation/RoleSwitcherCompact";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RoleBadge } from "@/components/navigation/RoleBadge";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface NavbarProps {
   showSidebarTrigger?: boolean;
@@ -93,6 +94,7 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             {user ? (
               <>
                 <RoleBadge />

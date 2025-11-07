@@ -1,0 +1,42 @@
+{
+  "title": "Contrat de location",
+  "create": "Créer un bail",
+  "sign": "Signer",
+  "download": "Télécharger",
+  "verify": "Vérifier",
+  "status": {
+    "draft": "Brouillon",
+    "awaiting_signature": "En attente de signature",
+    "active": "Actif",
+    "expired": "Expiré",
+    "terminated": "Résilié"
+  },
+  "signature": {
+    "title": "Signature électronique",
+    "method": {
+      "otp": "Code OTP (SMS/Email)",
+      "certificate": "Certificat Infosec"
+    },
+    "enterOTP": "Entrez le code OTP",
+    "success": "Document signé avec succès",
+    "legalFooter": "Fait à {{city}}, le {{date}}\n\nEn conformité avec le Code Civil burkinabé et le Code de l'Urbanisme.\nDocument signé électroniquement via Infosec (Certificat N° {{certId}}).\n\nVérifiez l'authenticité sur https://verify.mzaka.bf/{{verifyId}}"
+  },
+  "verification": {
+    "title": "Vérification de document",
+    "valid": "✓ Document valide - Signé par {{count}} partie(s)",
+    "invalid": "✗ Document altéré ou invalide",
+    "details": "Détails de la signature",
+    "hash": "Empreinte SHA-256",
+    "signers": "Signataires",
+    "timestamp": "Horodatage"
+  },
+  "fields": {
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "monthlyRent": "Loyer mensuel (FCFA)",
+    "deposit": "Caution (FCFA)",
+    "property": "Bien concerné",
+    "tenant": "Locataire",
+    "owner": "Propriétaire"
+  }
+}

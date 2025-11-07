@@ -1,0 +1,18 @@
+{
+  "name": "YiriBot",
+  "greeting": "Bonjour ! Je suis YiriBot, votre assistant MZAKA-BF 🇧🇫",
+  "placeholder": "Posez-moi une question...",
+  "intents": {
+    "createContract": "Créer un bail",
+    "generateReceipt": "Générer une quittance",
+    "payTreasury": "Payer via le Trésor",
+    "verifyDocument": "Vérifier un document"
+  },
+  "responses": {
+    "help": "Je peux vous aider à :\n• Créer un bail électronique\n• Générer des quittances\n• Effectuer des paiements via Faso Arzeka\n• Vérifier l'authenticité de documents",
+    "createContractGuide": "Pour créer un bail, suivez ces étapes :\n1️⃣ Sélectionnez le bien\n2️⃣ Payez les frais de bail via Faso Arzeka\n3️⃣ Signez électroniquement avec Infosec",
+    "paymentGuide": "Pour payer via Faso Arzeka :\n• Web : Utilisez le portail en ligne\n• App : Ouvrez l'application mobile\n• USSD : Composez *700# depuis votre téléphone"
+  },
+  "voiceMode": "Mode vocal activé",
+  "textMode": "Mode texte activé"
+}

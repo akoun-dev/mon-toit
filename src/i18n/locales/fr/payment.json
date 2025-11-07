@@ -1,0 +1,38 @@
+{
+  "title": "Paiement",
+  "provider": "Moyen de paiement",
+  "fasoArzeka": {
+    "title": "Payer avec Faso Arzeka",
+    "subtitle": "Paiement sécurisé via le Trésor du Burkina Faso",
+    "reference": "Référence",
+    "amount": "Montant (FCFA)",
+    "channel": {
+      "title": "Choisir un canal",
+      "web": "Site web",
+      "app": "Application mobile",
+      "ussd": "Code USSD *700#"
+    },
+    "instructions": {
+      "web": "Vous serez redirigé vers le portail de paiement Faso Arzeka",
+      "app": "Ouvrez l'application Faso Arzeka et entrez la référence",
+      "ussd": "Composez *700# et suivez les instructions avec la référence"
+    },
+    "status": {
+      "created": "Créé",
+      "pending": "En attente",
+      "paid": "Payé",
+      "failed": "Échoué",
+      "expired": "Expiré"
+    },
+    "confirmationMessage": "Paiement confirmé par le Trésor du Burkina Faso"
+  },
+  "purpose": {
+    "BAIL_FEE": "Frais de bail",
+    "RENT": "Loyer mensuel",
+    "RECEIPT_SINGLE": "Quittance unique",
+    "RECEIPT_PACK": "Pack de quittances"
+  },
+  "history": "Historique des paiements",
+  "receipt": "Quittance",
+  "downloadReceipt": "Télécharger la quittance"
+}

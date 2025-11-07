@@ -1,0 +1,35 @@
+{
+  "title": "Noom",
+  "types": {
+    "apartment": "Noom-koɛɛga",
+    "house": "Yiri",
+    "studio": "Noom-pook",
+    "office": "Zãb-yiri",
+    "land": "Tẽnga"
+  },
+  "search": {
+    "title": "Noom lebgame",
+    "placeholder": "Tẽng, koɛɛga, noom-gũndo...",
+    "filters": {
+      "city": "Tẽnga",
+      "district": "Koɛɛga",
+      "type": "Noom-gũndo",
+      "minPrice": "Sõng n daan",
+      "maxPrice": "Sõng n bãng",
+      "rooms": "Noore-yĩnga",
+      "bathrooms": "Koom-yĩnga"
+    }
+  },
+  "details": {
+    "rooms": "Noor {{count}}",
+    "rooms_plural": "Noore {{count}}",
+    "bathrooms": "Koom {{count}}",
+    "bathrooms_plural": "Kooma {{count}}",
+    "area": "{{area}} m²",
+    "price": "{{price}} FCFA/kiisg"
+  },
+  "addToFavorites": "Sõng beʋd-koenga",
+  "removeFromFavorites": "Boore beʋd-koenga",
+  "apply": "Taare",
+  "scheduleVisit": "Kom-paase sebgame"
+}

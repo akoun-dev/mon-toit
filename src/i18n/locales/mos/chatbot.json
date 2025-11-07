@@ -1,0 +1,18 @@
+{
+  "name": "YiriBot",
+  "greeting": "N yaa soaba! Mam YiriBot, fo MZAKA-BF sõalem-neer 🇧🇫",
+  "placeholder": "N sũulem kẽese...",
+  "intents": {
+    "createContract": "Sɛbr sebgame",
+    "generateReceipt": "Sõng-gãsem sebgame",
+    "payTreasury": "Sõng ne Tʋʋm-soabã",
+    "verifyDocument": "Gãsem sɩng-gomame"
+  },
+  "responses": {
+    "help": "Mam sõnd fo sõalem:\n• Elektronik sɛbr sebgame\n• Sõng-gãsem sebgame\n• Sõngre ne Faso Arzeka\n• Gãsem sɩng-gomame",
+    "createContractGuide": "Sɛbr sebgame, seb-wẽndã sugr:\n1️⃣ Noom yʋʋs\n2️⃣ Sɛb sõngr sõng ne Faso Arzeka\n3️⃣ Elektronik tũud-sõng ne Infosec",
+    "paymentGuide": "Sõng ne Faso Arzeka:\n• Web: Portal pʋge\n• App: Telefon application pʋge\n• USSD: Composez *700# fo telefon bʋʋdã"
+  },
+  "voiceMode": "Nong-mode pʋgame",
+  "textMode": "Seb-mode pʋgame"
+}

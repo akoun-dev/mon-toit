@@ -1,0 +1,32 @@
+{
+  "title": "Gom-ninga",
+  "welcome": "N yaa soaba, {{name}} 👋",
+  "tenant": {
+    "title": "Noom-noore gom-ninga",
+    "message": "Fo noom n beʋdã lab Burkĩna Faso",
+    "myApplications": "N taare-taabã",
+    "myContracts": "N sɛbã",
+    "myPayments": "N sõng-taabã"
+  },
+  "owner": {
+    "title": "Noom-sõma gom-ninga",
+    "message": "Fo noom-sãab gom vʋʋsem",
+    "myProperties": "N noom-sãab",
+    "applications": "Taare-taabã",
+    "contracts": "Sɛbã",
+    "revenue": "N sõngr"
+  },
+  "agency": {
+    "title": "Zãb-yir gom-ninga",
+    "message": "Fo zãb yãkame",
+    "portfolio": "Fo noom-sãab",
+    "clients": "Nebã",
+    "mandates": "Zãbã"
+  },
+  "stats": {
+    "totalProperties": "Noom-sãab yʋʋmdã",
+    "activeContracts": "Sɛb n yãk baasgo",
+    "pendingApplications": "Taare n yãk paase",
+    "monthlyRevenue": "Kiisg sõngr"
+  }
+}

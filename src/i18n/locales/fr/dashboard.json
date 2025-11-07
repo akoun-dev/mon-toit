@@ -1,0 +1,32 @@
+{
+  "title": "Tableau de bord",
+  "welcome": "Bienvenue, {{name}} 👋",
+  "tenant": {
+    "title": "Tableau de bord Locataire",
+    "message": "Trouvez votre logement idéal au Burkina Faso",
+    "myApplications": "Mes candidatures",
+    "myContracts": "Mes baux",
+    "myPayments": "Mes paiements"
+  },
+  "owner": {
+    "title": "Tableau de bord Propriétaire",
+    "message": "Gérez vos biens en toute simplicité",
+    "myProperties": "Mes biens",
+    "applications": "Candidatures",
+    "contracts": "Baux",
+    "revenue": "Revenus"
+  },
+  "agency": {
+    "title": "Tableau de bord Agence",
+    "message": "Développez votre activité immobilière",
+    "portfolio": "Portefeuille",
+    "clients": "Clients",
+    "mandates": "Mandats"
+  },
+  "stats": {
+    "totalProperties": "Total des biens",
+    "activeContracts": "Baux actifs",
+    "pendingApplications": "Candidatures en attente",
+    "monthlyRevenue": "Revenus mensuels"
+  }
+}

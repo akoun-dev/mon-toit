@@ -1,0 +1,18 @@
+{
+  "name": "YiriBot",
+  "greeting": "Hello! I'm YiriBot, your MZAKA-BF assistant 🇧🇫",
+  "placeholder": "Ask me a question...",
+  "intents": {
+    "createContract": "Create a lease",
+    "generateReceipt": "Generate a receipt",
+    "payTreasury": "Pay via Treasury",
+    "verifyDocument": "Verify a document"
+  },
+  "responses": {
+    "help": "I can help you:\n• Create an electronic lease\n• Generate receipts\n• Make payments via Faso Arzeka\n• Verify document authenticity",
+    "createContractGuide": "To create a lease, follow these steps:\n1️⃣ Select the property\n2️⃣ Pay lease fees via Faso Arzeka\n3️⃣ Sign electronically with Infosec",
+    "paymentGuide": "To pay via Faso Arzeka:\n• Web: Use the online portal\n• App: Open the mobile application\n• USSD: Dial *700# from your phone"
+  },
+  "voiceMode": "Voice mode enabled",
+  "textMode": "Text mode enabled"
+}

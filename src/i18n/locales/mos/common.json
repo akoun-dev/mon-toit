@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "home": "Yʋʋm",
+    "search": "Lebgame",
+    "explore": "Labame",
+    "publish": "Tʋʋm",
+    "help": "Sõalem",
+    "properties": "Noom sãab",
+    "favorites": "Neb n beʋdɛ",
+    "messages": "Togsã",
+    "dashboard": "Gom-ninga",
+    "profile": "N yɩɩr pʋgã",
+    "logout": "Soed-kãng",
+    "login": "Doond"
+  },
+  "actions": {
+    "save": "Togs",
+    "cancel": "Ban-n paam",
+    "delete": "Boore",
+    "edit": "Yeel",
+    "view": "Gom",
+    "download": "Dãag",
+    "upload": "Sõng",
+    "send": "Saand",
+    "submit": "Kões",
+    "confirm": "Nan-togs",
+    "back": "Kɩɩs",
+    "next": "Bãangr",
+    "finish": "Lak",
+    "search": "Lebgame",
+    "filter": "Yʋʋs",
+    "reset": "Zak taare"
+  },
+  "status": {
+    "active": "A yãk baasgo",
+    "inactive": "A kãn baasgo",
+    "pending": "A yãk paase",
+    "approved": "A zoe",
+    "rejected": "A wã",
+    "draft": "Seb-tʋʋm",
+    "published": "A tʋʋmd"
+  },
+  "roles": {
+    "tenant": "Noom-noore",
+    "owner": "Noom-sõma",
+    "agency": "Zãb-yir",
+    "admin": "Gom-bãadem"
+  },
+  "welcome": "N yaa soaba",
+  "loading": "A yãk paase...",
+  "error": "Bee-koenga",
+  "success": "A lakame",
+  "noData": "Tũudu kãn ben"
+}

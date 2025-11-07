@@ -1,0 +1,35 @@
+{
+  "title": "Property",
+  "types": {
+    "apartment": "Apartment",
+    "house": "House",
+    "studio": "Studio",
+    "office": "Office",
+    "land": "Land"
+  },
+  "search": {
+    "title": "Search for housing",
+    "placeholder": "City, district, type...",
+    "filters": {
+      "city": "City",
+      "district": "District",
+      "type": "Property type",
+      "minPrice": "Minimum price",
+      "maxPrice": "Maximum price",
+      "rooms": "Number of rooms",
+      "bathrooms": "Bathrooms"
+    }
+  },
+  "details": {
+    "rooms": "{{count}} room",
+    "rooms_plural": "{{count}} rooms",
+    "bathrooms": "{{count}} bathroom",
+    "bathrooms_plural": "{{count}} bathrooms",
+    "area": "{{area}} m²",
+    "price": "{{price}} FCFA/month"
+  },
+  "addToFavorites": "Add to favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "apply": "Apply",
+  "scheduleVisit": "Schedule a visit"
+}

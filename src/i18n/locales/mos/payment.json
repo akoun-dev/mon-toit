@@ -1,0 +1,38 @@
+{
+  "title": "Sõngre",
+  "provider": "Sõng-yãkr",
+  "fasoArzeka": {
+    "title": "Sõng ne Faso Arzeka",
+    "subtitle": "Sõng n tun ne Burkĩna Faso Tʋʋm-soabã",
+    "reference": "Gom-ninga",
+    "amount": "Sõngr (FCFA)",
+    "channel": {
+      "title": "Yãk-yoor yʋʋseme",
+      "web": "Website",
+      "app": "Telefon application",
+      "ussd": "Code USSD *700#"
+    },
+    "instructions": {
+      "web": "Fo yeel kẽer Faso Arzeka portal",
+      "app": "Faso Arzeka application pʋge la gom-ninga sõng",
+      "ussd": "Composez *700# la seb-wẽnd sugr ne gom-ninga"
+    },
+    "status": {
+      "created": "A sebgame",
+      "pending": "A yãk paase",
+      "paid": "A sõngame",
+      "failed": "A wã",
+      "expired": "A lakame"
+    },
+    "confirmationMessage": "Sõngre Burkĩna Faso Tʋʋm-soabã nan-togsame"
+  },
+  "purpose": {
+    "BAIL_FEE": "Sɛb sõngr",
+    "RENT": "Kiisg sõngr",
+    "RECEIPT_SINGLE": "Sõng-gãsem pook",
+    "RECEIPT_PACK": "Sõng-gãsem-sẽba"
+  },
+  "history": "Sõng-taab roogo",
+  "receipt": "Sõng-gãsem",
+  "downloadReceipt": "Sõng-gãsem dãagre"
+}

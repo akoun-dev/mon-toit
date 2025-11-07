@@ -1,0 +1,35 @@
+{
+  "title": "So",
+  "types": {
+    "apartment": "Bon so",
+    "house": "So",
+    "studio": "So fitinin",
+    "office": "Baara yɔrɔ",
+    "land": "Dugukolo"
+  },
+  "search": {
+    "title": "So nyini",
+    "placeholder": "Dugu, sigida, so kogun...",
+    "filters": {
+      "city": "Dugu",
+      "district": "Sigida",
+      "type": "So kogun",
+      "minPrice": "Sɔngɔ dɔgɔman",
+      "maxPrice": "Sɔngɔ caman",
+      "rooms": "Bon hakɛ",
+      "bathrooms": "Ko yɔrɔ hakɛ"
+    }
+  },
+  "details": {
+    "rooms": "Bon {{count}}",
+    "rooms_plural": "Bon {{count}}",
+    "bathrooms": "Ko yɔrɔ {{count}}",
+    "bathrooms_plural": "Ko yɔrɔw {{count}}",
+    "area": "{{area}} m²",
+    "price": "{{price}} FCFA/kalo"
+  },
+  "addToFavorites": "A bila diyara la",
+  "removeFromFavorites": "A bɔ diyara la",
+  "apply": "Ɲinini kɛ",
+  "scheduleVisit": "Taama waati sugandi"
+}

@@ -1,0 +1,38 @@
+{
+  "title": "Sara",
+  "provider": "Sara fɛɛrɛ",
+  "fasoArzeka": {
+    "title": "Sara kɛ ni Faso Arzeka ye",
+    "subtitle": "Lakana sara Burkina Faso tɔnba fɛ",
+    "reference": "Kunnafoni",
+    "amount": "Sɔngɔ (FCFA)",
+    "channel": {
+      "title": "Sira sugandi",
+      "web": "Site web",
+      "app": "Telefɔni application",
+      "ussd": "Code USSD *700#"
+    },
+    "instructions": {
+      "web": "U bɛna i bila Faso Arzeka portal la",
+      "app": "Faso Arzeka application da wuli ani kunnafoni don",
+      "ussd": "Composez *700# k'a sira tugu ni kunnafoni ye",
+      "status": {
+        "created": "A dabɔra",
+        "pending": "A bɛ makɔnɔ",
+        "paid": "Sara kɛra",
+        "failed": "A tɛmɛnna",
+        "expired": "A bannen"
+      },
+      "confirmationMessage": "Sara dafara Burkina Faso tɔnba fɛ"
+    },
+    "purpose": {
+      "BAIL_FEE": "Sɛbɛn sara",
+      "RENT": "Kalo sara",
+      "RECEIPT_SINGLE": "Kɛlɛ kelen",
+      "RECEIPT_PACK": "Kɛlɛ caman"
+    },
+    "history": "Sara tariku",
+    "receipt": "Kɛlɛ",
+    "downloadReceipt": "Kɛlɛ minɛ"
+  }
+}

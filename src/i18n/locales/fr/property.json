@@ -1,0 +1,35 @@
+{
+  "title": "Propriété",
+  "types": {
+    "apartment": "Appartement",
+    "house": "Maison",
+    "studio": "Studio",
+    "office": "Bureau",
+    "land": "Terrain"
+  },
+  "search": {
+    "title": "Rechercher un logement",
+    "placeholder": "Ville, quartier, type...",
+    "filters": {
+      "city": "Ville",
+      "district": "Quartier",
+      "type": "Type de bien",
+      "minPrice": "Prix minimum",
+      "maxPrice": "Prix maximum",
+      "rooms": "Nombre de pièces",
+      "bathrooms": "Salles de bain"
+    }
+  },
+  "details": {
+    "rooms": "{{count}} pièce",
+    "rooms_plural": "{{count}} pièces",
+    "bathrooms": "{{count}} salle de bain",
+    "bathrooms_plural": "{{count}} salles de bain",
+    "area": "{{area}} m²",
+    "price": "{{price}} FCFA/mois"
+  },
+  "addToFavorites": "Ajouter aux favoris",
+  "removeFromFavorites": "Retirer des favoris",
+  "apply": "Postuler",
+  "scheduleVisit": "Planifier une visite"
+}

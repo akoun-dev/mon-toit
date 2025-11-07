@@ -1,0 +1,32 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome, {{name}} 👋",
+  "tenant": {
+    "title": "Tenant Dashboard",
+    "message": "Find your ideal home in Burkina Faso",
+    "myApplications": "My applications",
+    "myContracts": "My leases",
+    "myPayments": "My payments"
+  },
+  "owner": {
+    "title": "Owner Dashboard",
+    "message": "Manage your properties with ease",
+    "myProperties": "My properties",
+    "applications": "Applications",
+    "contracts": "Leases",
+    "revenue": "Revenue"
+  },
+  "agency": {
+    "title": "Agency Dashboard",
+    "message": "Grow your real estate business",
+    "portfolio": "Portfolio",
+    "clients": "Clients",
+    "mandates": "Mandates"
+  },
+  "stats": {
+    "totalProperties": "Total properties",
+    "activeContracts": "Active leases",
+    "pendingApplications": "Pending applications",
+    "monthlyRevenue": "Monthly revenue"
+  }
+}

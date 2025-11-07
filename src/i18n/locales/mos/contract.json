@@ -1,0 +1,42 @@
+{
+  "title": "Noom-noor sɛbr",
+  "create": "Sɛbr sebgame",
+  "sign": "Tũud sõng",
+  "download": "Dãagre",
+  "verify": "Sɩng-gomame",
+  "status": {
+    "draft": "Seb-tʋʋm",
+    "awaiting_signature": "Tũud-sõngre paase",
+    "active": "A yãk baasgo",
+    "expired": "A lakame",
+    "terminated": "A bõnda"
+  },
+  "signature": {
+    "title": "Elektronik tũud-sõngre",
+    "method": {
+      "otp": "Code OTP (SMS/Email)",
+      "certificate": "Infosec certificat"
+    },
+    "enterOTP": "Code OTP sõng",
+    "success": "Gãsem tũud-sõngame",
+    "legalFooter": "Sebgame {{city}}, {{date}}\n\nNe Burkĩna Faso Code Civil la Code de l'Urbanisme.\nGãsem elektronik tũud-sõngame ne Infosec (Certificat N° {{certId}}).\n\nSɩng-gomame bʋʋd https://verify.mzaka.bf/{{verifyId}}"
+  },
+  "verification": {
+    "title": "Gãsem sɩng-gomame",
+    "valid": "✓ Gãsem tun - Tũud-sõngame ne neb {{count}}",
+    "invalid": "✗ Gãsem yʋʋr wã",
+    "details": "Tũud-sõngre tũudu",
+    "hash": "SHA-256 mark",
+    "signers": "Tũud-sõngrã",
+    "timestamp": "Wakat"
+  },
+  "fields": {
+    "startDate": "Dãag-wakat",
+    "endDate": "Lak-wakat",
+    "monthlyRent": "Kiisg sõngr (FCFA)",
+    "deposit": "Lãafã (FCFA)",
+    "property": "Nooma",
+    "tenant": "Noom-noore",
+    "owner": "Noom-sõma"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "YiriBot",
+  "greeting": "I ni ce! N tɔgɔ ye YiriBot, i ka MZAKA-BF dɛmɛbaga 🇧🇫",
+  "placeholder": "Ɲininkali kɛ...",
+  "intents": {
+    "createContract": "Sɛbɛn dilan",
+    "generateReceipt": "Kɛlɛ dilan",
+    "payTreasury": "Sara kɛ tɔnba fɛ",
+    "verifyDocument": "Sɛbɛn lajɛ"
+  },
+  "responses": {
+    "help": "N bɛ se ka i dɛmɛ:\n• Elektronik sɛbɛn dilan\n• Kɛlɛw dilan\n• Sara kɛ ni Faso Arzeka ye\n• Sɛbɛnw lajɛli",
+    "createContractGuide": "Walasa ka sɛbɛn dilan, nin taabolo in kɛ:\n1️⃣ So sugandi\n2️⃣ Sɛbɛn sara sara ni Faso Arzeka ye\n3️⃣ Elektronik tɔgɔ sɛbɛ ni Infosec ye",
+    "paymentGuide": "Walasa ka sara kɛ ni Faso Arzeka ye:\n• Web: Portal baara kɛ ni ye\n• App: Telefɔni application da wuli\n• USSD: Composez *700# i ka telefɔni la"
+  },
+  "voiceMode": "Kuma mode wulira",
+  "textMode": "Sɛbɛn mode wulira"
+}

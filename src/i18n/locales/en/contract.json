@@ -1,0 +1,42 @@
+{
+  "title": "Rental contract",
+  "create": "Create lease",
+  "sign": "Sign",
+  "download": "Download",
+  "verify": "Verify",
+  "status": {
+    "draft": "Draft",
+    "awaiting_signature": "Awaiting signature",
+    "active": "Active",
+    "expired": "Expired",
+    "terminated": "Terminated"
+  },
+  "signature": {
+    "title": "Electronic signature",
+    "method": {
+      "otp": "OTP code (SMS/Email)",
+      "certificate": "Infosec certificate"
+    },
+    "enterOTP": "Enter OTP code",
+    "success": "Document signed successfully",
+    "legalFooter": "Done in {{city}}, on {{date}}\n\nIn compliance with the Burkinabé Civil Code and Urban Planning Code.\nElectronically signed document via Infosec (Certificate No. {{certId}}).\n\nVerify authenticity at https://verify.mzaka.bf/{{verifyId}}"
+  },
+  "verification": {
+    "title": "Document verification",
+    "valid": "✓ Valid document - Signed by {{count}} party(ies)",
+    "invalid": "✗ Altered or invalid document",
+    "details": "Signature details",
+    "hash": "SHA-256 hash",
+    "signers": "Signers",
+    "timestamp": "Timestamp"
+  },
+  "fields": {
+    "startDate": "Start date",
+    "endDate": "End date",
+    "monthlyRent": "Monthly rent (FCFA)",
+    "deposit": "Security deposit (FCFA)",
+    "property": "Property",
+    "tenant": "Tenant",
+    "owner": "Owner"
+  }
+}

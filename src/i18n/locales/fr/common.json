@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "search": "Rechercher",
+    "explore": "Explorer",
+    "publish": "Publier",
+    "help": "Aide",
+    "properties": "Propriétés",
+    "favorites": "Favoris",
+    "messages": "Messages",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "login": "Connexion"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "download": "Télécharger",
+    "upload": "Télécharger",
+    "send": "Envoyer",
+    "submit": "Soumettre",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente",
+    "approved": "Approuvé",
+    "rejected": "Rejeté",
+    "draft": "Brouillon",
+    "published": "Publié"
+  },
+  "roles": {
+    "tenant": "Locataire",
+    "owner": "Propriétaire",
+    "agency": "Agence",
+    "admin": "Administrateur"
+  },
+  "welcome": "Bienvenue",
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "success": "Succès",
+  "noData": "Aucune donnée disponible"
+}
