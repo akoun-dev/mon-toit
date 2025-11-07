@@ -27,7 +27,7 @@ export interface PropertyFilters {
   has360View?: boolean;
   hasVirtualTour?: boolean;
   status?: string;
-  isAnsutCertified?: boolean;
+  isMzakaVerified?: boolean;
   addedPeriod?: 'today' | 'week' | 'month' | 'all';
 }
 
@@ -85,7 +85,7 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                   <Label>Ville</Label>
                   <Select onValueChange={(value) => handleFilterChange('city', value)} value={filters.city}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Ex: Abidjan, Yopougon, Cocody..." />
+                      <SelectValue placeholder="Ex: Ouagadougou, Cissin, Tampouy..." />
                     </SelectTrigger>
                     <SelectContent>
                       {CITIES.map(city => (
@@ -319,17 +319,17 @@ const PropertyFiltersComponent = ({ onFilterChange, onReset }: PropertyFiltersPr
                 </div>
               </div>
 
-              {/* Certification ANSUT */}
+              {/* Vérification MZAKA */}
               <div className="space-y-3">
-                <Label>Certification</Label>
+                <Label>Vérification</Label>
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="ansutCertified"
-                    checked={filters.isAnsutCertified}
-                    onCheckedChange={(checked) => handleFilterChange('isAnsutCertified', checked)}
+                    id="mzakaVerified"
+                    checked={filters.isMzakaVerified}
+                    onCheckedChange={(checked) => handleFilterChange('isMzakaVerified', checked)}
                   />
-                  <Label htmlFor="ansutCertified" className="font-normal cursor-pointer flex items-center gap-2">
-                    <span className="text-secondary">✓</span> Baux certifiés ANSUT uniquement
+                  <Label htmlFor="mzakaVerified" className="font-normal cursor-pointer flex items-center gap-2">
+                    <span className="text-secondary">✓</span> Baux vérifiés MZAKA uniquement
                   </Label>
                 </div>
               </div>

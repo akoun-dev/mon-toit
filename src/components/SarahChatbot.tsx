@@ -17,7 +17,7 @@ interface Message {
 
 const QUICK_SUGGESTIONS = [
   "Comment créer mon dossier ?",
-  "Qu'est-ce que l'ARCEP ?",
+  "Comment fonctionne MZAKA ?",
   "Comment publier un bien ?",
   "Quels sont les tarifs ?",
 ];

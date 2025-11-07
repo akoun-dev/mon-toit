@@ -29,13 +29,9 @@ export const MobileHero = () => {
   return (
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Illustration Abidjan */}
+      {/* Fond dégradé - pas d'image de fond */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/images/hero/abidjan-illustration.png)',
-          backgroundPosition: 'center 60%'
-        }}
+        className="absolute inset-0 bg-gradient-to-br from-background-sand via-background-light to-background"
       />
       
       {/* Overlay crème pour lisibilité */}
@@ -65,10 +61,10 @@ export const MobileHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Badge ANSUT discret */}
+          {/* Badge 100% Burkinabè */}
           <Badge className="bg-white text-gray-700 hover:bg-gray-50 px-3 py-1.5 text-xs font-medium shadow-sm border border-gray-200">
-            <ShieldCheck className="h-3 w-3 mr-1.5 text-ansut-blue" />
-            Certifié ANSUT
+            <ShieldCheck className="h-3 w-3 mr-1.5 text-primary" />
+            100% Burkinabè
           </Badge>
 
           {/* Titre */}
@@ -94,7 +90,7 @@ export const MobileHero = () => {
 
           {/* Sous-titre */}
           <p className="text-sm text-gray-600 max-w-sm font-medium px-2">
-            Explorez une vaste sélection de biens immobiliers à Abidjan
+            Explorez une vaste sélection de biens immobiliers à Ouagadougou
           </p>
 
           {/* Formulaire de recherche */}
@@ -121,11 +117,11 @@ export const MobileHero = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Toutes les villes</SelectItem>
-                    <SelectItem value="Abidjan">Abidjan</SelectItem>
-                    <SelectItem value="Yamoussoukro">Yamoussoukro</SelectItem>
-                    <SelectItem value="Bouaké">Bouaké</SelectItem>
-                    <SelectItem value="San-Pédro">San-Pédro</SelectItem>
-                    <SelectItem value="Daloa">Daloa</SelectItem>
+                    <SelectItem value="Ouagadougou">Ouagadougou</SelectItem>
+                    <SelectItem value="Bobo-Dioulasso">Bobo-Dioulasso</SelectItem>
+                    <SelectItem value="Koudougou">Koudougou</SelectItem>
+                    <SelectItem value="Ouahigouya">Ouahigouya</SelectItem>
+                    <SelectItem value="Banfora">Banfora</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

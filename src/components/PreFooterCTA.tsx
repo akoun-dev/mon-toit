@@ -39,7 +39,7 @@ const PreFooterCTA = () => {
             <ul className="space-y-3 mb-6">
               <li className="flex items-center gap-2 text-sm">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Dossier vérifié par l'ARCEP
+                Dossier vérifié par l'équipe MZAKA
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />

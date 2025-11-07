@@ -112,7 +112,7 @@ const Hero = () => {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 max-w-xl font-medium">
-            La première plateforme immobilière certifiée ARCEP au Burkina Faso. 100% gratuit, 100% sécurisé.
+            Plateforme immobilière 100% burkinabè. Sécurisée, gratuite et transparente.
           </p>
 
           {/* Search bar with integrated voice */}

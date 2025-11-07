@@ -264,7 +264,7 @@ export interface SearchFilters {
   latitude?: number;
   longitude?: number;
   radius?: number;
-  isAnsutCertified?: boolean;
+  isMzakaVerified?: boolean;
 }
 
 export interface GeoLocation {

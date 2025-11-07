@@ -76,8 +76,8 @@ export const propertyService = {
     logger.debug('PropertyService fetchAll called with filters', { filters });
     
     // SECURITY: Use RPC for public property browsing (hides owner_id)
-    // For ANSUT certified properties, still use direct query with join
-    if (filters?.isAnsutCertified) {
+    // For MZAKA verified properties, still use direct query with join
+    if (filters?.isMzakaVerified) {
       const { data, error } = await supabase
         .from('properties')
         .select(`
