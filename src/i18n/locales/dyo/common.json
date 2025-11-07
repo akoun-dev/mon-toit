@@ -1,4 +1,17 @@
 {
+  "branding": {
+    "appName": "MZAKA",
+    "certifier": "MZAKA",
+    "certified": "Sɔnna",
+    "verification": "MZAKA gom-sɔndo",
+    "trustPlatform": "Sɔndo yɔrɔ"
+  },
+  "trust": {
+    "secure": "Yɔrɔ sɔnda",
+    "verified": "Yɛlɛma sɔnna",
+    "protected": "Kunnafoni rabga",
+    "burkinabe": "100% Burkinabè"
+  },
   "nav": {
     "home": "So",
     "search": "Nyini",

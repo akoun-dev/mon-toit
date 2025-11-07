@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle, XCircle, User, Home, FileText, Shield, Loader2 } from 'lucide-react';
-import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
+import LeaseVerificationBadge from '@/components/ui/lease-verification-badge';
 
 interface LeaseCertificationReviewProps {
   leaseId: string;
@@ -219,19 +219,19 @@ const LeaseCertificationReview = ({ leaseId, open, onOpenChange, onClose, onStat
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-secondary" />
-            Examen de Certification ANSUT
+            Examen de vérification MZAKA
           </DialogTitle>
           <DialogDescription>
-            Examinez le dossier complet avant de certifier le bail
+            Examinez le dossier complet avant de vérifier le bail
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Status actuel */}
           <div>
-            <ANSUTCertifiedBadge 
+            <LeaseVerificationBadge 
               status={lease.certification_status}
-              certifiedAt={lease.ansut_certified_at}
+              verifiedAt={lease.ansut_certified_at}
               variant="detailed"
             />
           </div>

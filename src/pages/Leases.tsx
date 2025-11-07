@@ -13,7 +13,7 @@ import { ElectronicSignature } from "@/components/leases/ElectronicSignature";
 import { useToast } from "@/hooks/use-toast";
 import CertificationRequest from "@/components/leases/CertificationRequest";
 import { PreCertificationChecklist } from "@/components/leases/PreCertificationChecklist";
-import ANSUTCertifiedBadge from "@/components/ui/ansut-certified-badge";
+import LeaseVerificationBadge from "@/components/ui/lease-verification-badge";
 import { Download, FileText as FileTextIcon, Loader2, Star, Folder } from "lucide-react";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { DocumentManager } from "@/components/documents/DocumentManager";
@@ -187,11 +187,11 @@ export default function Leases() {
   };
 
   const getStatusBadge = (lease: Lease) => {
-    // Use the new certification badge component
+    // Use the new verification badge component
     return (
-                      <ANSUTCertifiedBadge 
+                      <LeaseVerificationBadge 
                         status={lease.certification_status}
-                        certifiedAt={lease.ansut_certified_at}
+                        verifiedAt={lease.ansut_certified_at}
                       />
     );
   };
@@ -322,7 +322,7 @@ export default function Leases() {
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="h-4 w-4 text-green-500" />
                         <span>
-                          Certifié ANSUT le{" "}
+                          Vérifié MZAKA le{" "}
                           {new Date(lease.ansut_certified_at).toLocaleDateString()}
                         </span>
                       </div>

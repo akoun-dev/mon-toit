@@ -1,4 +1,17 @@
 {
+  "branding": {
+    "appName": "MZAKA",
+    "certifier": "MZAKA",
+    "certified": "Verified",
+    "verification": "MZAKA Verification",
+    "trustPlatform": "Trusted platform"
+  },
+  "trust": {
+    "secure": "Secure platform",
+    "verified": "Identity verified",
+    "protected": "Data protected",
+    "burkinabe": "100% Burkinabe"
+  },
   "nav": {
     "home": "Home",
     "search": "Search",

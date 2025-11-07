@@ -1,4 +1,17 @@
 {
+  "branding": {
+    "appName": "MZAKA",
+    "certifier": "MZAKA",
+    "certified": "A zoe",
+    "verification": "MZAKA gom-sõndo",
+    "trustPlatform": "Sõndo yʋʋm"
+  },
+  "trust": {
+    "secure": "Yʋʋm sõnda",
+    "verified": "Yɩɩr zoeme",
+    "protected": "Tũudu rabgame",
+    "burkinabe": "100% Burkĩnabé"
+  },
   "nav": {
     "home": "Yʋʋm",
     "search": "Lebgame",

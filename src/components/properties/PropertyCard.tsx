@@ -10,7 +10,7 @@ import { Heart, MapPin, Bed, Bath, Maximize, Clock, Lock, Wrench, ExternalLink, 
 import { Property } from '@/types';
 import { getPropertyStatusLabel, formatPrice } from '@/constants';
 import { supabase } from '@/lib/supabase';
-import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
+import LeaseVerificationBadge from '@/components/ui/lease-verification-badge';
 import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { toast } from '@/hooks/use-toast';
 import { SimpleImage } from '@/components/property/SimpleImage';
@@ -268,7 +268,7 @@ export const PropertyCard = ({
           {hasCertifiedLease && (
             <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-1">
               <ShieldCheck className="h-3 w-3" />
-              ANSUT Certifié
+              Bail vérifié
             </Badge>
           )}
           

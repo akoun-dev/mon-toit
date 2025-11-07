@@ -1,5 +1,6 @@
 import { Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import { BRANDING } from "@/config/branding";
 
 interface CertifiedBadgeProps {
   variant?: "default" | "compact";
@@ -12,11 +13,11 @@ const CertifiedBadge = ({ variant = "default", clickable = true }: CertifiedBadg
       <Shield className="h-5 w-5 text-secondary fill-secondary/20" />
       <div className="flex flex-col">
         <span className="text-xs font-semibold text-secondary uppercase tracking-wide">
-          Certifié ARCEP
+          {BRANDING.TRUST_MESSAGES.secure}
         </span>
         {variant === "default" && (
           <span className="text-xs text-muted-foreground">
-            Plateforme sécurisée
+            {BRANDING.TRUST_MESSAGES.verified}
           </span>
         )}
       </div>
@@ -25,7 +26,7 @@ const CertifiedBadge = ({ variant = "default", clickable = true }: CertifiedBadg
 
   if (clickable) {
     return (
-      <Link to="/certification" className="inline-block">
+      <Link to="/confiance" className="inline-block">
         {content}
       </Link>
     );

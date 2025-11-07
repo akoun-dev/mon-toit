@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CheckCircle, Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import LeaseCertificationReview from '@/components/admin/LeaseCertificationReview';
-import ANSUTCertifiedBadge from '@/components/ui/ansut-certified-badge';
+import LeaseVerificationBadge from '@/components/ui/lease-verification-badge';
 
 type Lease = {
   id: string;
@@ -168,9 +168,9 @@ const AdminLeases = () => {
                   <TableCell className="capitalize">{lease.lease_type}</TableCell>
                   <TableCell>{getStatusBadge(lease.status)}</TableCell>
                   <TableCell>
-                    <ANSUTCertifiedBadge 
+                    <LeaseVerificationBadge 
                       status={lease.certification_status}
-                      certifiedAt={lease.ansut_certified_at}
+                      verifiedAt={lease.ansut_certified_at}
                     />
                   </TableCell>
                   <TableCell className="text-right">

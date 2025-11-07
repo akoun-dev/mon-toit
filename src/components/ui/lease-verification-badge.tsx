@@ -1,41 +1,42 @@
 import { Shield, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { BRANDING } from '@/config/branding';
 
-interface ANSUTCertifiedBadgeProps {
+interface LeaseVerificationBadgeProps {
   status: 'not_requested' | 'pending' | 'certified' | 'rejected';
-  certifiedAt?: string | null;
+  verifiedAt?: string | null;
   variant?: 'default' | 'detailed' | 'compact';
 }
 
-const ANSUTCertifiedBadge = ({ status, certifiedAt, variant = 'default' }: ANSUTCertifiedBadgeProps) => {
+const LeaseVerificationBadge = ({ status, verifiedAt, variant = 'default' }: LeaseVerificationBadgeProps) => {
   const getStatusConfig = () => {
     switch (status) {
       case 'certified':
         return {
           icon: CheckCircle,
-          text: 'Certifié ANSUT',
+          text: 'Bail vérifié',
           color: 'bg-green-600 hover:bg-green-700',
           iconColor: 'text-white',
         };
       case 'pending':
         return {
           icon: Clock,
-          text: 'Certification en cours',
+          text: 'Vérification en cours',
           color: 'bg-yellow-600 hover:bg-yellow-700',
           iconColor: 'text-white',
         };
       case 'rejected':
         return {
           icon: XCircle,
-          text: 'Certification refusée',
+          text: 'Vérification refusée',
           color: 'bg-red-600 hover:bg-red-700',
           iconColor: 'text-white',
         };
       default:
         return {
           icon: Shield,
-          text: 'Non certifié',
+          text: 'Non vérifié',
           color: 'bg-muted hover:bg-muted/80',
           iconColor: 'text-muted-foreground',
         };
@@ -49,7 +50,7 @@ const ANSUTCertifiedBadge = ({ status, certifiedAt, variant = 'default' }: ANSUT
     return (
       <Badge className={`${config.color} gap-1.5 text-xs px-2 py-1`}>
         <Icon className="h-3 w-3" />
-        <span>ANSUT</span>
+        <span>{BRANDING.VERIFICATION_SYSTEM.badge}</span>
       </Badge>
     );
   }
@@ -60,9 +61,9 @@ const ANSUTCertifiedBadge = ({ status, certifiedAt, variant = 'default' }: ANSUT
         <Icon className="h-5 w-5" />
         <div className="flex flex-col">
           <span className="text-sm font-semibold">{config.text}</span>
-          {status === 'certified' && certifiedAt && (
+          {status === 'certified' && verifiedAt && (
             <span className="text-xs opacity-90">
-              Le {new Date(certifiedAt).toLocaleDateString('fr-FR')}
+              Le {new Date(verifiedAt).toLocaleDateString('fr-FR')}
             </span>
           )}
         </div>
@@ -82,31 +83,31 @@ const ANSUTCertifiedBadge = ({ status, certifiedAt, variant = 'default' }: ANSUT
         <TooltipContent className="max-w-xs">
           {status === 'certified' && (
             <div className="space-y-1">
-              <p className="font-semibold">Bail validé par ANSUT</p>
-              {certifiedAt && (
+              <p className="font-semibold">Bail validé par {BRANDING.VERIFICATION_SYSTEM.team}</p>
+              {verifiedAt && (
                 <p className="text-xs">
-                  Certifié le {new Date(certifiedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  Vérifié le {new Date(verifiedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               )}
-              <p className="text-xs">Conforme aux normes légales ivoiriennes</p>
+              <p className="text-xs">Conforme aux normes légales burkinabè</p>
             </div>
           )}
           {status === 'pending' && (
             <div className="space-y-1">
-              <p className="font-semibold">Certification en cours</p>
-              <p className="text-xs">Demande en cours d'examen (2-5 jours)</p>
+              <p className="font-semibold">Vérification en cours</p>
+              <p className="text-xs">Demande en cours d'examen par {BRANDING.VERIFICATION_SYSTEM.team} (2-5 jours)</p>
             </div>
           )}
           {status === 'rejected' && (
             <div className="space-y-1">
-              <p className="font-semibold">Certification refusée</p>
+              <p className="font-semibold">Vérification refusée</p>
               <p className="text-xs">Consultez les notes pour plus de détails</p>
             </div>
           )}
           {status === 'not_requested' && (
             <div className="space-y-1">
-              <p className="font-semibold">Pas de certification ANSUT</p>
-              <p className="text-xs">Ce bail n'a pas demandé de certification</p>
+              <p className="font-semibold">Pas de vérification demandée</p>
+              <p className="text-xs">Ce bail n'a pas demandé de vérification</p>
             </div>
           )}
         </TooltipContent>
@@ -115,4 +116,4 @@ const ANSUTCertifiedBadge = ({ status, certifiedAt, variant = 'default' }: ANSUT
   );
 };
 
-export default ANSUTCertifiedBadge;
+export default LeaseVerificationBadge;
