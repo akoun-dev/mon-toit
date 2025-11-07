@@ -3367,6 +3367,13 @@ export type Database = {
       }
     }
     Functions: {
+      add_available_role: {
+        Args: {
+          p_new_role: Database["public"]["Enums"]["user_type"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       admin_get_guest_messages: {
         Args: { p_limit?: number; p_property_id?: string }
         Returns: {
@@ -3640,6 +3647,20 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_property_owner_public_info: {
+        Args: { property_id_param: string }
+        Returns: {
+          avatar_url: string
+          city: string
+          cnam_verified: boolean
+          face_verified: boolean
+          full_name: string
+          id: string
+          is_verified: boolean
+          oneci_verified: boolean
+          user_type: Database["public"]["Enums"]["user_type"]
+        }[]
+      }
       get_property_with_title_deed: {
         Args: { p_property_id: string }
         Returns: {
@@ -3679,6 +3700,36 @@ export type Database = {
           work_description: string
           work_images: Json
           work_status: string
+        }[]
+      }
+      get_public_profile: {
+        Args: { target_user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          cnam_verified: boolean
+          face_verified: boolean
+          full_name: string
+          id: string
+          is_verified: boolean
+          oneci_verified: boolean
+          user_type: Database["public"]["Enums"]["user_type"]
+        }[]
+      }
+      get_public_profile_safe: {
+        Args: { target_user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          cnam_verified: boolean
+          face_verified: boolean
+          full_name: string
+          id: string
+          is_verified: boolean
+          oneci_verified: boolean
+          user_type: Database["public"]["Enums"]["user_type"]
         }[]
       }
       get_public_properties: {
@@ -3820,6 +3871,21 @@ export type Database = {
           oneci_status: string
           tenant_score: number
           user_id: string
+        }[]
+      }
+      get_verifications_for_review: {
+        Args: never
+        Returns: {
+          city: string
+          cnam_status: string
+          cnam_verified_at: string
+          created_at: string
+          full_name: string
+          oneci_status: string
+          oneci_verified_at: string
+          updated_at: string
+          user_id: string
+          user_type: Database["public"]["Enums"]["user_type"]
         }[]
       }
       has_role: {
