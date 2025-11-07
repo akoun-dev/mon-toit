@@ -3,8 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminLayout } from '@/components/layout/AdminLayout';
 import { StickyHeader } from '@/components/ui/sticky-header';
 import { Shield } from 'lucide-react';
 import AdminStats from '@/components/admin/AdminStats';
@@ -127,25 +126,21 @@ const AdminDashboard = () => {
   }
 
   return (
-    <MainLayout 
-      customSidebar={
-        <AdminSidebar 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          badges={{
-            certifications: pendingCertifications,
-            disputes: openDisputes,
-            properties: pendingProperties,
-            overdueApplications: overdueApplications,
-          }}
-        />
-      }
+    <AdminLayout 
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      badges={{
+        certifications: pendingCertifications,
+        disputes: openDisputes,
+        properties: pendingProperties,
+        overdueApplications: overdueApplications,
+      }}
     >
       <div className="container mx-auto px-6 py-6">
         <StickyHeader>
-          <h1 className="text-2xl font-bold">Administration MZAKA</h1>
+          <h1 className="text-2xl font-bold">Administration DONIA</h1>
           <p className="text-sm text-muted-foreground">
-            Gestion et validation de la plateforme MZAKA
+            Gestion et validation de la plateforme DONIA
           </p>
         </StickyHeader>
 
@@ -301,7 +296,7 @@ const AdminDashboard = () => {
           <PropertyAlertsMonitor />
         )}
       </div>
-    </MainLayout>
+    </AdminLayout>
   );
 };
 

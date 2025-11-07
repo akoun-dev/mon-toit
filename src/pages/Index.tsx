@@ -14,12 +14,12 @@ const Index = () => {
   return (
     <MainLayout>
       <Helmet>
-        <title>MZAKA - Location Immobilière au Burkina Faso</title>
+        <title>DONIA - Location Immobilière au Burkina Faso</title>
         <meta 
           name="description" 
           content="Trouvez votre logement idéal au Burkina Faso. Baux vérifiés, dossiers sécurisés, signature électronique. Plus de 3,500 logements à Ouagadougou, Bobo-Dioulasso." 
         />
-        <link rel="canonical" href="https://mzaka.bf" />
+        <link rel="canonical" href="https://donia.bf" />
       </Helmet>
 
       <main role="main">
@@ -52,7 +52,7 @@ const Index = () => {
                 <Button asChild variant="outline" size="lg" className="shadow-sm min-w-[200px]">
                   <Link to="/a-propos">
                     <ShieldCheck className="h-4 w-4 mr-2" />
-                    Pourquoi MZAKA ?
+                    Pourquoi DONIA ?
                   </Link>
                 </Button>
               </div>
