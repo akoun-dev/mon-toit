@@ -3621,10 +3621,10 @@ export type Database = {
           admin_reviewed_at: string
           cnam_status: string
           cnam_verified: boolean
+          cnib_verified: boolean
           face_verification_status: string
           face_verified: boolean
           oneci_status: string
-          oneci_verified: boolean
           tenant_score: number
         }[]
       }

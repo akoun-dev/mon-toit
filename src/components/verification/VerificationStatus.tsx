@@ -11,7 +11,7 @@ import { TenantScoreExplanation } from './TenantScoreExplanation';
 interface VerificationData {
   oneci_status: string;
   cnam_status: string;
-  oneci_verified: boolean;
+  cnib_verified: boolean;
   cnam_verified: boolean;
   face_verified: boolean;
   face_verification_status: string;
@@ -122,7 +122,7 @@ const VerificationStatus = () => {
                   <TenantScoreBadge score={verification.tenant_score} size="lg" />
                   <TenantScoreExplanation
                     currentScore={verification.tenant_score}
-                    oneciVerified={verification.oneci_verified}
+                    oneciVerified={verification.cnib_verified}
                     faceVerified={verification.face_verified}
                   />
                 </div>
