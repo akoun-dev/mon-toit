@@ -38,61 +38,70 @@ import paymentEN from './locales/en/payment.json';
 import contractEN from './locales/en/contract.json';
 import chatbotEN from './locales/en/chatbot.json';
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources: {
-      fr: {
-        common: commonFR,
-        auth: authFR,
-        property: propertyFR,
-        dashboard: dashboardFR,
-        payment: paymentFR,
-        contract: contractFR,
-        chatbot: chatbotFR,
+let isInitialized = false;
+
+export const initI18n = () => {
+  if (isInitialized) return i18n;
+  
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources: {
+        fr: {
+          common: commonFR,
+          auth: authFR,
+          property: propertyFR,
+          dashboard: dashboardFR,
+          payment: paymentFR,
+          contract: contractFR,
+          chatbot: chatbotFR,
+        },
+        mos: {
+          common: commonMOS,
+          auth: authMOS,
+          property: propertyMOS,
+          dashboard: dashboardMOS,
+          payment: paymentMOS,
+          contract: contractMOS,
+          chatbot: chatbotMOS,
+        },
+        dyo: {
+          common: commonDYO,
+          auth: authDYO,
+          property: propertyDYO,
+          dashboard: dashboardDYO,
+          payment: paymentDYO,
+          contract: contractDYO,
+          chatbot: chatbotDYO,
+        },
+        en: {
+          common: commonEN,
+          auth: authEN,
+          property: propertyEN,
+          dashboard: dashboardEN,
+          payment: paymentEN,
+          contract: contractEN,
+          chatbot: chatbotEN,
+        },
       },
-      mos: {
-        common: commonMOS,
-        auth: authMOS,
-        property: propertyMOS,
-        dashboard: dashboardMOS,
-        payment: paymentMOS,
-        contract: contractMOS,
-        chatbot: chatbotMOS,
+      fallbackLng: 'fr',
+      defaultNS: 'common',
+      ns: ['common', 'auth', 'property', 'dashboard', 'payment', 'contract', 'chatbot'],
+      
+      interpolation: {
+        escapeValue: false,
       },
-      dyo: {
-        common: commonDYO,
-        auth: authDYO,
-        property: propertyDYO,
-        dashboard: dashboardDYO,
-        payment: paymentDYO,
-        contract: contractDYO,
-        chatbot: chatbotDYO,
+      
+      detection: {
+        order: ['localStorage', 'navigator'],
+        caches: ['localStorage'],
+        lookupLocalStorage: 'mzaka-bf-language',
       },
-      en: {
-        common: commonEN,
-        auth: authEN,
-        property: propertyEN,
-        dashboard: dashboardEN,
-        payment: paymentEN,
-        contract: contractEN,
-        chatbot: chatbotEN,
-      },
-    },
-    fallbackLng: 'fr',
-    defaultNS: 'common',
-    ns: ['common', 'auth', 'property', 'dashboard', 'payment', 'contract', 'chatbot'],
-    
-    interpolation: {
-      escapeValue: false,
-    },
-    
-    detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'mzaka-bf-language',
-    },
-  });
+    });
+  
+  isInitialized = true;
+  return i18n;
+};
 
 export default i18n;

@@ -1,7 +1,10 @@
 import React from 'react';
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
-import './i18n/config';
+import { initI18n } from './i18n/config';
 import { Toaster } from "@/components/ui/toaster";
+
+// Initialize i18next before any component renders
+initI18n();
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
