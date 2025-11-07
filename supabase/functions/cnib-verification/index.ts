@@ -17,7 +17,7 @@ serve(async (req) => {
 
     // Anonymize sensitive data in logs
     const cnibHash = cnibNumber ? `CNIB_${cnibNumber.slice(-4)}` : 'N/A';
-    console.log('ONI Verification Request:', { 
+    console.log('CNIB Verification Request:', { 
       cnibHash, 
       timestamp: new Date().toISOString() 
     });
@@ -92,21 +92,21 @@ serve(async (req) => {
 
     if (DEMO_MODE) {
       // Mode DEMO: Always validate with a flag
-      console.log('[DEMO MODE] ONI verification - Auto-approving');
+      console.log('[DEMO MODE] CNIB verification - Auto-approving');
       isValid = true;
       holderData = { ...holderData, isDemoMode: true };
     } else if (ONI_API_KEY) {
       // Real ONI API call (to be implemented later)
-      console.log('[PRODUCTION] Calling real ONI API');
+      console.log('[PRODUCTION] Calling real CNIB API');
       // TODO: Implement real API call
       isValid = true; // Temporary
     } else {
       // Neither DEMO nor API configured → error 503
-      console.error('[ERROR] ONI service not configured - DEMO_MODE and API_KEY both missing');
+      console.error('[ERROR] CNIB service not configured - DEMO_MODE and API_KEY both missing');
       return new Response(
         JSON.stringify({
           valid: false,
-          error: 'Le service de vérification d\'identité ONI est temporairement indisponible. Veuillez réessayer dans quelques instants.',
+          error: 'Le service de vérification d\'identité CNIB est temporairement indisponible. Veuillez réessayer dans quelques instants.',
           status: 'SERVICE_UNAVAILABLE'
         }),
         { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -162,14 +162,14 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           valid: false,
-          error: 'CNIB non trouvée dans la base nationale ONI',
+          error: 'CNIB non trouvée dans la base nationale',
           status: 'FAILED'
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
   } catch (error) {
-    console.error('Error in oni-verification:', error);
+    console.error('Error in cnib-verification:', error);
     
     // Determine HTTP status code and user-friendly message based on error type
     let statusCode = 500;
@@ -192,7 +192,7 @@ serve(async (req) => {
       }
       
       // Log detailed error for debugging (server-side only)
-      console.error('[ONI Verification Error Details]', {
+      console.error('[CNIB Verification Error Details]', {
         message: error.message,
         stack: error.stack,
         statusCode,

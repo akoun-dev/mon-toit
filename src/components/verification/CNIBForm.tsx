@@ -108,11 +108,11 @@ const validateImage = (file: File): { valid: boolean; error?: string } => {
   return { valid: true };
 };
 
-interface ONECIFormProps {
+interface CNIBFormProps {
   onSubmit?: () => void;
 }
 
-const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
+const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
@@ -135,7 +135,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
   // Nettoyage lors du démontage du composant
   useEffect(() => {
     return () => {
-      logger.debug('Nettoyage composant ONECIForm');
+      logger.debug('Nettoyage composant CNIBForm');
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => {
           track.stop();
@@ -476,7 +476,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
         });
       }
     } catch (error) {
-      logger.error('ONECI Smile ID verification error', { error });
+      logger.error('CNIB Smile ID verification error', { error });
       toast.error('Erreur lors de la vérification', {
         description: error instanceof Error ? error.message : 'Une erreur est survenue'
       });
@@ -497,10 +497,10 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-primary" />
-          Vérification d'Identité ONECI
+          Vérification CNIB (Burkinabè)
         </CardTitle>
         <CardDescription>
-          Vérification sécurisée via Smile ID pour ressortissants ivoiriens
+          Vérification sécurisée via Smile ID avec votre CNIB
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -509,7 +509,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
           <AlertDescription>
             <strong>Instructions importantes :</strong>
             <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
-              <li>Téléchargez une photo <strong>claire et nette</strong> de votre CNI ivoirienne</li>
+              <li>Téléchargez une photo <strong>claire et nette</strong> de votre CNIB burkinabè</li>
               <li>Assurez-vous que <strong>toutes les informations</strong> sur la CNI sont lisibles</li>
               <li>Prenez un selfie avec un <strong>bon éclairage</strong> (lumière naturelle de préférence)</li>
               <li>Regardez <strong>directement la caméra</strong>, expression neutre</li>
@@ -525,7 +525,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
               1. Photo de votre Carte Nationale d'Identité
             </Label>
             <p className="text-sm text-muted-foreground">
-              Téléchargez une photo claire du recto de votre CNI
+              Téléchargez une photo claire du recto de votre CNIB
             </p>
             {cniImage ? (
               <div className="relative group">
@@ -705,7 +705,7 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
             ) : (
               <>
                 <Shield className="mr-2 h-5 w-5" />
-                Vérifier mon identité ONECI
+                Vérifier mon identité CNIB
               </>
             )}
           </Button>
@@ -737,4 +737,4 @@ const ONECIForm = ({ onSubmit }: ONECIFormProps = {}) => {
   );
 };
 
-export default ONECIForm;
+export default CNIBForm;

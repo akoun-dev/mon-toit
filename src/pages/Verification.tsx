@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { DynamicBreadcrumb } from '@/components/navigation/DynamicBreadcrumb';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import ONECIForm from '@/components/verification/ONECIForm';
+import CNIBForm from '@/components/verification/CNIBForm';
 import VerificationStatus from '@/components/verification/VerificationStatus';
 import FaceVerification from '@/components/verification/FaceVerification';
 import PassportVerificationForm from '@/components/verification/PassportVerificationForm';
@@ -37,7 +37,7 @@ const Verification = () => {
               <h1 className="text-3xl font-bold">Vérification d'Identité</h1>
             </div>
             <p className="text-muted-foreground">
-              Complétez vos vérifications ONECI et Face ID pour augmenter votre crédibilité
+              Complétez vos vérifications CNIB et Face ID pour augmenter votre crédibilité
             </p>
           </div>
 
@@ -54,7 +54,7 @@ const Verification = () => {
             </TabsList>
 
             <TabsContent value="oneci">
-              <ONECIForm />
+              <CNIBForm />
             </TabsContent>
 
             <TabsContent value="face">

@@ -21,7 +21,7 @@ verify_jwt = false
 [functions.smile-id-verification]
 verify_jwt = true
 
-[functions.oni-verification]
+[functions.cnib-verification]
 verify_jwt = false
 
 [functions.mobile-money-payment]

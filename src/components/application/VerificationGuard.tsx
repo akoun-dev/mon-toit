@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import ONECIForm from '@/components/verification/ONECIForm';
+import CNIBForm from '@/components/verification/CNIBForm';
 import { Shield, AlertTriangle, CheckCircle2, FileText, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -261,7 +261,7 @@ export const VerificationGuard = ({ propertyId, onVerified, children }: Verifica
                   Complétez le formulaire ci-dessous pour vérifier votre identité. 
                   Une fois validé, vous pourrez continuer votre candidature.
                 </p>
-                <ONECIForm onSubmit={handleFormSubmit} />
+                <CNIBForm onSubmit={handleFormSubmit} />
                 <div className="mt-4">
                   <Button 
                     onClick={handleVerificationSuccess} 
