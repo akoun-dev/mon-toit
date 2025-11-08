@@ -22,8 +22,8 @@ export const usePolling = <T extends { status: string }>(
   options: PollingOptions<T> = {}
 ): UsePollingReturn => {
   const {
-    interval = 3000,
-    maxAttempts = 100,
+    interval = 1500,
+    maxAttempts = 40,
     onSuccess,
     onError,
     onTimeout
