@@ -241,13 +241,6 @@ const Features = () => {
         {/* Header - DONIA en avant */}
         <header className="text-center mb-16">
           <div className="flex flex-col items-center justify-center gap-3 mb-6">
-            {/* Logo DONIA - PRINCIPAL */}
-            <img 
-              src={doniaLogo} 
-              alt="DONIA - Dossier de location numérique certifié" 
-              className="h-14 md:h-16" 
-            />
-            
             {/* Badges service public */}
             <div className="flex flex-wrap gap-2 justify-center">
               <Badge variant="default" className="bg-primary hover:bg-primary/90 text-white px-4 py-1.5 text-sm font-semibold">

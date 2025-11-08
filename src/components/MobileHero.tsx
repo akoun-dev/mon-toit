@@ -33,7 +33,11 @@ export const MobileHero = () => {
   const [propertyType, setPropertyType] = useState('all');
   const navigate = useNavigate();
 
-  const { data: heroImagesData = [], isLoading } = useHeroImages('mobile');
+  const { data: heroImagesData = [] } = useHeroImages('mobile');
+
+  const displayImages = heroImagesData.length > 0
+    ? heroImagesData.map(img => img.image_url)
+    : mobileHeroImages;
 
   const autoplayPlugin = useRef(
     Autoplay({ 
@@ -42,11 +46,6 @@ export const MobileHero = () => {
       stopOnMouseEnter: false,
     })
   );
-
-  // Fallback vers Unsplash si vide
-  const displayImages = heroImagesData.length > 0
-    ? heroImagesData.map(img => img.image_url)
-    : mobileHeroImages;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -64,10 +63,10 @@ export const MobileHero = () => {
       <div className="absolute inset-0 overflow-hidden z-0">
         <Carousel
           opts={{
-            loop: true,
+            loop: displayImages.length > 1,
             align: "center",
           }}
-          plugins={[autoplayPlugin.current]}
+          plugins={displayImages.length > 1 ? [autoplayPlugin.current] : []}
           className="w-full h-full"
       >
         <CarouselContent className="h-full">

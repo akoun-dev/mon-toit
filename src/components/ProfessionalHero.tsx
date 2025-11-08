@@ -60,7 +60,11 @@ export const ProfessionalHero = () => {
   const [propertyType, setPropertyType] = useState('');
   const [budget, setBudget] = useState('');
 
-  const { data: heroImagesData = [], isLoading } = useHeroImages('desktop');
+  const { data: heroImagesData = [] } = useHeroImages('desktop');
+
+  const displayImages = heroImagesData.length > 0 
+    ? heroImagesData.map(img => ({ url: img.image_url, alt: img.alt_text }))
+    : heroImages;
 
   const autoplayPlugin = useRef(
     Autoplay({ 
@@ -69,11 +73,6 @@ export const ProfessionalHero = () => {
       stopOnMouseEnter: true,
     })
   );
-
-  // Fallback vers Unsplash si vide
-  const displayImages = heroImagesData.length > 0 
-    ? heroImagesData.map(img => ({ url: img.image_url, alt: img.alt_text }))
-    : heroImages;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -91,10 +90,10 @@ export const ProfessionalHero = () => {
       <div className="absolute inset-0 overflow-hidden z-0">
         <Carousel
           opts={{
-            loop: true,
+            loop: displayImages.length > 1,
             align: "center",
           }}
-          plugins={[autoplayPlugin.current]}
+          plugins={displayImages.length > 1 ? [autoplayPlugin.current] : []}
           className="w-full h-full"
       >
         <CarouselContent className="h-full">

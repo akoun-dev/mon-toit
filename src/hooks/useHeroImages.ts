@@ -26,5 +26,8 @@ export const useHeroImages = (deviceType: 'desktop' | 'mobile' | 'both' = 'both'
     },
     staleTime: 1000 * 60 * 5, // Cache 5 minutes
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchInterval: false,
+    retry: 1,
   });
 };
