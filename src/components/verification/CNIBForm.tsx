@@ -227,7 +227,10 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           upsert: false
         });
       
-      if (storageError) throw storageError;
+      if (storageError) {
+        logger.error('Erreur upload Storage:', { message: storageError.message });
+        throw storageError;
+      }
       
       // Obtenir l'URL publique
       const { data: { publicUrl } } = supabase.storage
@@ -250,8 +253,25 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         }
       });
       
-      if (uploadError) throw uploadError;
-      if (!uploadData.success) throw new Error(uploadData.error || 'Échec upload document');
+      if (uploadError) {
+        logger.error('Erreur appel edge function:', { message: uploadError.message });
+        throw new Error(`Erreur serveur: ${uploadError.message}`);
+      }
+      
+      if (!uploadData) {
+        logger.error('Pas de données retournées par edge function');
+        throw new Error('Aucune réponse du serveur');
+      }
+      
+      if (!uploadData.success) {
+        logger.error('Edge function a retourné success=false:', uploadData);
+        throw new Error(uploadData.error || 'Échec upload document');
+      }
+      
+      if (!uploadData.document_id || !uploadData.selfie_url) {
+        logger.error('Données manquantes dans la réponse:', uploadData);
+        throw new Error('Réponse serveur incomplète (document_id ou selfie_url manquant)');
+      }
       
       setDocumentId(uploadData.document_id);
       setSelfieUrl(uploadData.selfie_url);
@@ -260,29 +280,41 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       
       logger.info('✅ Document uploadé sur NeoFace', { 
         document_id: uploadData.document_id,
-        selfie_url: uploadData.selfie_url 
+        selfie_url: uploadData.selfie_url.substring(0, 50) + '...'
       });
       
       // ========================================
       // ÉTAPE 3 : Ouvrir fenêtre selfie NeoFace
       // ========================================
-      toast.success('📸 Fenêtre selfie ouverte', {
-        description: 'Prenez votre selfie dans la nouvelle fenêtre'
-      });
+      logger.info('🪟 Ouverture fenêtre NeoFace...');
       
-      const selfieWindow = window.open(uploadData.selfie_url, '_blank', 'width=600,height=800');
+      const selfieWindow = window.open(
+        uploadData.selfie_url, 
+        'neoface-selfie',
+        'width=600,height=800,resizable=yes,scrollbars=yes'
+      );
+      
       if (!selfieWindow) {
         toast.error('Popup bloquée', {
-          description: 'Autorisez les popups et réessayez'
+          description: 'Veuillez autoriser les popups pour ce site et réessayer'
         });
-        throw new Error('Popup bloquée');
+        throw new Error('Popup bloquée par le navigateur');
       }
+      
+      toast.success('📸 Fenêtre NeoFace ouverte', {
+        description: 'Prenez votre selfie dans la nouvelle fenêtre. La vérification démarrera automatiquement.',
+        duration: 5000
+      });
       
       setUploadProgress(70);
       
       // ========================================
-      // ÉTAPE 4 : Démarrer le polling du statut
+      // ÉTAPE 4 : Attendre 3 secondes puis démarrer le polling
       // ========================================
+      logger.info('⏳ Attente de 3 secondes avant polling...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      logger.info('🔄 Démarrage du polling...');
       startPolling(uploadData.document_id);
       
     } catch (error) {
