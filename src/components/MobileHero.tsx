@@ -61,7 +61,7 @@ export const MobileHero = () => {
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
       {/* Carrousel d'images - Version mobile optimisée */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden z-0">
         <Carousel
           opts={{
             loop: true,
@@ -72,7 +72,7 @@ export const MobileHero = () => {
       >
         <CarouselContent className="h-full">
           {displayImages.map((imageUrl, index) => (
-            <CarouselItem key={index} className="h-full">
+            <CarouselItem key={index} className="relative h-full min-h-full">
               <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
                 style={{
@@ -89,26 +89,10 @@ export const MobileHero = () => {
       </div>
       
       {/* Overlay pour lisibilité - plus opaque sur mobile */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/70" />
-      
-      {/* Motifs Faso Dan Fani subtils - textile burkinabè */}
-      <div className="absolute inset-0 opacity-[0.04]">
-        <div 
-          className="w-full h-full"
-          style={{
-            backgroundImage: `repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 10px,
-              rgba(193, 18, 31, 0.3) 10px,
-              rgba(193, 18, 31, 0.3) 20px
-            )`
-          }}
-        />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/70 to-white/80 z-[1]" />
 
       {/* Contenu */}
-      <div className="relative z-10 w-full px-4 py-10">
+      <div className="relative z-20 w-full px-4 py-10">
         <motion.div 
           className="flex flex-col gap-5 items-center text-center"
           initial={{ opacity: 0, y: 20 }}

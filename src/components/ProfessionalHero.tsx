@@ -88,7 +88,7 @@ export const ProfessionalHero = () => {
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
       {/* Carrousel d'images - Architecture burkinabè authentique */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden z-0">
         <Carousel
           opts={{
             loop: true,
@@ -99,9 +99,9 @@ export const ProfessionalHero = () => {
       >
         <CarouselContent className="h-full">
           {displayImages.map((image, index) => (
-            <CarouselItem key={index} className="h-full">
+            <CarouselItem key={index} className="relative h-full min-h-full">
               <div 
-                className="absolute inset-0 bg-cover bg-right bg-no-repeat transition-all duration-700"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
                 style={{
                   backgroundImage: `url(${image.url})`,
                 }}
@@ -115,54 +115,10 @@ export const ProfessionalHero = () => {
       </div>
       
       {/* Overlay directionnel - opaque à gauche (texte), transparent à droite (image) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent" />
-      
-      {/* Motifs géométriques Faso Dan Fani - textile burkinabè */}
-      <div className="absolute inset-0 opacity-[0.10]">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="faso-dan-fani" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-              {/* Lignes verticales - Rouge et Or */}
-              <line x1="10" y1="0" x2="10" y2="100" stroke="#C1121F" strokeWidth="2" />
-              <line x1="30" y1="0" x2="30" y2="100" stroke="#F9B208" strokeWidth="1" />
-              <line x1="50" y1="0" x2="50" y2="100" stroke="#146B3A" strokeWidth="3" />
-              <line x1="70" y1="0" x2="70" y2="100" stroke="#F9B208" strokeWidth="1" />
-              <line x1="90" y1="0" x2="90" y2="100" stroke="#C1121F" strokeWidth="2" />
-              
-              {/* Lignes horizontales - Vert et Or */}
-              <line x1="0" y1="10" x2="100" y2="10" stroke="#146B3A" strokeWidth="2" />
-              <line x1="0" y1="30" x2="100" y2="30" stroke="#F9B208" strokeWidth="1" />
-              <line x1="0" y1="50" x2="100" y2="50" stroke="#C1121F" strokeWidth="3" />
-              <line x1="0" y1="70" x2="100" y2="70" stroke="#F9B208" strokeWidth="1" />
-              <line x1="0" y1="90" x2="100" y2="90" stroke="#146B3A" strokeWidth="2" />
-              
-              {/* Motifs en losange - Étoile du drapeau */}
-              <polygon points="50,20 60,30 50,40 40,30" fill="#F9B208" opacity="0.4" />
-              <polygon points="50,60 60,70 50,80 40,70" fill="#C1121F" opacity="0.4" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#faso-dan-fani)" />
-        </svg>
-      </div>
-      
-      {/* Symboles étoile (drapeau burkinabè) - très discrets */}
-      <div className="hidden md:block absolute top-20 left-10 w-24 h-24 opacity-[0.04]">
-        <svg viewBox="0 0 100 100" className="w-full h-full animate-float">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#F9B208" strokeWidth="3" />
-          <path d="M50 20 L50 80 M30 50 L70 50" stroke="#F9B208" strokeWidth="3" />
-          <circle cx="50" cy="50" r="15" fill="#F9B208" />
-        </svg>
-      </div>
-      
-      <div className="hidden md:block absolute bottom-32 right-20 w-20 h-20 opacity-[0.04]">
-        <svg viewBox="0 0 100 100" className="w-full h-full animate-float" style={{ animationDelay: '1s' }}>
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#C1121F" strokeWidth="3" />
-          <path d="M50 30 Q30 50 50 70 Q70 50 50 30" fill="#C1121F" />
-        </svg>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-white/30 z-[1]" />
 
       {/* Contenu principal */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+      <div className="relative z-20 container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
           
           {/* Badge confiance DONIA */}
