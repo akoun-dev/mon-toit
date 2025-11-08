@@ -281,7 +281,7 @@ serve(async (req) => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-          const neoFaceResponse = await fetch(`${NEOFACE_BASE_URL}/selfie_upload`, {
+          const neoFaceResponse = await fetch(`${NEOFACE_BASE_URL}/selfie_facematch/${document_id}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
