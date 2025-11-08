@@ -268,19 +268,19 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         throw new Error(uploadData.error || 'Échec upload document');
       }
       
-      if (!uploadData.document_id || !uploadData.selfie_url) {
+      if (!uploadData.document_id || !uploadData.url) {
         logger.error('Données manquantes dans la réponse:', uploadData);
-        throw new Error('Réponse serveur incomplète (document_id ou selfie_url manquant)');
+        throw new Error('Réponse serveur incomplète (document_id ou url manquant)');
       }
       
       setDocumentId(uploadData.document_id);
-      setSelfieUrl(uploadData.selfie_url);
+      setSelfieUrl(uploadData.url);
       setUploadProgress(60);
       setIsUploadingDocument(false);
       
       logger.info('✅ Document uploadé sur NeoFace', { 
         document_id: uploadData.document_id,
-        selfie_url: uploadData.selfie_url.substring(0, 50) + '...'
+        selfie_url: uploadData.url.substring(0, 50) + '...'
       });
       
       // ========================================

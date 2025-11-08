@@ -22,13 +22,14 @@ type NeoFaceRequest = UploadDocumentRequest | CheckStatusRequest;
 interface NeoFaceUploadResponse {
   success: boolean;
   document_id?: string;
-  selfie_url?: string;
+  url?: string; // NeoFace retourne "url" pas "selfie_url"
   message?: string;
 }
 
 interface NeoFaceStatusResponse {
   status: 'waiting' | 'verified' | 'failed';
   matching_score?: number;
+  verified_at?: string;
   message?: string;
 }
 
@@ -105,15 +106,12 @@ serve(async (req) => {
       }
 
       const imageBlob = await imageResponse.blob();
-      const imageBuffer = await imageBlob.arrayBuffer();
-      const base64Image = btoa(
-        new Uint8Array(imageBuffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ''
-        )
-      );
-
-      console.log('✅ Image downloaded and converted to base64');
+      
+      console.log('✅ Image downloaded', {
+        type: imageBlob.type,
+        size: imageBlob.size,
+        size_mb: (imageBlob.size / (1024 * 1024)).toFixed(2)
+      });
 
       // Call NeoFace API with retry
       let uploadResponse: NeoFaceUploadResponse | null = null;
@@ -123,6 +121,17 @@ serve(async (req) => {
         console.log(`🔄 Attempt ${attempt}/${MAX_RETRIES} to call NeoFace API...`);
 
         try {
+          // Créer FormData avec token + fichier
+          const formData = new FormData();
+          formData.append('token', NEOFACE_API_TOKEN);
+          formData.append('doc_file', imageBlob, 'document.jpg');
+          
+          console.log('📦 FormData créé:', {
+            token_length: NEOFACE_API_TOKEN.length,
+            file_type: imageBlob.type,
+            file_size: imageBlob.size
+          });
+
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
@@ -130,19 +139,19 @@ serve(async (req) => {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
-              'Content-Type': 'application/json',
+              // PAS de Content-Type ! FormData le gère automatiquement
             },
-            body: JSON.stringify({
-              document_image: base64Image,
-              user_id: user_id,
-            }),
+            body: formData,
             signal: controller.signal,
           });
 
           clearTimeout(timeoutId);
 
           const responseText = await neoFaceResponse.text();
-          console.log('📨 NeoFace raw response:', responseText.substring(0, 200));
+          console.log('📨 NeoFace document_capture response:', {
+            status: neoFaceResponse.status,
+            body_preview: responseText.substring(0, 200)
+          });
 
           if (!neoFaceResponse.ok) {
             throw new Error(`NeoFace API error: ${neoFaceResponse.status} - ${responseText}`);
@@ -150,19 +159,19 @@ serve(async (req) => {
 
           const neoFaceData = JSON.parse(responseText);
 
-          if (!neoFaceData.document_id || !neoFaceData.selfie_url) {
-            throw new Error('Réponse NeoFace invalide: document_id ou selfie_url manquant');
+          if (!neoFaceData.document_id || !neoFaceData.url) {
+            throw new Error('Réponse NeoFace invalide: document_id ou url manquant');
           }
 
           uploadResponse = {
             success: true,
             document_id: neoFaceData.document_id,
-            selfie_url: neoFaceData.selfie_url,
+            url: neoFaceData.url, // NeoFace retourne "url" pas "selfie_url"
           };
 
           console.log('✅ NeoFace upload successful:', {
             document_id: neoFaceData.document_id,
-            selfie_url: neoFaceData.selfie_url.substring(0, 50) + '...',
+            url_preview: neoFaceData.url?.substring(0, 60) + '...',
           });
 
           break; // Success, exit retry loop
@@ -237,35 +246,62 @@ serve(async (req) => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-          const neoFaceResponse = await fetch(
-            `${NEOFACE_BASE_URL}/match_verify?document_id=${encodeURIComponent(document_id)}`,
-            {
-              method: 'GET',
-              headers: {
-                'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
-              },
-              signal: controller.signal,
-            }
-          );
+          const neoFaceResponse = await fetch(`${NEOFACE_BASE_URL}/match_verify`, {
+            method: 'POST', // POST au lieu de GET
+            headers: {
+              'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token: NEOFACE_API_TOKEN, // Ajouter token dans le body
+              document_id: document_id,
+            }),
+            signal: controller.signal,
+          });
 
           clearTimeout(timeoutId);
 
           const responseText = await neoFaceResponse.text();
-          console.log('📨 NeoFace status response:', responseText.substring(0, 200));
-
-          if (!neoFaceResponse.ok) {
-            throw new Error(`NeoFace API error: ${neoFaceResponse.status} - ${responseText}`);
-          }
-
           const neoFaceData = JSON.parse(responseText);
+          
+          console.log('📨 NeoFace match_verify response:', {
+            http_status: neoFaceResponse.status,
+            data_status: neoFaceData.status,
+            message: neoFaceData.message
+          });
 
-          statusResponse = {
-            status: neoFaceData.status || 'waiting',
-            matching_score: neoFaceData.matching_score,
-            message: neoFaceData.message,
-          };
-
-          console.log('✅ Status retrieved:', statusResponse);
+          // Gérer les différents codes de statut selon la spec API
+          // Status 200 = verified
+          if (neoFaceResponse.status === 200 && neoFaceData.status === 'verified') {
+            statusResponse = {
+              status: 'verified',
+              matching_score: neoFaceData.matching_score,
+              verified_at: neoFaceData.verified_at,
+              message: neoFaceData.message,
+            };
+            console.log('✅ Verification successful:', statusResponse);
+          }
+          // Status 201 = waiting
+          else if (neoFaceResponse.status === 201 && neoFaceData.status === 'waiting') {
+            statusResponse = {
+              status: 'waiting',
+              message: neoFaceData.message || 'En attente de selfie',
+            };
+            console.log('⏳ Still waiting:', statusResponse);
+          }
+          // Status 400 = failed
+          else if (neoFaceResponse.status === 400 && neoFaceData.status === 'failed') {
+            statusResponse = {
+              status: 'failed',
+              matching_score: neoFaceData.matching_score,
+              message: neoFaceData.message || 'Vérification échouée',
+            };
+            console.log('❌ Verification failed:', statusResponse);
+          }
+          // Cas inattendu
+          else {
+            throw new Error(`NeoFace API unexpected response: ${neoFaceResponse.status} - ${responseText}`);
+          }
 
           // If verified, update database
           if (statusResponse.status === 'verified') {
