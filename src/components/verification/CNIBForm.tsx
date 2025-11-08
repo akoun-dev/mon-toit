@@ -19,6 +19,8 @@ import { VerificationButtons } from './VerificationButtons';
 import { VerificationStepper } from './VerificationStepper';
 import { triggerUserFeedback } from '@/utils/userFeedback';
 import { preloadNotificationSounds } from '@/utils/notifications';
+import { useCamera } from '@/hooks/useCamera';
+import { SelfieCapture } from './SelfieCapture';
 
 interface CNIBFormProps {
   onSubmit?: () => void;
@@ -26,7 +28,8 @@ interface CNIBFormProps {
 
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
-  const [captureMethod] = useState<'popup'>('popup');
+  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('local');
+  const camera = useCamera();
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -344,34 +347,91 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       });
       
       // ========================================
-      // ÉTAPE 3 : Ouvrir fenêtre selfie NeoFace
+      // ÉTAPE 3 : Capture selfie (local ou popup)
       // ========================================
-      logger.info('🪟 Ouverture fenêtre NeoFace...');
       
-      const selfieWindow = window.open(
-        uploadData.selfie_url, 
-        'neoface-selfie',
-        'width=600,height=800,resizable=yes,scrollbars=yes'
-      );
-      
-      if (!selfieWindow) {
-        toast.error('Popup bloquée', {
-          description: 'Veuillez autoriser les popups pour ce site et réessayer'
+      if (captureMethod === 'local') {
+        // Mode local: attendre que l'utilisateur capture son selfie
+        logger.info('📸 Mode capture locale activé');
+        
+        // La capture est déjà gérée par le composant SelfieCapture
+        // On attend simplement que camera.capturedImage soit défini
+        const waitForSelfie = () => new Promise<void>((resolve, reject) => {
+          const checkInterval = setInterval(() => {
+            if (camera.capturedImage) {
+              clearInterval(checkInterval);
+              resolve();
+            }
+          }, 500);
+          
+          setTimeout(() => {
+            clearInterval(checkInterval);
+            if (!camera.capturedImage) {
+              reject(new Error('Timeout: selfie non capturé'));
+            }
+          }, 300000); // 5 minutes timeout
         });
-        throw new Error('Popup bloquée par le navigateur');
+        
+        await waitForSelfie();
+        
+        // Uploader le selfie vers Supabase Storage
+        logger.info('📤 Upload du selfie local...');
+        const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
+        const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
+        
+        const { data: selfieStorage, error: selfieError } = await supabase.storage
+          .from('verification-documents')
+          .upload(selfieFileName, selfieBlob, {
+            contentType: 'image/jpeg',
+            upsert: false
+          });
+        
+        if (selfieError) {
+          throw new Error(`Erreur upload selfie: ${selfieError.message}`);
+        }
+        
+        const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
+          .from('verification-documents')
+          .getPublicUrl(selfieStorage.path);
+        
+        logger.info('✅ Selfie local uploadé', { url: selfiePublicUrl });
+        
+        setUploadProgress(70);
+        setVerificationStep(prev => ({ 
+          ...prev, 
+          progress: 70, 
+          message: 'Selfie capturé et uploadé' 
+        }));
+        
+      } else {
+        // Mode popup NeoFace
+        logger.info('🪟 Ouverture fenêtre NeoFace...');
+        
+        const selfieWindow = window.open(
+          uploadData.selfie_url, 
+          'neoface-selfie',
+          'width=600,height=800,resizable=yes,scrollbars=yes'
+        );
+        
+        if (!selfieWindow) {
+          toast.error('Popup bloquée', {
+            description: 'Veuillez autoriser les popups pour ce site et réessayer'
+          });
+          throw new Error('Popup bloquée par le navigateur');
+        }
+        
+        toast.success('📸 Fenêtre NeoFace ouverte', {
+          description: 'Prenez votre selfie dans la nouvelle fenêtre. La vérification démarrera automatiquement.',
+          duration: 5000
+        });
+        
+        setUploadProgress(70);
+        setVerificationStep(prev => ({ 
+          ...prev, 
+          progress: 70, 
+          message: 'Prenez votre selfie dans la fenêtre NeoFace' 
+        }));
       }
-      
-      toast.success('📸 Fenêtre NeoFace ouverte', {
-        description: 'Prenez votre selfie dans la nouvelle fenêtre. La vérification démarrera automatiquement.',
-        duration: 5000
-      });
-      
-      setUploadProgress(70);
-      setVerificationStep(prev => ({ 
-        ...prev, 
-        progress: 70, 
-        message: 'Prenez votre selfie dans la fenêtre NeoFace' 
-      }));
       
       // ========================================
       // ÉTAPE 4 : Attendre 3 secondes puis démarrer le polling
@@ -425,6 +485,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const reset = () => {
     setCniImage(null);
     setVerificationResult(null);
+    camera.reset();
     setVerificationStep({
       current: 0,
       status: 'idle',
@@ -448,19 +509,47 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       <CardContent className="space-y-6">
         <VerificationInstructions />
 
-        {/* Info sur la méthode NeoFace */}
-        <Alert className="bg-primary/5 border-primary/20">
-          <Info className="h-4 w-4 text-primary" />
-          <AlertDescription>
-            <p className="font-medium text-primary mb-1">Interface NeoFace avec validation native</p>
-            <p className="text-sm text-muted-foreground">
-              • Détection automatique de visage et qualité d'image<br/>
-              • Vérification des clignements d'yeux (liveness)<br/>
-              • Capture automatique optimale<br/>
-              • Interface sécurisée certifiée
-            </p>
-          </AlertDescription>
-        </Alert>
+        {/* Sélecteur de méthode de capture */}
+        <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+          <Label className="text-sm font-medium">Méthode de capture du selfie</Label>
+          <RadioGroup 
+            value={captureMethod} 
+            onValueChange={(value) => setCaptureMethod(value as 'local' | 'popup')}
+            disabled={isVerifying || isPolling}
+            className="space-y-2"
+          >
+            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-background/50 transition-colors">
+              <RadioGroupItem value="local" id="local" />
+              <Label htmlFor="local" className="cursor-pointer font-normal flex-1">
+                <span className="font-medium">📷 Capture dans l'application</span>
+                <p className="text-xs text-muted-foreground mt-1">Contrôle total sur votre caméra (Recommandé)</p>
+              </Label>
+            </div>
+            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-background/50 transition-colors">
+              <RadioGroupItem value="popup" id="popup" />
+              <Label htmlFor="popup" className="cursor-pointer font-normal flex-1">
+                <span className="font-medium">🪟 Capture via fenêtre NeoFace</span>
+                <p className="text-xs text-muted-foreground mt-1">Interface sécurisée certifiée avec validation automatique</p>
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {/* Info sur la méthode NeoFace (si popup) */}
+        {captureMethod === 'popup' && (
+          <Alert className="bg-primary/5 border-primary/20">
+            <Info className="h-4 w-4 text-primary" />
+            <AlertDescription>
+              <p className="font-medium text-primary mb-1">Interface NeoFace avec validation native</p>
+              <p className="text-sm text-muted-foreground">
+                • Détection automatique de visage et qualité d'image<br/>
+                • Vérification des clignements d'yeux (liveness)<br/>
+                • Capture automatique optimale<br/>
+                • Interface sécurisée certifiée
+              </p>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {(isVerifying || isPolling) && verificationStep.current > 0 && (
           <VerificationStepper
@@ -471,25 +560,43 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           />
         )}
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <CNIUploadZone
-            image={cniImage}
-            uploadProgress={uploadProgress}
-            onUpload={handleCniUpload}
-            onRemove={() => {
-              setCniImage(null);
-              setVerificationResult(null);
-            }}
-            disabled={isVerifying}
-          />
+        <CNIUploadZone
+          image={cniImage}
+          uploadProgress={uploadProgress}
+          onUpload={handleCniUpload}
+          onRemove={() => {
+            setCniImage(null);
+            setVerificationResult(null);
+          }}
+          disabled={isVerifying}
+        />
 
+        {/* Afficher SelfieCapture en mode local pendant l'étape selfie */}
+        {captureMethod === 'local' && verificationStep.status === 'selfie' && (
+          <SelfieCapture
+            method="local"
+            selfieImage={camera.capturedImage}
+            isCapturing={camera.isCapturing}
+            isVideoLoading={camera.isVideoLoading}
+            isVerifying={isVerifying}
+            error={camera.error}
+            videoRef={camera.videoRef}
+            canvasRef={camera.canvasRef}
+            onStartCamera={camera.startCamera}
+            onStopCamera={camera.stopCamera}
+            onCapture={camera.capture}
+            onRemove={camera.reset}
+          />
+        )}
+
+        {captureMethod === 'popup' && (
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
               Le selfie sera capturé via l'interface NeoFace sécurisée après validation. Celle-ci inclut la détection automatique de visage, la vérification de qualité et les clignements d'yeux.
             </AlertDescription>
           </Alert>
-        </div>
+        )}
 
         {verificationResult && (
           <VerificationResultDisplay result={verificationResult} />
