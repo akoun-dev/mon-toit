@@ -47,12 +47,13 @@ export const useCamera = (): UseCameraReturn => {
       }
 
       logger.debug('📡 Demande d\'accès à la caméra...');
+      // Contraintes simplifiées pour meilleure compatibilité
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        } 
+          facingMode: 'user'
+          // Pas de contraintes width/height - laisse le navigateur décider
+        },
+        audio: false
       });
       
       logger.info('✅ Stream vidéo obtenu', { 
@@ -74,64 +75,105 @@ export const useCamera = (): UseCameraReturn => {
       streamRef.current = stream;
       
       const playPromise = new Promise<void>((resolve, reject) => {
-        const onCanPlay = () => {
-          logger.debug('Vidéo prête (canplay)', {
+        let resolved = false;
+        
+        const checkVideoDimensions = () => {
+          if (resolved) return;
+          
+          logger.debug('🔍 Vérification dimensions', {
             width: video.videoWidth,
             height: video.videoHeight,
             readyState: video.readyState
           });
           
           if (video.videoWidth > 0 && video.videoHeight > 0) {
+            resolved = true;
+            cleanup();
             setIsCapturing(true);
             setIsVideoLoading(false);
-            logger.info('Caméra prête à capturer');
+            logger.info('✅ Caméra prête à capturer');
             toast.success('Caméra activée !', { 
               description: 'Positionnez votre visage au centre' 
             });
             resolve();
           }
         };
+        
+        const onLoadedMetadata = () => {
+          logger.debug('🎬 loadedmetadata déclenché', {
+            width: video.videoWidth,
+            height: video.videoHeight,
+            readyState: video.readyState
+          });
+          checkVideoDimensions();
+        };
+
+        const onCanPlay = () => {
+          logger.debug('▶️ canplay déclenché', {
+            width: video.videoWidth,
+            height: video.videoHeight,
+            readyState: video.readyState
+          });
+          checkVideoDimensions();
+        };
 
         const onError = (e: Event) => {
-          logger.error('Erreur vidéo', { error: e });
+          logger.error('❌ Erreur vidéo', { error: e });
+          cleanup();
           reject(new Error('Erreur de chargement de la vidéo'));
         };
 
-        video.addEventListener('canplay', onCanPlay, { once: true });
-        video.addEventListener('error', onError, { once: true });
-        
-        setTimeout(() => {
+        const cleanup = () => {
+          video.removeEventListener('loadedmetadata', onLoadedMetadata);
           video.removeEventListener('canplay', onCanPlay);
           video.removeEventListener('error', onError);
+        };
+
+        video.addEventListener('loadedmetadata', onLoadedMetadata);
+        video.addEventListener('canplay', onCanPlay);
+        video.addEventListener('error', onError);
+        
+        // Timeout augmenté à 10 secondes
+        setTimeout(() => {
+          if (resolved) return;
+          
+          cleanup();
           
           if (video.readyState >= 2 && video.videoWidth > 0) {
-            logger.debug('Timeout mais vidéo prête', {
+            logger.debug('⏱️ Timeout mais vidéo prête', {
               readyState: video.readyState,
               width: video.videoWidth,
               height: video.videoHeight
             });
+            resolved = true;
             setIsCapturing(true);
             setIsVideoLoading(false);
             toast.success('Caméra activée !');
             resolve();
           } else {
-            logger.error('Timeout: vidéo non prête', {
+            logger.error('⏱️ Timeout: vidéo non prête après 10s', {
               readyState: video.readyState,
               width: video.videoWidth,
-              height: video.videoHeight
+              height: video.videoHeight,
+              clientWidth: video.clientWidth,
+              clientHeight: video.clientHeight
             });
             reject(new Error('La vidéo n\'a pas pu se charger'));
           }
-        }, 5000);
+        }, 10000);
       });
 
       video.srcObject = stream;
+      video.load(); // Force le rechargement des métadonnées
+      
+      // Attendre un peu pour que le navigateur charge les métadonnées
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       try {
         await video.play();
-        logger.debug('video.play() appelé avec succès');
+        logger.debug('✅ video.play() réussi');
       } catch (playError) {
-        logger.warn('video.play() a échoué (peut-être déjà en lecture)', { error: playError });
+        logger.warn('⚠️ video.play() échoué, on continue quand même', { error: playError });
       }
 
       await playPromise;
@@ -192,17 +234,6 @@ export const useCamera = (): UseCameraReturn => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     
-    if (video.videoWidth === 0 || video.videoHeight === 0) {
-      logger.error('Dimensions vidéo invalides', {
-        width: video.videoWidth,
-        height: video.videoHeight
-      });
-      toast.error('Vidéo non prête', { 
-        description: 'Attendez que la caméra charge complètement' 
-      });
-      return;
-    }
-
     if (!streamRef.current || streamRef.current.getTracks().length === 0) {
       logger.error('Aucun stream actif');
       toast.error('Caméra inactive', { 
@@ -211,13 +242,25 @@ export const useCamera = (): UseCameraReturn => {
       return;
     }
 
-    logger.debug('Capture du selfie', {
-      width: video.videoWidth,
-      height: video.videoHeight
-    });
+    // Fallback : utiliser dimensions CSS si videoWidth/Height sont à 0
+    let width = video.videoWidth;
+    let height = video.videoHeight;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    if (width === 0 || height === 0) {
+      width = video.clientWidth || 640;
+      height = video.clientHeight || 480;
+      logger.warn('⚠️ Utilisation des dimensions CSS comme fallback', { 
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight,
+        clientWidth: width,
+        clientHeight: height 
+      });
+    }
+
+    logger.debug('📸 Capture du selfie', { width, height });
+
+    canvas.width = width;
+    canvas.height = height;
     
     const ctx = canvas.getContext('2d');
     if (ctx) {

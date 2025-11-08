@@ -99,6 +99,18 @@ export const SelfieCapture = ({
                           <Loader2 className="h-10 w-10 animate-spin mx-auto mb-3 text-primary" />
                           <p className="text-sm font-medium">Activation de la caméra...</p>
                           <p className="text-xs text-muted-foreground mt-1">Autorisez l'accès si demandé</p>
+                          {/* Indicateur de debug */}
+                          <div className="mt-3 pt-3 border-t border-border/50">
+                            <p className="text-xs text-muted-foreground font-mono">
+                              Dimensions: {videoRef.current?.videoWidth || 0} × {videoRef.current?.videoHeight || 0}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-mono mt-1">
+                              ReadyState: {videoRef.current?.readyState || 0} / 4
+                            </p>
+                            <p className="text-xs text-muted-foreground font-mono mt-1">
+                              CSS: {videoRef.current?.clientWidth || 0} × {videoRef.current?.clientHeight || 0}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )}
