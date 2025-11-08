@@ -131,73 +131,84 @@ export const PropertyCard = ({
     delta: 100,
   });
 
+  // Check if property is recent (< 7 days)
+  const isRecent = (() => {
+    const daysDiff = Math.floor((Date.now() - new Date(property.created_at).getTime()) / (1000 * 60 * 60 * 24));
+    return daysDiff < 7;
+  })();
+
   return (
     <>
-      <Card 
-        {...swipeHandlers}
-        {...longPressProps}
-        className="group relative overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-all duration-300 border border-border rounded-2xl animate-scale-in active:scale-95"
-        role="article"
-        aria-labelledby={`property-title-${property.id}`}
-        aria-describedby={`property-description-${property.id}`}
+      <motion.div
+        whileHover={{ 
+          y: -8,
+          transition: { duration: 0.3, ease: 'easeOut' }
+        }}
       >
+        <Card 
+          {...swipeHandlers}
+          {...longPressProps}
+          className="group relative overflow-hidden bg-card shadow-sm hover:shadow-xl transition-all duration-300 border border-border rounded-2xl active:scale-95"
+          role="article"
+          aria-labelledby={`property-title-${property.id}`}
+          aria-describedby={`property-description-${property.id}`}
+        >
       <div className="relative aspect-[4/3] bg-muted overflow-hidden">
-        {(() => {
-          // Debug: Log property data to understand what we're working with
-          console.log(`Property ${property.id} image data:`, {
-            main_image: property.main_image,
-            images: property.images,
-            imagesCount: property.images?.length || 0
-          });
+        <motion.div
+          className="w-full h-full"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        >
+          {(() => {
+            // Try images array first
+            if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+              const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+              if (validImages.length > 0) {
+                return (
+                  <SimpleImage
+                    src={validImages[0]}
+                    alt={`${property.title} - ${property.city}`}
+                    className="w-full h-full object-cover"
+                  />
+                );
+              }
+            }
 
-          // Try images array first
-          if (property.images && Array.isArray(property.images) && property.images.length > 0) {
-            const validImages = property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-            if (validImages.length > 0) {
+            // Fall back to main_image
+            if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
               return (
-                <SimpleImage
-                  src={validImages[0]}
-                  alt={`${property.title} - ${property.city}`}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+                <>
+                  <SimpleImage
+                    src={property.main_image}
+                    alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+                </>
               );
             }
-          }
 
-          // Fall back to main_image
-          if (property.main_image && typeof property.main_image === 'string' && property.main_image.trim() !== '') {
+            // Use demo image as fallback
+            const demoImage = getDemoImage(property.id, property.property_type);
             return (
               <>
                 <SimpleImage
-                  src={property.main_image}
-                  alt={`Photo du bien: ${property.title} - ${property.property_type} à ${property.city}`}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  src={demoImage}
+                  alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+                {/* Demo badge */}
+                <div className="absolute top-3 left-3">
+                  <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3" />
+                    Démo
+                  </Badge>
+                </div>
               </>
             );
-          }
-
-          // Use demo image as fallback
-          const demoImage = getDemoImage(property.id, property.property_type);
-          return (
-            <>
-              <SimpleImage
-                src={demoImage}
-                alt={`Photo démonstration: ${property.title} - ${property.property_type} à ${property.city}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
-              {/* Demo badge */}
-              <div className="absolute top-3 left-3">
-                <Badge className="text-xs rounded-lg font-semibold shadow-md bg-yellow-500 hover:bg-yellow-600 text-white flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3" />
-                  Démo
-                </Badge>
-              </div>
-            </>
-          );
-        })()}
+          })()}
+        </motion.div>
         
         {onFavoriteClick && (
           <motion.button
@@ -234,11 +245,18 @@ export const PropertyCard = ({
           </motion.button>
         )}
         
-        {/* Time badge - top left */}
-        <Badge className="absolute top-3 left-3 text-xs rounded-lg font-semibold shadow-md bg-background/90 backdrop-blur-sm text-foreground border border-border/50 flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          {timeAgo}
-        </Badge>
+        {/* Time badge - top left with pulse for recent properties */}
+        <motion.div
+          animate={isRecent ? {
+            scale: [1, 1.05, 1],
+            transition: { duration: 2, repeat: Infinity }
+          } : {}}
+        >
+          <Badge className={`absolute top-3 left-3 text-xs rounded-lg font-semibold shadow-md bg-background/90 backdrop-blur-sm text-foreground border border-border/50 flex items-center gap-1 ${isRecent ? 'ring-2 ring-primary/50' : ''}`}>
+            <Clock className="h-3 w-3" />
+            {timeAgo}
+          </Badge>
+        </motion.div>
         
         <div className="absolute top-14 left-3 flex flex-col gap-2">
           {showStatus && (
@@ -289,12 +307,16 @@ export const PropertyCard = ({
       </div>
 
       <CardHeader className="p-2 sm:p-3 md:p-4 pb-1 sm:pb-2">
-        <div className="flex items-baseline gap-2 mb-2">
+        <motion.div 
+          className="flex items-baseline gap-2 mb-2"
+          whileHover={{ scale: 1.03 }}
+          transition={{ duration: 0.2 }}
+        >
           <p className="text-2xl sm:text-3xl font-black text-primary">
             {formatPrice(property.monthly_rent)}
           </p>
           <span className="text-sm font-medium text-muted-foreground">/mois</span>
-        </div>
+        </motion.div>
         <CardTitle id={`property-title-${property.id}`} className="line-clamp-1 text-base sm:text-lg font-bold">
           {property.property_type} {property.bedrooms}ch. - {property.city}
         </CardTitle>
@@ -337,6 +359,7 @@ export const PropertyCard = ({
         </Button>
       </CardContent>
     </Card>
+      </motion.div>
 
     {/* Preview Modal */}
     <Dialog open={showPreview} onOpenChange={setShowPreview}>

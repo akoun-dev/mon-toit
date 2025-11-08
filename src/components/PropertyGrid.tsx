@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { propertyService } from '@/services/propertyService';
 import { PropertyCard } from '@/components/properties/PropertyCard';
 import PropertyFiltersComponent, { PropertyFilters } from '@/components/PropertyFilters';
@@ -7,7 +8,6 @@ import { PropertyCardSkeleton } from '@/components/properties/PropertyCardSkelet
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowDown } from 'lucide-react';
-import { FadeInView } from '@/components/animations/FadeInView';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import type { Property } from '@/types';
@@ -153,34 +153,60 @@ export const PropertyGrid = ({
             </div>
           ) : (
             <>
-              <div 
+              <motion.div 
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
                 role="list"
                 aria-label="Liste des biens immobiliers"
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.08,
+                      delayChildren: 0.1
+                    }
+                  }
+                }}
+                initial="hidden"
+                animate="show"
               >
                 {displayedProperties.map((property, index) => (
-                  <FadeInView key={property.id} delay={Math.min(index * 0.05, 0.4)} direction="up">
-                    <div role="listitem">
-                      <PropertyCard
-                        property={property}
-                        variant="compact"
-                        onFavoriteClick={(id) => {
-                          if (!user) {
-                            toast({
-                              title: "Connexion requise",
-                              description: "Connectez-vous pour ajouter des favoris",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                          // Toggle favorite logic would go here
-                        }}
-                        isFavorite={false}
-                      />
-                    </div>
-                  </FadeInView>
+                  <motion.div
+                    key={property.id}
+                    role="listitem"
+                    variants={{
+                      hidden: { y: 50, opacity: 0, scale: 0.95 },
+                      show: { 
+                        y: 0, 
+                        opacity: 1, 
+                        scale: 1,
+                        transition: {
+                          type: 'spring',
+                          stiffness: 100,
+                          damping: 15
+                        }
+                      }
+                    }}
+                  >
+                    <PropertyCard
+                      property={property}
+                      variant="compact"
+                      onFavoriteClick={(id) => {
+                        if (!user) {
+                          toast({
+                            title: "Connexion requise",
+                            description: "Connectez-vous pour ajouter des favoris",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        // Toggle favorite logic would go here
+                      }}
+                      isFavorite={false}
+                    />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Load More Button */}
               {hasMore && (
