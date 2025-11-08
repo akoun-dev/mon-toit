@@ -12,12 +12,18 @@ interface UploadDocumentRequest {
   user_id: string;
 }
 
+interface UploadSelfieRequest {
+  action: 'upload_selfie';
+  document_id: string;
+  selfie_photo_url: string;
+}
+
 interface CheckStatusRequest {
   action: 'check_status';
   document_id: string;
 }
 
-type NeoFaceRequest = UploadDocumentRequest | CheckStatusRequest;
+type NeoFaceRequest = UploadDocumentRequest | UploadSelfieRequest | CheckStatusRequest;
 
 interface NeoFaceUploadResponse {
   success: boolean;
@@ -223,7 +229,114 @@ serve(async (req) => {
     }
 
     // ========================================
-    // ACTION 2: Check Status
+    // ACTION 2: Upload Selfie
+    // ========================================
+    if (action === 'upload_selfie') {
+      const { document_id, selfie_photo_url } = requestData as UploadSelfieRequest;
+
+      console.log('📤 Uploading selfie to NeoFace...', { 
+        document_id, 
+        selfie_photo_url: selfie_photo_url.substring(0, 50) + '...' 
+      });
+
+      // Validate inputs
+      if (!document_id || !selfie_photo_url) {
+        throw new Error('Paramètres manquants: document_id et selfie_photo_url requis');
+      }
+
+      // Download selfie from URL
+      console.log('⬇️ Downloading selfie image...');
+      const selfieResponse = await fetch(selfie_photo_url);
+      if (!selfieResponse.ok) {
+        throw new Error('Impossible de télécharger l\'image selfie');
+      }
+
+      const selfieBlob = await selfieResponse.blob();
+      
+      console.log('✅ Selfie downloaded', {
+        type: selfieBlob.type,
+        size: selfieBlob.size,
+        size_mb: (selfieBlob.size / (1024 * 1024)).toFixed(2)
+      });
+
+      // Call NeoFace API with retry
+      let uploadResponse: { success: boolean } | null = null;
+      let lastError: Error | null = null;
+
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        console.log(`🔄 Attempt ${attempt}/${MAX_RETRIES} to upload selfie to NeoFace...`);
+
+        try {
+          const formData = new FormData();
+          formData.append('token', NEOFACE_API_TOKEN);
+          formData.append('document_id', document_id);
+          formData.append('selfie_file', selfieBlob, 'selfie.jpg');
+          
+          console.log('📦 FormData créé pour selfie:', {
+            document_id,
+            file_type: selfieBlob.type,
+            file_size: selfieBlob.size
+          });
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+          const neoFaceResponse = await fetch(`${NEOFACE_BASE_URL}/selfie_upload`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
+            },
+            body: formData,
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
+          const responseText = await neoFaceResponse.text();
+          console.log('📨 NeoFace selfie_upload response:', {
+            status: neoFaceResponse.status,
+            body_preview: responseText.substring(0, 200)
+          });
+
+          if (!neoFaceResponse.ok) {
+            throw new Error(`NeoFace API error: ${neoFaceResponse.status} - ${responseText}`);
+          }
+
+          uploadResponse = { success: true };
+
+          console.log('✅ NeoFace selfie upload successful');
+          break;
+
+        } catch (error) {
+          lastError = error as Error;
+          console.error(`❌ Attempt ${attempt} failed:`, error);
+
+          if (attempt < MAX_RETRIES) {
+            const backoffDelay = 1000 * attempt;
+            console.log(`⏳ Waiting ${backoffDelay}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, backoffDelay));
+          }
+        }
+      }
+
+      if (!uploadResponse) {
+        throw new Error(`Échec après ${MAX_RETRIES} tentatives: ${lastError?.message}`);
+      }
+
+      const duration = Date.now() - startTime;
+      console.log(`✨ Selfie upload completed in ${duration}ms`);
+
+      return new Response(
+        JSON.stringify(uploadResponse),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
+    // ========================================
+    // ACTION 3: Check Status
     // ========================================
     if (action === 'check_status') {
       const { document_id } = requestData as CheckStatusRequest;

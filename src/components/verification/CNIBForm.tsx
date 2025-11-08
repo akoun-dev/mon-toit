@@ -28,7 +28,7 @@ interface CNIBFormProps {
 
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
-  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('local');
+  const captureMethod = 'local'; // Mode 100% local uniquement
   const camera = useCamera();
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -331,6 +331,8 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       setSelfieUrl(uploadData.url);
       setUploadProgress(60);
       setIsUploadingDocument(false);
+      
+      // Mode 100% local - Attente capture selfie
       setVerificationStep({
         current: 2,
         status: 'selfie',
@@ -338,158 +340,88 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         message: 'En attente de votre selfie...'
       });
       
-      // 🎵 Trigger step change feedback
       await triggerUserFeedback('step_change');
       
-      logger.info('📡 Réponse NeoFace upload_document:', {
-        success: uploadData.success,
-        document_id: uploadData.document_id,
-        url_exists: !!uploadData.url,
-        url_preview: uploadData.url ? uploadData.url.substring(0, 80) : 'MANQUANTE',
-        has_selfie_url: !!uploadData.selfie_url
-      });
-      
       logger.info('✅ Document uploadé sur NeoFace', { 
-        document_id: uploadData.document_id,
-        selfie_url: uploadData.url.substring(0, 50) + '...'
+        document_id: uploadData.document_id
       });
       
-      // ========================================
-      // ÉTAPE 3 : Capture selfie (local ou popup)
-      // ========================================
+      toast.success('📄 Document validé', {
+        description: 'Prenez maintenant votre selfie avec la webcam'
+      });
       
-      if (captureMethod === 'local') {
-        // Mode local: attendre que l'utilisateur capture son selfie
-        logger.info('📸 Mode capture locale activé');
-        
-        // La capture est déjà gérée par le composant SelfieCapture
-        // On attend simplement que camera.capturedImage soit défini
-        const waitForSelfie = () => new Promise<void>((resolve, reject) => {
-          const checkInterval = setInterval(() => {
-            if (camera.capturedImage) {
-              clearInterval(checkInterval);
-              resolve();
-            }
-          }, 500);
-          
-          setTimeout(() => {
-            clearInterval(checkInterval);
-            if (!camera.capturedImage) {
-              reject(new Error('Timeout: selfie non capturé'));
-            }
-          }, 300000); // 5 minutes timeout
-        });
-        
-        await waitForSelfie();
-        
-        // Uploader le selfie vers Supabase Storage
-        logger.info('📤 Upload du selfie local...');
-        const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
-        const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
-        
-        const { data: selfieStorage, error: selfieError } = await supabase.storage
-          .from('verification-documents')
-          .upload(selfieFileName, selfieBlob, {
-            contentType: 'image/jpeg',
-            upsert: false
-          });
-        
-        if (selfieError) {
-          throw new Error(`Erreur upload selfie: ${selfieError.message}`);
-        }
-        
-        const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
-          .from('verification-documents')
-          .getPublicUrl(selfieStorage.path);
-        
-        logger.info('✅ Selfie local uploadé', { url: selfiePublicUrl });
-        
-        setUploadProgress(70);
-        setVerificationStep(prev => ({ 
-          ...prev, 
-          progress: 70, 
-          message: 'Selfie capturé et uploadé' 
-        }));
-        
-      } else {
-        // Mode popup NeoFace
-        // Vérifier que l'URL NeoFace est disponible
-        if (!uploadData.url) {
-          logger.error('❌ URL NeoFace manquante dans la réponse serveur', { uploadData });
-          throw new Error('URL NeoFace manquante dans la réponse serveur');
-        }
-        
-        logger.info('🪟 Ouverture fenêtre NeoFace...', { 
-          url_preview: uploadData.url.substring(0, 60) + '...' 
-        });
-        
-        setVerificationStep(prev => ({ 
-          ...prev, 
-          progress: 65, 
-          message: 'Ouverture de la fenêtre NeoFace...' 
-        }));
-        
-        const selfieWindow = window.open(
-          uploadData.url, // ✅ Correction: utiliser uploadData.url au lieu de uploadData.selfie_url
-          'neoface-selfie',
-          'width=600,height=800,resizable=yes,scrollbars=yes'
-        );
-        
-        if (!selfieWindow) {
-          logger.error('Popup NeoFace bloquée par le navigateur');
-          
-          toast.error('Popup bloquée', {
-            description: 'Veuillez autoriser les popups pour ce site dans les paramètres de votre navigateur',
-            duration: 10000
-          });
-          
-          // Proposer le mode local comme fallback
-          if (window.confirm('La popup NeoFace est bloquée. Voulez-vous essayer la capture locale ?')) {
-            setCaptureMethod('local');
-            setVerificationStep({
-              current: 2,
-              status: 'selfie',
-              progress: 60,
-              message: 'En attente de votre selfie...'
-            });
-            return; // Sortir pour permettre à l'utilisateur de capturer en local
-          }
-          
-          throw new Error('Popup bloquée par le navigateur');
-        }
-        
-        toast.success('📸 Fenêtre NeoFace prête', {
-          description: 'Prenez votre selfie dans la nouvelle fenêtre. La vérification démarrera automatiquement.',
-          duration: 5000
-        });
-        
-        setUploadProgress(70);
-        setVerificationStep(prev => ({ 
-          ...prev, 
-          progress: 70, 
-          message: 'Prenez votre selfie dans la fenêtre NeoFace' 
-        }));
-      }
-      
-      // ========================================
-      // ÉTAPE 4 : Attendre 3 secondes puis démarrer le polling
-      // ========================================
-      logger.info('⏳ Attente de 3 secondes avant polling...');
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      return; // Attendre que l'utilisateur capture son selfie
+    
+    // ========================================
+    // ÉTAPE 2 : Upload selfie capturé vers NeoFace
+    // ========================================
+    } else if (camera.capturedImage && documentId) {
+      logger.info('🔍 Upload du selfie vers NeoFace...');
       
       setVerificationStep({
         current: 3,
         status: 'verifying',
-        progress: 80,
-        message: 'Analyse biométrique en cours...'
+        progress: 70,
+        message: 'Upload du selfie...'
       });
       
-      // 🎵 Trigger processing start feedback
+      await triggerUserFeedback('step_change');
+      
+      // Upload selfie to Supabase Storage
+      const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
+      const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
+      
+      const { data: selfieStorage, error: selfieError } = await supabase.storage
+        .from('verification-documents')
+        .upload(selfieFileName, selfieBlob, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+      
+      if (selfieError) {
+        throw new Error(`Erreur upload selfie: ${selfieError.message}`);
+      }
+      
+      const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
+        .from('verification-documents')
+        .getPublicUrl(selfieStorage.path);
+      
+      logger.info('✅ Selfie uploadé vers Supabase Storage', { url: selfiePublicUrl });
+      
+      // Upload to NeoFace via edge function
+      setVerificationStep(prev => ({
+        ...prev,
+        progress: 80,
+        message: 'Envoi du selfie à NeoFace...'
+      }));
+      
+      const { data: neoFaceData, error: neoFaceError } = await supabase.functions.invoke('neoface-verification', {
+        body: {
+          action: 'upload_selfie',
+          document_id: documentId,
+          selfie_photo_url: selfiePublicUrl
+        }
+      });
+      
+      if (neoFaceError || !neoFaceData?.success) {
+        throw new Error('Erreur lors de l\'envoi du selfie à NeoFace: ' + (neoFaceError?.message || 'Erreur inconnue'));
+      }
+      
+      logger.info('✅ Selfie envoyé à NeoFace avec succès');
+      
+      // Start polling for verification result
+      setVerificationStep(prev => ({
+        ...prev,
+        progress: 85,
+        message: 'Vérification biométrique en cours...'
+      }));
+      
       await triggerUserFeedback('processing_start');
       
       logger.info('🔄 Démarrage du polling...');
-      startPolling(uploadData.document_id);
-      
+      startPolling(documentId);
+    }
+    
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
       

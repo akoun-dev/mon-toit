@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Shield, RefreshCw } from 'lucide-react';
 
 interface VerificationButtonsProps {
-  captureMethod: 'local' | 'popup';
   canVerify: boolean;
   isVerifying: boolean;
   isPolling: boolean;
