@@ -39,13 +39,14 @@ export const useCamera = (): UseCameraReturn => {
 
   const startCamera = useCallback(async () => {
     try {
-      logger.info('Démarrage de la caméra');
+      logger.info('🎥 Démarrage de la caméra');
       setIsVideoLoading(true);
       
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('L\'API MediaDevices n\'est pas supportée par ce navigateur');
       }
 
+      logger.debug('📡 Demande d\'accès à la caméra...');
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'user',
@@ -54,11 +55,20 @@ export const useCamera = (): UseCameraReturn => {
         } 
       });
       
-      logger.debug('Stream vidéo obtenu', { settings: stream.getVideoTracks()[0].getSettings() });
+      logger.info('✅ Stream vidéo obtenu', { 
+        tracks: stream.getVideoTracks().length,
+        settings: stream.getVideoTracks()[0].getSettings() 
+      });
       
       if (!videoRef.current) {
+        logger.error('❌ Référence vidéo non disponible - élément video non monté');
         throw new Error('Référence vidéo non disponible');
       }
+      
+      logger.debug('✅ Élément video trouvé', {
+        nodeName: videoRef.current.nodeName,
+        readyState: videoRef.current.readyState
+      });
 
       const video = videoRef.current;
       streamRef.current = stream;

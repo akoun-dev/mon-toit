@@ -82,22 +82,26 @@ export const SelfieCapture = ({
 
               {(isCapturing || isVideoLoading) && !selfieImage && (
                 <div className="space-y-4">
-                  <div className="relative rounded-lg overflow-hidden bg-black">
+                  <div className="relative rounded-lg overflow-hidden bg-muted border-2 border-primary/20">
                     <video
                       ref={videoRef}
                       autoPlay
                       playsInline
                       muted
-                      className="w-full h-64 object-cover"
+                      className="w-full h-64 object-cover bg-black"
+                      style={{ minHeight: '256px' }}
                     />
+                    
                     {isVideoLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                        <div className="text-center text-white">
-                          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
-                          <p className="text-sm">Chargement de la caméra...</p>
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
+                        <div className="text-center bg-background/90 rounded-lg p-6 shadow-lg">
+                          <Loader2 className="h-10 w-10 animate-spin mx-auto mb-3 text-primary" />
+                          <p className="text-sm font-medium">Activation de la caméra...</p>
+                          <p className="text-xs text-muted-foreground mt-1">Autorisez l'accès si demandé</p>
                         </div>
                       </div>
                     )}
+                    
                     {isCapturing && (
                       <QualityOverlay 
                         quality={qualityMetrics}
