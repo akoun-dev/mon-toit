@@ -23,10 +23,22 @@ import { StickyHeader } from '@/components/ui/sticky-header';
 import { toast } from 'sonner';
 import { logger } from '@/services/logger';
 import { useOwnerAnalytics } from '@/hooks/useOwnerAnalytics';
+import { useOwnerLeaseCertification } from '@/hooks/useOwnerLeaseCertification';
+import { LeaseCertificationStats } from '@/components/dashboard/LeaseCertificationStats';
+import { LeaseCertificationTable } from '@/components/dashboard/LeaseCertificationTable';
+import { CertificationTrendChart } from '@/components/dashboard/CertificationTrendChart';
+import { CertificationActionsCard } from '@/components/dashboard/CertificationActionsCard';
+import { ShieldCheck } from 'lucide-react';
 
 const OwnerDashboard = () => {
   const { user, profile, loading: authLoading } = useAuth();
   const { analytics, stats: analyticsStats, loading: analyticsLoading } = useOwnerAnalytics();
+  const { 
+    leases, 
+    stats: certificationStats, 
+    monthlyTrends, 
+    loading: certificationLoading 
+  } = useOwnerLeaseCertification();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalProperties: 0,
@@ -295,6 +307,10 @@ const OwnerDashboard = () => {
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Analytics
               </TabsTrigger>
+              <TabsTrigger value="certifications">
+                <ShieldCheck className="h-4 w-4 mr-2" />
+                Certifications
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
@@ -411,6 +427,22 @@ const OwnerDashboard = () => {
 
               {/* Performance Table */}
               <PropertyPerformanceTable properties={analytics} loading={analyticsLoading} />
+            </TabsContent>
+
+            <TabsContent value="certifications" className="space-y-4">
+              {/* Certification Stats Overview */}
+              <LeaseCertificationStats stats={certificationStats} />
+
+              {/* Trend Chart + Actions */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2">
+                  <CertificationTrendChart data={monthlyTrends} />
+                </div>
+                <CertificationActionsCard leases={leases} />
+              </div>
+
+              {/* Detailed Leases Table */}
+              <LeaseCertificationTable leases={leases} loading={certificationLoading} />
             </TabsContent>
           </Tabs>
         </div>
