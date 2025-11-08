@@ -18,6 +18,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { useHeroImages } from '@/hooks/useHeroImages';
 
 const mobileHeroImages = [
   'https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=800&q=80',
@@ -32,6 +33,8 @@ export const MobileHero = () => {
   const [propertyType, setPropertyType] = useState('all');
   const navigate = useNavigate();
 
+  const { data: heroImagesData = [], isLoading } = useHeroImages('mobile');
+
   const autoplayPlugin = useRef(
     Autoplay({ 
       delay: 5000,
@@ -39,6 +42,11 @@ export const MobileHero = () => {
       stopOnMouseEnter: false,
     })
   );
+
+  // Fallback vers Unsplash si vide
+  const displayImages = heroImagesData.length > 0
+    ? heroImagesData.map(img => img.image_url)
+    : mobileHeroImages;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -61,23 +69,23 @@ export const MobileHero = () => {
           }}
           plugins={[autoplayPlugin.current]}
           className="w-full h-full"
-        >
-          <CarouselContent className="h-full">
-            {mobileHeroImages.map((imageUrl, index) => (
-              <CarouselItem key={index} className="h-full">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
-                  style={{
-                    backgroundImage: `url(${imageUrl})`,
-                    backgroundPosition: 'center 40%'
-                  }}
-                  role="img"
-                  aria-label={`Propriété ${index + 1} au Burkina Faso`}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+      >
+        <CarouselContent className="h-full">
+          {displayImages.map((imageUrl, index) => (
+            <CarouselItem key={index} className="h-full">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
+                style={{
+                  backgroundImage: `url(${imageUrl})`,
+                  backgroundPosition: 'center 40%'
+                }}
+                role="img"
+                aria-label={`Propriété ${index + 1} au Burkina Faso`}
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
       </div>
       
       {/* Overlay pour lisibilité - plus opaque sur mobile */}

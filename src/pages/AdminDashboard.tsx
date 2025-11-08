@@ -35,6 +35,7 @@ import { PropertyAlertsMonitor } from '@/components/admin/PropertyAlertsMonitor'
 import { ReportGenerator } from '@/components/admin/ReportGenerator';
 import { IllustrationGenerator } from '@/components/admin/IllustrationGenerator';
 import { RealtimeDashboard } from '@/components/admin/RealtimeDashboard';
+import { HeroImageManager } from '@/components/admin/HeroImageManager';
 import { supabase } from '@/lib/supabase';
 
 const AdminDashboard = () => {
@@ -330,6 +331,11 @@ const AdminDashboard = () => {
         {/* Alertes Propriétés */}
         {activeTab === 'alerts' && (
           <PropertyAlertsMonitor />
+        )}
+
+        {/* Images Hero */}
+        {activeTab === 'hero' && (
+          <HeroImageManager />
         )}
       </div>
     </AdminLayout>

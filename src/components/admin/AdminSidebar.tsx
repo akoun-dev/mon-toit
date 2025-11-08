@@ -78,6 +78,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, badges }: AdminSidebarPro
         { id: 'reporting', label: 'Rapports', icon: FileBarChart },
         { id: 'electronic-signatures', label: 'Signatures Élec.', icon: PenTool },
         { id: 'illustrations', label: 'Illustrations', icon: Image },
+        { id: 'hero', label: 'Images Hero', icon: Image },
       ]
     }
   ];

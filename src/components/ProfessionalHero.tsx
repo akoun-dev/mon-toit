@@ -29,6 +29,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { useHeroImages } from '@/hooks/useHeroImages';
 
 const heroImages = [
   {
@@ -59,6 +60,8 @@ export const ProfessionalHero = () => {
   const [propertyType, setPropertyType] = useState('');
   const [budget, setBudget] = useState('');
 
+  const { data: heroImagesData = [], isLoading } = useHeroImages('desktop');
+
   const autoplayPlugin = useRef(
     Autoplay({ 
       delay: 5000,
@@ -66,6 +69,11 @@ export const ProfessionalHero = () => {
       stopOnMouseEnter: true,
     })
   );
+
+  // Fallback vers Unsplash si vide
+  const displayImages = heroImagesData.length > 0 
+    ? heroImagesData.map(img => ({ url: img.image_url, alt: img.alt_text }))
+    : heroImages;
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -88,22 +96,22 @@ export const ProfessionalHero = () => {
           }}
           plugins={[autoplayPlugin.current]}
           className="w-full h-full"
-        >
-          <CarouselContent className="h-full">
-            {heroImages.map((image, index) => (
-              <CarouselItem key={index} className="h-full">
-                <div 
-                  className="absolute inset-0 bg-cover bg-right bg-no-repeat transition-all duration-700"
-                  style={{
-                    backgroundImage: `url(${image.url})`,
-                  }}
-                  role="img"
-                  aria-label={image.alt}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+      >
+        <CarouselContent className="h-full">
+          {displayImages.map((image, index) => (
+            <CarouselItem key={index} className="h-full">
+              <div 
+                className="absolute inset-0 bg-cover bg-right bg-no-repeat transition-all duration-700"
+                style={{
+                  backgroundImage: `url(${image.url})`,
+                }}
+                role="img"
+                aria-label={image.alt}
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
       </div>
       
       {/* Overlay directionnel - opaque à gauche (texte), transparent à droite (image) */}

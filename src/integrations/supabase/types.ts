@@ -842,6 +842,45 @@ export type Database = {
           },
         ]
       }
+      hero_carousel_images: {
+        Row: {
+          alt_text: string
+          created_at: string
+          device_type: string
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          alt_text: string
+          created_at?: string
+          device_type?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          alt_text?: string
+          created_at?: string
+          device_type?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       lease_certification_history: {
         Row: {
           action: string
@@ -3551,6 +3590,16 @@ export type Database = {
       generate_fa_reference: { Args: never; Returns: string }
       generate_receipt_number: { Args: never; Returns: string }
       generate_verify_id: { Args: never; Returns: string }
+      get_active_hero_images: {
+        Args: { p_device_type?: string }
+        Returns: {
+          alt_text: string
+          display_order: number
+          id: string
+          image_url: string
+          title: string
+        }[]
+      }
       get_alert_statistics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: {
