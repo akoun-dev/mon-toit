@@ -25,7 +25,7 @@ interface CNIBFormProps {
 
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
-  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('popup');
+  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('local');
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -443,15 +443,15 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           <Label className="text-base font-semibold">Méthode de capture du selfie</Label>
           <RadioGroup value={captureMethod} onValueChange={(value) => setCaptureMethod(value as 'local' | 'popup')}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="popup" id="popup" />
-              <Label htmlFor="popup" className="font-normal cursor-pointer">
-                NeoFace Popup (recommandé) - Fenêtre sécurisée automatique
+              <RadioGroupItem value="local" id="local" />
+              <Label htmlFor="local" className="font-normal cursor-pointer">
+                Caméra locale avec IA (recommandé) - Validation de qualité en temps réel
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="local" id="local" />
-              <Label htmlFor="local" className="font-normal cursor-pointer">
-                Caméra locale - Capture directe dans le navigateur
+              <RadioGroupItem value="popup" id="popup" />
+              <Label htmlFor="popup" className="font-normal cursor-pointer">
+                NeoFace Popup - Fenêtre sécurisée externe
               </Label>
             </div>
           </RadioGroup>
