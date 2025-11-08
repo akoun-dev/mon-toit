@@ -65,6 +65,16 @@ const Search = () => {
     await toggleFavorite(propertyId);
   };
 
+  const handleRefresh = async (): Promise<void> => {
+    try {
+      await refetch();
+      toast.success("✅ Résultats mis à jour");
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement:', error);
+      toast.error("Impossible de rafraîchir les résultats");
+    }
+  };
+
   return (
     <MainLayout>
       <div className="page-background">
@@ -132,7 +142,7 @@ const Search = () => {
           </div>
 
           <div className="content-spacing">
-            <PullToRefresh onRefresh={async () => { await refetch(); }}>
+            <PullToRefresh onRefresh={handleRefresh}>
               {/* Properties Grid/List */}
               {viewMode === 'map' ? (
                 <Card className="p-4 md:p-6">

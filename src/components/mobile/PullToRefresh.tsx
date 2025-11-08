@@ -24,11 +24,12 @@ export const PullToRefresh = ({
     return <>{children}</>;
   }
 
-  const handleRefresh = async () => {
+  const handleRefresh = async (): Promise<void> => {
     try {
       await onRefresh();
     } catch (error) {
       console.error('Erreur lors du rafraîchissement:', error);
+      // Promise always resolves to allow react-pull-to-refresh to stop loading
     }
   };
 

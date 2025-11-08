@@ -38,12 +38,22 @@ export const PropertyGrid = ({
     },
   });
 
-  const handleRefresh = async () => {
-    await refetch();
-    toast({
-      description: "✅ Liste des biens mise à jour",
-      duration: 2000,
-    });
+  const handleRefresh = async (): Promise<void> => {
+    try {
+      await refetch();
+      toast({
+        description: "✅ Liste des biens mise à jour",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de rafraîchir la liste",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
   };
 
   // Apply filters
