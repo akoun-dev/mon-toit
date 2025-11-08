@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { toast } from 'sonner';
 import { logger } from '@/services/logger';
 import { supabase } from '@/lib/supabase';
@@ -238,6 +238,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
 
   const handleVerify = async () => {
+    // Validation initiale
     if (!cniImage) {
       toast.error('Veuillez fournir une photo de votre CNIB');
       return;
@@ -250,17 +251,90 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
     setIsVerifying(true);
     setVerificationResult(null);
-    setVerificationStep({
-      current: 1,
-      status: 'uploading',
-      progress: 0,
-      message: 'Préparation de votre document...'
-    });
 
     try {
       // ========================================
-      // ÉTAPE 1 : Upload CNIB vers Supabase Storage
+      // CAS 1 : Upload du selfie capturé localement
       // ========================================
+      if (camera.capturedImage && documentId) {
+        logger.info('🔍 Upload du selfie vers NeoFace...');
+        
+        setVerificationStep({
+          current: 3,
+          status: 'verifying',
+          progress: 70,
+          message: 'Upload du selfie...'
+        });
+        
+        await triggerUserFeedback('step_change');
+        
+        // Upload selfie to Supabase Storage
+        const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
+        const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
+        
+        const { data: selfieStorage, error: selfieError } = await supabase.storage
+          .from('verification-documents')
+          .upload(selfieFileName, selfieBlob, {
+            contentType: 'image/jpeg',
+            upsert: false
+          });
+        
+        if (selfieError) {
+          throw new Error(`Erreur upload selfie: ${selfieError.message}`);
+        }
+        
+        const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
+          .from('verification-documents')
+          .getPublicUrl(selfieStorage.path);
+        
+        logger.info('✅ Selfie uploadé vers Supabase Storage', { url: selfiePublicUrl });
+        
+        // Upload to NeoFace via edge function
+        setVerificationStep(prev => ({
+          ...prev,
+          progress: 80,
+          message: 'Envoi du selfie à NeoFace...'
+        }));
+        
+        const { data: neoFaceData, error: neoFaceError } = await supabase.functions.invoke('neoface-verification', {
+          body: {
+            action: 'upload_selfie',
+            document_id: documentId,
+            selfie_photo_url: selfiePublicUrl
+          }
+        });
+        
+        if (neoFaceError || !neoFaceData?.success) {
+          throw new Error('Erreur lors de l\'envoi du selfie à NeoFace: ' + (neoFaceError?.message || 'Erreur inconnue'));
+        }
+        
+        logger.info('✅ Selfie envoyé à NeoFace avec succès');
+        
+        // Start polling for verification result
+        setVerificationStep(prev => ({
+          ...prev,
+          progress: 85,
+          message: 'Vérification biométrique en cours...'
+        }));
+        
+        await triggerUserFeedback('processing_start');
+        
+        logger.info('🔄 Démarrage du polling...');
+        startPolling(documentId);
+        
+        return; // Sortir après avoir démarré le polling
+      }
+
+      // ========================================
+      // CAS 2 : Upload CNIB initial (pas encore de selfie)
+      // ========================================
+      setVerificationStep({
+        current: 1,
+        status: 'uploading',
+        progress: 0,
+        message: 'Préparation de votre document...'
+      });
+
       setIsUploadingDocument(true);
       setUploadProgress(20);
       setVerificationStep(prev => ({ ...prev, progress: 20, message: 'Upload vers le serveur...' }));
@@ -289,14 +363,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       setUploadProgress(40);
       setVerificationStep(prev => ({ ...prev, progress: 40, message: 'Document uploadé, envoi à NeoFace...' }));
       
-      // 🎵 Trigger upload complete feedback
       await triggerUserFeedback('upload_complete');
       
       logger.info('✅ CNIB uploadée', { url: publicUrl });
       
-      // ========================================
-      // ÉTAPE 2 : Appeler NeoFace upload_document
-      // ========================================
+      // Appeler NeoFace upload_document
       logger.info('📡 Appel NeoFace upload_document...');
       
       const { data: uploadData, error: uploadError } = await supabase.functions.invoke('neoface-verification', {
@@ -350,78 +421,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         description: 'Prenez maintenant votre selfie avec la webcam'
       });
       
-      return; // Attendre que l'utilisateur capture son selfie
-    
-    // ========================================
-    // ÉTAPE 2 : Upload selfie capturé vers NeoFace
-    // ========================================
-    } else if (camera.capturedImage && documentId) {
-      logger.info('🔍 Upload du selfie vers NeoFace...');
-      
-      setVerificationStep({
-        current: 3,
-        status: 'verifying',
-        progress: 70,
-        message: 'Upload du selfie...'
-      });
-      
-      await triggerUserFeedback('step_change');
-      
-      // Upload selfie to Supabase Storage
-      const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
-      const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
-      
-      const { data: selfieStorage, error: selfieError } = await supabase.storage
-        .from('verification-documents')
-        .upload(selfieFileName, selfieBlob, {
-          contentType: 'image/jpeg',
-          upsert: false
-        });
-      
-      if (selfieError) {
-        throw new Error(`Erreur upload selfie: ${selfieError.message}`);
-      }
-      
-      const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
-        .from('verification-documents')
-        .getPublicUrl(selfieStorage.path);
-      
-      logger.info('✅ Selfie uploadé vers Supabase Storage', { url: selfiePublicUrl });
-      
-      // Upload to NeoFace via edge function
-      setVerificationStep(prev => ({
-        ...prev,
-        progress: 80,
-        message: 'Envoi du selfie à NeoFace...'
-      }));
-      
-      const { data: neoFaceData, error: neoFaceError } = await supabase.functions.invoke('neoface-verification', {
-        body: {
-          action: 'upload_selfie',
-          document_id: documentId,
-          selfie_photo_url: selfiePublicUrl
-        }
-      });
-      
-      if (neoFaceError || !neoFaceData?.success) {
-        throw new Error('Erreur lors de l\'envoi du selfie à NeoFace: ' + (neoFaceError?.message || 'Erreur inconnue'));
-      }
-      
-      logger.info('✅ Selfie envoyé à NeoFace avec succès');
-      
-      // Start polling for verification result
-      setVerificationStep(prev => ({
-        ...prev,
-        progress: 85,
-        message: 'Vérification biométrique en cours...'
-      }));
-      
-      await triggerUserFeedback('processing_start');
-      
-      logger.info('🔄 Démarrage du polling...');
-      startPolling(documentId);
-    }
-    
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
       
@@ -479,48 +478,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       <CardContent className="space-y-6">
         <VerificationInstructions />
 
-        {/* Sélecteur de méthode de capture */}
-        <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
-          <Label className="text-sm font-medium">Méthode de capture du selfie</Label>
-          <RadioGroup 
-            value={captureMethod} 
-            onValueChange={(value) => setCaptureMethod(value as 'local' | 'popup')}
-            disabled={isVerifying || isPolling}
-            className="space-y-2"
-          >
-            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-background/50 transition-colors">
-              <RadioGroupItem value="local" id="local" />
-              <Label htmlFor="local" className="cursor-pointer font-normal flex-1">
-                <span className="font-medium">📷 Capture dans l'application</span>
-                <p className="text-xs text-muted-foreground mt-1">Contrôle total sur votre caméra (Recommandé)</p>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-3 p-3 rounded-md hover:bg-background/50 transition-colors">
-              <RadioGroupItem value="popup" id="popup" />
-              <Label htmlFor="popup" className="cursor-pointer font-normal flex-1">
-                <span className="font-medium">🪟 Capture via fenêtre NeoFace</span>
-                <p className="text-xs text-muted-foreground mt-1">Interface sécurisée certifiée avec validation automatique</p>
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        {/* Info sur la méthode NeoFace (si popup) */}
-        {captureMethod === 'popup' && (
-          <Alert className="bg-primary/5 border-primary/20">
-            <Info className="h-4 w-4 text-primary" />
-            <AlertDescription>
-              <p className="font-medium text-primary mb-1">Interface NeoFace avec validation native</p>
-              <p className="text-sm text-muted-foreground">
-                • Détection automatique de visage et qualité d'image<br/>
-                • Vérification des clignements d'yeux (liveness)<br/>
-                • Capture automatique optimale<br/>
-                • Interface sécurisée certifiée
-              </p>
-            </AlertDescription>
-          </Alert>
-        )}
-
         {(isVerifying || isPolling) && verificationStep.current > 0 && (
           <VerificationStepper
             currentStep={verificationStep.current}
@@ -542,9 +499,8 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         />
 
         {/* Afficher SelfieCapture en mode local pendant l'étape selfie */}
-        {captureMethod === 'local' && verificationStep.status === 'selfie' && (
+        {verificationStep.status === 'selfie' && (
           <SelfieCapture
-            method="local"
             selfieImage={camera.capturedImage}
             isCapturing={camera.isCapturing}
             isVideoLoading={camera.isVideoLoading}
@@ -559,21 +515,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           />
         )}
 
-        {captureMethod === 'popup' && (
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription>
-              Le selfie sera capturé via l'interface NeoFace sécurisée après validation. Celle-ci inclut la détection automatique de visage, la vérification de qualité et les clignements d'yeux.
-            </AlertDescription>
-          </Alert>
-        )}
-
         {verificationResult && (
           <VerificationResultDisplay result={verificationResult} />
         )}
 
         <VerificationButtons
-          captureMethod={captureMethod}
           canVerify={!!cniImage && uploadProgress === 0}
           isVerifying={isVerifying}
           isPolling={isPolling}
