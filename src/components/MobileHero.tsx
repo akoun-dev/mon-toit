@@ -18,6 +18,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { CarouselDots } from '@/components/ui/carousel-dots';
 import { useHeroImages } from '@/hooks/useHeroImages';
 
 const mobileHeroImages = [
@@ -84,6 +85,11 @@ export const MobileHero = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
+        
+        {/* Indicateurs de progression */}
+        <div className="absolute bottom-6 left-0 right-0 z-10">
+          <CarouselDots />
+        </div>
       </Carousel>
       </div>
       

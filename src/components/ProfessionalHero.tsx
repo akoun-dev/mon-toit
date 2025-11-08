@@ -29,6 +29,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel';
+import { CarouselDots } from '@/components/ui/carousel-dots';
 import { useHeroImages } from '@/hooks/useHeroImages';
 
 const heroImages = [
@@ -110,6 +111,11 @@ export const ProfessionalHero = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
+        
+        {/* Indicateurs de progression */}
+        <div className="absolute bottom-8 left-0 right-0 z-10">
+          <CarouselDots />
+        </div>
       </Carousel>
       </div>
       
