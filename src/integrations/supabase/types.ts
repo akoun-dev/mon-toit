@@ -3786,11 +3786,11 @@ export type Database = {
           bio: string
           city: string
           cnam_verified: boolean
+          cnib_verified: boolean
           face_verified: boolean
           full_name: string
           id: string
           is_verified: boolean
-          oneci_verified: boolean
           user_type: Database["public"]["Enums"]["user_type"]
         }[]
       }
@@ -3801,11 +3801,11 @@ export type Database = {
           bio: string
           city: string
           cnam_verified: boolean
+          cnib_verified: boolean
           face_verified: boolean
           full_name: string
           id: string
           is_verified: boolean
-          oneci_verified: boolean
           user_type: Database["public"]["Enums"]["user_type"]
         }[]
       }
