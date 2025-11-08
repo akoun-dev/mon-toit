@@ -30,13 +30,17 @@ export const MobileHero = () => {
   return (
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
-      {/* Fond dégradé - pas d'image de fond */}
+      {/* Image de fond - Version mobile optimisée */}
       <div 
-        className="absolute inset-0 bg-gradient-to-br from-background-sand via-background-light to-background"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=800&q=80)',
+          backgroundPosition: 'center 40%'
+        }}
       />
       
-      {/* Overlay crème pour lisibilité */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background-sand/75 to-background-light/80" />
+      {/* Overlay pour lisibilité - plus opaque sur mobile */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/70" />
       
       {/* Motifs Faso Dan Fani subtils - textile burkinabè */}
       <div className="absolute inset-0 opacity-[0.04]">

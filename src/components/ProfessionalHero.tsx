@@ -42,20 +42,19 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Architecture burkinabè authentique */}
+      {/* Image de fond - Architecture burkinabè authentique - visible à droite */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-right bg-no-repeat"
         style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=1920&q=80)',
-          backgroundPosition: 'center 40%'
         }}
       />
       
-      {/* Overlay crème pour lisibilité (75% opacité) */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/75 via-background-sand/70 to-background-light/75" />
+      {/* Overlay directionnel - opaque à gauche (texte), transparent à droite (image) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent" />
       
       {/* Motifs géométriques Faso Dan Fani - textile burkinabè */}
-      <div className="absolute inset-0 opacity-[0.06]">
+      <div className="absolute inset-0 opacity-[0.10]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="faso-dan-fani" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
@@ -122,7 +121,7 @@ export const ProfessionalHero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-4"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight px-4 sm:px-0 drop-shadow-lg">
               Trouvez votre logement au{' '}
               <span className="text-primary relative">
                 Burkina Faso
