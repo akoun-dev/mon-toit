@@ -255,79 +255,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
     try {
       // ========================================
-      // CAS 1 : Upload du selfie capturé localement
-      // ========================================
-      if (camera.capturedImage && documentId) {
-        logger.info('🔍 Upload du selfie vers NeoFace...');
-        
-        setVerificationStep({
-          current: 3,
-          status: 'verifying',
-          progress: 70,
-          message: 'Upload du selfie...'
-        });
-        
-        await triggerUserFeedback('step_change');
-        
-        // Upload selfie to Supabase Storage
-        const selfieBlob = await fetch(camera.capturedImage).then(r => r.blob());
-        const selfieFileName = `${user.id}/selfie-${Date.now()}.jpg`;
-        
-        const { data: selfieStorage, error: selfieError } = await supabase.storage
-          .from('verification-documents')
-          .upload(selfieFileName, selfieBlob, {
-            contentType: 'image/jpeg',
-            upsert: false
-          });
-        
-        if (selfieError) {
-          throw new Error(`Erreur upload selfie: ${selfieError.message}`);
-        }
-        
-        const { data: { publicUrl: selfiePublicUrl } } = supabase.storage
-          .from('verification-documents')
-          .getPublicUrl(selfieStorage.path);
-        
-        logger.info('✅ Selfie uploadé vers Supabase Storage', { url: selfiePublicUrl });
-        
-        // Upload to NeoFace via edge function
-        setVerificationStep(prev => ({
-          ...prev,
-          progress: 80,
-          message: 'Envoi du selfie à NeoFace...'
-        }));
-        
-        const { data: neoFaceData, error: neoFaceError } = await supabase.functions.invoke('neoface-verification', {
-          body: {
-            action: 'upload_selfie',
-            document_id: documentId,
-            selfie_photo_url: selfiePublicUrl
-          }
-        });
-        
-        if (neoFaceError || !neoFaceData?.success) {
-          throw new Error('Erreur lors de l\'envoi du selfie à NeoFace: ' + (neoFaceError?.message || 'Erreur inconnue'));
-        }
-        
-        logger.info('✅ Selfie envoyé à NeoFace avec succès');
-        
-        // Start polling for verification result
-        setVerificationStep(prev => ({
-          ...prev,
-          progress: 85,
-          message: 'Vérification biométrique en cours...'
-        }));
-        
-        await triggerUserFeedback('processing_start');
-        
-        logger.info('🔄 Démarrage du polling...');
-        startPolling(documentId);
-        
-        return; // Sortir après avoir démarré le polling
-      }
-
-      // ========================================
-      // CAS 2 : Upload CNIB initial (pas encore de selfie)
+      // Upload CNIB et redirection vers NeoFace
       // ========================================
       setVerificationStep({
         current: 1,
@@ -399,28 +327,57 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         throw new Error('Réponse serveur incomplète (document_id ou url manquant)');
       }
       
-      setDocumentId(uploadData.document_id);
-      setSelfieUrl(uploadData.url);
+      const neoFaceDocumentId = uploadData.document_id;
+      const neoFaceWebUrl = uploadData.url;
+      
+      setDocumentId(neoFaceDocumentId);
+      setSelfieUrl(neoFaceWebUrl);
       setUploadProgress(60);
       setIsUploadingDocument(false);
       
-      // Mode 100% local - Attente capture selfie
+      logger.info('✅ Document uploadé sur NeoFace', { 
+        document_id: neoFaceDocumentId,
+        selfie_url: neoFaceWebUrl
+      });
+      
+      // Rediriger vers l'interface web NeoFace pour la capture du selfie
       setVerificationStep({
         current: 2,
         status: 'selfie',
         progress: 60,
-        message: 'En attente de votre selfie...'
+        message: 'Redirection vers la capture de selfie...'
       });
       
       await triggerUserFeedback('step_change');
       
-      logger.info('✅ Document uploadé sur NeoFace', { 
-        document_id: uploadData.document_id
+      toast.success('📄 Document validé', {
+        description: 'Vous allez être redirigé vers la capture de selfie NeoFace',
+        duration: 3000
       });
       
-      toast.success('📄 Document validé', {
-        description: 'Prenez maintenant votre selfie avec la webcam'
+      // Ouvrir l'interface NeoFace dans une nouvelle fenêtre
+      logger.info('🌐 Ouverture de l\'interface NeoFace...', { url: neoFaceWebUrl });
+      const neoFaceWindow = window.open(neoFaceWebUrl, '_blank', 'width=800,height=600,scrollbars=yes');
+      
+      if (!neoFaceWindow) {
+        toast.error('Popup bloquée', {
+          description: 'Veuillez autoriser les popups pour continuer'
+        });
+        throw new Error('Impossible d\'ouvrir l\'interface NeoFace (popup bloquée)');
+      }
+      
+      // Démarrer le polling immédiatement
+      setVerificationStep({
+        current: 3,
+        status: 'verifying',
+        progress: 70,
+        message: 'En attente de la capture du selfie sur NeoFace...'
       });
+      
+      await triggerUserFeedback('processing_start');
+      
+      logger.info('🔄 Démarrage du polling pour', { document_id: neoFaceDocumentId });
+      startPolling(neoFaceDocumentId);
       
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
@@ -540,6 +497,20 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
         {verificationResult && (
           <VerificationResultDisplay result={verificationResult} />
+        )}
+
+        {/* Afficher message pendant la capture NeoFace */}
+        {verificationStep.status === 'selfie' && (
+          <Alert className="border-primary/20 bg-primary/5">
+            <Info className="h-4 w-4 text-primary" />
+            <AlertDescription className="text-sm">
+              <strong>Capture de selfie en cours sur NeoFace</strong>
+              <br />
+              Suivez les instructions sur la fenêtre qui vient de s'ouvrir pour capturer votre selfie.
+              <br />
+              La vérification se fera automatiquement une fois le selfie capturé.
+            </AlertDescription>
+          </Alert>
         )}
 
         {/* Bouton Vérifier CNIB - visible seulement avant l'étape selfie */}
