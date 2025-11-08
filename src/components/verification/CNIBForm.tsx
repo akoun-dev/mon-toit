@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { usePolling } from '@/hooks/usePolling';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
@@ -515,19 +516,44 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           />
         )}
 
+        {/* Bouton pour lancer la vérification du selfie */}
+        {camera.capturedImage && documentId && verificationStep.status === 'selfie' && (
+          <Button
+            onClick={handleVerify}
+            disabled={isVerifying || isPolling}
+            className="w-full"
+            size="lg"
+          >
+            {isVerifying ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Envoi du selfie...
+              </>
+            ) : (
+              <>
+                <Shield className="mr-2 h-5 w-5" />
+                Vérifier le selfie
+              </>
+            )}
+          </Button>
+        )}
+
         {verificationResult && (
           <VerificationResultDisplay result={verificationResult} />
         )}
 
-        <VerificationButtons
-          canVerify={!!cniImage && uploadProgress === 0}
-          isVerifying={isVerifying}
-          isPolling={isPolling}
-          pollingMessage={pollingMessage}
-          hasContent={!!(cniImage || verificationResult)}
-          onVerify={handleVerify}
-          onReset={reset}
-        />
+        {/* Bouton Vérifier CNIB - visible seulement avant l'étape selfie */}
+        {verificationStep.status !== 'selfie' && (
+          <VerificationButtons
+            canVerify={!!cniImage && uploadProgress === 0}
+            isVerifying={isVerifying}
+            isPolling={isPolling}
+            pollingMessage={pollingMessage}
+            hasContent={!!(cniImage || verificationResult)}
+            onVerify={handleVerify}
+            onReset={reset}
+          />
+        )}
 
         <Alert className="bg-muted">
           <Shield className="h-4 w-4" />
