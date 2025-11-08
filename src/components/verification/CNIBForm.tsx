@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useCamera } from '@/hooks/useCamera';
 import { usePolling } from '@/hooks/usePolling';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,12 +10,11 @@ import { toast } from 'sonner';
 import { logger } from '@/services/logger';
 import { supabase } from '@/lib/supabase';
 import { celebrateCertification } from '@/utils/confetti';
-import { AlertCircle, Shield } from 'lucide-react';
+import { AlertCircle, Shield, Info } from 'lucide-react';
 import { compressImage, validateImage, SimpleProgress, MAX_IMAGE_SIZE } from '@/utils/imageUtils';
 import { VerificationResultDisplay } from './VerificationResultDisplay';
 import { VerificationInstructions } from './VerificationInstructions';
 import { CNIUploadZone } from './CNIUploadZone';
-import { SelfieCapture } from './SelfieCapture';
 import { VerificationButtons } from './VerificationButtons';
 
 interface CNIBFormProps {
@@ -25,7 +23,7 @@ interface CNIBFormProps {
 
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
-  const [captureMethod, setCaptureMethod] = useState<'local' | 'popup'>('local');
+  const [captureMethod] = useState<'popup'>('popup');
   const [cniImage, setCniImage] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -43,20 +41,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     resultText?: string;
   } | null>(null);
   
-  // Hook caméra
-  const camera = useCamera();
-  const {
-    isCapturing,
-    isVideoLoading,
-    capturedImage: selfieImage,
-    videoRef,
-    canvasRef,
-    startCamera,
-    stopCamera,
-    capture: captureSelfie,
-    reset: resetCamera
-  } = camera;
-
   // Hook polling
   const polling = usePolling(
     async (documentId: string) => {
@@ -210,101 +194,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     event.target.value = '';
   }, []);
 
-  const handleLocalVerify = async () => {
-    if (!cniImage || !selfieImage) {
-      toast.error('Veuillez fournir une photo de votre CNIB et un selfie');
-      return;
-    }
-
-    if (!user) {
-      toast.error('Utilisateur non authentifié');
-      return;
-    }
-
-    setIsVerifying(true);
-    setVerificationResult(null);
-
-    try {
-      setUploadProgress(20);
-      logger.info('🚀 Début vérification locale avec caméra navigateur');
-      
-      // Upload CNIB vers Storage
-      const cniBlob = await fetch(cniImage).then(r => r.blob());
-      
-      const { data: storageData, error: storageError } = await supabase.storage
-        .from('verification-documents')
-        .upload(`${user.id}/cnib-${Date.now()}.jpg`, cniBlob, {
-          contentType: 'image/jpeg',
-          upsert: false
-        });
-      
-      if (storageError) throw storageError;
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from('verification-documents')
-        .getPublicUrl(storageData.path);
-      
-      setUploadProgress(40);
-      logger.info('✅ CNIB uploadée', { url: publicUrl });
-      
-      // Appeler edge function avec action local_verification
-      const { data: verificationData, error: verificationError } = await supabase.functions.invoke('neoface-verification', {
-        body: { 
-          action: 'local_verification',
-          cni_photo_url: publicUrl,
-          selfie_base64: selfieImage,
-          user_id: user.id
-        }
-      });
-      
-      setUploadProgress(80);
-      
-      if (verificationError) throw verificationError;
-      if (!verificationData.success) throw new Error(verificationData.error || 'Échec de la vérification');
-      
-      setUploadProgress(100);
-      
-      // Résultat immédiat
-      setVerificationResult({
-        verified: verificationData.verified,
-        similarityScore: verificationData.matching_score.toString(),
-        message: verificationData.verified ? '✅ Vérification biométrique réussie !' : 'La vérification a échoué',
-        canRetry: !verificationData.verified
-      });
-      
-      if (verificationData.verified) {
-        celebrateCertification();
-        toast.success('🎉 Certification DONIA réussie !', {
-          description: `Score de correspondance : ${verificationData.matching_score}% • Vous êtes maintenant certifié DONIA`,
-          duration: 5000,
-        });
-        onSubmit?.();
-      } else {
-        toast.error('Vérification échouée', {
-          description: verificationData.message || 'Réessayez avec de meilleures conditions'
-        });
-      }
-      
-      logger.info('✅ Vérification locale terminée', { verified: verificationData.verified });
-      
-    } catch (error) {
-      logger.error('Erreur vérification locale', { error });
-      
-      setVerificationResult({
-        verified: false,
-        similarityScore: '0',
-        message: error instanceof Error ? error.message : 'Une erreur est survenue',
-        canRetry: true
-      });
-      
-      toast.error('Erreur lors de la vérification', {
-        description: error instanceof Error ? error.message : 'Une erreur est survenue'
-      });
-    } finally {
-      setIsVerifying(false);
-      setUploadProgress(0);
-    }
-  };
 
   const handleVerify = async () => {
     if (!cniImage) {
@@ -420,7 +309,6 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const reset = () => {
     setCniImage(null);
     setVerificationResult(null);
-    resetCamera();
     stopPolling();
   };
 
@@ -438,24 +326,19 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       <CardContent className="space-y-6">
         <VerificationInstructions />
 
-        {/* Sélecteur de méthode de capture */}
-        <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
-          <Label className="text-base font-semibold">Méthode de capture du selfie</Label>
-          <RadioGroup value={captureMethod} onValueChange={(value) => setCaptureMethod(value as 'local' | 'popup')}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="local" id="local" />
-              <Label htmlFor="local" className="font-normal cursor-pointer">
-                Caméra locale avec IA (recommandé) - Validation de qualité en temps réel
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="popup" id="popup" />
-              <Label htmlFor="popup" className="font-normal cursor-pointer">
-                NeoFace Popup - Fenêtre sécurisée externe
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
+        {/* Info sur la méthode NeoFace */}
+        <Alert className="bg-primary/5 border-primary/20">
+          <Info className="h-4 w-4 text-primary" />
+          <AlertDescription>
+            <p className="font-medium text-primary mb-1">Interface NeoFace avec validation native</p>
+            <p className="text-sm text-muted-foreground">
+              • Détection automatique de visage et qualité d'image<br/>
+              • Vérification des clignements d'yeux (liveness)<br/>
+              • Capture automatique optimale<br/>
+              • Interface sécurisée certifiée
+            </p>
+          </AlertDescription>
+        </Alert>
 
         {isUploadingDocument && (
           <Alert>
@@ -496,26 +379,13 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             disabled={isVerifying}
           />
 
-          <SelfieCapture
-            method={captureMethod}
-            selfieImage={selfieImage}
-            isCapturing={isCapturing}
-            isVideoLoading={isVideoLoading}
-            isVerifying={isVerifying}
-            error={camera.error}
-            videoRef={videoRef}
-            canvasRef={canvasRef}
-            onStartCamera={startCamera}
-            onStopCamera={stopCamera}
-            onCapture={captureSelfie}
-            onRemove={() => {
-              resetCamera();
-              setVerificationResult(null);
-            }}
-          />
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Le selfie sera capturé via l'interface NeoFace sécurisée après validation. Celle-ci inclut la détection automatique de visage, la vérification de qualité et les clignements d'yeux.
+            </AlertDescription>
+          </Alert>
         </div>
-
-        <canvas ref={canvasRef} className="hidden" />
 
         {verificationResult && (
           <VerificationResultDisplay result={verificationResult} />
@@ -523,12 +393,12 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
         <VerificationButtons
           captureMethod={captureMethod}
-          canVerify={!!(cniImage && (captureMethod === 'popup' || selfieImage)) && uploadProgress === 0}
+          canVerify={!!cniImage && uploadProgress === 0}
           isVerifying={isVerifying}
           isPolling={isPolling}
           pollingMessage={pollingMessage}
-          hasContent={!!(cniImage || selfieImage || verificationResult)}
-          onVerify={captureMethod === 'local' ? handleLocalVerify : handleVerify}
+          hasContent={!!(cniImage || verificationResult)}
+          onVerify={handleVerify}
           onReset={reset}
         />
 

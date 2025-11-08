@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Shield, RefreshCw } from 'lucide-react';
 
 interface VerificationButtonsProps {
-  captureMethod: 'local' | 'popup';
+  captureMethod: 'popup';
   canVerify: boolean;
   isVerifying: boolean;
   isPolling: boolean;
@@ -13,7 +13,6 @@ interface VerificationButtonsProps {
 }
 
 export const VerificationButtons = ({
-  captureMethod,
   canVerify,
   isVerifying,
   isPolling,
@@ -38,10 +37,7 @@ export const VerificationButtons = ({
         ) : (
           <>
             <Shield className="mr-2 h-5 w-5" />
-            {captureMethod === 'local' 
-              ? 'Vérifier avec caméra locale' 
-              : 'Vérifier avec NeoFace'
-            }
+            Vérifier avec NeoFace
           </>
         )}
       </Button>
