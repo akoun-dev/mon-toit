@@ -33,23 +33,24 @@ export const SelfieCapture = ({
   onCapture,
   onRemove,
 }: SelfieCaptureProps) => {
-  const { 
-    quality: qualityMetrics, 
-    isAnalyzing, 
-    isLoading,
-    startAnalysis,
-    stopAnalysis 
-  } = useFaceQualityDetection(videoRef);
+  // Désactivé temporairement pour déboguer le problème de caméra
+  // const { 
+  //   quality: qualityMetrics, 
+  //   isAnalyzing, 
+  //   isLoading,
+  //   startAnalysis,
+  //   stopAnalysis 
+  // } = useFaceQualityDetection(videoRef);
 
-  useEffect(() => {
-    if (isCapturing && videoRef.current) {
-      startAnalysis();
-    } else {
-      stopAnalysis();
-    }
+  // useEffect(() => {
+  //   if (isCapturing && videoRef.current) {
+  //     startAnalysis();
+  //   } else {
+  //     stopAnalysis();
+  //   }
 
-    return () => stopAnalysis();
-  }, [isCapturing, startAnalysis, stopAnalysis]);
+  //   return () => stopAnalysis();
+  // }, [isCapturing, startAnalysis, stopAnalysis]);
 
   return (
     <div className="space-y-3">
@@ -102,13 +103,14 @@ export const SelfieCapture = ({
                       </div>
                     )}
                     
-                    {isCapturing && (
+                    {/* Overlay ML désactivé temporairement */}
+                    {/* {isCapturing && (
                       <QualityOverlay 
                         quality={qualityMetrics}
                         isActive={isAnalyzing}
                         isLoading={isLoading}
                       />
-                    )}
+                    )} */}
                   </div>
                   {isCapturing && (
                     <div className="flex gap-2">
@@ -116,7 +118,7 @@ export const SelfieCapture = ({
                         onClick={onCapture}
                         className="flex-1"
                         size="lg"
-                        disabled={qualityMetrics?.overallQuality !== 'good'}
+                        // disabled={qualityMetrics?.overallQuality !== 'good'}
                       >
                         <Camera className="mr-2 h-5 w-5" />
                         Capturer
