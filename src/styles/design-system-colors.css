@@ -205,6 +205,7 @@
 
 :root {
   --cursor-etalon: url('/cursors/etalon-cursor.svg') 3 3, auto;
+  --cursor-etalon-click: url('/cursors/etalon-cursor-click.svg') 3 3, auto;
 }
 
 /* Curseur personnalisé uniquement sur desktop (pointer précis) */
@@ -224,11 +225,30 @@
     cursor: var(--cursor-etalon);
   }
   
-  /* Animation subtile au hover pour feedback visuel */
+  /* Curseur au clic avec inversion des couleurs */
+  a:active, 
+  button:active, 
+  [role="button"]:active, 
+  .cursor-pointer:active,
+  [type="button"]:active,
+  [type="submit"]:active {
+    cursor: var(--cursor-etalon-click);
+  }
+  
+  /* Animation au hover */
   button:hover, 
   a:hover,
   [role="button"]:hover {
+    transform: scale(1.02);
     transition: transform 150ms ease;
+  }
+  
+  /* Effet de pression physique au clic */
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform 50ms ease;
   }
 }
 

@@ -1,0 +1,81 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Curseur étalon ACTIF - Couleurs inversées pour feedback au clic -->
+  <defs>
+    <filter id="shadow-active">
+      <feDropShadow dx="0.5" dy="0.5" stdDeviation="0.8" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <g transform="translate(3, 5)" filter="url(#shadow-active)">
+    <!-- Corps principal (JAUNE au lieu de ROUGE) -->
+    <path d="M 8 10 L 12 8 L 18 8 L 20 10 L 20 16 L 18 18 L 10 18 L 8 16 Z" 
+          fill="#F9B208" 
+          stroke="#C1121F" 
+          stroke-width="1.5" 
+          stroke-linejoin="miter"/>
+    
+    <!-- Tête et encolure (JAUNE) -->
+    <path d="M 18 8 L 22 6 L 24 4 L 25 2 L 23 1 L 21 3 L 20 6 L 19 8 Z" 
+          fill="#F9B208" 
+          stroke="#C1121F" 
+          stroke-width="1.2" 
+          stroke-linejoin="miter"/>
+    
+    <!-- Oreille (ROUGE) -->
+    <polygon points="23,2 24,0.5 25,2" 
+             fill="#C1121F"/>
+    
+    <!-- Pattes avant (JAUNE) -->
+    <rect x="13" y="18" width="2" height="7" 
+          fill="#F9B208" 
+          stroke="#C1121F" 
+          stroke-width="1"/>
+    <rect x="16" y="18" width="2" height="7" 
+          fill="#F9B208" 
+          stroke="#C1121F" 
+          stroke-width="1"/>
+    
+    <!-- Pattes arrière (JAUNE) -->
+    <polygon points="10,18 9,25 11,25 11,18" 
+             fill="#F9B208" 
+             stroke="#C1121F" 
+             stroke-width="1"/>
+    <polygon points="12,18 11,25 13,25 13,18" 
+             fill="#F9B208" 
+             stroke="#C1121F" 
+             stroke-width="1"/>
+    
+    <!-- Crinière (ROUGE vif) -->
+    <polygon points="21,6 20,4 19,6" 
+             fill="#C1121F"/>
+    <polygon points="20,7 19,5 18,7" 
+             fill="#C1121F" 
+             opacity="0.9"/>
+    
+    <!-- Queue (JAUNE) -->
+    <path d="M 8 13 L 6 15 L 5 18 L 4 21" 
+          fill="none" 
+          stroke="#F9B208" 
+          stroke-width="2.5" 
+          stroke-linecap="square"/>
+    <polygon points="4,21 3,23 5,22" 
+             fill="#F9B208"/>
+    
+    <!-- Œil (vert - inchangé) -->
+    <circle cx="23" cy="4" r="1.2" 
+            fill="#146B3A" 
+            stroke="#C1121F" 
+            stroke-width="0.5"/>
+    
+    <!-- Détail ventre (ROUGE) -->
+    <line x1="10" y1="14" x2="18" y2="14" 
+          stroke="#C1121F" 
+          stroke-width="0.8" 
+          opacity="0.7"/>
+  </g>
+  
+  <!-- Hotspot plus visible (ROUGE) -->
+  <circle cx="3" cy="3" r="2" 
+          fill="#C1121F" 
+          opacity="0.8"/>
+</svg>
