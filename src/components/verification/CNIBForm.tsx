@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { usePolling } from '@/hooks/usePolling';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,8 @@ import { VerificationInstructions } from './VerificationInstructions';
 import { CNIUploadZone } from './CNIUploadZone';
 import { VerificationButtons } from './VerificationButtons';
 import { VerificationStepper } from './VerificationStepper';
+import { triggerUserFeedback } from '@/utils/userFeedback';
+import { preloadNotificationSounds } from '@/utils/notifications';
 
 interface CNIBFormProps {
   onSubmit?: () => void;
@@ -55,6 +57,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     resultText?: string;
   } | null>(null);
   
+  // Preload audio on mount
+  useEffect(() => {
+    preloadNotificationSounds();
+  }, []);
+
   // Hook polling
   const polling = usePolling(
     async (documentId: string) => {
@@ -71,13 +78,17 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     {
       interval: 3000,
       maxAttempts: 100,
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         setVerificationStep({
           current: 3,
           status: 'completed',
           progress: 100,
           message: 'Vérification réussie !'
         });
+        
+        // 🎵 Trigger success feedback
+        await triggerUserFeedback('success');
+        
         setVerificationResult({
           verified: true,
           similarityScore: data.matching_score.toString(),
@@ -92,12 +103,16 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         logger.info('✅ Vérification NeoFace réussie', { matching_score: data.matching_score });
         onSubmit?.();
       },
-      onError: (data) => {
+      onError: async (data) => {
         setVerificationStep(prev => ({
           ...prev,
           status: 'error',
           message: data.message || 'La vérification a échoué'
         }));
+        
+        // 🎵 Trigger error feedback
+        await triggerUserFeedback('error');
+        
         setVerificationResult({
           verified: false,
           similarityScore: data.matching_score?.toString() || '0',
@@ -270,6 +285,10 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       
       setUploadProgress(40);
       setVerificationStep(prev => ({ ...prev, progress: 40, message: 'Document uploadé, envoi à NeoFace...' }));
+      
+      // 🎵 Trigger upload complete feedback
+      await triggerUserFeedback('upload_complete');
+      
       logger.info('✅ CNIB uploadée', { url: publicUrl });
       
       // ========================================
@@ -315,6 +334,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         progress: 60,
         message: 'En attente de votre selfie...'
       });
+      
+      // 🎵 Trigger step change feedback
+      await triggerUserFeedback('step_change');
       
       logger.info('✅ Document uploadé sur NeoFace', { 
         document_id: uploadData.document_id,
@@ -364,6 +386,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         message: 'Analyse biométrique en cours...'
       });
       
+      // 🎵 Trigger processing start feedback
+      await triggerUserFeedback('processing_start');
+      
       logger.info('🔄 Démarrage du polling...');
       startPolling(uploadData.document_id);
       
@@ -375,6 +400,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         status: 'error',
         message: error instanceof Error ? error.message : 'Une erreur est survenue'
       }));
+      
+      // 🎵 Trigger error feedback
+      await triggerUserFeedback('error');
       
       setVerificationResult({
         verified: false,
