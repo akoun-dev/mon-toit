@@ -198,12 +198,13 @@ serve(async (req) => {
         throw new Error(`Échec après ${MAX_RETRIES} tentatives: ${lastError?.message}`);
       }
 
-      // Store document_id in user_verifications
+      // Store document_id AND selfie_url in user_verifications
       const { error: updateError } = await supabaseClient
         .from('user_verifications')
         .upsert({
           user_id: user_id,
           neoface_document_id: uploadResponse.document_id,
+          neoface_selfie_url: uploadResponse.url, // Stocker l'URL pour le selfie
           neoface_status: 'waiting',
           updated_at: new Date().toISOString(),
         }, {
@@ -213,7 +214,7 @@ serve(async (req) => {
       if (updateError) {
         console.error('⚠️ Failed to update user_verifications:', updateError);
       } else {
-        console.log('✅ user_verifications updated with document_id');
+        console.log('✅ user_verifications updated with document_id and selfie_url');
       }
 
       const duration = Date.now() - startTime;
@@ -243,6 +244,20 @@ serve(async (req) => {
       if (!document_id || !selfie_photo_url) {
         throw new Error('Paramètres manquants: document_id et selfie_photo_url requis');
       }
+
+      // Récupérer l'URL de selfie depuis la base de données
+      const { data: verificationData, error: fetchError } = await supabaseClient
+        .from('user_verifications')
+        .select('neoface_selfie_url')
+        .eq('neoface_document_id', document_id)
+        .single();
+
+      if (fetchError || !verificationData?.neoface_selfie_url) {
+        throw new Error('URL de selfie NeoFace introuvable pour ce document_id');
+      }
+
+      const neoFaceSelfieUrl = verificationData.neoface_selfie_url;
+      console.log('📍 Using NeoFace selfie URL from database:', neoFaceSelfieUrl);
 
       // Download selfie from URL
       console.log('⬇️ Downloading selfie image...');
@@ -281,7 +296,8 @@ serve(async (req) => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-          const neoFaceResponse = await fetch(`${NEOFACE_BASE_URL}/selfie_facematch/${document_id}`, {
+          // Utiliser l'URL complète retournée par NeoFace
+          const neoFaceResponse = await fetch(neoFaceSelfieUrl, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${NEOFACE_API_TOKEN}`,
@@ -289,6 +305,8 @@ serve(async (req) => {
             body: formData,
             signal: controller.signal,
           });
+
+          console.log('🌐 Called NeoFace URL:', neoFaceSelfieUrl);
 
           clearTimeout(timeoutId);
 
