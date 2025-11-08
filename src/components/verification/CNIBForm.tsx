@@ -6,6 +6,15 @@ import { Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 import { toast } from 'sonner';
 import { logger } from '@/services/logger';
@@ -31,6 +40,8 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const [neoFaceDocumentId, setNeoFaceDocumentId] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showRedirectModal, setShowRedirectModal] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string>('');
   
   // Nouveaux states pour NeoFace
   const [isUploadingDocument, setIsUploadingDocument] = useState(false);
@@ -362,34 +373,37 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       const documentId = uploadData.document_id;
       const neoFaceUrl = uploadData.url;
 
-      logger.info('🔗 Redirecting to NeoFace interface...', { 
+      logger.info('🔗 Preparing redirect to NeoFace interface...', { 
         documentId: documentId,
         url: neoFaceUrl
       });
 
-      // Save document ID before redirecting
+      // Save document ID and start polling BEFORE redirect
       localStorage.setItem('neoface_document_id', documentId);
+      localStorage.setItem('polling_started', 'true');
       setNeoFaceDocumentId(documentId);
 
       setVerificationStep({
         current: 2,
         status: 'selfie',
         progress: 60,
-        message: 'Redirection vers NeoFace pour la capture de selfie...'
+        message: 'Préparation de la redirection...'
       });
 
       await triggerUserFeedback('step_change');
 
       toast.success('📄 Document validé', {
-        description: 'Redirection vers NeoFace dans un instant...',
+        description: 'Ouverture de l\'interface de capture...',
         duration: 2000
       });
 
-      // Small delay to allow state update and toast to show before redirect
-      setTimeout(() => {
-        // Full page redirect to NeoFace
-        window.location.href = neoFaceUrl;
-      }, 500);
+      // Start polling BEFORE redirect (Solution A)
+      logger.info('🔄 Starting polling before redirect...', { documentId });
+      startPolling(documentId);
+
+      // Show modal with instructions (Solution C)
+      setRedirectUrl(neoFaceUrl);
+      setShowRedirectModal(true);
       
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
@@ -421,24 +435,17 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     }
   };
 
-  const handleManualReturn = () => {
-    if (neoFaceDocumentId) {
-      logger.info('🔄 User manually initiated verification check');
-      
-      setVerificationStep({
-        current: 3,
-        status: 'verifying',
-        progress: 80,
-        message: 'Vérification de votre selfie en cours...'
-      });
-      
-      startPolling(neoFaceDocumentId);
-      
-      toast.info('Vérification démarrée', {
-        description: 'Analyse de votre capture en cours...',
-        duration: 3000
-      });
-    }
+  const handleRedirectConfirm = () => {
+    setShowRedirectModal(false);
+    // Update status to verifying for when user returns (Solution D)
+    setVerificationStep({
+      current: 3,
+      status: 'verifying',
+      progress: 70,
+      message: 'En attente de votre capture sur NeoFace...'
+    });
+    // Redirect to NeoFace
+    window.location.href = redirectUrl;
   };
 
   const reset = () => {
@@ -448,6 +455,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     
     // Clean up localStorage
     localStorage.removeItem('neoface_document_id');
+    localStorage.removeItem('polling_started');
     
     setVerificationStep({
       current: 0,
@@ -496,34 +504,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           <VerificationResultDisplay result={verificationResult} />
         )}
 
-        {/* Interface pendant l'étape selfie - De retour de NeoFace */}
-        {verificationStep.status === 'selfie' && neoFaceDocumentId && (
-          <div className="space-y-4">
-            <Alert className="border-primary/20 bg-primary/5">
-              <Info className="h-4 w-4 text-primary" />
-              <AlertDescription className="text-sm">
-                <strong>De retour de la capture NeoFace ?</strong>
-                <br />
-                Si vous avez terminé votre capture de selfie sur NeoFace, cliquez sur le bouton ci-dessous pour lancer la vérification.
-                <br />
-                <span className="text-muted-foreground text-xs mt-2 block">
-                  La vérification analysera automatiquement votre capture biométrique.
-                </span>
-              </AlertDescription>
-            </Alert>
-            
-            <Button
-              onClick={handleManualReturn}
-              variant="default"
-              className="w-full"
-            >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              J'ai terminé ma capture - Vérifier maintenant
-            </Button>
-          </div>
-        )}
-
-        {/* Message pendant la vérification */}
+        {/* Message pendant la vérification (Solution D: Feedback au retour) */}
         {verificationStep.status === 'verifying' && (
           <Alert>
             <Loader2Icon className="h-4 w-4 animate-spin" />
@@ -560,6 +541,46 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             La capture du selfie se fait dans une fenêtre sécurisée NeoFace qui s'ouvrira automatiquement.
           </AlertDescription>
         </Alert>
+
+        {/* Modal d'instructions avant redirection (Solution C) */}
+        <AlertDialog open={showRedirectModal} onOpenChange={setShowRedirectModal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-primary" />
+                Capture de selfie sécurisée
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-4 text-left">
+                <p>
+                  Vous allez être redirigé vers l'interface NeoFace pour capturer votre selfie de manière sécurisée.
+                </p>
+                
+                <div className="bg-muted p-4 rounded-lg space-y-2">
+                  <p className="font-semibold text-foreground">📋 Instructions :</p>
+                  <ol className="list-decimal ml-4 space-y-1 text-sm">
+                    <li>Suivez les instructions à l'écran</li>
+                    <li>Positionnez votre visage dans le cadre</li>
+                    <li>Capturez votre selfie</li>
+                    <li>Revenez sur cet onglet après la capture</li>
+                  </ol>
+                </div>
+
+                <Alert className="border-primary/20 bg-primary/5">
+                  <Info className="h-4 w-4 text-primary" />
+                  <AlertDescription className="text-sm text-foreground">
+                    La vérification se fera <strong>automatiquement</strong> à votre retour.
+                    Gardez cet onglet ouvert pendant la capture.
+                  </AlertDescription>
+                </Alert>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction onClick={handleRedirectConfirm} className="w-full">
+                J'ai compris, continuer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );
