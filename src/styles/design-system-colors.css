@@ -197,3 +197,77 @@
     --text-4xl: 36px;
     --text-5xl: 48px;
   }
+
+/* ============================================
+   CURSEUR PERSONNALISÉ - ÉTALON BURKINABÈ
+   Symbole national du Burkina Faso
+   ============================================ */
+
+:root {
+  --cursor-etalon: url('/cursors/etalon-cursor.svg') 3 3, auto;
+}
+
+/* Curseur personnalisé uniquement sur desktop (pointer précis) */
+@media (hover: hover) and (pointer: fine) {
+  /* Curseur par défaut sur tout le site */
+  body {
+    cursor: var(--cursor-etalon);
+  }
+  
+  /* Curseur sur éléments cliquables */
+  a, 
+  button, 
+  [role="button"], 
+  .cursor-pointer,
+  [type="button"],
+  [type="submit"] {
+    cursor: var(--cursor-etalon);
+  }
+  
+  /* Animation subtile au hover pour feedback visuel */
+  button:hover, 
+  a:hover,
+  [role="button"]:hover {
+    transition: transform 150ms ease;
+  }
+}
+
+/* Garder curseurs standards sur mobile/tablette */
+@media (hover: none) or (pointer: coarse) {
+  body, 
+  a, 
+  button,
+  [role="button"] {
+    cursor: default;
+  }
+}
+
+/* Curseur text sur zones de texte (toujours) */
+input[type="text"], 
+input[type="email"], 
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+[contenteditable="true"] {
+  cursor: text !important;
+}
+
+/* Curseurs spéciaux préservés */
+.cursor-grab {
+  cursor: grab !important;
+}
+
+.cursor-grabbing {
+  cursor: grabbing !important;
+}
+
+.cursor-not-allowed,
+[disabled] {
+  cursor: not-allowed !important;
+}
+
+.cursor-wait {
+  cursor: wait !important;
+}
