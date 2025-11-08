@@ -28,7 +28,7 @@ interface CNIBFormProps {
 const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const { user } = useAuth();
   const [cniImage, setCniImage] = useState<string | null>(null);
-  const [neoFaceWindow, setNeoFaceWindow] = useState<Window | null>(null);
+  const [neoFaceDocumentId, setNeoFaceDocumentId] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   
@@ -58,9 +58,40 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     resultText?: string;
   } | null>(null);
   
-  // Preload audio on mount
+  // Preload audio on mount and check for NeoFace return
   useEffect(() => {
     preloadNotificationSounds();
+    
+    // Check if returning from NeoFace
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromNeoFace = urlParams.get('from_neoface');
+    
+    if (fromNeoFace === 'true') {
+      const savedDocumentId = localStorage.getItem('neoface_document_id');
+      
+      if (savedDocumentId) {
+        logger.info('🔄 Returning from NeoFace, resuming verification...', { documentId: savedDocumentId });
+        
+        setNeoFaceDocumentId(savedDocumentId);
+        setVerificationStep({
+          current: 3,
+          status: 'verifying',
+          progress: 80,
+          message: 'Vérification de votre selfie en cours...'
+        });
+        
+        // Start polling
+        startPolling(savedDocumentId);
+        
+        // Clean up URL params
+        window.history.replaceState({}, '', window.location.pathname);
+        
+        toast.info('Vérification reprise', {
+          description: 'Analyse de votre capture en cours...',
+          duration: 3000
+        });
+      }
+    }
   }, []);
 
   // Hook polling
@@ -296,11 +327,15 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       // Appeler NeoFace upload_document
       logger.info('📡 Appel NeoFace upload_document...');
       
+      // Prepare callback URL for NeoFace to redirect back
+      const callbackUrl = `${window.location.origin}${window.location.pathname}?from_neoface=true`;
+      
       const { data: uploadData, error: uploadError } = await supabase.functions.invoke('neoface-verification', {
         body: { 
           action: 'upload_document', 
           cni_photo_url: publicUrl,
-          user_id: user.id 
+          user_id: user.id,
+          callback_url: callbackUrl
         }
       });
       
@@ -324,59 +359,37 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         throw new Error('Réponse serveur incomplète (document_id ou url manquant)');
       }
       
-      const neoFaceDocumentId = uploadData.document_id;
-      const neoFaceWebUrl = uploadData.url;
-      
-      setDocumentId(neoFaceDocumentId);
-      setSelfieUrl(neoFaceWebUrl);
-      setUploadProgress(60);
-      setIsUploadingDocument(false);
-      
-      logger.info('✅ Document uploadé sur NeoFace', { 
-        document_id: neoFaceDocumentId,
-        selfie_url: neoFaceWebUrl
+      const documentId = uploadData.document_id;
+      const neoFaceUrl = uploadData.url;
+
+      logger.info('🔗 Redirecting to NeoFace interface...', { 
+        documentId: documentId,
+        url: neoFaceUrl
       });
-      
-      // Rediriger vers l'interface web NeoFace pour la capture du selfie
+
+      // Save document ID before redirecting
+      localStorage.setItem('neoface_document_id', documentId);
+      setNeoFaceDocumentId(documentId);
+
       setVerificationStep({
         current: 2,
         status: 'selfie',
         progress: 60,
-        message: 'Redirection vers la capture de selfie...'
+        message: 'Redirection vers NeoFace pour la capture de selfie...'
       });
-      
+
       await triggerUserFeedback('step_change');
-      
+
       toast.success('📄 Document validé', {
-        description: 'Vous allez être redirigé vers la capture de selfie NeoFace',
-        duration: 3000
+        description: 'Redirection vers NeoFace dans un instant...',
+        duration: 2000
       });
-      
-      // Ouvrir l'interface NeoFace dans une nouvelle fenêtre
-      logger.info('🌐 Ouverture de l\'interface NeoFace...', { url: neoFaceWebUrl });
-      const newWindow = window.open(neoFaceWebUrl, '_blank', 'width=800,height=600,scrollbars=yes');
-      
-      if (!newWindow) {
-        toast.error('Popup bloquée', {
-          description: 'Veuillez autoriser les popups pour continuer'
-        });
-        throw new Error('Impossible d\'ouvrir l\'interface NeoFace (popup bloquée)');
-      }
-      
-      setNeoFaceWindow(newWindow);
-      
-      // Démarrer le polling immédiatement
-      setVerificationStep({
-        current: 3,
-        status: 'verifying',
-        progress: 70,
-        message: 'En attente de la capture du selfie sur NeoFace...'
-      });
-      
-      await triggerUserFeedback('processing_start');
-      
-      logger.info('🔄 Démarrage du polling pour', { document_id: neoFaceDocumentId });
-      startPolling(neoFaceDocumentId);
+
+      // Small delay to allow state update and toast to show before redirect
+      setTimeout(() => {
+        // Full page redirect to NeoFace
+        window.location.href = neoFaceUrl;
+      }, 500);
       
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
@@ -408,38 +421,33 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
     }
   };
 
-  const handleCloseSelfieWindow = () => {
-    // Fermer la fenêtre NeoFace si elle est encore ouverte
-    if (neoFaceWindow && !neoFaceWindow.closed) {
-      neoFaceWindow.close();
-      logger.info('🔒 Fenêtre NeoFace fermée manuellement');
-    }
-    
-    // Passer à l'étape de vérification si on est encore en selfie
-    if (verificationStep.status === 'selfie') {
+  const handleManualReturn = () => {
+    if (neoFaceDocumentId) {
+      logger.info('🔄 User manually initiated verification check');
+      
       setVerificationStep({
         current: 3,
         status: 'verifying',
         progress: 80,
         message: 'Vérification de votre selfie en cours...'
       });
+      
+      startPolling(neoFaceDocumentId);
+      
+      toast.info('Vérification démarrée', {
+        description: 'Analyse de votre capture en cours...',
+        duration: 3000
+      });
     }
-    
-    toast.info('Fenêtre fermée', {
-      description: 'La vérification continue en arrière-plan. Veuillez patienter...',
-      duration: 4000
-    });
   };
 
   const reset = () => {
     setCniImage(null);
     setVerificationResult(null);
+    setNeoFaceDocumentId(null);
     
-    // Fermer la fenêtre NeoFace si elle est ouverte
-    if (neoFaceWindow && !neoFaceWindow.closed) {
-      neoFaceWindow.close();
-    }
-    setNeoFaceWindow(null);
+    // Clean up localStorage
+    localStorage.removeItem('neoface_document_id');
     
     setVerificationStep({
       current: 0,
@@ -488,32 +496,29 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           <VerificationResultDisplay result={verificationResult} />
         )}
 
-        {/* Interface pendant l'étape selfie */}
-        {verificationStep.status === 'selfie' && (
+        {/* Interface pendant l'étape selfie - De retour de NeoFace */}
+        {verificationStep.status === 'selfie' && neoFaceDocumentId && (
           <div className="space-y-4">
             <Alert className="border-primary/20 bg-primary/5">
               <Info className="h-4 w-4 text-primary" />
               <AlertDescription className="text-sm">
-                <strong>Capture de selfie en cours sur NeoFace</strong>
+                <strong>De retour de la capture NeoFace ?</strong>
                 <br />
-                Une nouvelle fenêtre s'est ouverte pour capturer votre selfie de manière sécurisée.
-                <br />
-                Suivez les instructions affichées pour réaliser votre capture biométrique.
+                Si vous avez terminé votre capture de selfie sur NeoFace, cliquez sur le bouton ci-dessous pour lancer la vérification.
                 <br />
                 <span className="text-muted-foreground text-xs mt-2 block">
-                  Une fois terminé, vous pouvez fermer la fenêtre NeoFace. La vérification continuera automatiquement.
+                  La vérification analysera automatiquement votre capture biométrique.
                 </span>
               </AlertDescription>
             </Alert>
             
             <Button
-              onClick={handleCloseSelfieWindow}
-              variant="outline"
+              onClick={handleManualReturn}
+              variant="default"
               className="w-full"
-              disabled={isPolling}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
-              J'ai terminé ma capture
+              J'ai terminé ma capture - Vérifier maintenant
             </Button>
           </div>
         )}

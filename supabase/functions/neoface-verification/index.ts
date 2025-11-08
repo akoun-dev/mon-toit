@@ -10,6 +10,7 @@ interface UploadDocumentRequest {
   action: 'upload_document';
   cni_photo_url: string;
   user_id: string;
+  callback_url?: string;
 }
 
 // Interface UploadSelfieRequest supprimée - l'upload selfie se fait via l'interface web NeoFace
@@ -88,11 +89,12 @@ serve(async (req) => {
     // ACTION 1: Upload Document
     // ========================================
     if (action === 'upload_document') {
-      const { cni_photo_url, user_id } = requestData as UploadDocumentRequest;
+      const { cni_photo_url, user_id, callback_url } = requestData as UploadDocumentRequest;
 
       console.log('📤 Uploading document to NeoFace...', { 
         user_id, 
-        cni_photo_url: cni_photo_url.substring(0, 50) + '...' 
+        cni_photo_url: cni_photo_url.substring(0, 50) + '...',
+        callback_url: callback_url || 'none'
       });
 
       // Validate inputs
@@ -128,10 +130,17 @@ serve(async (req) => {
           formData.append('token', NEOFACE_API_TOKEN);
           formData.append('doc_file', imageBlob, 'document.jpg');
           
+          // Add callback_url if provided
+          if (callback_url) {
+            formData.append('callback_url', callback_url);
+            console.log('🔗 Callback URL added to request');
+          }
+          
           console.log('📦 FormData créé:', {
             token_length: NEOFACE_API_TOKEN.length,
             file_type: imageBlob.type,
-            file_size: imageBlob.size
+            file_size: imageBlob.size,
+            has_callback: !!callback_url
           });
 
           const controller = new AbortController();
