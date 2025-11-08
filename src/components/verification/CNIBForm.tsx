@@ -502,7 +502,9 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
             isCapturing={isCapturing}
             isVideoLoading={isVideoLoading}
             isVerifying={isVerifying}
+            error={camera.error}
             videoRef={videoRef}
+            canvasRef={canvasRef}
             onStartCamera={startCamera}
             onStopCamera={stopCamera}
             onCapture={captureSelfie}

@@ -6,6 +6,7 @@ export interface UseCameraReturn {
   isCapturing: boolean;
   isVideoLoading: boolean;
   capturedImage: string | null;
+  error: string | null;
   videoRef: React.RefObject<HTMLVideoElement>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   startCamera: () => Promise<void>;
@@ -18,6 +19,7 @@ export const useCamera = (): UseCameraReturn => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -40,6 +42,7 @@ export const useCamera = (): UseCameraReturn => {
   const startCamera = useCallback(async () => {
     try {
       logger.info('🎥 Démarrage de la caméra');
+      setError(null); // Réinitialiser l'erreur
       setIsVideoLoading(true);
       
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -133,6 +136,17 @@ export const useCamera = (): UseCameraReturn => {
         video.addEventListener('canplay', onCanPlay);
         video.addEventListener('error', onError);
         
+        // CRITIQUE : Assigner srcObject ICI, APRÈS avoir configuré les événements
+        video.srcObject = stream;
+        video.load(); // Force le rechargement des métadonnées
+        
+        // Attendre un peu pour que le navigateur charge les métadonnées
+        setTimeout(() => {
+          video.play()
+            .then(() => logger.debug('✅ video.play() réussi'))
+            .catch(playError => logger.warn('⚠️ video.play() échoué, on continue quand même', { error: playError }));
+        }, 100);
+        
         // Timeout augmenté à 10 secondes
         setTimeout(() => {
           if (resolved) return;
@@ -163,19 +177,6 @@ export const useCamera = (): UseCameraReturn => {
         }, 10000);
       });
 
-      video.srcObject = stream;
-      video.load(); // Force le rechargement des métadonnées
-      
-      // Attendre un peu pour que le navigateur charge les métadonnées
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      try {
-        await video.play();
-        logger.debug('✅ video.play() réussi');
-      } catch (playError) {
-        logger.warn('⚠️ video.play() échoué, on continue quand même', { error: playError });
-      }
-
       await playPromise;
     } catch (error) {
       logger.error('Error accessing camera', { error });
@@ -202,6 +203,7 @@ export const useCamera = (): UseCameraReturn => {
       }
       
       toast.error(errorMessage, { description: errorDescription });
+      setError(errorMessage); // Enregistrer l'erreur dans l'état
       
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => {
@@ -285,6 +287,7 @@ export const useCamera = (): UseCameraReturn => {
     isCapturing,
     isVideoLoading,
     capturedImage,
+    error,
     videoRef,
     canvasRef,
     startCamera,

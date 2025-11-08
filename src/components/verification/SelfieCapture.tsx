@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Camera, Loader2, X } from 'lucide-react';
+import { Camera, Loader2, X, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 import { useFaceQualityDetection } from '@/hooks/useFaceQualityDetection';
@@ -14,7 +14,9 @@ interface SelfieCaptureProps {
   isCapturing: boolean;
   isVideoLoading: boolean;
   isVerifying: boolean;
+  error?: string | null;
   videoRef: React.RefObject<HTMLVideoElement>;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
   onStartCamera: () => void;
   onStopCamera: () => void;
   onCapture: () => void;
@@ -27,7 +29,9 @@ export const SelfieCapture = ({
   isCapturing,
   isVideoLoading,
   isVerifying,
+  error,
   videoRef,
+  canvasRef,
   onStartCamera,
   onStopCamera,
   onCapture,
@@ -69,6 +73,13 @@ export const SelfieCapture = ({
             </Alert>
           ) : (
             <>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              
               {!isCapturing && !isVideoLoading && !selfieImage && (
                 <Button
                   onClick={onStartCamera}
@@ -109,6 +120,12 @@ export const SelfieCapture = ({
                             </p>
                             <p className="text-xs text-muted-foreground font-mono mt-1">
                               CSS: {videoRef.current?.clientWidth || 0} × {videoRef.current?.clientHeight || 0}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-mono mt-1">
+                              srcObject: {videoRef.current?.srcObject ? '✅' : '❌'}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-mono mt-1">
+                              paused: {videoRef.current?.paused ? '⏸️' : '▶️'}
                             </p>
                           </div>
                         </div>
@@ -169,6 +186,9 @@ export const SelfieCapture = ({
               )}
             </>
           )}
+          
+          {/* Canvas caché pour capture */}
+          <canvas ref={canvasRef} className="hidden" />
         </CardContent>
       </Card>
     </div>
