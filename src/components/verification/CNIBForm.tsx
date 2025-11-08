@@ -42,6 +42,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string>('');
+  const [countdown, setCountdown] = useState<number>(5);
   
   // Nouveaux states pour NeoFace
   const [isUploadingDocument, setIsUploadingDocument] = useState(false);
@@ -104,6 +105,32 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       }
     }
   }, []);
+
+  // Gérer le compte à rebours automatique du modal de redirection
+  useEffect(() => {
+    if (!showRedirectModal) {
+      setCountdown(5); // Reset quand le modal se ferme
+      return;
+    }
+    
+    // Reset countdown à l'ouverture
+    setCountdown(5);
+    
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          // Déclencher la redirection automatiquement
+          handleRedirectConfirm();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    // Cleanup
+    return () => clearInterval(timer);
+  }, [showRedirectModal]);
 
   // Hook polling
   const polling = usePolling(
@@ -461,7 +488,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   };
 
   const handleRedirectConfirm = () => {
+    if (countdown === 0) return; // Empêcher double redirection
+    
     setShowRedirectModal(false);
+    setCountdown(0); // Stop le timer
+    
     // Update status to verifying for when user returns (Solution D)
     setVerificationStep({
       current: 3,
@@ -600,10 +631,52 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
                 Capture de selfie sécurisée
               </AlertDialogTitle>
               <AlertDialogDescription className="space-y-4 text-left">
-                <p>
+                {/* Cercle de progression avec countdown */}
+                <div className="flex items-center justify-center py-6">
+                  <div className="relative w-28 h-28">
+                    {/* Cercle de fond (gris) */}
+                    <svg className="transform -rotate-90 w-28 h-28">
+                      <circle
+                        cx="56"
+                        cy="56"
+                        r="52"
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        fill="transparent"
+                        className="text-muted-foreground/20"
+                      />
+                      {/* Cercle de progression (primaire) */}
+                      <circle
+                        cx="56"
+                        cy="56"
+                        r="52"
+                        stroke="currentColor"
+                        strokeWidth="6"
+                        fill="transparent"
+                        strokeDasharray={`${2 * Math.PI * 52}`}
+                        strokeDashoffset={`${2 * Math.PI * 52 * (1 - countdown / 5)}`}
+                        className="text-primary transition-all duration-1000 ease-linear"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    {/* Nombre au centre */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className={`text-4xl font-bold text-primary ${countdown <= 2 ? 'animate-pulse' : ''}`}>
+                        {countdown}
+                      </span>
+                      <span className="text-xs text-muted-foreground mt-1">
+                        seconde{countdown > 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message d'information */}
+                <p className="text-center text-sm">
                   Vous allez être redirigé vers l'interface NeoFace pour capturer votre selfie de manière sécurisée.
                 </p>
                 
+                {/* Instructions */}
                 <div className="bg-muted p-4 rounded-lg space-y-2">
                   <p className="font-semibold text-foreground">📋 Instructions :</p>
                   <ol className="list-decimal ml-4 space-y-1 text-sm">
@@ -614,6 +687,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
                   </ol>
                 </div>
 
+                {/* Alert d'information */}
                 <Alert className="border-primary/20 bg-primary/5">
                   <Info className="h-4 w-4 text-primary" />
                   <AlertDescription className="text-sm text-foreground">
@@ -624,8 +698,15 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogAction onClick={handleRedirectConfirm} className="w-full">
-                J'ai compris, continuer
+              <AlertDialogAction 
+                onClick={handleRedirectConfirm} 
+                className="w-full"
+                disabled={countdown === 0}
+              >
+                {countdown > 0 
+                  ? `Continuer maintenant (${countdown}s)` 
+                  : 'Redirection en cours...'
+                }
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
