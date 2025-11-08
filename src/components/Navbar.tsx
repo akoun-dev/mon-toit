@@ -50,28 +50,24 @@ const Navbar = ({ showSidebarTrigger = false }: NavbarProps) => {
           <div className="flex items-center gap-3">
             {showSidebarTrigger && <SidebarTrigger className="md:hidden" />}
             
-            <Link to="/" className="flex items-center gap-3 group">
-            <picture>
-              <img
-                src={doniaLogo}
-                alt="DONIA - Plateforme Immobilière Burkinabè"
-                className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                width="64"
-                height="64"
-              />
-            </picture>
-            <div className="hidden sm:flex flex-col">
-              <span className="text-2xl font-bold text-primary leading-tight">
-                DONIA
-              </span>
-              <span className="text-xs text-secondary leading-tight flex items-center gap-1 font-semibold">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Plateforme sécurisée
-              </span>
-            </div>
+            <Link to="/" className="flex items-center gap-2 group" title="DONIA - Plateforme sécurisée">
+              <picture>
+                <img
+                  src={doniaLogo}
+                  alt="DONIA"
+                  className="h-10 sm:h-12 w-auto object-contain shrink-0 group-hover:scale-105 transition-smooth"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                  width="64"
+                  height="64"
+                />
+              </picture>
+              {/* Badge discret uniquement sur desktop */}
+              <Badge variant="outline" className="hidden lg:flex items-center gap-1 border-primary/30 text-primary text-xs px-2 py-0.5">
+                <ShieldCheck className="h-3 w-3" />
+                Sécurisée
+              </Badge>
             </Link>
           </div>
 
