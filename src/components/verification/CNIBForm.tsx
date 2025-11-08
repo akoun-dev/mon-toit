@@ -183,6 +183,19 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
   const { isPolling, message: pollingMessage, startPolling, stopPolling } = polling;
 
+  // Vérifier les permissions caméra
+  const checkCameraPermission = async (): Promise<boolean> => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      stream.getTracks().forEach(track => track.stop());
+      logger.info('✅ Caméra accessible');
+      return true;
+    } catch (error) {
+      logger.error('❌ Caméra non accessible:', error);
+      return false;
+    }
+  };
+
   const handleCniUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -286,6 +299,18 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
     if (!user) {
       toast.error('Utilisateur non authentifié');
+      return;
+    }
+
+    // Vérifier l'accès caméra AVANT la redirection
+    logger.info('🎥 Vérification de l\'accès caméra...');
+    const hasCamera = await checkCameraPermission();
+    
+    if (!hasCamera) {
+      toast.error('⚠️ Accès caméra requis', {
+        description: 'Veuillez autoriser l\'accès à la caméra dans les paramètres de votre navigateur avant de continuer.',
+        duration: 6000
+      });
       return;
     }
 
@@ -518,6 +543,30 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
               </span>
             </AlertDescription>
           </Alert>
+        )}
+
+        {/* Bouton de test caméra */}
+        {!verificationResult && verificationStep.status === 'idle' && (
+          <Button
+            variant="outline"
+            onClick={async () => {
+              const hasCamera = await checkCameraPermission();
+              if (hasCamera) {
+                toast.success('✅ Caméra fonctionnelle', {
+                  description: 'Votre caméra est accessible et prête',
+                  duration: 3000
+                });
+              } else {
+                toast.error('❌ Caméra non accessible', {
+                  description: 'Vérifiez les permissions de votre navigateur',
+                  duration: 5000
+                });
+              }
+            }}
+            className="w-full"
+          >
+            🎥 Tester ma caméra
+          </Button>
         )}
 
         {/* Bouton Vérifier CNIB - visible seulement avant l'étape selfie */}
