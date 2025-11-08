@@ -7,7 +7,7 @@
 
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { RippleButton } from '@/components/animations/RippleButton';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Home, ShieldCheck, Building2 } from 'lucide-react';
@@ -190,14 +190,14 @@ export const MobileHero = () => {
               </div>
 
               {/* Bouton de recherche */}
-              <Button
+              <RippleButton
                 onClick={handleSearch}
                 size="lg"
                 className="w-full h-12 text-base font-bold bg-primary-600 hover:bg-primary-700 shadow-lg mt-2"
               >
                 <Search className="h-4 w-4 mr-2" />
                 Rechercher
-              </Button>
+              </RippleButton>
 
               {/* Message de confiance */}
               <p className="text-xs text-gray-600 text-center pt-1 flex flex-wrap items-center justify-center gap-1.5">

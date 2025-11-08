@@ -12,8 +12,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, PlusCircle, ShieldCheck, MapPin, Building2, DollarSign } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { RippleButton } from '@/components/animations/RippleButton';
+import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import {
   Select,
   SelectContent,
@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/carousel';
 import { CarouselDots } from '@/components/ui/carousel-dots';
 import { useHeroImages } from '@/hooks/useHeroImages';
+import { celebrateFirstApplication } from '@/utils/confetti';
 
 const heroImages = [
   {
@@ -80,6 +81,13 @@ export const ProfessionalHero = () => {
     if (city) params.append('city', city);
     if (propertyType) params.append('type', propertyType);
     if (budget) params.append('maxPrice', budget);
+    
+    // Confetti si c'est la première recherche
+    const hasSearchedBefore = localStorage.getItem('has_searched');
+    if (!hasSearchedBefore) {
+      celebrateFirstApplication();
+      localStorage.setItem('has_searched', 'true');
+    }
     
     navigate(`/explorer?${params.toString()}`);
   };
@@ -234,35 +242,34 @@ export const ProfessionalHero = () => {
                 </div>
 
                 {/* Budget */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                    <DollarSign className="h-4 w-4 text-primary" />
-                    Budget max
-                  </label>
-                  <Input
+                <div>
+                  <FloatingLabelInput
+                    id="budget"
                     type="text"
-                    placeholder="Ex: 200000"
+                    label="Budget max (FCFA)"
                     value={budget}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '');
                       setBudget(value);
                     }}
-                    className="h-12 border-2 focus:border-primary bg-white"
+                    showValidation={budget !== ''}
+                    isValid={budget !== '' && parseInt(budget) >= 50000}
+                    className="bg-white"
                   />
                 </div>
               </div>
 
               {/* Boutons d'action */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Button
+                <RippleButton
                   onClick={handleSearch}
                   size="lg"
                   className="flex-1 h-14 text-lg font-bold bg-primary-600 hover:bg-primary-700 shadow-lg hover:shadow-xl transition-all"
                 >
                   <Search className="h-5 w-5 mr-2" />
                   Rechercher
-                </Button>
-                <Button
+                </RippleButton>
+                <RippleButton
                   onClick={() => navigate('/publier')}
                   size="lg"
                   variant="outline"
@@ -270,7 +277,7 @@ export const ProfessionalHero = () => {
                 >
                   <PlusCircle className="h-5 w-5 mr-2" />
                   Publier une annonce
-                </Button>
+                </RippleButton>
               </div>
 
               {/* Message de confiance */}

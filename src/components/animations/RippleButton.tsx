@@ -33,7 +33,7 @@ export const RippleButton = ({ children, onClick, ...props }: RippleButtonProps)
       {ripples.map(ripple => (
         <motion.span
           key={ripple.id}
-          className="absolute bg-white/30 rounded-full pointer-events-none"
+          className="absolute bg-gradient-to-r from-[#F9B208]/40 to-white/30 rounded-full pointer-events-none"
           style={{
             left: ripple.x,
             top: ripple.y,
