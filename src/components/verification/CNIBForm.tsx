@@ -16,6 +16,7 @@ import { VerificationResultDisplay } from './VerificationResultDisplay';
 import { VerificationInstructions } from './VerificationInstructions';
 import { CNIUploadZone } from './CNIUploadZone';
 import { VerificationButtons } from './VerificationButtons';
+import { VerificationStepper } from './VerificationStepper';
 
 interface CNIBFormProps {
   onSubmit?: () => void;
@@ -32,6 +33,19 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const [isUploadingDocument, setIsUploadingDocument] = useState(false);
   const [documentId, setDocumentId] = useState<string | null>(null);
   const [selfieUrl, setSelfieUrl] = useState<string | null>(null);
+  
+  // State pour le stepper de progression
+  const [verificationStep, setVerificationStep] = useState<{
+    current: number;
+    status: 'idle' | 'uploading' | 'selfie' | 'verifying' | 'completed' | 'error';
+    progress: number;
+    message: string;
+  }>({
+    current: 0,
+    status: 'idle',
+    progress: 0,
+    message: ''
+  });
   
   const [verificationResult, setVerificationResult] = useState<{
     verified: boolean;
@@ -58,7 +72,12 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       interval: 3000,
       maxAttempts: 100,
       onSuccess: (data) => {
-        setUploadProgress(100);
+        setVerificationStep({
+          current: 3,
+          status: 'completed',
+          progress: 100,
+          message: 'Vérification réussie !'
+        });
         setVerificationResult({
           verified: true,
           similarityScore: data.matching_score.toString(),
@@ -74,6 +93,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         onSubmit?.();
       },
       onError: (data) => {
+        setVerificationStep(prev => ({
+          ...prev,
+          status: 'error',
+          message: data.message || 'La vérification a échoué'
+        }));
         setVerificationResult({
           verified: false,
           similarityScore: data.matching_score?.toString() || '0',
@@ -208,6 +232,12 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
 
     setIsVerifying(true);
     setVerificationResult(null);
+    setVerificationStep({
+      current: 1,
+      status: 'uploading',
+      progress: 0,
+      message: 'Préparation de votre document...'
+    });
 
     try {
       // ========================================
@@ -215,6 +245,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       // ========================================
       setIsUploadingDocument(true);
       setUploadProgress(20);
+      setVerificationStep(prev => ({ ...prev, progress: 20, message: 'Upload vers le serveur...' }));
       logger.info('📤 Upload CNIB vers Storage...');
       
       // Convertir base64 en Blob
@@ -238,6 +269,7 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         .getPublicUrl(storageData.path);
       
       setUploadProgress(40);
+      setVerificationStep(prev => ({ ...prev, progress: 40, message: 'Document uploadé, envoi à NeoFace...' }));
       logger.info('✅ CNIB uploadée', { url: publicUrl });
       
       // ========================================
@@ -277,6 +309,12 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       setSelfieUrl(uploadData.url);
       setUploadProgress(60);
       setIsUploadingDocument(false);
+      setVerificationStep({
+        current: 2,
+        status: 'selfie',
+        progress: 60,
+        message: 'En attente de votre selfie...'
+      });
       
       logger.info('✅ Document uploadé sur NeoFace', { 
         document_id: uploadData.document_id,
@@ -307,6 +345,11 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       });
       
       setUploadProgress(70);
+      setVerificationStep(prev => ({ 
+        ...prev, 
+        progress: 70, 
+        message: 'Prenez votre selfie dans la fenêtre NeoFace' 
+      }));
       
       // ========================================
       // ÉTAPE 4 : Attendre 3 secondes puis démarrer le polling
@@ -314,11 +357,24 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       logger.info('⏳ Attente de 3 secondes avant polling...');
       await new Promise(resolve => setTimeout(resolve, 3000));
       
+      setVerificationStep({
+        current: 3,
+        status: 'verifying',
+        progress: 80,
+        message: 'Analyse biométrique en cours...'
+      });
+      
       logger.info('🔄 Démarrage du polling...');
       startPolling(uploadData.document_id);
       
     } catch (error) {
       logger.error('Erreur vérification NeoFace', { error });
+      
+      setVerificationStep(prev => ({
+        ...prev,
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Une erreur est survenue'
+      }));
       
       setVerificationResult({
         verified: false,
@@ -341,6 +397,12 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
   const reset = () => {
     setCniImage(null);
     setVerificationResult(null);
+    setVerificationStep({
+      current: 0,
+      status: 'idle',
+      progress: 0,
+      message: ''
+    });
     stopPolling();
   };
 
@@ -372,31 +434,13 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
           </AlertDescription>
         </Alert>
 
-        {isUploadingDocument && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              <div className="space-y-2">
-                <p className="font-medium">📤 Upload de votre CNIB en cours...</p>
-                <SimpleProgress value={uploadProgress} className="mt-2" />
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {isPolling && (
-          <Alert>
-            <AlertCircle className="h-4 w-4 animate-pulse" />
-            <AlertDescription>
-              <div className="space-y-2">
-                <p className="font-medium">⏳ {pollingMessage}</p>
-                <p className="text-sm text-muted-foreground">
-                  Une fenêtre s'est ouverte pour prendre votre selfie. 
-                  Si vous ne la voyez pas, vérifiez les popups bloquées.
-                </p>
-              </div>
-            </AlertDescription>
-          </Alert>
+        {(isVerifying || isPolling) && verificationStep.current > 0 && (
+          <VerificationStepper
+            currentStep={verificationStep.current}
+            progress={verificationStep.progress}
+            message={verificationStep.message}
+            status={verificationStep.status}
+          />
         )}
 
         <div className="grid md:grid-cols-2 gap-6">
