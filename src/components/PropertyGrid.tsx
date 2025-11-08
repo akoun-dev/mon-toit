@@ -11,7 +11,7 @@ import { FadeInView } from '@/components/animations/FadeInView';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
 import type { Property } from '@/types';
-import { PullToRefresh } from '@/components/mobile/PullToRefresh';
+import { PullToRefresh } from '@/components/properties/PullToRefresh';
 
 interface PropertyGridProps {
   limit?: number;
