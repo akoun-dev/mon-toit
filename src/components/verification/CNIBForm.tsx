@@ -341,6 +341,14 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
       // 🎵 Trigger step change feedback
       await triggerUserFeedback('step_change');
       
+      logger.info('📡 Réponse NeoFace upload_document:', {
+        success: uploadData.success,
+        document_id: uploadData.document_id,
+        url_exists: !!uploadData.url,
+        url_preview: uploadData.url ? uploadData.url.substring(0, 80) : 'MANQUANTE',
+        has_selfie_url: !!uploadData.selfie_url
+      });
+      
       logger.info('✅ Document uploadé sur NeoFace', { 
         document_id: uploadData.document_id,
         selfie_url: uploadData.url.substring(0, 50) + '...'
@@ -405,22 +413,52 @@ const CNIBForm = ({ onSubmit }: CNIBFormProps = {}) => {
         
       } else {
         // Mode popup NeoFace
-        logger.info('🪟 Ouverture fenêtre NeoFace...');
+        // Vérifier que l'URL NeoFace est disponible
+        if (!uploadData.url) {
+          logger.error('❌ URL NeoFace manquante dans la réponse serveur', { uploadData });
+          throw new Error('URL NeoFace manquante dans la réponse serveur');
+        }
+        
+        logger.info('🪟 Ouverture fenêtre NeoFace...', { 
+          url_preview: uploadData.url.substring(0, 60) + '...' 
+        });
+        
+        setVerificationStep(prev => ({ 
+          ...prev, 
+          progress: 65, 
+          message: 'Ouverture de la fenêtre NeoFace...' 
+        }));
         
         const selfieWindow = window.open(
-          uploadData.selfie_url, 
+          uploadData.url, // ✅ Correction: utiliser uploadData.url au lieu de uploadData.selfie_url
           'neoface-selfie',
           'width=600,height=800,resizable=yes,scrollbars=yes'
         );
         
         if (!selfieWindow) {
+          logger.error('Popup NeoFace bloquée par le navigateur');
+          
           toast.error('Popup bloquée', {
-            description: 'Veuillez autoriser les popups pour ce site et réessayer'
+            description: 'Veuillez autoriser les popups pour ce site dans les paramètres de votre navigateur',
+            duration: 10000
           });
+          
+          // Proposer le mode local comme fallback
+          if (window.confirm('La popup NeoFace est bloquée. Voulez-vous essayer la capture locale ?')) {
+            setCaptureMethod('local');
+            setVerificationStep({
+              current: 2,
+              status: 'selfie',
+              progress: 60,
+              message: 'En attente de votre selfie...'
+            });
+            return; // Sortir pour permettre à l'utilisateur de capturer en local
+          }
+          
           throw new Error('Popup bloquée par le navigateur');
         }
         
-        toast.success('📸 Fenêtre NeoFace ouverte', {
+        toast.success('📸 Fenêtre NeoFace prête', {
           description: 'Prenez votre selfie dans la nouvelle fenêtre. La vérification démarrera automatiquement.',
           duration: 5000
         });
