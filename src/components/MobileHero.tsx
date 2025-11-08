@@ -5,18 +5,40 @@
  * Optimisé pour petits écrans (<768px)
  */
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Home, ShieldCheck, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Autoplay from 'embla-carousel-autoplay';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '@/components/ui/carousel';
+
+const mobileHeroImages = [
+  'https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=800&q=80',
+  'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&q=80',
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+];
 
 export const MobileHero = () => {
   const [city, setCity] = useState('all');
   const [propertyType, setPropertyType] = useState('all');
   const navigate = useNavigate();
+
+  const autoplayPlugin = useRef(
+    Autoplay({ 
+      delay: 5000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: false,
+    })
+  );
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -30,14 +52,33 @@ export const MobileHero = () => {
   return (
     <section className="relative min-h-[500px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Version mobile optimisée */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=800&q=80)',
-          backgroundPosition: 'center 40%'
-        }}
-      />
+      {/* Carrousel d'images - Version mobile optimisée */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Carousel
+          opts={{
+            loop: true,
+            align: "center",
+          }}
+          plugins={[autoplayPlugin.current]}
+          className="w-full h-full"
+        >
+          <CarouselContent className="h-full">
+            {mobileHeroImages.map((imageUrl, index) => (
+              <CarouselItem key={index} className="h-full">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
+                  style={{
+                    backgroundImage: `url(${imageUrl})`,
+                    backgroundPosition: 'center 40%'
+                  }}
+                  role="img"
+                  aria-label={`Propriété ${index + 1} au Burkina Faso`}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
       
       {/* Overlay pour lisibilité - plus opaque sur mobile */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background/70" />

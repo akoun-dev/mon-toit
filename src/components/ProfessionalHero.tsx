@@ -9,7 +9,7 @@
  * - Partenaires: Infosec Burkina + Faso Arzeka
  */
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, PlusCircle, ShieldCheck, MapPin, Building2, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,12 +23,49 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import Autoplay from 'embla-carousel-autoplay';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '@/components/ui/carousel';
+
+const heroImages = [
+  {
+    url: 'https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=1920&q=80',
+    alt: 'Architecture moderne à Ouagadougou',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=80',
+    alt: 'Villa résidentielle burkinabè',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1920&q=80',
+    alt: 'Appartement moderne avec vue',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80',
+    alt: 'Complexe résidentiel contemporain',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80',
+    alt: 'Maison familiale burkinabè',
+  }
+];
 
 export const ProfessionalHero = () => {
   const navigate = useNavigate();
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [budget, setBudget] = useState('');
+
+  const autoplayPlugin = useRef(
+    Autoplay({ 
+      delay: 5000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    })
+  );
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -42,13 +79,32 @@ export const ProfessionalHero = () => {
   return (
     <section className="relative min-h-[600px] md:min-h-[700px] flex items-center justify-center overflow-hidden">
       
-      {/* Image de fond - Architecture burkinabè authentique - visible à droite */}
-      <div 
-        className="absolute inset-0 bg-cover bg-right bg-no-repeat"
-        style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1632481725116-85a3c56b0cf0?w=1920&q=80)',
-        }}
-      />
+      {/* Carrousel d'images - Architecture burkinabè authentique */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Carousel
+          opts={{
+            loop: true,
+            align: "center",
+          }}
+          plugins={[autoplayPlugin.current]}
+          className="w-full h-full"
+        >
+          <CarouselContent className="h-full">
+            {heroImages.map((image, index) => (
+              <CarouselItem key={index} className="h-full">
+                <div 
+                  className="absolute inset-0 bg-cover bg-right bg-no-repeat transition-all duration-700"
+                  style={{
+                    backgroundImage: `url(${image.url})`,
+                  }}
+                  role="img"
+                  aria-label={image.alt}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
       
       {/* Overlay directionnel - opaque à gauche (texte), transparent à droite (image) */}
       <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent" />
