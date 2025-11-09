@@ -166,6 +166,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "agency_mandates_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "agency_mandates_owner_id_fkey"
             columns: ["owner_id"]
             isOneToOne: false
@@ -177,6 +184,13 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agency_mandates_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
           {
@@ -198,6 +212,13 @@ export type Database = {
             columns: ["terminated_by"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agency_mandates_terminated_by_fkey"
+            columns: ["terminated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
         ]
@@ -554,6 +575,13 @@ export type Database = {
             referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "digital_certificates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       disputes: {
@@ -702,6 +730,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "electronic_signature_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2083,6 +2118,13 @@ export type Database = {
             referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "recommendation_cache_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       rent_overdue_reminders: {
@@ -2180,6 +2222,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "rent_overdue_reminders_landlord_id_fkey"
+            columns: ["landlord_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rent_overdue_reminders_lease_id_fkey"
             columns: ["lease_id"]
             isOneToOne: false
@@ -2219,6 +2268,13 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rent_overdue_reminders_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2309,6 +2365,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "rent_receipts_landlord_id_fkey"
+            columns: ["landlord_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rent_receipts_lease_id_fkey"
             columns: ["lease_id"]
             isOneToOne: false
@@ -2341,6 +2404,13 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rent_receipts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2407,6 +2477,13 @@ export type Database = {
             columns: ["applicant_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_applications_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
           {
@@ -2665,6 +2742,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "search_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe_public"
             referencedColumns: ["id"]
           },
         ]
@@ -3075,6 +3159,13 @@ export type Database = {
             referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_safe_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_reminders: {
@@ -3369,6 +3460,48 @@ export type Database = {
           is_verified?: boolean | null
           oneci_verified?: boolean | null
           updated_at?: string | null
+          user_type?: Database["public"]["Enums"]["user_type"] | null
+        }
+        Relationships: []
+      }
+      profiles_safe_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          cnam_verified: boolean | null
+          cnib_verified: boolean | null
+          created_at: string | null
+          face_verified: boolean | null
+          full_name: string | null
+          id: string | null
+          is_verified: boolean | null
+          user_type: Database["public"]["Enums"]["user_type"] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cnam_verified?: boolean | null
+          cnib_verified?: boolean | null
+          created_at?: string | null
+          face_verified?: boolean | null
+          full_name?: string | null
+          id?: string | null
+          is_verified?: boolean | null
+          user_type?: Database["public"]["Enums"]["user_type"] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          cnam_verified?: boolean | null
+          cnib_verified?: boolean | null
+          created_at?: string | null
+          face_verified?: boolean | null
+          full_name?: string | null
+          id?: string | null
+          is_verified?: boolean | null
           user_type?: Database["public"]["Enums"]["user_type"] | null
         }
         Relationships: []
